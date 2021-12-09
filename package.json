@@ -1,0 +1,28 @@
+{
+  "name": "guidedog",
+  "version": "0.1.0",
+  "description": "screen-reader driver for web automation testing",
+  "main": "index.js",
+  "author": "Craig Morten",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "dev": "ts-node ./src/index.ts",
+    "gen": "yarn gen:voiceover",
+    "gen:voiceover": "ts-node ./src/macOS/VoiceOver/generateClass.ts"
+  },
+  "devDependencies": {
+    "@jxa/types": "^1.3.4",
+    "@types/node": "^16.11.11",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
+    "eslint": "^8.4.0",
+    "eslint-config-prettier": "^8.3.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "@jxa/global-type": "^1.3.4",
+    "@jxa/run": "^1.3.4"
+  }
+}
