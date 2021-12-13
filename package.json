@@ -1,5 +1,5 @@
 {
-  "name": "guidedog",
+  "name": "guidepup",
   "version": "0.1.0",
   "description": "screen-reader driver for automation testing",
   "main": "lib/index.js",
