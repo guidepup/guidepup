@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "experimentalDecorators": true,
+    "lib": ["dom", "esnext"],
     "target": "es2016",
     "module": "commonjs",
     "moduleResolution": "node",
-    "declaration": true
+    "declaration": true,
+    "outDir": "./lib"
   },
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "lib"]
 }

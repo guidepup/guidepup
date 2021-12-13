@@ -1,13 +1,15 @@
 import { run } from "@jxa/run";
-import { CommanderCommand } from "./CommanderCommand";
+import { CommanderCommands } from "./CommanderCommands";
 import { Applications } from "../Applications";
 import { activate } from "../activate";
 import "@jxa/global-type";
 
-export async function performCommand(text: CommanderCommand): Promise<void> {
+export async function performCommand(
+  command: CommanderCommands
+): Promise<void> {
   await activate(Applications.VOICE_OVER);
 
-  const script = `tell application "VoiceOver"\ntell command to perform command ${text.toLowerCase()}\nend tell`;
+  const script = `tell application "VoiceOver"\ntell commander to perform command "${command.toLowerCase()}"\nend tell`;
 
   return await run<void, string>((appleScript) => {
     const app = Application.currentApplication();
