@@ -1319,7 +1319,7 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     keyCode: KeyCodes.KEY_N,
     modifiers: [...VO, Modifiers.CMD],
     description: "Move to the next auto web spot",
-    gesture: "VO-Command-F",
+    gesture: "VO-Command-N",
   },
   moveToPreviousAutoWebSpot: {
     keyCode: KeyCodes.KEY_N,
