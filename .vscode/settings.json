@@ -1,4 +1,3 @@
 {
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "cSpell.words": ["SPACEBAR"]
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint"
 }
