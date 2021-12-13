@@ -1,6 +1,5 @@
-import "@jxa/global-type";
-import { isSaved } from "./isSaved";
 import { waitForCondition } from "./waitForCondition";
+import { isSaved } from "./isSaved";
 
 const TIMEOUT_ERROR_MESSAGE = "Timed out waiting for VoiceOver to save file.";
 const ONE_SECOND = 1000;

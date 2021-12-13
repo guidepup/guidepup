@@ -1,6 +1,5 @@
-import "@jxa/global-type";
-import { isRunning } from "./isRunning";
 import { waitForCondition } from "./waitForCondition";
+import { isRunning } from "./isRunning";
 
 const TIMEOUT_ERROR_MESSAGE = "Timed out waiting for VoiceOver to be running.";
 

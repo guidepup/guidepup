@@ -1,17 +1,17 @@
 import { run } from "@jxa/run";
 import { Applications } from "../Applications";
 import { activate } from "../activate";
-import "@jxa/global-type";
 import type { VoiceOver } from "@jxa/types";
+import "@jxa/global-type";
 
-export async function copyLastPhrase(): Promise<void> {
+export async function getText(): Promise<string> {
   await activate(Applications.VOICE_OVER);
 
-  return await run<void, Applications.VOICE_OVER>((name) => {
+  return await run<string, Applications.VOICE_OVER>((name) => {
     const app = Application<VoiceOver.VoiceOver>(name);
-    const lastPhrase =
-      app.lastPhrase as unknown as VoiceOver.VoiceOver.LastPhraseObject;
+    const voCursor =
+      app.voCursor as unknown as VoiceOver.VoiceOver.VoCursorObject;
 
-    return app.copyToPasteboard(lastPhrase);
+    return voCursor.textUnderCursor();
   }, Applications.VOICE_OVER);
 }

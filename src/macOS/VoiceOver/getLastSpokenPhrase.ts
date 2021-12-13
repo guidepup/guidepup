@@ -1,20 +1,17 @@
 import { run } from "@jxa/run";
 import { Applications } from "../Applications";
-import { VoiceOver } from "@jxa/types";
 import { activate } from "../activate";
-import { waitForSaved } from "./waitForSaved";
 import "@jxa/global-type";
+import type { VoiceOver } from "@jxa/types";
 
-export async function saveLastPhrase(): Promise<void> {
+export async function getLastSpokenPhrase(): Promise<string> {
   await activate(Applications.VOICE_OVER);
 
-  await run<void, Applications.VOICE_OVER>((name) => {
+  return await run<string, Applications.VOICE_OVER>((name) => {
     const app = Application<VoiceOver.VoiceOver>(name);
     const lastPhrase =
       app.lastPhrase as unknown as VoiceOver.VoiceOver.LastPhraseObject;
 
-    app.save(lastPhrase);
+    return lastPhrase.content();
   }, Applications.VOICE_OVER);
-
-  await waitForSaved();
 }
