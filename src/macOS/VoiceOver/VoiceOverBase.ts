@@ -25,6 +25,7 @@ import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
 import { takeScreenshot } from "./takeScreenshot";
 import { getText } from "./getText";
 import { performCommand } from "./performCommand";
+import { performAction } from "./performAction";
 
 @decorateStaticImplements<ScreenReader>()
 export class VoiceOverBase {
@@ -226,5 +227,12 @@ export class VoiceOverBase {
    */
   async performCommand(command: CommanderCommands): Promise<void> {
     return await performCommand(command);
+  }
+
+  /**
+   * Perform VoiceOver action.
+   */
+  async performAction(): Promise<void> {
+    return await performAction();
   }
 }

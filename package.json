@@ -6,11 +6,24 @@
   "typings": "lib/index.d.ts",
   "author": "Craig Morten <craig.morten@hotmail.co.uk>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guidepup/guidepup"
+  },
+  "bugs": {
+    "url": "https://github.com/guidepup/guidepup/issues"
+  },
+  "homepage": "https://github.com/guidepup/guidepup",
+  "keywords": [
+    "voiceover",
+    "screen-reader",
+    "accessibility"
+  ],
   "scripts": {
     "build": "yarn clean && yarn gen && yarn compile",
     "clean": "rimraf lib",
     "compile": "tsc",
-    "dev": "ts-node ./test.ts",
+    "dev": "ts-node ./examples/hello-voiceover/index.ts",
     "gen": "yarn gen:voiceover",
     "gen:voiceover": "ts-node ./src/macOS/VoiceOver/generateClass.ts",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
