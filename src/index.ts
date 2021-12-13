@@ -1,23 +1,4 @@
-import { VoiceOver } from "./macOS/VoiceOver";
-
-async function start() {
-  const vo = new VoiceOver();
-
-  await vo.start();
-  await vo.activate("Visual Studio Code");
-  await vo.moveRight();
-  console.log(await vo.getText());
-  await vo.moveRight();
-  console.log(await vo.getText());
-  await vo.moveRight();
-  console.log(await vo.getText());
-  await vo.moveRight();
-  console.log(await vo.getText());
-  await vo.moveRight();
-  console.log(await vo.getText());
-  await vo.moveRight();
-  console.log(await vo.getText());
-  await vo.stop();
-}
-
-start();
+export * from "./macOS";
+export type { KeyCodeCommand } from "./KeyCodeCommand";
+export type { KeystrokeCommand } from "./KeystrokeCommand";
+export type { ScreenReader } from "./ScreenReader";

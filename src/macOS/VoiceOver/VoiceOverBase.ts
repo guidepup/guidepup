@@ -1,9 +1,14 @@
 import type { ScreenReader } from "../../ScreenReader";
 import type { KeyCodeCommand } from "../../KeyCodeCommand";
 import type { KeystrokeCommand } from "../../KeystrokeCommand";
-import type { CommanderCommand } from "./CommanderCommand";
 import type { Containments } from "./Containments";
 import type { Places } from "./Places";
+import { CommanderCommands } from "./CommanderCommands";
+import { decorateStaticImplements } from "../../decorateStaticImplements";
+import { isMacOS } from "../isMacOS";
+import { disableSplashScreen } from "./disableSplashScreen";
+import { start } from "./start";
+import { waitForRunning } from "./waitForRunning";
 import { Directions } from "./Directions";
 import { ClickCount } from "./ClickCount";
 import { ClickButton } from "./ClickButton";
@@ -12,9 +17,6 @@ import { activate } from "../activate";
 import { quit } from "../quit";
 import { keyCode } from "../keyCode";
 import { keystroke } from "../keystroke";
-import { disableSplashScreen } from "./disableSplashScreen";
-import { start } from "./start";
-import { waitForRunning } from "./waitForRunning";
 import { move } from "./move";
 import { click } from "./click";
 import { getLastSpokenPhrase } from "./getLastSpokenPhrase";
@@ -24,7 +26,26 @@ import { takeScreenshot } from "./takeScreenshot";
 import { getText } from "./getText";
 import { performCommand } from "./performCommand";
 
-export class VoiceOverBase implements ScreenReader {
+@decorateStaticImplements<ScreenReader>()
+export class VoiceOverBase {
+  /**
+   * Detect whether VoiceOver is supported for the current OS.
+   *
+   * @returns {boolean}
+   */
+  static detect(): boolean {
+    return isMacOS();
+  }
+
+  /**
+   * Detect whether VoiceOver is the default screen reader for the current OS.
+   *
+   * @returns {boolean}
+   */
+  static default(): boolean {
+    return isMacOS();
+  }
+
   /**
    * Turn VoiceOver on.
    */
@@ -93,17 +114,17 @@ export class VoiceOverBase implements ScreenReader {
   }
 
   /**
-   * Move the VO cursor down to a new location.
-   */
-  async moveDown(): Promise<void> {
-    return await this.move(Directions.DOWN);
-  }
-
-  /**
    * Move the VO cursor right to a new location.
    */
   async moveRight(): Promise<void> {
     return await this.move(Directions.RIGHT);
+  }
+
+  /**
+   * Move the VO cursor down to a new location.
+   */
+  async moveDown(): Promise<void> {
+    return await this.move(Directions.DOWN);
   }
 
   /**
@@ -201,9 +222,9 @@ export class VoiceOverBase implements ScreenReader {
   /**
    * Perform a VoiceOver command.
    *
-   * @param {string} text The English name of the VoiceOver command to perform.
+   * @param {string} command The English name of the VoiceOver command to perform.
    */
-  async performCommand(text: CommanderCommand): Promise<void> {
-    return await performCommand(text);
+  async performCommand(command: CommanderCommands): Promise<void> {
+    return await performCommand(command);
   }
 }
