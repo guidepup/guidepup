@@ -6,16 +6,17 @@ async function start() {
   await vo.start();
   await vo.activate("Visual Studio Code");
   await vo.moveRight();
-  console.log(await vo.getLastPhrase());
+  console.log(await vo.getText());
   await vo.moveRight();
-  console.log(await vo.getLastPhrase());
+  console.log(await vo.getText());
   await vo.moveRight();
-  console.log(await vo.getLastPhrase());
+  console.log(await vo.getText());
   await vo.moveRight();
-  console.log(await vo.getLastPhrase());
-  await vo.moveLeft();
-  console.log(await vo.getLastPhrase());
-  // await vo.saveLastPhrase();
+  console.log(await vo.getText());
+  await vo.moveRight();
+  console.log(await vo.getText());
+  await vo.moveRight();
+  console.log(await vo.getText());
   await vo.stop();
 }
 

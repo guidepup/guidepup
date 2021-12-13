@@ -277,46 +277,46 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     gesture: "VO-Right Arrow",
   },
   moveToVisibleAreaTop: {
-    keyCode: KeyCodes.KEY_LEFT_ARROW,
+    keyCode: KeyCodes.KEY_HOME,
     modifiers: VO,
     description:
       "Move to the top of the visible area (such as a window or text area) where the VoiceOver cursor is located",
-    gesture: "VO-Left Arrow",
+    gesture: "VO-Home",
   },
   moveToVisibleAreaBottom: {
-    keyCode: KeyCodes.KEY_RIGHT_ARROW,
+    keyCode: KeyCodes.KEY_END,
     modifiers: VO,
     description:
       "Move to the bottom of the visible area (such as a window or text area) where the VoiceOver cursor is located",
-    gesture: "VO-Right Arrow",
+    gesture: "VO-End",
   },
   moveToAreaTop: {
-    keyCode: KeyCodes.KEY_LEFT_ARROW,
+    keyCode: KeyCodes.KEY_HOME,
     modifiers: [...VO, Modifiers.SHIFT],
     description:
       "Move to the top of the area (such as a window or text area) where the VoiceOver cursor is located, scrolling if necessary",
-    gesture: "VO-Shift-Left Arrow",
+    gesture: "VO-Shift-Home",
   },
   moveToAreaBottom: {
-    keyCode: KeyCodes.KEY_RIGHT_ARROW,
+    keyCode: KeyCodes.KEY_END,
     modifiers: [...VO, Modifiers.SHIFT],
     description:
       "Move to the bottom of the area (such as a window or text area) where the VoiceOver cursor is located, scrolling if necessary",
-    gesture: "VO-Shift-Right Arrow",
+    gesture: "VO-Shift-End",
   },
   moveToFirst: {
-    keyCode: KeyCodes.KEY_LEFT_ARROW,
+    keyCode: KeyCodes.KEY_HOME,
     modifiers: [...VO, Modifiers.CMD],
     description:
       "Move to the top of a window, the first item in the Dock, or the first item on your desktop, depending on your location",
-    gesture: "VO-Command-Left Arrow",
+    gesture: "VO-Command-Home",
   },
   moveToLast: {
-    keyCode: KeyCodes.KEY_RIGHT_ARROW,
+    keyCode: KeyCodes.KEY_END,
     modifiers: [...VO, Modifiers.CMD],
     description:
       "Move to the lower-right corner of a window, the last item in the Dock, or the last item on your desktop, depending on your location",
-    gesture: "VO-Command-Right Arrow",
+    gesture: "VO-Command-End",
   },
   moveToFrontWindow: {
     keyCode: KeyCodes.KEY_F2,
@@ -384,7 +384,7 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     keyCode: KeyCodes.KEY_F3,
     modifiers: [...VO, Modifiers.SHIFT],
     description:
-      "Temporarily disable or enable the cursor tracking options you selected in VoiceOver Utility. The command doesn’t change the settings in VoiceOver Utility.",
+      "Temporarily disable or enable the cursor tracking options you selected in VoiceOver Utility. The command doesn't change the settings in VoiceOver Utility.",
     gesture: "VO-Shift-F3",
   },
   moveCursorToKeyboardFocus: {
@@ -875,5 +875,519 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     description:
       "Save the last spoken phrase and the crash log to a file on the desktop for troubleshooting",
     gesture: "VO-Shift-Z",
+  },
+
+  // Search Commands
+
+  find: {
+    keyCode: KeyCodes.KEY_F,
+    modifiers: VO,
+    description: "Find",
+    gesture: "VO-F",
+  },
+  findNextSearchedText: {
+    keyCode: KeyCodes.KEY_G,
+    modifiers: VO,
+    description: "Find the next searched text",
+    gesture: "VO-G",
+  },
+  findPreviousSearchedText: {
+    keyCode: KeyCodes.KEY_G,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Find the previous searched text",
+    gesture: "VO-Shift-G",
+  },
+  findNextList: {
+    keyCode: KeyCodes.KEY_X,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next list",
+    gesture: "VO-Command-X",
+  },
+  findPreviousList: {
+    keyCode: KeyCodes.KEY_X,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous list",
+    gesture: "VO-Command-Shift-X",
+  },
+  findNextBoldText: {
+    keyCode: KeyCodes.KEY_B,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next bold text",
+    gesture: "VO-Command-B",
+  },
+  findPreviousBoldText: {
+    keyCode: KeyCodes.KEY_B,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous bold text",
+    gesture: "VO-Command-Shift-B",
+  },
+  findNextStyleChange: {
+    keyCode: KeyCodes.KEY_C,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next style change",
+    gesture: "VO-Command-C",
+  },
+  findPreviousStyleChange: {
+    keyCode: KeyCodes.KEY_C,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous style change",
+    gesture: "VO-Command-Shift-C",
+  },
+  findNextItalicText: {
+    keyCode: KeyCodes.KEY_I,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next italic text",
+    gesture: "VO-Command-I",
+  },
+  findPreviousItalicText: {
+    keyCode: KeyCodes.KEY_I,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous italic text",
+    gesture: "VO-Command-Shift-I",
+  },
+  findNextColorChange: {
+    keyCode: KeyCodes.KEY_K,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next color change",
+    gesture: "VO-Command-K",
+  },
+  findPreviousColorChange: {
+    keyCode: KeyCodes.KEY_K,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous color change",
+    gesture: "VO-Command-Shift-K",
+  },
+  findNextFontChange: {
+    keyCode: KeyCodes.KEY_O,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next font change",
+    gesture: "VO-Command-O",
+  },
+  findPreviousFontChange: {
+    keyCode: KeyCodes.KEY_O,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous font change",
+    gesture: "VO-Command-Shift-O",
+  },
+  findNextTable: {
+    keyCode: KeyCodes.KEY_T,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next table",
+    gesture: "VO-Command-T",
+  },
+  findPreviousTable: {
+    keyCode: KeyCodes.KEY_T,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous table",
+    gesture: "VO-Command-Shift-T",
+  },
+  findNextUnderlinedText: {
+    keyCode: KeyCodes.KEY_U,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next underlined text",
+    gesture: "VO-Command-U",
+  },
+  findPreviousUnderlinedText: {
+    keyCode: KeyCodes.KEY_U,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous underlined text",
+    gesture: "VO-Command-Shift-U",
+  },
+  findNextControl: {
+    keyCode: KeyCodes.KEY_J,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next control",
+    gesture: "VO-Command-J",
+  },
+  findPreviousControl: {
+    keyCode: KeyCodes.KEY_J,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous control",
+    gesture: "VO-Command-Shift-J",
+  },
+  findNextDifferentItem: {
+    keyCode: KeyCodes.KEY_D,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next different item",
+    gesture: "VO-Command-D",
+  },
+  findPreviousDifferentItem: {
+    keyCode: KeyCodes.KEY_D,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous different item",
+    gesture: "VO-Command-Shift-D",
+  },
+  findNextItemWithSameTypeAsCurrentItem: {
+    keyCode: KeyCodes.KEY_S,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next item that's the same type as the current item",
+    gesture: "VO-Command-S",
+  },
+  findPreviousItemWithSameTypeAsCurrentItem: {
+    keyCode: KeyCodes.KEY_S,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description:
+      "Find the previous item that's the same type as the current item",
+    gesture: "VO-Command-Shift-S",
+  },
+  findNextGraphic: {
+    keyCode: KeyCodes.KEY_G,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next graphic",
+    gesture: "VO-Command-G",
+  },
+  findPreviousGraphic: {
+    keyCode: KeyCodes.KEY_G,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous graphic",
+    gesture: "VO-Command-Shift-G",
+  },
+  findNextHeading: {
+    keyCode: KeyCodes.KEY_H,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next heading",
+    gesture: "VO-Command-H",
+  },
+  findPreviousHeading: {
+    keyCode: KeyCodes.KEY_H,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous heading",
+    gesture: "VO-Command-Shift-H",
+  },
+  findNextLink: {
+    keyCode: KeyCodes.KEY_L,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next link",
+    gesture: "VO-Command-L",
+  },
+  findPreviousLink: {
+    keyCode: KeyCodes.KEY_L,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous link",
+    gesture: "VO-Command-Shift-L",
+  },
+  findNextHeadingOfSameLevel: {
+    keyCode: KeyCodes.KEY_M,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next heading of the same level",
+    gesture: "VO-Command-M",
+  },
+  findPreviousHeadingOfSameLevel: {
+    keyCode: KeyCodes.KEY_M,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous heading of the same level",
+    gesture: "VO-Command-Shift-M",
+  },
+  findNextPlainText: {
+    keyCode: KeyCodes.KEY_P,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next plain text",
+    gesture: "VO-Command-P",
+  },
+  findPreviousPlainText: {
+    keyCode: KeyCodes.KEY_P,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous plain text",
+    gesture: "VO-Command-Shift-P",
+  },
+  findNextVisitedLink: {
+    keyCode: KeyCodes.KEY_V,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next visited link",
+    gesture: "VO-Command-V",
+  },
+  findPreviousVisitedLink: {
+    keyCode: KeyCodes.KEY_V,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous visited link",
+    gesture: "VO-Command-Shift-V",
+  },
+  findNextMisspelledWord: {
+    keyCode: KeyCodes.KEY_E,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Find the next misspelled word",
+    gesture: "VO-Command-E",
+  },
+  findPreviousMisspelledWord: {
+    keyCode: KeyCodes.KEY_E,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Find the previous misspelled word",
+    gesture: "VO-Command-Shift-E",
+  },
+
+  // Text Commands
+
+  readAllText: {
+    keyCode: KeyCodes.KEY_A,
+    modifiers: VO,
+    description:
+      "Read all text from the VoiceOver cursor to the end of the text",
+    gesture: "VO-A",
+  },
+  selectAllText: {
+    keyCode: KeyCodes.KEY_A,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Select all text in the VoiceOver cursor",
+    gesture: "VO-Shift-A",
+  },
+  toggleTextSelection: {
+    keyCode: KeyCodes.KEY_RETURN,
+    modifiers: VO,
+    description:
+      "Start and stop text selection in a text field (text selection tracking must be on)",
+    gesture: "VO-Return",
+  },
+  speakTextAttributes: {
+    keyCode: KeyCodes.KEY_T,
+    modifiers: VO,
+    description: "Speak text attributes",
+    gesture: "VO-T",
+  },
+  readParagraph: {
+    keyCode: KeyCodes.KEY_P,
+    modifiers: VO,
+    description: "Read paragraph in VoiceOver cursor",
+    gesture: "VO-P",
+  },
+  readNextParagraph: {
+    keyCode: KeyCodes.KEY_PAGE_DOWN,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Read next paragraph",
+    gesture: "VO-Shift-Page Down",
+  },
+  readPreviousParagraph: {
+    keyCode: KeyCodes.KEY_PAGE_UP,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Read previous paragraph",
+    gesture: "VO-Shift-Page Up",
+  },
+  readSentence: {
+    keyCode: KeyCodes.KEY_S,
+    modifiers: VO,
+    description: "Read sentence in VoiceOver cursor",
+    gesture: "VO-S",
+  },
+  readNextSentence: {
+    keyCode: KeyCodes.KEY_PAGE_DOWN,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Read next sentence",
+    gesture: "VO-Command-Page Down",
+  },
+  readPreviousSentence: {
+    keyCode: KeyCodes.KEY_PAGE_UP,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Read previous sentence",
+    gesture: "VO-Command-Page Up",
+  },
+  readLine: {
+    keyCode: KeyCodes.KEY_L,
+    modifiers: VO,
+    description: "Read line in VoiceOver cursor",
+    gesture: "VO-L",
+  },
+  readNextLine: {
+    keyCode: KeyCodes.KEY_PAGE_DOWN,
+    modifiers: VO,
+    description: "Read next line",
+    gesture: "VO-Down Arrow",
+  },
+  readPreviousLine: {
+    keyCode: KeyCodes.KEY_PAGE_UP,
+    modifiers: VO,
+    description: "Read previous line",
+    gesture: "VO-Up Arrow",
+  },
+  readWord: {
+    keyCode: KeyCodes.KEY_W,
+    modifiers: VO,
+    description: "Read word in VoiceOver cursor",
+    gesture: "VO-W",
+  },
+  readWordSpelled: {
+    keyCode: [KeyCodes.KEY_W, KeyCodes.KEY_W],
+    modifiers: VO,
+    description: "Read word spelled in VoiceOver cursor",
+    gesture: "VO-W-W",
+  },
+  readWordPhonetically: {
+    keyCode: [KeyCodes.KEY_W, KeyCodes.KEY_W, KeyCodes.KEY_W],
+    modifiers: VO,
+    description: "Read word spelled phonetically in VoiceOver cursor",
+    gesture: "VO-W-W-W",
+  },
+  readNextWord: {
+    keyCode: KeyCodes.KEY_RIGHT_ARROW,
+    modifiers: VO,
+    description: "Read next word",
+    gesture: "VO-Right Arrow",
+  },
+  readPreviousWord: {
+    keyCode: KeyCodes.KEY_LEFT_ARROW,
+    modifiers: VO,
+    description: "Read previous word",
+    gesture: "VO-Left Arrow",
+  },
+  readCharacter: {
+    keyCode: KeyCodes.KEY_C,
+    modifiers: VO,
+    description: "Read character in VoiceOver cursor",
+    gesture: "VO-W",
+  },
+  readCharacterPhonetically: {
+    keyCode: [KeyCodes.KEY_C, KeyCodes.KEY_C],
+    modifiers: VO,
+    description: "Read character phonetically in VoiceOver cursor",
+    gesture: "VO-C-C",
+  },
+  readNextCharacter: {
+    keyCode: KeyCodes.KEY_RIGHT_ARROW,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Read next character",
+    gesture: "VO-Shift-Right Arrow",
+  },
+  readPreviousCharacter: {
+    keyCode: KeyCodes.KEY_LEFT_ARROW,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Read previous character",
+    gesture: "VO-Shift-Left Arrow",
+  },
+  moveToFirstVisibleWord: {
+    keyCode: KeyCodes.KEY_HOME,
+    modifiers: VO,
+    description: "Move to first visible word",
+    gesture: "VO-Home",
+  },
+  moveToLastVisibleWord: {
+    keyCode: KeyCodes.KEY_END,
+    modifiers: VO,
+    description: "Move to last visible word",
+    gesture: "VO-End",
+  },
+  moveToBeginningOfText: {
+    keyCode: KeyCodes.KEY_HOME,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Move to beginning of text, scrolling if necessary",
+    gesture: "VO-Shift-Home",
+  },
+  moveToEndOfText: {
+    keyCode: KeyCodes.KEY_END,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Move to end of text, scrolling if necessary",
+    gesture: "VO-Shift-End",
+  },
+  readCurrentWordAndCharacter: {
+    keyCode: KeyCodes.KEY_F3,
+    modifiers: VO,
+    description: "Reads the current word and character in the VoiceOver cursor",
+    gesture: "VO-F3",
+  },
+  readNumberOfLines: {
+    keyCode: [KeyCodes.KEY_F3, KeyCodes.KEY_F3],
+    modifiers: VO,
+    description:
+      "Reads the total number of lines and the number of visible lines in a document",
+    gesture: "VO-F3-F3",
+  },
+
+  // Web Commands
+
+  moveToNextColumn: {
+    keyCode: KeyCodes.KEY_Y,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Move to the next column",
+    gesture: "VO-Command-Y",
+  },
+  moveToPreviousColumn: {
+    keyCode: KeyCodes.KEY_Y,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Move to the previous column",
+    gesture: "VO-Command-Shift-Y",
+  },
+  moveToNextFrame: {
+    keyCode: KeyCodes.KEY_F,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Move to the next frame",
+    gesture: "VO-Command-F",
+  },
+  moveToPreviousFrame: {
+    keyCode: KeyCodes.KEY_F,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Move to the previous frame",
+    gesture: "VO-Command-Shift-F",
+  },
+  moveToNextAutoWebSpot: {
+    keyCode: KeyCodes.KEY_N,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Move to the next auto web spot",
+    gesture: "VO-Command-F",
+  },
+  moveToPreviousAutoWebSpot: {
+    keyCode: KeyCodes.KEY_N,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Move to the previous auto web spot",
+    gesture: "VO-Command-Shift-N",
+  },
+  moveToNextWebSpot: {
+    keyCode: KeyCodes.KEY_LEFT_SQUARE_BRACKET,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Move to the next web spot",
+    gesture: "VO-Command-]",
+  },
+  moveToPreviousWebSpot: {
+    keyCode: KeyCodes.KEY_RIGHT_SQUARE_BRACKET,
+    modifiers: [...VO, Modifiers.CMD],
+    description: "Move to the previous web spot",
+    gesture: "VO-Command-[",
+  },
+  openWebItemRotor: {
+    keyCode: KeyCodes.KEY_U,
+    modifiers: VO,
+    description: "Open the Web Item rotor",
+    gesture: "VO-U",
+  },
+  readFromBeginningToCurrent: {
+    keyCode: KeyCodes.KEY_B,
+    modifiers: VO,
+    description: "Read from the beginning of a webpage to the current location",
+    gesture: "VO-B",
+  },
+  readLinkAddress: {
+    keyCode: KeyCodes.KEY_U,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Read a link address (URL)",
+    gesture: "VO-Shift-U",
+  },
+  readWebpageStatistics: {
+    keyCode: KeyCodes.KEY_I,
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Read webpage statistics",
+    gesture: "VO-Shift-I",
+  },
+  removeWebSpot: {
+    keyCode: KeyCodes.KEY_LEFT_SQUARE_BRACKET,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Remove a web spot",
+    gesture: "VO-Command-Shift-{",
+  },
+  setWebSpot: {
+    keyCode: KeyCodes.KEY_RIGHT_SQUARE_BRACKET,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description: "Set a web spot",
+    gesture: "VO-Command-Shift-}",
+  },
+  setSweetSpot: {
+    keyCode: [
+      KeyCodes.KEY_RIGHT_SQUARE_BRACKET,
+      KeyCodes.KEY_RIGHT_SQUARE_BRACKET,
+    ],
+    modifiers: [...VO, Modifiers.SHIFT],
+    description: "Set the sweet spot",
+    gesture: "VO-Command-Shift-}-}",
+  },
+  toggleGroupingItemsWithinTable: {
+    keyCode: KeyCodes.KEY_EQUALS,
+    modifiers: VO,
+    description: "Turn the grouping of items within a table on or off",
+    gesture: "VO-=",
   },
 };

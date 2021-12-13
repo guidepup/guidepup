@@ -1,8 +1,5 @@
-import "@jxa/global-type";
-
-const POLL_INTERVAL = 100;
-const POLL_TIMEOUT = 5000;
-
+const POLL_INTERVAL = 1000;
+const POLL_TIMEOUT = 10000;
 const TIMEOUT_ERROR_MESSAGE = "Timed out waiting.";
 
 export async function waitForCondition(

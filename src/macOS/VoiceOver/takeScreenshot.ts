@@ -1,17 +1,20 @@
 import { run } from "@jxa/run";
 import { Applications } from "../Applications";
 import { activate } from "../activate";
-import "@jxa/global-type";
 import type { VoiceOver } from "@jxa/types";
+import "@jxa/global-type";
 
-export async function getLastPhrase(): Promise<string> {
+interface VoCursorObject {
+  grabScreenshot(): string;
+}
+
+export async function takeScreenshot(): Promise<string> {
   await activate(Applications.VOICE_OVER);
 
   return await run<string, Applications.VOICE_OVER>((name) => {
     const app = Application<VoiceOver.VoiceOver>(name);
-    const lastPhrase =
-      app.lastPhrase as unknown as VoiceOver.VoiceOver.LastPhraseObject;
+    const voCursor = app.voCursor as unknown as VoCursorObject;
 
-    return lastPhrase.content();
+    return voCursor.grabScreenshot();
   }, Applications.VOICE_OVER);
 }

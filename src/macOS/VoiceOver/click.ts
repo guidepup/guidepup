@@ -1,19 +1,18 @@
 import { run } from "@jxa/run";
-import { Directions } from "./Directions";
-import { Containments } from "./Containments";
-import { Places } from "./Places";
+import { ClickCount } from "./ClickCount";
+import { ClickButton } from "./ClickButton";
 import { Applications } from "../Applications";
 import { activate } from "../activate";
 import "@jxa/global-type";
 
-export async function move(
-  direction: Directions | Containments,
-  place?: Places
+export async function click(
+  clickCount: ClickCount,
+  clickButton?: ClickButton
 ): Promise<void> {
   await activate(Applications.VOICE_OVER);
 
-  const script = `tell application "VoiceOver"\ntell vo cursor to move ${direction}${
-    place ? ` to ${place}` : ""
+  const script = `tell application "VoiceOver"\ntell mouse cursor to click ${clickCount}${
+    clickButton ? ` with ${clickButton}` : ""
   }\nend tell`;
 
   return await run<void, string>((appleScript) => {

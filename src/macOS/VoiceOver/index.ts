@@ -395,7 +395,7 @@ export class VoiceOver extends VoiceOverBase {
   /**
    * Move to the top of the visible area (such as a window or text area) where the VoiceOver cursor is located
    *
-   * Gesture: VO-Left Arrow
+   * Gesture: VO-Home
    */
   async gestureMoveToVisibleAreaTop(): Promise<void> {
     return await this.keyCode(keyCodeCommands.moveToVisibleAreaTop);
@@ -404,7 +404,7 @@ export class VoiceOver extends VoiceOverBase {
   /**
    * Move to the bottom of the visible area (such as a window or text area) where the VoiceOver cursor is located
    *
-   * Gesture: VO-Right Arrow
+   * Gesture: VO-End
    */
   async gestureMoveToVisibleAreaBottom(): Promise<void> {
     return await this.keyCode(keyCodeCommands.moveToVisibleAreaBottom);
@@ -413,7 +413,7 @@ export class VoiceOver extends VoiceOverBase {
   /**
    * Move to the top of the area (such as a window or text area) where the VoiceOver cursor is located, scrolling if necessary
    *
-   * Gesture: VO-Shift-Left Arrow
+   * Gesture: VO-Shift-Home
    */
   async gestureMoveToAreaTop(): Promise<void> {
     return await this.keyCode(keyCodeCommands.moveToAreaTop);
@@ -422,7 +422,7 @@ export class VoiceOver extends VoiceOverBase {
   /**
    * Move to the bottom of the area (such as a window or text area) where the VoiceOver cursor is located, scrolling if necessary
    *
-   * Gesture: VO-Shift-Right Arrow
+   * Gesture: VO-Shift-End
    */
   async gestureMoveToAreaBottom(): Promise<void> {
     return await this.keyCode(keyCodeCommands.moveToAreaBottom);
@@ -431,7 +431,7 @@ export class VoiceOver extends VoiceOverBase {
   /**
    * Move to the top of a window, the first item in the Dock, or the first item on your desktop, depending on your location
    *
-   * Gesture: VO-Command-Left Arrow
+   * Gesture: VO-Command-Home
    */
   async gestureMoveToFirst(): Promise<void> {
     return await this.keyCode(keyCodeCommands.moveToFirst);
@@ -440,7 +440,7 @@ export class VoiceOver extends VoiceOverBase {
   /**
    * Move to the lower-right corner of a window, the last item in the Dock, or the last item on your desktop, depending on your location
    *
-   * Gesture: VO-Command-Right Arrow
+   * Gesture: VO-Command-End
    */
   async gestureMoveToLast(): Promise<void> {
     return await this.keyCode(keyCodeCommands.moveToLast);
@@ -537,7 +537,7 @@ export class VoiceOver extends VoiceOverBase {
   }
 
   /**
-   * Temporarily disable or enable the cursor tracking options you selected in VoiceOver Utility. The command doesn’t change the settings in VoiceOver Utility.
+   * Temporarily disable or enable the cursor tracking options you selected in VoiceOver Utility. The command doesn't change the settings in VoiceOver Utility.
    *
    * Gesture: VO-Shift-F3
    */
@@ -1254,5 +1254,752 @@ export class VoiceOver extends VoiceOverBase {
    */
   async gestureSaveLastSpokenPhraseToDesktop(): Promise<void> {
     return await this.keyCode(keyCodeCommands.saveLastSpokenPhraseToDesktop);
+  }
+
+  /**
+   * Find
+   *
+   * Gesture: VO-F
+   */
+  async gestureFind(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.find);
+  }
+
+  /**
+   * Find the next searched text
+   *
+   * Gesture: VO-G
+   */
+  async gestureFindNextSearchedText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextSearchedText);
+  }
+
+  /**
+   * Find the previous searched text
+   *
+   * Gesture: VO-Shift-G
+   */
+  async gestureFindPreviousSearchedText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousSearchedText);
+  }
+
+  /**
+   * Find the next list
+   *
+   * Gesture: VO-Command-X
+   */
+  async gestureFindNextList(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextList);
+  }
+
+  /**
+   * Find the previous list
+   *
+   * Gesture: VO-Command-Shift-X
+   */
+  async gestureFindPreviousList(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousList);
+  }
+
+  /**
+   * Find the next bold text
+   *
+   * Gesture: VO-Command-B
+   */
+  async gestureFindNextBoldText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextBoldText);
+  }
+
+  /**
+   * Find the previous bold text
+   *
+   * Gesture: VO-Command-Shift-B
+   */
+  async gestureFindPreviousBoldText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousBoldText);
+  }
+
+  /**
+   * Find the next style change
+   *
+   * Gesture: VO-Command-C
+   */
+  async gestureFindNextStyleChange(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextStyleChange);
+  }
+
+  /**
+   * Find the previous style change
+   *
+   * Gesture: VO-Command-Shift-C
+   */
+  async gestureFindPreviousStyleChange(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousStyleChange);
+  }
+
+  /**
+   * Find the next italic text
+   *
+   * Gesture: VO-Command-I
+   */
+  async gestureFindNextItalicText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextItalicText);
+  }
+
+  /**
+   * Find the previous italic text
+   *
+   * Gesture: VO-Command-Shift-I
+   */
+  async gestureFindPreviousItalicText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousItalicText);
+  }
+
+  /**
+   * Find the next color change
+   *
+   * Gesture: VO-Command-K
+   */
+  async gestureFindNextColorChange(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextColorChange);
+  }
+
+  /**
+   * Find the previous color change
+   *
+   * Gesture: VO-Command-Shift-K
+   */
+  async gestureFindPreviousColorChange(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousColorChange);
+  }
+
+  /**
+   * Find the next font change
+   *
+   * Gesture: VO-Command-O
+   */
+  async gestureFindNextFontChange(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextFontChange);
+  }
+
+  /**
+   * Find the previous font change
+   *
+   * Gesture: VO-Command-Shift-O
+   */
+  async gestureFindPreviousFontChange(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousFontChange);
+  }
+
+  /**
+   * Find the next table
+   *
+   * Gesture: VO-Command-T
+   */
+  async gestureFindNextTable(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextTable);
+  }
+
+  /**
+   * Find the previous table
+   *
+   * Gesture: VO-Command-Shift-T
+   */
+  async gestureFindPreviousTable(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousTable);
+  }
+
+  /**
+   * Find the next underlined text
+   *
+   * Gesture: VO-Command-U
+   */
+  async gestureFindNextUnderlinedText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextUnderlinedText);
+  }
+
+  /**
+   * Find the previous underlined text
+   *
+   * Gesture: VO-Command-Shift-U
+   */
+  async gestureFindPreviousUnderlinedText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousUnderlinedText);
+  }
+
+  /**
+   * Find the next control
+   *
+   * Gesture: VO-Command-J
+   */
+  async gestureFindNextControl(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextControl);
+  }
+
+  /**
+   * Find the previous control
+   *
+   * Gesture: VO-Command-Shift-J
+   */
+  async gestureFindPreviousControl(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousControl);
+  }
+
+  /**
+   * Find the next different item
+   *
+   * Gesture: VO-Command-D
+   */
+  async gestureFindNextDifferentItem(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextDifferentItem);
+  }
+
+  /**
+   * Find the previous different item
+   *
+   * Gesture: VO-Command-Shift-D
+   */
+  async gestureFindPreviousDifferentItem(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousDifferentItem);
+  }
+
+  /**
+   * Find the next item that's the same type as the current item
+   *
+   * Gesture: VO-Command-S
+   */
+  async gestureFindNextItemWithSameTypeAsCurrentItem(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextItemWithSameTypeAsCurrentItem);
+  }
+
+  /**
+   * Find the previous item that's the same type as the current item
+   *
+   * Gesture: VO-Command-Shift-S
+   */
+  async gestureFindPreviousItemWithSameTypeAsCurrentItem(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousItemWithSameTypeAsCurrentItem);
+  }
+
+  /**
+   * Find the next graphic
+   *
+   * Gesture: VO-Command-G
+   */
+  async gestureFindNextGraphic(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextGraphic);
+  }
+
+  /**
+   * Find the previous graphic
+   *
+   * Gesture: VO-Command-Shift-G
+   */
+  async gestureFindPreviousGraphic(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousGraphic);
+  }
+
+  /**
+   * Find the next heading
+   *
+   * Gesture: VO-Command-H
+   */
+  async gestureFindNextHeading(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextHeading);
+  }
+
+  /**
+   * Find the previous heading
+   *
+   * Gesture: VO-Command-Shift-H
+   */
+  async gestureFindPreviousHeading(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousHeading);
+  }
+
+  /**
+   * Find the next link
+   *
+   * Gesture: VO-Command-L
+   */
+  async gestureFindNextLink(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextLink);
+  }
+
+  /**
+   * Find the previous link
+   *
+   * Gesture: VO-Command-Shift-L
+   */
+  async gestureFindPreviousLink(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousLink);
+  }
+
+  /**
+   * Find the next heading of the same level
+   *
+   * Gesture: VO-Command-M
+   */
+  async gestureFindNextHeadingOfSameLevel(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextHeadingOfSameLevel);
+  }
+
+  /**
+   * Find the previous heading of the same level
+   *
+   * Gesture: VO-Command-Shift-M
+   */
+  async gestureFindPreviousHeadingOfSameLevel(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousHeadingOfSameLevel);
+  }
+
+  /**
+   * Find the next plain text
+   *
+   * Gesture: VO-Command-P
+   */
+  async gestureFindNextPlainText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextPlainText);
+  }
+
+  /**
+   * Find the previous plain text
+   *
+   * Gesture: VO-Command-Shift-P
+   */
+  async gestureFindPreviousPlainText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousPlainText);
+  }
+
+  /**
+   * Find the next visited link
+   *
+   * Gesture: VO-Command-V
+   */
+  async gestureFindNextVisitedLink(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextVisitedLink);
+  }
+
+  /**
+   * Find the previous visited link
+   *
+   * Gesture: VO-Command-Shift-V
+   */
+  async gestureFindPreviousVisitedLink(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousVisitedLink);
+  }
+
+  /**
+   * Find the next misspelled word
+   *
+   * Gesture: VO-Command-E
+   */
+  async gestureFindNextMisspelledWord(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findNextMisspelledWord);
+  }
+
+  /**
+   * Find the previous misspelled word
+   *
+   * Gesture: VO-Command-Shift-E
+   */
+  async gestureFindPreviousMisspelledWord(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.findPreviousMisspelledWord);
+  }
+
+  /**
+   * Read all text from the VoiceOver cursor to the end of the text
+   *
+   * Gesture: VO-A
+   */
+  async gestureReadAllText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readAllText);
+  }
+
+  /**
+   * Select all text in the VoiceOver cursor
+   *
+   * Gesture: VO-Shift-A
+   */
+  async gestureSelectAllText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.selectAllText);
+  }
+
+  /**
+   * Start and stop text selection in a text field (text selection tracking must be on)
+   *
+   * Gesture: VO-Return
+   */
+  async gestureToggleTextSelection(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.toggleTextSelection);
+  }
+
+  /**
+   * Speak text attributes
+   *
+   * Gesture: VO-T
+   */
+  async gestureSpeakTextAttributes(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.speakTextAttributes);
+  }
+
+  /**
+   * Read paragraph in VoiceOver cursor
+   *
+   * Gesture: VO-P
+   */
+  async gestureReadParagraph(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readParagraph);
+  }
+
+  /**
+   * Read next paragraph
+   *
+   * Gesture: VO-Shift-Page Down
+   */
+  async gestureReadNextParagraph(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readNextParagraph);
+  }
+
+  /**
+   * Read previous paragraph
+   *
+   * Gesture: VO-Shift-Page Up
+   */
+  async gestureReadPreviousParagraph(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readPreviousParagraph);
+  }
+
+  /**
+   * Read sentence in VoiceOver cursor
+   *
+   * Gesture: VO-S
+   */
+  async gestureReadSentence(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readSentence);
+  }
+
+  /**
+   * Read next sentence
+   *
+   * Gesture: VO-Command-Page Down
+   */
+  async gestureReadNextSentence(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readNextSentence);
+  }
+
+  /**
+   * Read previous sentence
+   *
+   * Gesture: VO-Command-Page Up
+   */
+  async gestureReadPreviousSentence(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readPreviousSentence);
+  }
+
+  /**
+   * Read line in VoiceOver cursor
+   *
+   * Gesture: VO-L
+   */
+  async gestureReadLine(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readLine);
+  }
+
+  /**
+   * Read next line
+   *
+   * Gesture: VO-Down Arrow
+   */
+  async gestureReadNextLine(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readNextLine);
+  }
+
+  /**
+   * Read previous line
+   *
+   * Gesture: VO-Up Arrow
+   */
+  async gestureReadPreviousLine(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readPreviousLine);
+  }
+
+  /**
+   * Read word in VoiceOver cursor
+   *
+   * Gesture: VO-W
+   */
+  async gestureReadWord(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readWord);
+  }
+
+  /**
+   * Read word spelled in VoiceOver cursor
+   *
+   * Gesture: VO-W-W
+   */
+  async gestureReadWordSpelled(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readWordSpelled);
+  }
+
+  /**
+   * Read word spelled phonetically in VoiceOver cursor
+   *
+   * Gesture: VO-W-W-W
+   */
+  async gestureReadWordPhonetically(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readWordPhonetically);
+  }
+
+  /**
+   * Read next word
+   *
+   * Gesture: VO-Right Arrow
+   */
+  async gestureReadNextWord(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readNextWord);
+  }
+
+  /**
+   * Read previous word
+   *
+   * Gesture: VO-Left Arrow
+   */
+  async gestureReadPreviousWord(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readPreviousWord);
+  }
+
+  /**
+   * Read character in VoiceOver cursor
+   *
+   * Gesture: VO-W
+   */
+  async gestureReadCharacter(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readCharacter);
+  }
+
+  /**
+   * Read character phonetically in VoiceOver cursor
+   *
+   * Gesture: VO-C-C
+   */
+  async gestureReadCharacterPhonetically(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readCharacterPhonetically);
+  }
+
+  /**
+   * Read next character
+   *
+   * Gesture: VO-Shift-Right Arrow
+   */
+  async gestureReadNextCharacter(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readNextCharacter);
+  }
+
+  /**
+   * Read previous character
+   *
+   * Gesture: VO-Shift-Left Arrow
+   */
+  async gestureReadPreviousCharacter(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readPreviousCharacter);
+  }
+
+  /**
+   * Move to first visible word
+   *
+   * Gesture: VO-Home
+   */
+  async gestureMoveToFirstVisibleWord(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToFirstVisibleWord);
+  }
+
+  /**
+   * Move to last visible word
+   *
+   * Gesture: VO-End
+   */
+  async gestureMoveToLastVisibleWord(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToLastVisibleWord);
+  }
+
+  /**
+   * Move to beginning of text, scrolling if necessary
+   *
+   * Gesture: VO-Shift-Home
+   */
+  async gestureMoveToBeginningOfText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToBeginningOfText);
+  }
+
+  /**
+   * Move to end of text, scrolling if necessary
+   *
+   * Gesture: VO-Shift-End
+   */
+  async gestureMoveToEndOfText(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToEndOfText);
+  }
+
+  /**
+   * Reads the current word and character in the VoiceOver cursor
+   *
+   * Gesture: VO-F3
+   */
+  async gestureReadCurrentWordAndCharacter(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readCurrentWordAndCharacter);
+  }
+
+  /**
+   * Reads the total number of lines and the number of visible lines in a document
+   *
+   * Gesture: VO-F3-F3
+   */
+  async gestureReadNumberOfLines(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readNumberOfLines);
+  }
+
+  /**
+   * Move to the next column
+   *
+   * Gesture: VO-Command-Y
+   */
+  async gestureMoveToNextColumn(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToNextColumn);
+  }
+
+  /**
+   * Move to the previous column
+   *
+   * Gesture: VO-Command-Shift-Y
+   */
+  async gestureMoveToPreviousColumn(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToPreviousColumn);
+  }
+
+  /**
+   * Move to the next frame
+   *
+   * Gesture: VO-Command-F
+   */
+  async gestureMoveToNextFrame(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToNextFrame);
+  }
+
+  /**
+   * Move to the previous frame
+   *
+   * Gesture: VO-Command-Shift-F
+   */
+  async gestureMoveToPreviousFrame(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToPreviousFrame);
+  }
+
+  /**
+   * Move to the next auto web spot
+   *
+   * Gesture: VO-Command-F
+   */
+  async gestureMoveToNextAutoWebSpot(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToNextAutoWebSpot);
+  }
+
+  /**
+   * Move to the previous auto web spot
+   *
+   * Gesture: VO-Command-Shift-N
+   */
+  async gestureMoveToPreviousAutoWebSpot(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToPreviousAutoWebSpot);
+  }
+
+  /**
+   * Move to the next web spot
+   *
+   * Gesture: VO-Command-]
+   */
+  async gestureMoveToNextWebSpot(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToNextWebSpot);
+  }
+
+  /**
+   * Move to the previous web spot
+   *
+   * Gesture: VO-Command-[
+   */
+  async gestureMoveToPreviousWebSpot(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.moveToPreviousWebSpot);
+  }
+
+  /**
+   * Open the Web Item rotor
+   *
+   * Gesture: VO-U
+   */
+  async gestureOpenWebItemRotor(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.openWebItemRotor);
+  }
+
+  /**
+   * Read from the beginning of a webpage to the current location
+   *
+   * Gesture: VO-B
+   */
+  async gestureReadFromBeginningToCurrent(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readFromBeginningToCurrent);
+  }
+
+  /**
+   * Read a link address (URL)
+   *
+   * Gesture: VO-Shift-U
+   */
+  async gestureReadLinkAddress(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readLinkAddress);
+  }
+
+  /**
+   * Read webpage statistics
+   *
+   * Gesture: VO-Shift-I
+   */
+  async gestureReadWebpageStatistics(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.readWebpageStatistics);
+  }
+
+  /**
+   * Remove a web spot
+   *
+   * Gesture: VO-Command-Shift-{
+   */
+  async gestureRemoveWebSpot(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.removeWebSpot);
+  }
+
+  /**
+   * Set a web spot
+   *
+   * Gesture: VO-Command-Shift-}
+   */
+  async gestureSetWebSpot(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.setWebSpot);
+  }
+
+  /**
+   * Set the sweet spot
+   *
+   * Gesture: VO-Command-Shift-}-}
+   */
+  async gestureSetSweetSpot(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.setSweetSpot);
+  }
+
+  /**
+   * Turn the grouping of items within a table on or off
+   *
+   * Gesture: VO-=
+   */
+  async gestureToggleGroupingItemsWithinTable(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.toggleGroupingItemsWithinTable);
   }
 }

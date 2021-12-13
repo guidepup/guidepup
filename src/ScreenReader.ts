@@ -7,5 +7,5 @@ export interface ScreenReader {
   activate(applicationName: string): Promise<void>;
   keyCode(command: KeyCodeCommand): Promise<void>;
   keystroke(command: KeystrokeCommand): Promise<void>;
-  getLastPhrase(): Promise<string>;
+  getLastSpokenPhrase(): Promise<string>;
 }

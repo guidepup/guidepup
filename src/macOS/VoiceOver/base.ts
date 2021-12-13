@@ -1,21 +1,28 @@
 import type { ScreenReader } from "../../ScreenReader";
 import type { KeyCodeCommand } from "../../KeyCodeCommand";
 import type { KeystrokeCommand } from "../../KeystrokeCommand";
+import type { CommanderCommand } from "./CommanderCommand";
+import type { Containments } from "./Containments";
+import type { Places } from "./Places";
+import { Directions } from "./Directions";
+import { ClickCount } from "./ClickCount";
+import { ClickButton } from "./ClickButton";
 import { Applications } from "../Applications";
-import { disableSplashScreen } from "./disableSplashScreen";
-import { start } from "./start";
-import { waitForRunning } from "./waitForRunning";
 import { activate } from "../activate";
 import { quit } from "../quit";
 import { keyCode } from "../keyCode";
 import { keystroke } from "../keystroke";
+import { disableSplashScreen } from "./disableSplashScreen";
+import { start } from "./start";
+import { waitForRunning } from "./waitForRunning";
 import { move } from "./move";
-import { getLastPhrase } from "./getLastPhrase";
-import { copyLastPhrase } from "./copyLastPhrase";
-import { saveLastPhrase } from "./saveLastPhrase";
-import { Directions } from "./Directions";
-import { Containments } from "./Containments";
-import { Places } from "./Places";
+import { click } from "./click";
+import { getLastSpokenPhrase } from "./getLastSpokenPhrase";
+import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
+import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
+import { takeScreenshot } from "./takeScreenshot";
+import { getText } from "./getText";
+import { performCommand } from "./performCommand";
 
 export class VoiceOverBase implements ScreenReader {
   /**
@@ -38,7 +45,7 @@ export class VoiceOverBase implements ScreenReader {
   /**
    * Send keyCode to VoiceOver.
    *
-   * @param {object} keyCodeCommand
+   * @param {object} keyCodeCommand KeyCode command to send to VoiceOver.
    */
   async keyCode(keyCodeCommand: KeyCodeCommand): Promise<void> {
     return await keyCode(Applications.VOICE_OVER, keyCodeCommand);
@@ -47,7 +54,7 @@ export class VoiceOverBase implements ScreenReader {
   /**
    * Send keystroke to VoiceOver.
    *
-   * @param {object} keystrokeCommand
+   * @param {object} keystrokeCommand Keystroke command to send to VoiceOver.
    */
   async keystroke(keystrokeCommand: KeystrokeCommand): Promise<void> {
     return await keystroke(Applications.VOICE_OVER, keystrokeCommand);
@@ -68,8 +75,8 @@ export class VoiceOverBase implements ScreenReader {
   /**
    * Move the VO cursor to a new location.
    *
-   * @param {string} direction
-   * @param {string} place
+   * @param {string} direction The direction to move in.
+   * @param {string} place The place to move to.
    */
   async move(
     direction: Directions | Containments,
@@ -107,29 +114,96 @@ export class VoiceOverBase implements ScreenReader {
   }
 
   /**
-   * Get the last spoken phrase.
+   * Click the mouse once.
+   */
+  async click(): Promise<void> {
+    return await click(ClickCount.ONCE);
+  }
+
+  /**
+   * Double click the mouse.
+   */
+  async doubleClick(): Promise<void> {
+    return await click(ClickCount.TWICE);
+  }
+
+  /**
+   * Triple click the mouse.
+   */
+  async tripleClick(): Promise<void> {
+    return await click(ClickCount.THRICE);
+  }
+
+  /**
+   * Right click the mouse once.
+   */
+  async rightClick(): Promise<void> {
+    return await click(ClickCount.ONCE, ClickButton.RIGHT_BUTTON);
+  }
+
+  /**
+   * Double right click the mouse.
+   */
+  async rightDoubleClick(): Promise<void> {
+    return await click(ClickCount.TWICE, ClickButton.RIGHT_BUTTON);
+  }
+
+  /**
+   * Triple right click the mouse.
+   */
+  async rightTripleClick(): Promise<void> {
+    return await click(ClickCount.THRICE, ClickButton.RIGHT_BUTTON);
+  }
+
+  /**
+   * Takes a screenshot of the VO cursor and returns the path to the file.
+   *
+   * @returns {string} the path to the screenshot
+   */
+  async takeScreenshot(): Promise<string> {
+    return await takeScreenshot();
+  }
+
+  /**
+   * The text of the item in the VoiceOver cursor.
    *
    * @returns {string}
    */
-  async getLastPhrase(): Promise<string> {
-    return await getLastPhrase();
+  async getText(): Promise<string> {
+    return await getText();
   }
 
   /**
-   * Copy the last spoken phrase to the Clipboard (also called the "Pasteboard")
+   * Get the last spoken phrase.
    *
-   * Gesture: VO-Shift-C
+   * @returns {string} The last spoken phrase.
    */
-  async copyLastPhrase(): Promise<void> {
-    return await copyLastPhrase();
+  async getLastSpokenPhrase(): Promise<string> {
+    return await getLastSpokenPhrase();
   }
 
   /**
-   * Save the last spoken phrase and the crash log to a file on the desktop for troubleshooting
-   *
-   * Gesture: VO-Shift-Z
+   * Copy the last spoken phrase to the Clipboard (also called the
+   * "Pasteboard").
    */
-  async saveLastPhrase(): Promise<void> {
-    return await saveLastPhrase();
+  async copyLastSpokenPhrase(): Promise<void> {
+    return await copyLastSpokenPhrase();
+  }
+
+  /**
+   * Save the last spoken phrase and the crash log to a file on the desktop for
+   * troubleshooting.
+   */
+  async saveLastSpokenPhrase(): Promise<void> {
+    return await saveLastSpokenPhrase();
+  }
+
+  /**
+   * Perform a VoiceOver command.
+   *
+   * @param {string} text The English name of the VoiceOver command to perform.
+   */
+  async performCommand(text: CommanderCommand): Promise<void> {
+    return await performCommand(text);
   }
 }
