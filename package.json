@@ -23,7 +23,6 @@
     "build": "yarn clean && yarn gen && yarn compile",
     "clean": "rimraf lib",
     "compile": "tsc",
-    "dev": "ts-node ./examples/hello-voiceover/index.ts",
     "gen": "yarn gen:voiceover",
     "gen:voiceover": "ts-node ./src/macOS/VoiceOver/generateClass.ts",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",

@@ -1,6 +1,9 @@
-import { VoiceOver, Applications, KeyCodes } from "../../src/";
+import { VoiceOver, Applications, KeyCodes, Modifiers } from "../../src/";
 import { keyCode } from "../../src/macOS/keyCode";
 import { keystroke } from "../../src/macOS/keystroke";
+
+const delay = async (ms: number) =>
+  await new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Opens Safari and searches for "GitHub guidepup" on Google.
@@ -18,17 +21,17 @@ async function run(): Promise<void> {
     // checks to ensure that Safari is ready, most likely using something like
     // playwright to launch and control the browser.
     await vo.activate(Applications.SAFARI);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await delay(2000);
 
     // Interact with the toolbar.
     await vo.gestureInteractWithItem();
 
     // Navigate across to the address input.
-    await vo.moveRight();
-    await vo.moveRight();
-    await vo.moveRight();
-    await vo.moveRight();
-    await vo.moveRight();
+    await vo.gestureMoveToNext();
+    await vo.gestureMoveToNext();
+    await vo.gestureMoveToNext();
+    await vo.gestureMoveToNext();
+    await vo.gestureMoveToNext();
 
     // Navigate to Google.
     await keystroke(Applications.SAFARI, {
@@ -37,14 +40,16 @@ async function run(): Promise<void> {
     await keyCode(Applications.SAFARI, {
       keyCode: KeyCodes.KEY_RETURN,
     });
+    await delay(2000);
 
     // Search for "GitHub guidepup" on Google.
     await keystroke(Applications.SAFARI, {
       characters: "GitHub guidepup",
     });
-    await keyCode(Applications.SAFARI, {
-      keyCode: KeyCodes.KEY_RETURN,
-    });
+    // await keyCode(Applications.SAFARI, {
+    //   keyCode: KeyCodes.KEY_RETURN,
+    // });
+    await vo.performAction();
   } catch (e) {
     console.error(e);
   } finally {

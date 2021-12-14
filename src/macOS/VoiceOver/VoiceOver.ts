@@ -2321,7 +2321,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * Uses VoiceOver keycode gesture
    *
-   * Gesture: VO-Command-F
+   * Gesture: VO-Command-N
    */
   async gestureMoveToNextAutoWebSpot(): Promise<void> {
     return await this.keyCode(keyCodeCommands.moveToNextAutoWebSpot);
