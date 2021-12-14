@@ -11,7 +11,9 @@ export async function click(
 ): Promise<void> {
   await activate(Applications.VOICE_OVER);
 
-  const script = `tell application "VoiceOver"\ntell mouse cursor to click ${clickCount}${
+  const script = `tell application "${
+    Applications.VOICE_OVER
+  }"\ntell mouse cursor to click ${clickCount}${
     clickButton ? ` with ${clickButton}` : ""
   }\nend tell`;
 

@@ -12,7 +12,9 @@ export async function move(
 ): Promise<void> {
   await activate(Applications.VOICE_OVER);
 
-  const script = `tell application "VoiceOver"\ntell vo cursor to move ${direction}${
+  const script = `tell application "${
+    Applications.VOICE_OVER
+  }"\ntell vo cursor to move ${direction}${
     place ? ` to ${place}` : ""
   }\nend tell`;
 

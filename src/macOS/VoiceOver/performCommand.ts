@@ -9,7 +9,9 @@ export async function performCommand(
 ): Promise<void> {
   await activate(Applications.VOICE_OVER);
 
-  const script = `tell application "VoiceOver"\ntell commander to perform command "${command.toLowerCase()}"\nend tell`;
+  const script = `tell application "${
+    Applications.VOICE_OVER
+  }"\ntell commander to perform command "${command.toLowerCase()}"\nend tell`;
 
   return await run<void, string>((appleScript) => {
     const app = Application.currentApplication();
