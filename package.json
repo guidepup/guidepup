@@ -24,7 +24,7 @@
     "ci": "yarn clean && yarn lint && yarn build",
     "clean": "rimraf lib docs",
     "compile": "tsc",
-    "docs": "typedoc --tsconfig ./tsconfig.json --out docs --name guidepup --includeVersion --readme ./README.md src/index.ts",
+    "docs": "typedoc --tsconfig ./tsconfig.json --out docs --name Guidepup --includeVersion --readme ./README.md src/index.ts",
     "postdocs": "echo 'future: true\nencoding: \"UTF-8\"\ninclude:\n  - \"_*_.html\"\n  - \"_*_.*.html\"' > ./docs/_config.yaml",
     "gen": "yarn gen:voiceover",
     "gen:voiceover": "ts-node ./src/macOS/VoiceOver/generateClass.ts",
