@@ -1,5 +1,5 @@
 *
-!lib/*
+!lib/**
 !LICENSE
 !package.json
 !yarn.lock
