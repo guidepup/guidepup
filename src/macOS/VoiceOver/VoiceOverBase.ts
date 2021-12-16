@@ -1,6 +1,6 @@
 import type { ScreenReader } from "../../ScreenReader";
-import type { KeyCodeCommand } from "../../KeyCodeCommand";
-import type { KeystrokeCommand } from "../../KeystrokeCommand";
+import type { KeyCodeCommand } from "../KeyCodeCommand";
+import type { KeystrokeCommand } from "../KeystrokeCommand";
 import type { Containments } from "./Containments";
 import type { Places } from "./Places";
 import { CommanderCommands } from "./CommanderCommands";
@@ -27,6 +27,9 @@ import { getText } from "./getText";
 import { performCommand } from "./performCommand";
 import { performAction } from "./performAction";
 
+/**
+ * Class for controlling the VoiceOver ScreenReader on MacOS.
+ */
 @decorateStaticImplements<ScreenReader>()
 export class VoiceOverBase {
   /**
@@ -65,16 +68,16 @@ export class VoiceOverBase {
   }
 
   /**
-   * Send keyCode to VoiceOver.
+   * Send a key code to VoiceOver.
    *
-   * @param {object} keyCodeCommand KeyCode command to send to VoiceOver.
+   * @param {object} keyCodeCommand Key code command to send to VoiceOver.
    */
   async keyCode(keyCodeCommand: KeyCodeCommand): Promise<void> {
     return await keyCode(Applications.VOICE_OVER, keyCodeCommand);
   }
 
   /**
-   * Send keystroke to VoiceOver.
+   * Send a keystroke to VoiceOver.
    *
    * @param {object} keystrokeCommand Keystroke command to send to VoiceOver.
    */
@@ -88,7 +91,7 @@ export class VoiceOverBase {
    * This will focus the application if already running, or start and focus it
    * if not already running.
    *
-   * @param {string} applicationName
+   * @param {string} applicationName Path or alias for MacOS application.
    */
   async activate(applicationName: Applications | string): Promise<void> {
     return await activate(applicationName);
@@ -180,16 +183,16 @@ export class VoiceOverBase {
   /**
    * Takes a screenshot of the VO cursor and returns the path to the file.
    *
-   * @returns {string} the path to the screenshot
+   * @returns {Promise<string>} The path to the screenshot
    */
   async takeScreenshot(): Promise<string> {
     return await takeScreenshot();
   }
 
   /**
-   * The text of the item in the VoiceOver cursor.
+   * Get the text of the item in the VoiceOver cursor.
    *
-   * @returns {string}
+   * @returns {Promise<string>} The item's text.
    */
   async getText(): Promise<string> {
     return await getText();
@@ -198,7 +201,7 @@ export class VoiceOverBase {
   /**
    * Get the last spoken phrase.
    *
-   * @returns {string} The last spoken phrase.
+   * @returns {Promise<string>} The last spoken phrase.
    */
   async getLastSpokenPhrase(): Promise<string> {
     return await getLastSpokenPhrase();

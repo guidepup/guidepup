@@ -1,7 +1,7 @@
 import { run } from "@jxa/run";
 import { Applications } from "./Applications";
 import { activate } from "./activate";
-import { KeystrokeCommand } from "../KeystrokeCommand";
+import { KeystrokeCommand } from "./KeystrokeCommand";
 import "@jxa/global-type";
 
 export async function keystroke(

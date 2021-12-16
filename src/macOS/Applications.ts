@@ -1,3 +1,6 @@
+/**
+ * Default applications available on MacOS.
+ */
 export enum Applications {
   APPLESCRIPT_UTILITY = "AppleScript Utility",
   AUTOMATOR_APPLICATION_STUB = "Automator Application Stub",

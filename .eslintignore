@@ -1,3 +1,6 @@
-node_modules
+.github
+.vscode
+docs
 lib
+node_modules
 .eslintrc.js

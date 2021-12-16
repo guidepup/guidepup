@@ -1,3 +1,8 @@
+/**
+ * VoiceOver Commander commands.
+ *
+ * Reference: {@link https://support.apple.com/en-gb/guide/voiceover/cpvoukbcmdr/mac}
+ */
 export enum CommanderCommands {
   // General Commands
 

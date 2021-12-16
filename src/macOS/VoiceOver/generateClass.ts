@@ -16,7 +16,19 @@ function title(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-const prefix = `// This file was automatically generated.\n// Manual changes will not be preserved.\n\nimport { VoiceOverBase } from "./VoiceOverBase";\nimport { keyCodeCommands } from "./keyCodeCommands";\nimport { CommanderCommands } from "./CommanderCommands";\n\nexport class VoiceOver extends VoiceOverBase {\n`;
+const prefix = `// This file was automatically generated.
+// Manual changes will not be preserved.
+
+import { VoiceOverBase } from "./VoiceOverBase";
+import { keyCodeCommands } from "./keyCodeCommands";
+import { CommanderCommands } from "./CommanderCommands";
+
+/**
+ * Class for controlling the VoiceOver ScreenReader on MacOS.
+ */
+export class VoiceOver extends VoiceOverBase {
+`;
+
 const suffix = `}\n`;
 
 const gestureMethodDefinitions = Object.entries(keyCodeCommands).reduce(

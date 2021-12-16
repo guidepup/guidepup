@@ -1,6 +1,6 @@
 export { VoiceOver } from "./VoiceOver";
-export { CommanderCommands } from "./CommanderCommands";
-export { Containments } from "./Containments";
-export { Directions } from "./Directions";
-export { Places } from "./Places";
-export { keyCodeCommands } from "./keyCodeCommands";
+export { CommanderCommands as VoiceOverCommanderCommands } from "./CommanderCommands";
+export { Containments as VoiceOverContainments } from "./Containments";
+export { Directions as VoiceOverDirections } from "./Directions";
+export { Places as VoiceOverPlaces } from "./Places";
+export { keyCodeCommands as voiceOverKeyCodeCommands } from "./keyCodeCommands";
