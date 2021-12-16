@@ -1,5 +1,13 @@
 # Guidepup
 
+[![Guidepup NPM version)](https://img.shields.io/npm/v/@guidepup/guidepup)](https://www.npmjs.com/package/@guidepup/guidepup)
+[![Current test status](https://github.com/guidepup/guidepup/workflows/Test/badge.svg)](https://github.com/guidepup/guidepup/actions/workflows/test.yml)
+![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+[![Guidepup open issues](https://img.shields.io/github/issues/guidepup/guidepup)](https://github.com/guidepup/guidepup/issues)
+[![Guidepup stars](https://img.shields.io/github/stars/guidepup/guidepup)](https://github.com/guidepup/guidepup/stargazers)
+[![Guidepup forks](https://img.shields.io/github/forks/guidepup/guidepup)](https://github.com/guidepup/guidepup/network/members)
+[![Guidepup license](https://img.shields.io/github/license/guidepup/guidepup)](https://github.com/guidepup/guidepup/blob/main/LICENSE)
+
 _Screen-reader driver for automation testing._
 
 Guidepup aims to provide a reliable set of APIs to allow users to automate the
