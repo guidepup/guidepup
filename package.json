@@ -29,7 +29,8 @@
     "gen": "yarn gen:voiceover",
     "gen:voiceover": "ts-node ./src/macOS/VoiceOver/generateClass.ts",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "yarn lint --fix"
+    "lint:fix": "yarn lint --fix",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@jxa/global-type": "^1.3.4",
