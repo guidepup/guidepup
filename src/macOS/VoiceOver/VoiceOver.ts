@@ -5,6 +5,9 @@ import { VoiceOverBase } from "./VoiceOverBase";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { CommanderCommands } from "./CommanderCommands";
 
+/**
+ * Class for controlling the VoiceOver ScreenReader on MacOS.
+ */
 export class VoiceOver extends VoiceOverBase {
   /**
    * Lock and unlock the VO (Control and Option) keys

@@ -1,11 +1,16 @@
 // REF: https://www.apple.com/voiceover/info/guide/_1131.html
 
-import { KeyCodeCommand } from "../../KeyCodeCommand";
+import { KeyCodeCommand } from "../KeyCodeCommand";
 import { KeyCodes } from "../KeyCodes";
 import { Modifiers } from "../Modifiers";
 
 const VO = [Modifiers.CONTROL, Modifiers.OPTION];
 
+/**
+ * Object of key code commands for the VoiceOver ScreenReader on MacOS.
+ *
+ * Reference: {@link https://www.apple.com/voiceover/info/guide/_1131.html}
+ */
 export const keyCodeCommands: Record<string, KeyCodeCommand> = {
   // General Commands
 

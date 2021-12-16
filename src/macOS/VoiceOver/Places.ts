@@ -1,3 +1,6 @@
+/**
+ * VoiceOver places for use with move commands.
+ */
 export enum Places {
   DOCK = "dock",
   DESKTOP = "desktop",

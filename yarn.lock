@@ -551,7 +551,7 @@ glob-parent@^6.0.1:
   dependencies:
     is-glob "^4.0.3"
 
-glob@^7.1.3:
+glob@^7.1.3, glob@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.0.tgz#d15535af7732e02e948f4c41628bd910293f6023"
   integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
@@ -662,6 +662,11 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
 
+jsonc-parser@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/jsonc-parser/-/jsonc-parser-3.0.0.tgz#abdd785701c7e7eaca8a9ec8cf070ca51a745a22"
+  integrity sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA==
+
 levn@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/levn/-/levn-0.4.1.tgz#ae4562c007473b932a6200d403268dd2fffc6ade"
@@ -682,6 +687,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+lunr@^2.3.9:
+  version "2.3.9"
+  resolved "https://registry.yarnpkg.com/lunr/-/lunr-2.3.9.tgz#18b123142832337dd6e964df1a5a7707b25d35e1"
+  integrity sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==
+
 macos-version@^5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/macos-version/-/macos-version-5.2.1.tgz#056c943aac8edb81d7cafef6445b7ca1d7a2e56e"
@@ -693,6 +703,11 @@ make-error@^1.1.1:
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/make-error/-/make-error-1.3.6.tgz#2eb2e37ea9b67c4891f684a1394799af484cf7a2"
   integrity sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
+
+marked@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-3.0.8.tgz#2785f0dc79cbdc6034be4bb4f0f0a396bd3f8aeb"
+  integrity sha512-0gVrAjo5m0VZSJb4rpL59K1unJAMb/hm8HRXqasD8VeC8m91ytDPMritgFSlKonfdt+rRYYpP/JfLxgIX8yoSw==
 
 merge2@^1.3.0:
   version "1.4.1"
@@ -843,6 +858,15 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
+shiki@^0.9.12:
+  version "0.9.15"
+  resolved "https://registry.yarnpkg.com/shiki/-/shiki-0.9.15.tgz#2481b46155364f236651319d2c18e329ead6fa44"
+  integrity sha512-/Y0z9IzhJ8nD9nbceORCqu6NgT9X6I8Fk8c3SICHI5NbZRLdZYFaB233gwct9sU0vvSypyaL/qaKvzyQGJBZSw==
+  dependencies:
+    jsonc-parser "^3.0.0"
+    vscode-oniguruma "^1.6.1"
+    vscode-textmate "5.2.0"
+
 slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
@@ -921,6 +945,17 @@ type-fest@^0.20.2:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.20.2.tgz#1bf207f4b28f91583666cb5fbd327887301cd5f4"
   integrity sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==
 
+typedoc@^0.22.10:
+  version "0.22.10"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.22.10.tgz#221e1a2b17bcb71817ef027dc4c4969d572e7620"
+  integrity sha512-hQYZ4WtoMZ61wDC6w10kxA42+jclWngdmztNZsDvIz7BMJg7F2xnT+uYsUa7OluyKossdFj9E9Ye4QOZKTy8SA==
+  dependencies:
+    glob "^7.2.0"
+    lunr "^2.3.9"
+    marked "^3.0.8"
+    minimatch "^3.0.4"
+    shiki "^0.9.12"
+
 typescript@^4.5.2:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.2.tgz#8ac1fba9f52256fdb06fb89e4122fa6a346c2998"
@@ -937,6 +972,16 @@ v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
+
+vscode-oniguruma@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/vscode-oniguruma/-/vscode-oniguruma-1.6.1.tgz#2bf4dfcfe3dd2e56eb549a3068c8ee39e6c30ce5"
+  integrity sha512-vc4WhSIaVpgJ0jJIejjYxPvURJavX6QG41vu0mGhqywMkQqulezEqEQ3cO3gc8GvcOpX6ycmKGqRoROEMBNXTQ==
+
+vscode-textmate@5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/vscode-textmate/-/vscode-textmate-5.2.0.tgz#01f01760a391e8222fe4f33fbccbd1ad71aed74e"
+  integrity sha512-Uw5ooOQxRASHgu6C7GVvUxisKXfSgW4oFlO+aa+PAkgmH89O3CXxEEzNRNtHSqtXFTl0nAC1uYj0GMSH27uwtQ==
 
 which@^2.0.1:
   version "2.0.2"
