@@ -15,7 +15,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - run: yarn install --frozen-lockfile
-      - run: yarn publish --access public
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
           CI: true
