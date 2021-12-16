@@ -1,4 +1,4 @@
-import { VoiceOver, Applications, KeyCodes, Modifiers } from "../../src/";
+import { VoiceOver, Applications, KeyCodes } from "../../src/";
 import { keyCode } from "../../src/macOS/keyCode";
 import { keystroke } from "../../src/macOS/keystroke";
 
