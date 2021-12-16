@@ -21,6 +21,7 @@
   ],
   "scripts": {
     "build": "yarn clean && yarn gen && yarn compile",
+    "ci": "yarn clean && yarn lint && yarn build",
     "clean": "rimraf lib",
     "compile": "tsc",
     "gen": "yarn gen:voiceover",
