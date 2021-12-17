@@ -252,14 +252,58 @@ export class VoiceOver extends VoiceOverBase {
   }
 
   /**
+   * Cycle through speech settings (rate, pitch, volume, intonation, voice)
+   *
+   * Uses VoiceOver keycode gesture
+   *
+   * Gesture: VO-Command-Shift-Right Arrow
+   */
+  async gestureCycleRightThroughSpeechSettings(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.cycleRightThroughSpeechSettings);
+  }
+
+  /**
+   * Cycle through speech settings (rate, pitch, volume, intonation, voice)
+   *
+   * Uses VoiceOver keycode gesture
+   *
+   * Gesture: VO-Command-Shift-Left Arrow
+   */
+  async gestureCycleLeftThroughSpeechSettings(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.cycleLeftThroughSpeechSettings);
+  }
+
+  /**
+   * Change the current speech setting (rate, pitch, volume, intonation, voice)
+   *
+   * Uses VoiceOver keycode gesture
+   *
+   * Gesture: VO-Command-Shift-Up Arrow
+   */
+  async gestureChangeUpCurrentSpeechSettings(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.changeUpCurrentSpeechSettings);
+  }
+
+  /**
+   * Change the current speech setting (rate, pitch, volume, intonation, voice)
+   *
+   * Uses VoiceOver keycode gesture
+   *
+   * Gesture: VO-Command-Shift-Down Arrow
+   */
+  async gestureChangeDownCurrentSpeechSettings(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.changeDownCurrentSpeechSettings);
+  }
+
+  /**
    * Press and release mouse button
    *
    * Uses VoiceOver keycode gesture
    *
    * Gesture: VO-Shift-Space bar
    */
-  async gestureClick(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.click);
+  async gesturePressAndReleaseMouse(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.pressAndReleaseMouse);
   }
 
   /**
@@ -850,7 +894,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * Uses VoiceOver keycode gesture
    *
-   * Gesture: VO-Command-Shift-Up Arrow
+   * Gesture: VO-Command-Up Arrow
    */
   async gestureNavigateUp(): Promise<void> {
     return await this.keyCode(keyCodeCommands.navigateUp);
@@ -861,7 +905,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * Uses VoiceOver keycode gesture
    *
-   * Gesture: VO-Command-Shift-Right Arrow
+   * Gesture: VO-Command-Right Arrow
    */
   async gestureNavigateRight(): Promise<void> {
     return await this.keyCode(keyCodeCommands.navigateRight);
@@ -872,10 +916,10 @@ export class VoiceOver extends VoiceOverBase {
    *
    * Uses VoiceOver keycode gesture
    *
-   * Gesture: VO-Command-Shift-Down Arrow
+   * Gesture: VO-Command-Down Arrow
    */
-  async gestureNavigateBottom(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateBottom);
+  async gestureNavigateDown(): Promise<void> {
+    return await this.keyCode(keyCodeCommands.navigateDown);
   }
 
   /**
@@ -883,7 +927,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * Uses VoiceOver keycode gesture
    *
-   * Gesture: VO-Command-Shift-Left Arrow
+   * Gesture: VO-Command-Left Arrow
    */
   async gestureNavigateLeft(): Promise<void> {
     return await this.keyCode(keyCodeCommands.navigateLeft);
