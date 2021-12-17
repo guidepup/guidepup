@@ -147,7 +147,39 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     description: "Turn the screen black (screen curtain)",
     gesture: "VO-Shift-F11",
   },
-  click: {
+  cycleRightThroughSpeechSettings: {
+    // VoiceOver documentation incorrect
+    keyCode: KeyCodes.KEY_RIGHT_ARROW,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description:
+      "Cycle through speech settings (rate, pitch, volume, intonation, voice)",
+    gesture: "VO-Command-Shift-Right Arrow",
+  },
+  cycleLeftThroughSpeechSettings: {
+    // VoiceOver documentation incorrect
+    keyCode: KeyCodes.KEY_LEFT_ARROW,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description:
+      "Cycle through speech settings (rate, pitch, volume, intonation, voice)",
+    gesture: "VO-Command-Shift-Left Arrow",
+  },
+  changeUpCurrentSpeechSettings: {
+    // VoiceOver documentation incorrect
+    keyCode: KeyCodes.KEY_UP_ARROW,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description:
+      "Change the current speech setting (rate, pitch, volume, intonation, voice)",
+    gesture: "VO-Command-Shift-Up Arrow",
+  },
+  changeDownCurrentSpeechSettings: {
+    // VoiceOver documentation incorrect
+    keyCode: KeyCodes.KEY_DOWN_ARROW,
+    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    description:
+      "Change the current speech setting (rate, pitch, volume, intonation, voice)",
+    gesture: "VO-Command-Shift-Down Arrow",
+  },
+  pressAndReleaseMouse: {
     keyCode: KeyCodes.KEY_SPACE_BAR,
     modifiers: [...VO, Modifiers.SHIFT],
     description: "Press and release mouse button",
@@ -495,28 +527,32 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     gesture: "VO-F",
   },
   navigateUp: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_UP_ARROW,
-    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    modifiers: [...VO, Modifiers.CMD],
     description: "Navigate in given direction, wrapping when necessary",
-    gesture: "VO-Command-Shift-Up Arrow",
+    gesture: "VO-Command-Up Arrow",
   },
   navigateRight: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_RIGHT_ARROW,
-    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    modifiers: [...VO, Modifiers.CMD],
     description: "Navigate in given direction, wrapping when necessary",
-    gesture: "VO-Command-Shift-Right Arrow",
+    gesture: "VO-Command-Right Arrow",
   },
-  navigateBottom: {
+  navigateDown: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_DOWN_ARROW,
-    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    modifiers: [...VO, Modifiers.CMD],
     description: "Navigate in given direction, wrapping when necessary",
-    gesture: "VO-Command-Shift-Down Arrow",
+    gesture: "VO-Command-Down Arrow",
   },
   navigateLeft: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_LEFT_ARROW,
-    modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
+    modifiers: [...VO, Modifiers.CMD],
     description: "Navigate in given direction, wrapping when necessary",
-    gesture: "VO-Command-Shift-Left Arrow",
+    gesture: "VO-Command-Left Arrow",
   },
   toggleHotSpot1: {
     keyCode: KeyCodes.KEY_1,
