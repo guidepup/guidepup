@@ -4,7 +4,7 @@ import { activate } from "../activate";
 import type { VoiceOver } from "@jxa/types";
 import "@jxa/global-type";
 
-export async function getText(): Promise<string> {
+export async function getItemText(): Promise<string> {
   await activate(Applications.VOICE_OVER);
 
   return await run<string, Applications.VOICE_OVER>((name) => {

@@ -23,7 +23,7 @@ import { getLastSpokenPhrase } from "./getLastSpokenPhrase";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
 import { takeScreenshot } from "./takeScreenshot";
-import { getText } from "./getText";
+import { getItemText } from "./getItemText";
 import { performCommand } from "./performCommand";
 import { performAction } from "./performAction";
 
@@ -32,6 +32,21 @@ import { performAction } from "./performAction";
  */
 @decorateStaticImplements<ScreenReader>()
 export class VoiceOverBase {
+  #log = false;
+  #spokenPhraseLog = [];
+  #itemTextLog = [];
+
+  async #tap<T, S extends Promise<T>>(promise: S): Promise<T> {
+    const result = await promise;
+
+    if (this.#log) {
+      this.#spokenPhraseLog.push(await this.getLastSpokenPhrase());
+      this.#itemTextLog.push(await this.getItemText());
+    }
+
+    return result;
+  }
+
   /**
    * Detect whether VoiceOver is supported for the current OS.
    *
@@ -73,7 +88,7 @@ export class VoiceOverBase {
    * @param {object} keyCodeCommand Key code command to send to VoiceOver.
    */
   async keyCode(keyCodeCommand: KeyCodeCommand): Promise<void> {
-    return await keyCode(Applications.VOICE_OVER, keyCodeCommand);
+    return await this.#tap(keyCode(Applications.VOICE_OVER, keyCodeCommand));
   }
 
   /**
@@ -82,7 +97,9 @@ export class VoiceOverBase {
    * @param {object} keystrokeCommand Keystroke command to send to VoiceOver.
    */
   async keystroke(keystrokeCommand: KeystrokeCommand): Promise<void> {
-    return await keystroke(Applications.VOICE_OVER, keystrokeCommand);
+    return await this.#tap(
+      keystroke(Applications.VOICE_OVER, keystrokeCommand)
+    );
   }
 
   /**
@@ -107,7 +124,7 @@ export class VoiceOverBase {
     direction: Directions | Containments,
     place?: Places
   ): Promise<void> {
-    return await move(direction, place);
+    return await this.#tap(move(direction, place));
   }
 
   /**
@@ -142,42 +159,42 @@ export class VoiceOverBase {
    * Click the mouse once.
    */
   async click(): Promise<void> {
-    return await click(ClickCount.ONCE);
+    return await this.#tap(click(ClickCount.ONCE));
   }
 
   /**
    * Double click the mouse.
    */
   async doubleClick(): Promise<void> {
-    return await click(ClickCount.TWICE);
+    return await this.#tap(click(ClickCount.TWICE));
   }
 
   /**
    * Triple click the mouse.
    */
   async tripleClick(): Promise<void> {
-    return await click(ClickCount.THRICE);
+    return await this.#tap(click(ClickCount.THRICE));
   }
 
   /**
    * Right click the mouse once.
    */
   async rightClick(): Promise<void> {
-    return await click(ClickCount.ONCE, ClickButton.RIGHT_BUTTON);
+    return await this.#tap(click(ClickCount.ONCE, ClickButton.RIGHT_BUTTON));
   }
 
   /**
    * Double right click the mouse.
    */
   async rightDoubleClick(): Promise<void> {
-    return await click(ClickCount.TWICE, ClickButton.RIGHT_BUTTON);
+    return await this.#tap(click(ClickCount.TWICE, ClickButton.RIGHT_BUTTON));
   }
 
   /**
    * Triple right click the mouse.
    */
   async rightTripleClick(): Promise<void> {
-    return await click(ClickCount.THRICE, ClickButton.RIGHT_BUTTON);
+    return await this.#tap(click(ClickCount.THRICE, ClickButton.RIGHT_BUTTON));
   }
 
   /**
@@ -194,8 +211,19 @@ export class VoiceOverBase {
    *
    * @returns {Promise<string>} The item's text.
    */
-  async getText(): Promise<string> {
-    return await getText();
+  async getItemText(): Promise<string> {
+    return await getItemText();
+  }
+
+  /**
+   * Get the log of all visited item text for this VoiceOver instance.
+   *
+   * Note `vo.startLog()` must first be called for item text to be logged.
+   *
+   * @returns {Promise<string[]>} The item text log.
+   */
+  async getItemTextLog(): Promise<string[]> {
+    return this.#itemTextLog;
   }
 
   /**
@@ -205,6 +233,31 @@ export class VoiceOverBase {
    */
   async getLastSpokenPhrase(): Promise<string> {
     return await getLastSpokenPhrase();
+  }
+
+  /**
+   * Get the log of all spoken phrases for this VoiceOver instance.
+   *
+   * Note `vo.startLog()` must first be called for spoken phrases to be logged.
+   *
+   * @returns {Promise<string[]>} The phrase log.
+   */
+  async getSpokenPhraseLog(): Promise<string[]> {
+    return this.#spokenPhraseLog;
+  }
+
+  /**
+   * Start logging spoken phrases and item text.
+   */
+  startLog(): void {
+    this.#log = true;
+  }
+
+  /**
+   * Stop logging spoken phrases and item text.
+   */
+  stopLog(): void {
+    this.#log = false;
   }
 
   /**
@@ -229,13 +282,13 @@ export class VoiceOverBase {
    * @param {string} command The English name of the VoiceOver command to perform.
    */
   async performCommand(command: CommanderCommands): Promise<void> {
-    return await performCommand(command);
+    return await this.#tap(performCommand(command));
   }
 
   /**
    * Perform VoiceOver action.
    */
   async performAction(): Promise<void> {
-    return await performAction();
+    return await this.#tap(performAction());
   }
 }
