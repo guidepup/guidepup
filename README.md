@@ -41,9 +41,13 @@ npm install @guidepup/guidepup
 yarn add @guidepup/guidepup
 ```
 
-## Documentation
+## Guides
 
-[Documentation](https://guidepup.github.io/guidepup/)
+[Guides](https://github.com/guidepup/guidepup/tree/main/guides)
+
+## API Documentation
+
+[API Documentation](https://guidepup.github.io/guidepup/)
 
 ## Examples
 
