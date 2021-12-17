@@ -148,6 +148,7 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     gesture: "VO-Shift-F11",
   },
   cycleRightThroughSpeechSettings: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_RIGHT_ARROW,
     modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
     description:
@@ -155,6 +156,7 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     gesture: "VO-Command-Shift-Right Arrow",
   },
   cycleLeftThroughSpeechSettings: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_LEFT_ARROW,
     modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
     description:
@@ -162,6 +164,7 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     gesture: "VO-Command-Shift-Left Arrow",
   },
   changeUpCurrentSpeechSettings: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_UP_ARROW,
     modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
     description:
@@ -169,6 +172,7 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     gesture: "VO-Command-Shift-Up Arrow",
   },
   changeDownCurrentSpeechSettings: {
+    // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_DOWN_ARROW,
     modifiers: [...VO, Modifiers.CMD, Modifiers.SHIFT],
     description:
