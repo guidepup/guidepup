@@ -22,7 +22,7 @@ async function run(): Promise<void> {
   const vo = new VoiceOver();
   await vo.start();
   await vo.moveRight();
-  console.log(await vo.getText());
+  console.log(await vo.getItemText());
   await vo.stop();
 }
 

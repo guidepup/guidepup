@@ -84,11 +84,39 @@ export interface ScreenReaderBase {
   getLastSpokenPhrase(): Promise<string>;
 
   /**
+   * Get the log of all spoken phrases for this ScreenReader instance.
+   *
+   * Note `vo.startLog()` must first be called for spoken phrases to be logged.
+   *
+   * @returns {Promise<string[]>} The phrase log.
+   */
+  getSpokenPhraseLog(): Promise<string[]>;
+
+  /**
    * Get the text of the item in the ScreenReader cursor.
    *
    * @returns {Promise<string>} The item's text.
    */
-  getText(): Promise<string>;
+  getItemText(): Promise<string>;
+
+  /**
+   * Get the log of all visited item text for this ScreenReader instance.
+   *
+   * Note `vo.startLog()` must first be called for item text to be logged.
+   *
+   * @returns {Promise<string[]>} The item text log.
+   */
+  getItemTextLog(): Promise<string[]>;
+
+  /**
+   * Start logging spoken phrases and item text.
+   */
+  startLog(): void;
+
+  /**
+   * Stop logging spoken phrases and item text.
+   */
+  stopLog(): void;
 }
 
 export interface ScreenReader {
