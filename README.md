@@ -55,11 +55,19 @@ yarn add @guidepup/guidepup
 
 ## Roadmap
 
+Screen-reader support:
+
 - [x] VoiceOver on MacOS
 - [ ] NVDA on Windows
 - [ ] VoiceOver on iOS
 - [ ] Talkback on Android
-- [ ] JAWS on Windows
+
+Environment support:
+
+- [x] MacOS local machine
+- [ ] MacOS virtual machine
+- [ ] Windows local machine
+- [ ] Windows virtual machine
 
 ## Related
 
