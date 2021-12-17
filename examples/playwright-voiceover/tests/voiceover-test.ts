@@ -12,6 +12,7 @@ const test = base.extend<{ vo: VoiceOver }>({
       await vo.activate(PLAYWRIGHT_APPLICATION);
       await use(vo);
     } finally {
+      vo.stopLog();
       await vo.stop();
     }
   },
