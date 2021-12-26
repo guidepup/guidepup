@@ -2,13 +2,13 @@ import type { KeyCodeCommand as KeyCodeCommandBase } from "../KeyCodeCommand";
 import type { Modifiers } from "./Modifiers";
 
 /**
- * A MacOS key code command.
+ * A Windows key code command.
  */
 export interface KeyCodeCommand extends KeyCodeCommandBase {
   /**
-   * The key code or key codes to send.
+   * The key code to send.
    */
-  keyCode: number | number[];
+  keyCode: string;
   /**
    * List of modifier keys to press while sending the key code(s).
    */

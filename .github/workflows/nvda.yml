@@ -1,4 +1,4 @@
-name: Test
+name: Test NVDA
 
 on:
   push:
@@ -7,12 +7,14 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - run: choco install nvda
       - uses: actions/setup-node@v1
         with:
           node-version: 16
       - run: yarn install --frozen-lockfile
-      - run: yarn ci
+      - run: yarn --cwd=./examples/playwright-nvda install --frozen-lockfile
+      - run: yarn --cwd=./examples/playwright-nvda test

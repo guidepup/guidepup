@@ -5,7 +5,7 @@ export interface KeyCodeCommand {
   /**
    * The key code or key codes to send.
    */
-  keyCode: number | number[];
+  keyCode: unknown;
   /**
    * List of modifier keys to press while sending the key code(s).
    */
