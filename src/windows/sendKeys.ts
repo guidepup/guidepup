@@ -14,7 +14,7 @@ function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
 
 export async function sendKeys(
   command: KeyCodeCommand | KeystrokeCommand
-): Promise<string> {
+): Promise<void> {
   const keys = getKeys(command);
 
   const script = `
@@ -22,5 +22,5 @@ export async function sendKeys(
   WshShell.SendKeys "${keys}";
   `;
 
-  return await runVbsCode(script);
+  await runVbsCode(script);
 }

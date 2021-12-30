@@ -4,11 +4,14 @@ import { isWindows } from "../isWindows";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { start } from "./start";
 import { quit } from "./quit";
+import { KeyCodeCommand } from "../KeyCodeCommand";
+import { sendKeys } from "../sendKeys";
+import { KeystrokeCommand } from "../KeystrokeCommand";
 
 /**
  * Class for controlling the NVDA ScreenReader on MacOS.
  */
-// @decorateStaticImplements<ScreenReader>()
+@decorateStaticImplements<ScreenReader>()
 export class NVDA {
   #log = false;
   #spokenPhraseLog = [];
@@ -23,6 +26,8 @@ export class NVDA {
 
     return result;
   }
+
+  static ERR_NVDA_NOT_SUPPORTED = "NVDA not supported";
 
   /**
    * Detect whether NVDA is supported for the current OS.
@@ -46,6 +51,10 @@ export class NVDA {
    * Turn NVDA on.
    */
   async start(): Promise<void> {
+    if (!NVDA.detect()) {
+      throw new Error(NVDA.ERR_NVDA_NOT_SUPPORTED);
+    }
+
     await start();
   }
 
@@ -54,6 +63,24 @@ export class NVDA {
    */
   async stop(): Promise<void> {
     await quit();
+  }
+
+  /**
+   * Send a key code to NVDA.
+   *
+   * @param {object} keyCodeCommand Key code command to send to NVDA.
+   */
+  async keyCode(keyCodeCommand: KeyCodeCommand): Promise<void> {
+    return await this.#tap(sendKeys(keyCodeCommand));
+  }
+
+  /**
+   * Send a keystroke to NVDA.
+   *
+   * @param {object} keystrokeCommand Keystroke command to send to NVDA.
+   */
+  async keystroke(keystrokeCommand: KeystrokeCommand): Promise<void> {
+    return await this.#tap(sendKeys(keystrokeCommand));
   }
 
   /**

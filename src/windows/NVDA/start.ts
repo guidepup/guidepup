@@ -1,10 +1,9 @@
-import { runVbsCode } from "../runVbsCode";
-
-const script = `
-set WshShell = CreateObject("WScript.Shell")
-WshShell.SendKeys "^%n"
-`;
+import { sendKeys } from "../sendKeys";
+import { Modifiers } from "../Modifiers";
 
 export async function start(): Promise<string> {
-  return await runVbsCode(script);
+  return await sendKeys({
+    characters: "n",
+    modifiers: [Modifiers.CONTROL, Modifiers.ALT],
+  });
 }

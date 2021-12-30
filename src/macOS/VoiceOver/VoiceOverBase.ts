@@ -47,6 +47,8 @@ export class VoiceOverBase {
     return result;
   }
 
+  static ERR_VOICE_OVER_NOT_SUPPORTED = "VoiceOver not supported";
+
   /**
    * Detect whether VoiceOver is supported for the current OS.
    *
@@ -69,6 +71,10 @@ export class VoiceOverBase {
    * Turn VoiceOver on.
    */
   async start(): Promise<void> {
+    if (!VoiceOverBase.detect()) {
+      throw new Error(VoiceOverBase.ERR_VOICE_OVER_NOT_SUPPORTED);
+    }
+
     await disableSplashScreen();
     await start();
     await activate(Applications.VOICE_OVER);
