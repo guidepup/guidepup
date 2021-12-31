@@ -82,13 +82,14 @@ export interface ScreenReader {
   /**
    * Detect whether the ScreenReader is supported for the current OS.
    *
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  detect(): boolean;
+
+  detect(): Promise<boolean>;
   /**
    * Detect whether the ScreenReader is the default screen reader for the current OS.
    *
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  default(): boolean;
+  default(): Promise<boolean>;
 }

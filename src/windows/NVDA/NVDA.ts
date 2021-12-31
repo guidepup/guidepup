@@ -34,26 +34,26 @@ export class NVDA {
   /**
    * Detect whether NVDA is supported for the current OS.
    *
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  static detect(): boolean {
-    return isWindows() && isNVDAInstalled();
+  static async detect(): Promise<boolean> {
+    return (await isWindows()) && (await isNVDAInstalled());
   }
 
   /**
    * Detect whether NVDA is the default screen reader for the current OS.
    *
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  static default(): boolean {
-    return false;
+  static async default(): Promise<boolean> {
+    return await Promise.resolve(false);
   }
 
   /**
    * Turn NVDA on.
    */
   async start(): Promise<void> {
-    if (!NVDA.detect()) {
+    if (!(await NVDA.detect())) {
       throw new Error(NVDA.ERR_NVDA_NOT_SUPPORTED);
     }
 
