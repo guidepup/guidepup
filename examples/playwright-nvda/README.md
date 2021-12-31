@@ -13,8 +13,5 @@ yarn test
 
 ## Test flow
 
-1. The test launches Safari using Playwright
+1. The test launches Chrome using Playwright
 2. Navigates to the Playwright website
-3. Moves through the website using NVDA controlled by Guidepup to the search input
-4. Searches for Safari
-5. Moves to the Safari section of the docs

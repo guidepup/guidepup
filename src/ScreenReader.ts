@@ -13,68 +13,26 @@ export interface ScreenReaderBase {
   stop(): Promise<void>;
 
   /**
-   * Send a key code to the ScreenReader.
+   * Send a key code or keystroke to the ScreenReader.
    *
-   * @param {object} keyCodeCommand Key code command to send to the ScreenReader.
+   * @param {object} keyCommand Key code or keystroke command to send to the ScreenReader.
    */
-  keyCode(command: KeyCodeCommand): Promise<void>;
+  sendKeys(command: KeyCodeCommand | KeystrokeCommand): Promise<void>;
 
   /**
-   * Send a keystroke to the ScreenReader.
-   *
-   * @param {object} keystrokeCommand Keystroke command to send to the ScreenReader.
+   * Move the ScreenReader cursor to the previous location.
    */
-  keystroke(command: KeystrokeCommand): Promise<void>;
+  movePrevious(): Promise<void>;
 
   /**
-   * Move the ScreenReader cursor up to a new location.
+   * Move the ScreenReader cursor to the next location.
    */
-  moveUp(): Promise<void>;
+  moveNext(): Promise<void>;
 
   /**
-   * Move the ScreenReader cursor right to a new location.
+   * Perform default action.
    */
-  moveRight(): Promise<void>;
-
-  /**
-   * Move the ScreenReader cursor down to a new location.
-   */
-  moveDown(): Promise<void>;
-
-  /**
-   * Move the ScreenReader cursor left to a new location.
-   */
-  moveLeft(): Promise<void>;
-
-  /**
-   * Click the mouse once.
-   */
-  click(): Promise<void>;
-
-  /**
-   * Double click the mouse.
-   */
-  doubleClick(): Promise<void>;
-
-  /**
-   * Triple click the mouse.
-   */
-  tripleClick(): Promise<void>;
-
-  /**
-   * Right click the mouse once.
-   */
-  rightClick(): Promise<void>;
-
-  /**
-   * Double right click the mouse.
-   */
-  rightDoubleClick(): Promise<void>;
-
-  /**
-   * Triple right click the mouse.
-   */
-  rightTripleClick(): Promise<void>;
+  performAction(): Promise<void>;
 
   /**
    * Get the last spoken phrase.

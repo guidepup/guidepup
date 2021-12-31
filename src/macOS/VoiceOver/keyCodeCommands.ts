@@ -533,11 +533,12 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     description: "Navigate in given direction, wrapping when necessary",
     representation: "VO-Command-Up Arrow",
   },
-  navigateRight: {
+  cycleRightThroughNavigationSettings: {
     // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_RIGHT_ARROW,
     modifiers: [...VO, Modifiers.CMD],
-    description: "Navigate in given direction, wrapping when necessary",
+    description:
+      "Cycle through navigation settings (Headings, Form Controls, Landmarks, etc.)",
     representation: "VO-Command-Right Arrow",
   },
   navigateDown: {
@@ -547,11 +548,12 @@ export const keyCodeCommands: Record<string, KeyCodeCommand> = {
     description: "Navigate in given direction, wrapping when necessary",
     representation: "VO-Command-Down Arrow",
   },
-  navigateLeft: {
+  cycleLeftThroughNavigationSettings: {
     // VoiceOver documentation incorrect
     keyCode: KeyCodes.KEY_LEFT_ARROW,
     modifiers: [...VO, Modifiers.CMD],
-    description: "Navigate in given direction, wrapping when necessary",
+    description:
+      "Cycle through navigation settings (Headings, Form Controls, Landmarks, etc.)",
     representation: "VO-Command-Left Arrow",
   },
   toggleHotSpot1: {

@@ -17,7 +17,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-;
    */
   async commandToggleLock(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleLock);
+    return await this.sendKeys(keyCodeCommands.toggleLock);
   }
 
   /**
@@ -28,7 +28,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F8
    */
   async commandOpenVoiceOverUtility(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverUtility);
+    return await this.sendKeys(keyCodeCommands.openVoiceOverUtility);
   }
 
   /**
@@ -39,7 +39,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-H
    */
   async commandOpenVoiceOverHelpMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverHelpMenu);
+    return await this.sendKeys(keyCodeCommands.openVoiceOverHelpMenu);
   }
 
   /**
@@ -50,7 +50,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F8
    */
   async commandOpenVoiceOverQuickStart(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverQuickStart);
+    return await this.sendKeys(keyCodeCommands.openVoiceOverQuickStart);
   }
 
   /**
@@ -61,7 +61,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-/
    */
   async commandOpenVoiceOverOnlineHelp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverOnlineHelp);
+    return await this.sendKeys(keyCodeCommands.openVoiceOverOnlineHelp);
   }
 
   /**
@@ -72,7 +72,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-K
    */
   async commandStartKeyboardHelp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.startKeyboardHelp);
+    return await this.sendKeys(keyCodeCommands.startKeyboardHelp);
   }
 
   /**
@@ -83,7 +83,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-N
    */
   async commandHearItemDescription(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.hearItemDescription);
+    return await this.sendKeys(keyCodeCommands.hearItemDescription);
   }
 
   /**
@@ -94,7 +94,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-H-H
    */
   async commandOpenCommandsMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openCommandsMenu);
+    return await this.sendKeys(keyCodeCommands.openCommandsMenu);
   }
 
   /**
@@ -105,7 +105,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F
    */
   async commandOpenFindMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openFindMenu);
+    return await this.sendKeys(keyCodeCommands.openFindMenu);
   }
 
   /**
@@ -116,7 +116,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: Escape
    */
   async commandStopAction(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.stopAction);
+    return await this.sendKeys(keyCodeCommands.stopAction);
   }
 
   /**
@@ -127,7 +127,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Tab
    */
   async commandIgnoreNextKeyCombination(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.ignoreNextKeyCombination);
+    return await this.sendKeys(keyCodeCommands.ignoreNextKeyCombination);
   }
 
   /**
@@ -138,7 +138,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-V
    */
   async commandOpenVerbosityRotor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVerbosityRotor);
+    return await this.sendKeys(keyCodeCommands.openVerbosityRotor);
   }
 
   /**
@@ -149,7 +149,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-}
    */
   async commandMagnifyItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.magnifyItem);
+    return await this.sendKeys(keyCodeCommands.magnifyItem);
   }
 
   /**
@@ -160,7 +160,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-{
    */
   async commandShrinkItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.shrinkItem);
+    return await this.sendKeys(keyCodeCommands.shrinkItem);
   }
 
   /**
@@ -171,7 +171,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F11
    */
   async commandToggleVoiceOverCursorAndPanels(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleVoiceOverCursorAndPanels);
+    return await this.sendKeys(keyCodeCommands.toggleVoiceOverCursorAndPanels);
   }
 
   /**
@@ -182,7 +182,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F10
    */
   async commandToggleCaptionPanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleCaptionPanel);
+    return await this.sendKeys(keyCodeCommands.toggleCaptionPanel);
   }
 
   /**
@@ -193,7 +193,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F10
    */
   async commandResizeOrMoveCaptionPanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.resizeOrMoveCaptionPanel);
+    return await this.sendKeys(keyCodeCommands.resizeOrMoveCaptionPanel);
   }
 
   /**
@@ -204,7 +204,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F9
    */
   async commandToggleBraillePanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleBraillePanel);
+    return await this.sendKeys(keyCodeCommands.toggleBraillePanel);
   }
 
   /**
@@ -215,7 +215,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F9
    */
   async commandResizeOrMoveBraillePanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.resizeOrMoveBraillePanel);
+    return await this.sendKeys(keyCodeCommands.resizeOrMoveBraillePanel);
   }
 
   /**
@@ -226,7 +226,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F10
    */
   async commandTileVisuals(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.tileVisuals);
+    return await this.sendKeys(keyCodeCommands.tileVisuals);
   }
 
   /**
@@ -237,7 +237,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-K
    */
   async commandToggleKeyboardCommander(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleKeyboardCommander);
+    return await this.sendKeys(keyCodeCommands.toggleKeyboardCommander);
   }
 
   /**
@@ -248,7 +248,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F11
    */
   async commandToggleScreenCurtain(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleScreenCurtain);
+    return await this.sendKeys(keyCodeCommands.toggleScreenCurtain);
   }
 
   /**
@@ -259,7 +259,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-Right Arrow
    */
   async commandCycleRightThroughSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.cycleRightThroughSpeechSettings);
+    return await this.sendKeys(keyCodeCommands.cycleRightThroughSpeechSettings);
   }
 
   /**
@@ -270,7 +270,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-Left Arrow
    */
   async commandCycleLeftThroughSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.cycleLeftThroughSpeechSettings);
+    return await this.sendKeys(keyCodeCommands.cycleLeftThroughSpeechSettings);
   }
 
   /**
@@ -281,7 +281,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-Up Arrow
    */
   async commandChangeUpCurrentSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.changeUpCurrentSpeechSettings);
+    return await this.sendKeys(keyCodeCommands.changeUpCurrentSpeechSettings);
   }
 
   /**
@@ -292,7 +292,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-Down Arrow
    */
   async commandChangeDownCurrentSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.changeDownCurrentSpeechSettings);
+    return await this.sendKeys(keyCodeCommands.changeDownCurrentSpeechSettings);
   }
 
   /**
@@ -303,7 +303,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Space bar
    */
   async commandPressAndReleaseMouse(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.pressAndReleaseMouse);
+    return await this.sendKeys(keyCodeCommands.pressAndReleaseMouse);
   }
 
   /**
@@ -314,7 +314,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Down Arrow
    */
   async commandInteractWithItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.interactWithItem);
+    return await this.sendKeys(keyCodeCommands.interactWithItem);
   }
 
   /**
@@ -325,7 +325,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Up Arrow
    */
   async commandStopInteractingWithItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.stopInteractingWithItem);
+    return await this.sendKeys(keyCodeCommands.stopInteractingWithItem);
   }
 
   /**
@@ -336,7 +336,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Space bar
    */
   async commandPerformDefaultActionForItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.performDefaultActionForItem);
+    return await this.sendKeys(keyCodeCommands.performDefaultActionForItem);
   }
 
   /**
@@ -347,7 +347,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Return
    */
   async commandSelectItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.selectItem);
+    return await this.sendKeys(keyCodeCommands.selectItem);
   }
 
   /**
@@ -358,7 +358,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Space bar
    */
   async commandSelectMultipleItems(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.selectMultipleItems);
+    return await this.sendKeys(keyCodeCommands.selectMultipleItems);
   }
 
   /**
@@ -369,7 +369,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-Space bar
    */
   async commandToggleStickyMouse(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleStickyMouse);
+    return await this.sendKeys(keyCodeCommands.toggleStickyMouse);
   }
 
   /**
@@ -380,7 +380,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Space bar-Space bar
    */
   async commandDoubleClick(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.doubleClick);
+    return await this.sendKeys(keyCodeCommands.doubleClick);
   }
 
   /**
@@ -391,7 +391,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-\
    */
   async commandToggleDisclosureTriangle(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleDisclosureTriangle);
+    return await this.sendKeys(keyCodeCommands.toggleDisclosureTriangle);
   }
 
   /**
@@ -402,7 +402,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-R
    */
   async commandReadTableRow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableRow);
+    return await this.sendKeys(keyCodeCommands.readTableRow);
   }
 
   /**
@@ -413,7 +413,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-C-C
    */
   async commandReadTableColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableColumn);
+    return await this.sendKeys(keyCodeCommands.readTableColumn);
   }
 
   /**
@@ -424,7 +424,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-C
    */
   async commandReadTableColumnHeader(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableColumnHeader);
+    return await this.sendKeys(keyCodeCommands.readTableColumnHeader);
   }
 
   /**
@@ -435,7 +435,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-T
    */
   async commandReadTableRowAndColumnNumbers(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableRowAndColumnNumbers);
+    return await this.sendKeys(keyCodeCommands.readTableRowAndColumnNumbers);
   }
 
   /**
@@ -446,7 +446,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-|
    */
   async commandSortTableColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.sortTableColumn);
+    return await this.sendKeys(keyCodeCommands.sortTableColumn);
   }
 
   /**
@@ -457,7 +457,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-S
    */
   async commandInteractWithScrollbars(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.interactWithScrollbars);
+    return await this.sendKeys(keyCodeCommands.interactWithScrollbars);
   }
 
   /**
@@ -468,7 +468,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-~
    */
   async commandResizeObject(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.resizeObject);
+    return await this.sendKeys(keyCodeCommands.resizeObject);
   }
 
   /**
@@ -479,7 +479,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-`
    */
   async commandMoveObject(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveObject);
+    return await this.sendKeys(keyCodeCommands.moveObject);
   }
 
   /**
@@ -490,7 +490,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Up Arrow
    */
   async commandMoveUp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveUp);
+    return await this.sendKeys(keyCodeCommands.moveUp);
   }
 
   /**
@@ -501,7 +501,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Down Arrow
    */
   async commandMoveDown(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveDown);
+    return await this.sendKeys(keyCodeCommands.moveDown);
   }
 
   /**
@@ -512,7 +512,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Left Arrow
    */
   async commandMoveToPrevious(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPrevious);
+    return await this.sendKeys(keyCodeCommands.moveToPrevious);
   }
 
   /**
@@ -523,7 +523,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Right Arrow
    */
   async commandMoveToNext(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNext);
+    return await this.sendKeys(keyCodeCommands.moveToNext);
   }
 
   /**
@@ -534,7 +534,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Home
    */
   async commandMoveToVisibleAreaTop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToVisibleAreaTop);
+    return await this.sendKeys(keyCodeCommands.moveToVisibleAreaTop);
   }
 
   /**
@@ -545,7 +545,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-End
    */
   async commandMoveToVisibleAreaBottom(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToVisibleAreaBottom);
+    return await this.sendKeys(keyCodeCommands.moveToVisibleAreaBottom);
   }
 
   /**
@@ -556,7 +556,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Home
    */
   async commandMoveToAreaTop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToAreaTop);
+    return await this.sendKeys(keyCodeCommands.moveToAreaTop);
   }
 
   /**
@@ -567,7 +567,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-End
    */
   async commandMoveToAreaBottom(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToAreaBottom);
+    return await this.sendKeys(keyCodeCommands.moveToAreaBottom);
   }
 
   /**
@@ -578,7 +578,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Home
    */
   async commandMoveToFirst(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFirst);
+    return await this.sendKeys(keyCodeCommands.moveToFirst);
   }
 
   /**
@@ -589,7 +589,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-End
    */
   async commandMoveToLast(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToLast);
+    return await this.sendKeys(keyCodeCommands.moveToLast);
   }
 
   /**
@@ -600,7 +600,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F2
    */
   async commandMoveToFrontWindow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFrontWindow);
+    return await this.sendKeys(keyCodeCommands.moveToFrontWindow);
   }
 
   /**
@@ -611,7 +611,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F2
    */
   async commandCloseWindow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.closeWindow);
+    return await this.sendKeys(keyCodeCommands.closeWindow);
   }
 
   /**
@@ -622,7 +622,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-I
    */
   async commandOpenItemChooser(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openItemChooser);
+    return await this.sendKeys(keyCodeCommands.openItemChooser);
   }
 
   /**
@@ -633,7 +633,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-D
    */
   async commandMoveToDock(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToDock);
+    return await this.sendKeys(keyCodeCommands.moveToDock);
   }
 
   /**
@@ -644,7 +644,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-D
    */
   async commandMoveToDesktop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToDesktop);
+    return await this.sendKeys(keyCodeCommands.moveToDesktop);
   }
 
   /**
@@ -655,7 +655,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-M
    */
   async commandMoveToMenuBar(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToMenuBar);
+    return await this.sendKeys(keyCodeCommands.moveToMenuBar);
   }
 
   /**
@@ -666,7 +666,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-M-M
    */
   async commandMoveToFirstStatusMenuInMenuBar(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFirstStatusMenuInMenuBar);
+    return await this.sendKeys(keyCodeCommands.moveToFirstStatusMenuInMenuBar);
   }
 
   /**
@@ -677,7 +677,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-M-M-M
    */
   async commandOpenSpotlightMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openSpotlightMenu);
+    return await this.sendKeys(keyCodeCommands.openSpotlightMenu);
   }
 
   /**
@@ -688,7 +688,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-J
    */
   async commandOpenShortcutMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openShortcutMenu);
+    return await this.sendKeys(keyCodeCommands.openShortcutMenu);
   }
 
   /**
@@ -699,7 +699,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-J
    */
   async commandJumpToLinkedItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToLinkedItem);
+    return await this.sendKeys(keyCodeCommands.jumpToLinkedItem);
   }
 
   /**
@@ -710,7 +710,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F3
    */
   async commandToggleCursorTrackingOptions(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleCursorTrackingOptions);
+    return await this.sendKeys(keyCodeCommands.toggleCursorTrackingOptions);
   }
 
   /**
@@ -721,7 +721,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F4
    */
   async commandMoveCursorToKeyboardFocus(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveCursorToKeyboardFocus);
+    return await this.sendKeys(keyCodeCommands.moveCursorToKeyboardFocus);
   }
 
   /**
@@ -732,7 +732,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F4
    */
   async commandMoveKeyboardFocusToCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveKeyboardFocusToCursor);
+    return await this.sendKeys(keyCodeCommands.moveKeyboardFocusToCursor);
   }
 
   /**
@@ -743,7 +743,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-F5
    */
   async commandMoveCursorToMouseFocus(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveCursorToMouseFocus);
+    return await this.sendKeys(keyCodeCommands.moveCursorToMouseFocus);
   }
 
   /**
@@ -754,7 +754,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F5
    */
   async commandMoveMouseFocusToCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveMouseFocusToCursor);
+    return await this.sendKeys(keyCodeCommands.moveMouseFocusToCursor);
   }
 
   /**
@@ -765,7 +765,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-J
    */
   async commandJumpCommand(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpCommand);
+    return await this.sendKeys(keyCodeCommands.jumpCommand);
   }
 
   /**
@@ -776,7 +776,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Up Arrow
    */
   async commandJumpToTopEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToTopEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToTopEdge);
   }
 
   /**
@@ -787,7 +787,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Right Arrow
    */
   async commandJumpToRightEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToRightEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToRightEdge);
   }
 
   /**
@@ -798,7 +798,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Down Arrow
    */
   async commandJumpToBottomEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToBottomEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToBottomEdge);
   }
 
   /**
@@ -809,7 +809,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Left Arrow
    */
   async commandJumpToLeftEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToLeftEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToLeftEdge);
   }
 
   /**
@@ -820,7 +820,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Up Arrow
    */
   async commandJumpToTopVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToTopVisibleEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToTopVisibleEdge);
   }
 
   /**
@@ -831,7 +831,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Right Arrow
    */
   async commandJumpToRightVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToRightVisibleEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToRightVisibleEdge);
   }
 
   /**
@@ -842,7 +842,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Down Arrow
    */
   async commandJumpToBottomVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToBottomVisibleEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToBottomVisibleEdge);
   }
 
   /**
@@ -853,7 +853,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Left Arrow
    */
   async commandJumpToLeftVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToLeftVisibleEdge);
+    return await this.sendKeys(keyCodeCommands.jumpToLeftVisibleEdge);
   }
 
   /**
@@ -864,7 +864,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-[
    */
   async commandJumpBeforeSplitter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpBeforeSplitter);
+    return await this.sendKeys(keyCodeCommands.jumpBeforeSplitter);
   }
 
   /**
@@ -875,7 +875,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-]
    */
   async commandJumpAfterSplitter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpAfterSplitter);
+    return await this.sendKeys(keyCodeCommands.jumpAfterSplitter);
   }
 
   /**
@@ -886,7 +886,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F
    */
   async commandFindText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findText);
+    return await this.sendKeys(keyCodeCommands.findText);
   }
 
   /**
@@ -897,18 +897,18 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Up Arrow
    */
   async commandNavigateUp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateUp);
+    return await this.sendKeys(keyCodeCommands.navigateUp);
   }
 
   /**
-   * Navigate in given direction, wrapping when necessary
+   * Cycle through navigation settings (Headings, Form Controls, Landmarks, etc.)
    *
    * Uses VoiceOver keycode command
    *
    * Representation: VO-Command-Right Arrow
    */
-  async commandNavigateRight(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateRight);
+  async commandCycleRightThroughNavigationSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.cycleRightThroughNavigationSettings);
   }
 
   /**
@@ -919,18 +919,18 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Down Arrow
    */
   async commandNavigateDown(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateDown);
+    return await this.sendKeys(keyCodeCommands.navigateDown);
   }
 
   /**
-   * Navigate in given direction, wrapping when necessary
+   * Cycle through navigation settings (Headings, Form Controls, Landmarks, etc.)
    *
    * Uses VoiceOver keycode command
    *
    * Representation: VO-Command-Left Arrow
    */
-  async commandNavigateLeft(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateLeft);
+  async commandCycleLeftThroughNavigationSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.cycleLeftThroughNavigationSettings);
   }
 
   /**
@@ -941,7 +941,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-1
    */
   async commandToggleHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot1);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot1);
   }
 
   /**
@@ -952,7 +952,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-2
    */
   async commandToggleHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot2);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot2);
   }
 
   /**
@@ -963,7 +963,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-3
    */
   async commandToggleHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot3);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot3);
   }
 
   /**
@@ -974,7 +974,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-4
    */
   async commandToggleHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot4);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot4);
   }
 
   /**
@@ -985,7 +985,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-5
    */
   async commandToggleHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot5);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot5);
   }
 
   /**
@@ -996,7 +996,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-6
    */
   async commandToggleHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot6);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot6);
   }
 
   /**
@@ -1007,7 +1007,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-7
    */
   async commandToggleHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot7);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot7);
   }
 
   /**
@@ -1018,7 +1018,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-8
    */
   async commandToggleHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot8);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot8);
   }
 
   /**
@@ -1029,7 +1029,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-9
    */
   async commandToggleHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot9);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot9);
   }
 
   /**
@@ -1040,7 +1040,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-0
    */
   async commandToggleHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot0);
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot0);
   }
 
   /**
@@ -1051,7 +1051,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-1
    */
   async commandJumpToHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot1);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot1);
   }
 
   /**
@@ -1062,7 +1062,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-2
    */
   async commandJumpToHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot2);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot2);
   }
 
   /**
@@ -1073,7 +1073,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-3
    */
   async commandJumpToHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot3);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot3);
   }
 
   /**
@@ -1084,7 +1084,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-4
    */
   async commandJumpToHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot4);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot4);
   }
 
   /**
@@ -1095,7 +1095,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-5
    */
   async commandJumpToHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot5);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot5);
   }
 
   /**
@@ -1106,7 +1106,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-6
    */
   async commandJumpToHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot6);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot6);
   }
 
   /**
@@ -1117,7 +1117,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-7
    */
   async commandJumpToHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot7);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot7);
   }
 
   /**
@@ -1128,7 +1128,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-8
    */
   async commandJumpToHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot8);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot8);
   }
 
   /**
@@ -1139,7 +1139,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-9
    */
   async commandJumpToHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot9);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot9);
   }
 
   /**
@@ -1150,7 +1150,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-0
    */
   async commandJumpToHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot0);
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot0);
   }
 
   /**
@@ -1161,7 +1161,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-1
    */
   async commandDescribeHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot1);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot1);
   }
 
   /**
@@ -1172,7 +1172,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-2
    */
   async commandDescribeHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot2);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot2);
   }
 
   /**
@@ -1183,7 +1183,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-3
    */
   async commandDescribeHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot3);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot3);
   }
 
   /**
@@ -1194,7 +1194,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-4
    */
   async commandDescribeHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot4);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot4);
   }
 
   /**
@@ -1205,7 +1205,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-5
    */
   async commandDescribeHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot5);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot5);
   }
 
   /**
@@ -1216,7 +1216,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-6
    */
   async commandDescribeHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot6);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot6);
   }
 
   /**
@@ -1227,7 +1227,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-7
    */
   async commandDescribeHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot7);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot7);
   }
 
   /**
@@ -1238,7 +1238,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-8
    */
   async commandDescribeHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot8);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot8);
   }
 
   /**
@@ -1249,7 +1249,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-9
    */
   async commandDescribeHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot9);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot9);
   }
 
   /**
@@ -1260,7 +1260,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-0
    */
   async commandDescribeHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot0);
+    return await this.sendKeys(keyCodeCommands.describeHotSpot0);
   }
 
   /**
@@ -1271,7 +1271,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-1
    */
   async commandMonitorHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot1);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot1);
   }
 
   /**
@@ -1282,7 +1282,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-2
    */
   async commandMonitorHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot2);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot2);
   }
 
   /**
@@ -1293,7 +1293,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-3
    */
   async commandMonitorHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot3);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot3);
   }
 
   /**
@@ -1304,7 +1304,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-4
    */
   async commandMonitorHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot4);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot4);
   }
 
   /**
@@ -1315,7 +1315,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-5
    */
   async commandMonitorHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot5);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot5);
   }
 
   /**
@@ -1326,7 +1326,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-6
    */
   async commandMonitorHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot6);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot6);
   }
 
   /**
@@ -1337,7 +1337,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-7
    */
   async commandMonitorHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot7);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot7);
   }
 
   /**
@@ -1348,7 +1348,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-8
    */
   async commandMonitorHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot8);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot8);
   }
 
   /**
@@ -1359,7 +1359,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-9
    */
   async commandMonitorHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot9);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot9);
   }
 
   /**
@@ -1370,7 +1370,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-0
    */
   async commandMonitorHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot0);
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot0);
   }
 
   /**
@@ -1381,7 +1381,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-\
    */
   async commandJumpToParentFolder(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToParentFolder);
+    return await this.sendKeys(keyCodeCommands.jumpToParentFolder);
   }
 
   /**
@@ -1392,7 +1392,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F1
    */
   async commandHearApplicationSummary(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.hearApplicationSummary);
+    return await this.sendKeys(keyCodeCommands.hearApplicationSummary);
   }
 
   /**
@@ -1403,7 +1403,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F1-F1
    */
   async commandOpenApplicationChooser(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openApplicationChooser);
+    return await this.sendKeys(keyCodeCommands.openApplicationChooser);
   }
 
   /**
@@ -1414,7 +1414,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F2
    */
   async commandHearWindowSummary(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.hearWindowSummary);
+    return await this.sendKeys(keyCodeCommands.hearWindowSummary);
   }
 
   /**
@@ -1425,7 +1425,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F2-F2
    */
   async commandOpenWindowChooser(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openWindowChooser);
+    return await this.sendKeys(keyCodeCommands.openWindowChooser);
   }
 
   /**
@@ -1436,7 +1436,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F3
    */
   async commandDescribeItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItem);
+    return await this.sendKeys(keyCodeCommands.describeItem);
   }
 
   /**
@@ -1447,7 +1447,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F3
    */
   async commandDescribeItemSize(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemSize);
+    return await this.sendKeys(keyCodeCommands.describeItemSize);
   }
 
   /**
@@ -1458,7 +1458,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F3-F3
    */
   async commandDescribeItemPosition(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemPosition);
+    return await this.sendKeys(keyCodeCommands.describeItemPosition);
   }
 
   /**
@@ -1469,7 +1469,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F4
    */
   async commandDescribeItemWithKeyboardFocus(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemWithKeyboardFocus);
+    return await this.sendKeys(keyCodeCommands.describeItemWithKeyboardFocus);
   }
 
   /**
@@ -1480,7 +1480,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F4-F4
    */
   async commandDescribeLocationOfInsertionPoint(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeLocationOfInsertionPoint);
+    return await this.sendKeys(keyCodeCommands.describeLocationOfInsertionPoint);
   }
 
   /**
@@ -1491,7 +1491,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F5
    */
   async commandDescribeItemUnderMouseCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemUnderMouseCursor);
+    return await this.sendKeys(keyCodeCommands.describeItemUnderMouseCursor);
   }
 
   /**
@@ -1502,7 +1502,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F5-F5
    */
   async commandDescribeLocationOfMouseInCoordinates(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeLocationOfMouseInCoordinates);
+    return await this.sendKeys(keyCodeCommands.describeLocationOfMouseInCoordinates);
   }
 
   /**
@@ -1513,7 +1513,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F5-F5-F5
    */
   async commandDescribeLocationOfMouse(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeLocationOfMouse);
+    return await this.sendKeys(keyCodeCommands.describeLocationOfMouse);
   }
 
   /**
@@ -1524,7 +1524,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F6
    */
   async commandDescribeSelectedItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeSelectedItem);
+    return await this.sendKeys(keyCodeCommands.describeSelectedItem);
   }
 
   /**
@@ -1535,7 +1535,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-A
    */
   async commandReadEverythingInCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readEverythingInCursor);
+    return await this.sendKeys(keyCodeCommands.readEverythingInCursor);
   }
 
   /**
@@ -1546,7 +1546,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-W
    */
   async commandReadEverythingInWindow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readEverythingInWindow);
+    return await this.sendKeys(keyCodeCommands.readEverythingInWindow);
   }
 
   /**
@@ -1557,7 +1557,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Z
    */
   async commandRepeatLastSpokenPhrase(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.repeatLastSpokenPhrase);
+    return await this.sendKeys(keyCodeCommands.repeatLastSpokenPhrase);
   }
 
   /**
@@ -1568,7 +1568,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-C
    */
   async commandCopyLastSpokenPhraseToClipboard(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.copyLastSpokenPhraseToClipboard);
+    return await this.sendKeys(keyCodeCommands.copyLastSpokenPhraseToClipboard);
   }
 
   /**
@@ -1579,7 +1579,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Z
    */
   async commandSaveLastSpokenPhraseToDesktop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.saveLastSpokenPhraseToDesktop);
+    return await this.sendKeys(keyCodeCommands.saveLastSpokenPhraseToDesktop);
   }
 
   /**
@@ -1590,7 +1590,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F
    */
   async commandFind(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.find);
+    return await this.sendKeys(keyCodeCommands.find);
   }
 
   /**
@@ -1601,7 +1601,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-G
    */
   async commandFindNextSearchedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextSearchedText);
+    return await this.sendKeys(keyCodeCommands.findNextSearchedText);
   }
 
   /**
@@ -1612,7 +1612,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-G
    */
   async commandFindPreviousSearchedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousSearchedText);
+    return await this.sendKeys(keyCodeCommands.findPreviousSearchedText);
   }
 
   /**
@@ -1623,7 +1623,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-X
    */
   async commandFindNextList(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextList);
+    return await this.sendKeys(keyCodeCommands.findNextList);
   }
 
   /**
@@ -1634,7 +1634,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-X
    */
   async commandFindPreviousList(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousList);
+    return await this.sendKeys(keyCodeCommands.findPreviousList);
   }
 
   /**
@@ -1645,7 +1645,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-B
    */
   async commandFindNextBoldText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextBoldText);
+    return await this.sendKeys(keyCodeCommands.findNextBoldText);
   }
 
   /**
@@ -1656,7 +1656,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-B
    */
   async commandFindPreviousBoldText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousBoldText);
+    return await this.sendKeys(keyCodeCommands.findPreviousBoldText);
   }
 
   /**
@@ -1667,7 +1667,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-C
    */
   async commandFindNextStyleChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextStyleChange);
+    return await this.sendKeys(keyCodeCommands.findNextStyleChange);
   }
 
   /**
@@ -1678,7 +1678,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-C
    */
   async commandFindPreviousStyleChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousStyleChange);
+    return await this.sendKeys(keyCodeCommands.findPreviousStyleChange);
   }
 
   /**
@@ -1689,7 +1689,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-I
    */
   async commandFindNextItalicText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextItalicText);
+    return await this.sendKeys(keyCodeCommands.findNextItalicText);
   }
 
   /**
@@ -1700,7 +1700,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-I
    */
   async commandFindPreviousItalicText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousItalicText);
+    return await this.sendKeys(keyCodeCommands.findPreviousItalicText);
   }
 
   /**
@@ -1711,7 +1711,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-K
    */
   async commandFindNextColorChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextColorChange);
+    return await this.sendKeys(keyCodeCommands.findNextColorChange);
   }
 
   /**
@@ -1722,7 +1722,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-K
    */
   async commandFindPreviousColorChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousColorChange);
+    return await this.sendKeys(keyCodeCommands.findPreviousColorChange);
   }
 
   /**
@@ -1733,7 +1733,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-O
    */
   async commandFindNextFontChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextFontChange);
+    return await this.sendKeys(keyCodeCommands.findNextFontChange);
   }
 
   /**
@@ -1744,7 +1744,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-O
    */
   async commandFindPreviousFontChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousFontChange);
+    return await this.sendKeys(keyCodeCommands.findPreviousFontChange);
   }
 
   /**
@@ -1755,7 +1755,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-T
    */
   async commandFindNextTable(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextTable);
+    return await this.sendKeys(keyCodeCommands.findNextTable);
   }
 
   /**
@@ -1766,7 +1766,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-T
    */
   async commandFindPreviousTable(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousTable);
+    return await this.sendKeys(keyCodeCommands.findPreviousTable);
   }
 
   /**
@@ -1777,7 +1777,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-U
    */
   async commandFindNextUnderlinedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextUnderlinedText);
+    return await this.sendKeys(keyCodeCommands.findNextUnderlinedText);
   }
 
   /**
@@ -1788,7 +1788,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-U
    */
   async commandFindPreviousUnderlinedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousUnderlinedText);
+    return await this.sendKeys(keyCodeCommands.findPreviousUnderlinedText);
   }
 
   /**
@@ -1799,7 +1799,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-J
    */
   async commandFindNextControl(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextControl);
+    return await this.sendKeys(keyCodeCommands.findNextControl);
   }
 
   /**
@@ -1810,7 +1810,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-J
    */
   async commandFindPreviousControl(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousControl);
+    return await this.sendKeys(keyCodeCommands.findPreviousControl);
   }
 
   /**
@@ -1821,7 +1821,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-D
    */
   async commandFindNextDifferentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextDifferentItem);
+    return await this.sendKeys(keyCodeCommands.findNextDifferentItem);
   }
 
   /**
@@ -1832,7 +1832,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-D
    */
   async commandFindPreviousDifferentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousDifferentItem);
+    return await this.sendKeys(keyCodeCommands.findPreviousDifferentItem);
   }
 
   /**
@@ -1843,7 +1843,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-S
    */
   async commandFindNextItemWithSameTypeAsCurrentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextItemWithSameTypeAsCurrentItem);
+    return await this.sendKeys(keyCodeCommands.findNextItemWithSameTypeAsCurrentItem);
   }
 
   /**
@@ -1854,7 +1854,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-S
    */
   async commandFindPreviousItemWithSameTypeAsCurrentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousItemWithSameTypeAsCurrentItem);
+    return await this.sendKeys(keyCodeCommands.findPreviousItemWithSameTypeAsCurrentItem);
   }
 
   /**
@@ -1865,7 +1865,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-G
    */
   async commandFindNextGraphic(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextGraphic);
+    return await this.sendKeys(keyCodeCommands.findNextGraphic);
   }
 
   /**
@@ -1876,7 +1876,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-G
    */
   async commandFindPreviousGraphic(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousGraphic);
+    return await this.sendKeys(keyCodeCommands.findPreviousGraphic);
   }
 
   /**
@@ -1887,7 +1887,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-H
    */
   async commandFindNextHeading(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextHeading);
+    return await this.sendKeys(keyCodeCommands.findNextHeading);
   }
 
   /**
@@ -1898,7 +1898,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-H
    */
   async commandFindPreviousHeading(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousHeading);
+    return await this.sendKeys(keyCodeCommands.findPreviousHeading);
   }
 
   /**
@@ -1909,7 +1909,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-L
    */
   async commandFindNextLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextLink);
+    return await this.sendKeys(keyCodeCommands.findNextLink);
   }
 
   /**
@@ -1920,7 +1920,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-L
    */
   async commandFindPreviousLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousLink);
+    return await this.sendKeys(keyCodeCommands.findPreviousLink);
   }
 
   /**
@@ -1931,7 +1931,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-M
    */
   async commandFindNextHeadingOfSameLevel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextHeadingOfSameLevel);
+    return await this.sendKeys(keyCodeCommands.findNextHeadingOfSameLevel);
   }
 
   /**
@@ -1942,7 +1942,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-M
    */
   async commandFindPreviousHeadingOfSameLevel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousHeadingOfSameLevel);
+    return await this.sendKeys(keyCodeCommands.findPreviousHeadingOfSameLevel);
   }
 
   /**
@@ -1953,7 +1953,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-P
    */
   async commandFindNextPlainText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextPlainText);
+    return await this.sendKeys(keyCodeCommands.findNextPlainText);
   }
 
   /**
@@ -1964,7 +1964,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-P
    */
   async commandFindPreviousPlainText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousPlainText);
+    return await this.sendKeys(keyCodeCommands.findPreviousPlainText);
   }
 
   /**
@@ -1975,7 +1975,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-V
    */
   async commandFindNextVisitedLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextVisitedLink);
+    return await this.sendKeys(keyCodeCommands.findNextVisitedLink);
   }
 
   /**
@@ -1986,7 +1986,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-V
    */
   async commandFindPreviousVisitedLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousVisitedLink);
+    return await this.sendKeys(keyCodeCommands.findPreviousVisitedLink);
   }
 
   /**
@@ -1997,7 +1997,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-E
    */
   async commandFindNextMisspelledWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextMisspelledWord);
+    return await this.sendKeys(keyCodeCommands.findNextMisspelledWord);
   }
 
   /**
@@ -2008,7 +2008,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-E
    */
   async commandFindPreviousMisspelledWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousMisspelledWord);
+    return await this.sendKeys(keyCodeCommands.findPreviousMisspelledWord);
   }
 
   /**
@@ -2019,7 +2019,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-A
    */
   async commandReadAllText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readAllText);
+    return await this.sendKeys(keyCodeCommands.readAllText);
   }
 
   /**
@@ -2030,7 +2030,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-A
    */
   async commandSelectAllText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.selectAllText);
+    return await this.sendKeys(keyCodeCommands.selectAllText);
   }
 
   /**
@@ -2041,7 +2041,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Return
    */
   async commandToggleTextSelection(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleTextSelection);
+    return await this.sendKeys(keyCodeCommands.toggleTextSelection);
   }
 
   /**
@@ -2052,7 +2052,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-T
    */
   async commandSpeakTextAttributes(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.speakTextAttributes);
+    return await this.sendKeys(keyCodeCommands.speakTextAttributes);
   }
 
   /**
@@ -2063,7 +2063,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-P
    */
   async commandReadParagraph(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readParagraph);
+    return await this.sendKeys(keyCodeCommands.readParagraph);
   }
 
   /**
@@ -2074,7 +2074,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Page Down
    */
   async commandReadNextParagraph(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextParagraph);
+    return await this.sendKeys(keyCodeCommands.readNextParagraph);
   }
 
   /**
@@ -2085,7 +2085,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Page Up
    */
   async commandReadPreviousParagraph(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousParagraph);
+    return await this.sendKeys(keyCodeCommands.readPreviousParagraph);
   }
 
   /**
@@ -2096,7 +2096,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-S
    */
   async commandReadSentence(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readSentence);
+    return await this.sendKeys(keyCodeCommands.readSentence);
   }
 
   /**
@@ -2107,7 +2107,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Page Down
    */
   async commandReadNextSentence(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextSentence);
+    return await this.sendKeys(keyCodeCommands.readNextSentence);
   }
 
   /**
@@ -2118,7 +2118,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Page Up
    */
   async commandReadPreviousSentence(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousSentence);
+    return await this.sendKeys(keyCodeCommands.readPreviousSentence);
   }
 
   /**
@@ -2129,7 +2129,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-L
    */
   async commandReadLine(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readLine);
+    return await this.sendKeys(keyCodeCommands.readLine);
   }
 
   /**
@@ -2140,7 +2140,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Down Arrow
    */
   async commandReadNextLine(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextLine);
+    return await this.sendKeys(keyCodeCommands.readNextLine);
   }
 
   /**
@@ -2151,7 +2151,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Up Arrow
    */
   async commandReadPreviousLine(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousLine);
+    return await this.sendKeys(keyCodeCommands.readPreviousLine);
   }
 
   /**
@@ -2162,7 +2162,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-W
    */
   async commandReadWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWord);
+    return await this.sendKeys(keyCodeCommands.readWord);
   }
 
   /**
@@ -2173,7 +2173,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-W-W
    */
   async commandReadWordSpelled(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWordSpelled);
+    return await this.sendKeys(keyCodeCommands.readWordSpelled);
   }
 
   /**
@@ -2184,7 +2184,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-W-W-W
    */
   async commandReadWordPhonetically(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWordPhonetically);
+    return await this.sendKeys(keyCodeCommands.readWordPhonetically);
   }
 
   /**
@@ -2195,7 +2195,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Right Arrow
    */
   async commandReadNextWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextWord);
+    return await this.sendKeys(keyCodeCommands.readNextWord);
   }
 
   /**
@@ -2206,7 +2206,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Left Arrow
    */
   async commandReadPreviousWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousWord);
+    return await this.sendKeys(keyCodeCommands.readPreviousWord);
   }
 
   /**
@@ -2217,7 +2217,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-W
    */
   async commandReadCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readCharacter);
+    return await this.sendKeys(keyCodeCommands.readCharacter);
   }
 
   /**
@@ -2228,7 +2228,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-C-C
    */
   async commandReadCharacterPhonetically(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readCharacterPhonetically);
+    return await this.sendKeys(keyCodeCommands.readCharacterPhonetically);
   }
 
   /**
@@ -2239,7 +2239,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Right Arrow
    */
   async commandReadNextCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextCharacter);
+    return await this.sendKeys(keyCodeCommands.readNextCharacter);
   }
 
   /**
@@ -2250,7 +2250,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Left Arrow
    */
   async commandReadPreviousCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousCharacter);
+    return await this.sendKeys(keyCodeCommands.readPreviousCharacter);
   }
 
   /**
@@ -2261,7 +2261,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Home
    */
   async commandMoveToFirstVisibleWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFirstVisibleWord);
+    return await this.sendKeys(keyCodeCommands.moveToFirstVisibleWord);
   }
 
   /**
@@ -2272,7 +2272,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-End
    */
   async commandMoveToLastVisibleWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToLastVisibleWord);
+    return await this.sendKeys(keyCodeCommands.moveToLastVisibleWord);
   }
 
   /**
@@ -2283,7 +2283,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-Home
    */
   async commandMoveToBeginningOfText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToBeginningOfText);
+    return await this.sendKeys(keyCodeCommands.moveToBeginningOfText);
   }
 
   /**
@@ -2294,7 +2294,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-End
    */
   async commandMoveToEndOfText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToEndOfText);
+    return await this.sendKeys(keyCodeCommands.moveToEndOfText);
   }
 
   /**
@@ -2305,7 +2305,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F3
    */
   async commandReadCurrentWordAndCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readCurrentWordAndCharacter);
+    return await this.sendKeys(keyCodeCommands.readCurrentWordAndCharacter);
   }
 
   /**
@@ -2316,7 +2316,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-F3-F3
    */
   async commandReadNumberOfLines(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNumberOfLines);
+    return await this.sendKeys(keyCodeCommands.readNumberOfLines);
   }
 
   /**
@@ -2327,7 +2327,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Y
    */
   async commandMoveToNextColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextColumn);
+    return await this.sendKeys(keyCodeCommands.moveToNextColumn);
   }
 
   /**
@@ -2338,7 +2338,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-Y
    */
   async commandMoveToPreviousColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousColumn);
+    return await this.sendKeys(keyCodeCommands.moveToPreviousColumn);
   }
 
   /**
@@ -2349,7 +2349,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-F
    */
   async commandMoveToNextFrame(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextFrame);
+    return await this.sendKeys(keyCodeCommands.moveToNextFrame);
   }
 
   /**
@@ -2360,7 +2360,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-F
    */
   async commandMoveToPreviousFrame(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousFrame);
+    return await this.sendKeys(keyCodeCommands.moveToPreviousFrame);
   }
 
   /**
@@ -2371,7 +2371,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-N
    */
   async commandMoveToNextAutoWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextAutoWebSpot);
+    return await this.sendKeys(keyCodeCommands.moveToNextAutoWebSpot);
   }
 
   /**
@@ -2382,7 +2382,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-N
    */
   async commandMoveToPreviousAutoWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousAutoWebSpot);
+    return await this.sendKeys(keyCodeCommands.moveToPreviousAutoWebSpot);
   }
 
   /**
@@ -2393,7 +2393,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-]
    */
   async commandMoveToNextWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextWebSpot);
+    return await this.sendKeys(keyCodeCommands.moveToNextWebSpot);
   }
 
   /**
@@ -2404,7 +2404,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-[
    */
   async commandMoveToPreviousWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousWebSpot);
+    return await this.sendKeys(keyCodeCommands.moveToPreviousWebSpot);
   }
 
   /**
@@ -2415,7 +2415,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-U
    */
   async commandOpenWebItemRotor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openWebItemRotor);
+    return await this.sendKeys(keyCodeCommands.openWebItemRotor);
   }
 
   /**
@@ -2426,7 +2426,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-B
    */
   async commandReadFromBeginningToCurrent(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readFromBeginningToCurrent);
+    return await this.sendKeys(keyCodeCommands.readFromBeginningToCurrent);
   }
 
   /**
@@ -2437,7 +2437,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-U
    */
   async commandReadLinkAddress(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readLinkAddress);
+    return await this.sendKeys(keyCodeCommands.readLinkAddress);
   }
 
   /**
@@ -2448,7 +2448,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Shift-I
    */
   async commandReadWebpageStatistics(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWebpageStatistics);
+    return await this.sendKeys(keyCodeCommands.readWebpageStatistics);
   }
 
   /**
@@ -2459,7 +2459,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-{
    */
   async commandRemoveWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.removeWebSpot);
+    return await this.sendKeys(keyCodeCommands.removeWebSpot);
   }
 
   /**
@@ -2470,7 +2470,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-}
    */
   async commandSetWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.setWebSpot);
+    return await this.sendKeys(keyCodeCommands.setWebSpot);
   }
 
   /**
@@ -2481,7 +2481,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-Command-Shift-}-}
    */
   async commandSetSweetSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.setSweetSpot);
+    return await this.sendKeys(keyCodeCommands.setSweetSpot);
   }
 
   /**
@@ -2492,7 +2492,7 @@ export class VoiceOver extends VoiceOverBase {
    * Representation: VO-=
    */
   async commandToggleGroupingItemsWithinTable(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleGroupingItemsWithinTable);
+    return await this.sendKeys(keyCodeCommands.toggleGroupingItemsWithinTable);
   }
 
   /**

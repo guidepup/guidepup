@@ -41,7 +41,7 @@ const commandMethodDefinitions = Object.entries(keyCodeCommands).reduce(
       command.representation
     }\n   */\n  async command${title(
       name
-    )}(): Promise<void> {\n    return await this.keyCode(keyCodeCommands.${name});\n  }${methodSuffix}`);
+    )}(): Promise<void> {\n    return await this.sendKeys(keyCodeCommands.${name});\n  }${methodSuffix}`);
   },
   ""
 );

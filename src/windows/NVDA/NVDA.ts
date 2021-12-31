@@ -68,91 +68,33 @@ export class NVDA {
   }
 
   /**
-   * Send a key code to NVDA.
+   * Send a key code or keystroke to NVDA.
    *
-   * @param {object} keyCodeCommand Key code command to send to NVDA.
+   * @param {object} keyCommand Key code or keystroke command to send to NVDA.
    */
-  async keyCode(keyCodeCommand: KeyCodeCommand): Promise<void> {
-    return await this.#tap(sendKeys(keyCodeCommand));
+  async sendKeys(keyCommand: KeyCodeCommand | KeystrokeCommand): Promise<void> {
+    this.#tap(sendKeys(keyCommand));
   }
 
   /**
-   * Send a keystroke to NVDA.
-   *
-   * @param {object} keystrokeCommand Keystroke command to send to NVDA.
+   * Move the NVDA cursor to the previous location.
    */
-  async keystroke(keystrokeCommand: KeystrokeCommand): Promise<void> {
-    return await this.#tap(sendKeys(keystrokeCommand));
+  async movePrevious(): Promise<void> {
+    await this.sendKeys({ keyCode: KeyCodes.KEY_UP_ARROW });
   }
 
   /**
-   * Move the NVDA cursor up to a new location.
+   * Move the NVDA cursor to the next location.
    */
-  async moveUp(): Promise<void> {
-    await this.keyCode({ keyCode: KeyCodes.KEY_UP_ARROW });
+  async moveNext(): Promise<void> {
+    await this.sendKeys({ keyCode: KeyCodes.KEY_DOWN_ARROW });
   }
 
   /**
-   * Move the NVDA cursor right to a new location.
+   * Perform default action.
    */
-  async moveRight(): Promise<void> {
-    await this.keyCode({ keyCode: KeyCodes.KEY_RIGHT_ARROW });
-  }
-
-  /**
-   * Move the NVDA cursor down to a new location.
-   */
-  async moveDown(): Promise<void> {
-    await this.keyCode({ keyCode: KeyCodes.KEY_DOWN_ARROW });
-  }
-
-  /**
-   * Move the NVDA cursor left to a new location.
-   */
-  async moveLeft(): Promise<void> {
-    await this.keyCode({ keyCode: KeyCodes.KEY_LEFT_ARROW });
-  }
-
-  /**
-   * Click the mouse once.
-   */
-  click(): Promise<void> {
-    notImplemented();
-  }
-
-  /**
-   * Double click the mouse.
-   */
-  doubleClick(): Promise<void> {
-    notImplemented();
-  }
-
-  /**
-   * Triple click the mouse.
-   */
-  tripleClick(): Promise<void> {
-    notImplemented();
-  }
-
-  /**
-   * Right click the mouse once.
-   */
-  rightClick(): Promise<void> {
-    notImplemented();
-  }
-
-  /**
-   * Double right click the mouse.
-   */
-  rightDoubleClick(): Promise<void> {
-    notImplemented();
-  }
-
-  /**
-   * Triple right click the mouse.
-   */
-  rightTripleClick(): Promise<void> {
-    notImplemented();
+  async performAction(): Promise<void> {
+    await this.sendKeys({ keyCode: KeyCodes.KEY_ENTER });
   }
 
   /**
@@ -161,6 +103,7 @@ export class NVDA {
    * @returns {Promise<string>} The last spoken phrase.
    */
   getLastSpokenPhrase(): Promise<string> {
+    // TODO: interact with NVDA (python) console to retrieve last phrase
     notImplemented();
   }
 
@@ -181,6 +124,7 @@ export class NVDA {
    * @returns {Promise<string>} The item's text.
    */
   getItemText(): Promise<string> {
+    // TODO: interact with NVDA (python) console to retrieve item text
     notImplemented();
   }
 

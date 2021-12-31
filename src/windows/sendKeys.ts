@@ -1,9 +1,7 @@
 import type { KeyCodeCommand } from "./KeyCodeCommand";
 import type { KeystrokeCommand } from "./KeystrokeCommand";
 import { runVbsCode } from "./runVbsCode";
-
-const isKeyCode = (command: unknown): command is KeyCodeCommand =>
-  typeof command === "object" && command !== null && "keyCode" in command;
+import { isKeyCode } from "../isKeyCode";
 
 function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
   const characters = isKeyCode(command) ? command.keyCode : command.characters;

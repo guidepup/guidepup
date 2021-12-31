@@ -3,6 +3,9 @@ import { NVDA } from "../../src";
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Starts and stops NVDA.
+ */
 async function run(): Promise<void> {
   const nvda = new NVDA();
 
@@ -14,7 +17,7 @@ async function run(): Promise<void> {
   } catch (e) {
     console.error(e);
   } finally {
-    // Ensure we stop VoiceOver.
+    // Ensure we stop NVDA.
     await nvda.stop();
   }
 }
