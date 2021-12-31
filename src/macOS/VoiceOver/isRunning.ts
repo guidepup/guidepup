@@ -40,7 +40,7 @@ export async function isRunning(): Promise<boolean> {
     }, Applications.VOICE_OVER);
 
     return true;
-  } catch {
+  } catch (_) {
     return false;
   }
 }

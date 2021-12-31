@@ -13,7 +13,7 @@ let installed: boolean;
 try {
   accessSync(DEFAULT_NVDA_PATH);
   installed = true;
-} catch {
+} catch (_) {
   installed = false;
 }
 
