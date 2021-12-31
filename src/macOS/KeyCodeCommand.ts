@@ -6,6 +6,10 @@ import type { Modifiers } from "./Modifiers";
  */
 export interface KeyCodeCommand extends KeyCodeCommandBase {
   /**
+   * The key code or key codes to send.
+   */
+  keyCode: number | number[];
+  /**
    * List of modifier keys to press while sending the key code(s).
    */
   modifiers?: Modifiers[];
@@ -17,5 +21,5 @@ export interface KeyCodeCommand extends KeyCodeCommandBase {
    * Symbolic representation of the key code and modifier keys this command
    * uses.
    */
-  gesture?: string;
+  representation?: string;
 }

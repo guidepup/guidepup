@@ -1,12 +1,15 @@
-import { VoiceOver, MacOSApplications, MacOSKeyCodes } from "../../src/";
-import { keyCode } from "../../src/macOS/keyCode";
-import { keystroke } from "../../src/macOS/keystroke";
+import {
+  VoiceOver,
+  MacOSApplications,
+  macOSActivate,
+  macOSSendKeys,
+} from "../../src/";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
- * Opens Safari and searches for "GitHub Guidepup" on Google.
+ * Opens Safari and navigates to the guidepup GitHub repo.
  */
 async function run(): Promise<void> {
   const vo = new VoiceOver();
@@ -20,36 +23,25 @@ async function run(): Promise<void> {
     // Not best practice, but expectation is that consumer will perform proper
     // checks to ensure that Safari is ready, most likely using something like
     // playwright to launch and control the browser.
-    await vo.activate(MacOSApplications.SAFARI);
-    await delay(2000);
+    await macOSActivate(MacOSApplications.SAFARI);
+    await delay(4000);
 
     // Interact with the toolbar.
-    await vo.gestureInteractWithItem();
+    await vo.commandInteractWithItem();
 
     // Navigate across to the address input.
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
+    await vo.moveNext();
+    await vo.moveNext();
+    await vo.moveNext();
+    await vo.moveNext();
+    await vo.moveNext();
 
-    // Navigate to Google.
-    await keystroke(MacOSApplications.SAFARI, {
-      characters: "https://www.google.com",
+    // Navigate to guidepup repo.
+    await macOSSendKeys(MacOSApplications.SAFARI, {
+      characters: "https://github.com/guidepup/guidepup",
     });
-    await keyCode(MacOSApplications.SAFARI, {
-      keyCode: MacOSKeyCodes.KEY_RETURN,
-    });
-    await delay(2000);
-
-    // Search for "GitHub Guidepup" on Google.
-    await keystroke(MacOSApplications.SAFARI, {
-      characters: "GitHub Guidepup",
-    });
-    // await keyCode(Applications.SAFARI, {
-    //   keyCode: KeyCodes.KEY_RETURN,
-    // });
     await vo.performAction();
+    await delay(2000);
   } catch (e) {
     console.error(e);
   } finally {

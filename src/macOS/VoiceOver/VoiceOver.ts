@@ -12,2487 +12,2487 @@ export class VoiceOver extends VoiceOverBase {
   /**
    * Lock and unlock the VO (Control and Option) keys
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-;
+   * Representation: VO-;
    */
-  async gestureToggleLock(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleLock);
+  async commandToggleLock(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleLock);
   }
 
   /**
    * Open VoiceOver Utility
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F8
+   * Representation: VO-F8
    */
-  async gestureOpenVoiceOverUtility(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverUtility);
+  async commandOpenVoiceOverUtility(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openVoiceOverUtility);
   }
 
   /**
    * Open the VoiceOver Help menu
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-H
+   * Representation: VO-H
    */
-  async gestureOpenVoiceOverHelpMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverHelpMenu);
+  async commandOpenVoiceOverHelpMenu(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openVoiceOverHelpMenu);
   }
 
   /**
    * Open the VoiceOver Quick Start
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F8
+   * Representation: VO-Command-F8
    */
-  async gestureOpenVoiceOverQuickStart(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverQuickStart);
+  async commandOpenVoiceOverQuickStart(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openVoiceOverQuickStart);
   }
 
   /**
    * Open VoiceOver online help
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-/
+   * Representation: VO-Shift-/
    */
-  async gestureOpenVoiceOverOnlineHelp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVoiceOverOnlineHelp);
+  async commandOpenVoiceOverOnlineHelp(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openVoiceOverOnlineHelp);
   }
 
   /**
    * Start keyboard help
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-K
+   * Representation: VO-K
    */
-  async gestureStartKeyboardHelp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.startKeyboardHelp);
+  async commandStartKeyboardHelp(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.startKeyboardHelp);
   }
 
   /**
    * Hear a description of the item in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-N
+   * Representation: VO-Shift-N
    */
-  async gestureHearItemDescription(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.hearItemDescription);
+  async commandHearItemDescription(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.hearItemDescription);
   }
 
   /**
    * Open the Commands menu
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-H-H
+   * Representation: VO-H-H
    */
-  async gestureOpenCommandsMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openCommandsMenu);
+  async commandOpenCommandsMenu(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openCommandsMenu);
   }
 
   /**
    * Open the Find menu
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F
+   * Representation: VO-Shift-F
    */
-  async gestureOpenFindMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openFindMenu);
+  async commandOpenFindMenu(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openFindMenu);
   }
 
   /**
    * Close a menu or rotor, stop an action, or exit a mode
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: Escape
+   * Representation: Escape
    */
-  async gestureStopAction(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.stopAction);
+  async commandStopAction(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.stopAction);
   }
 
   /**
    * Tell VoiceOver to ignore the next key combination you press
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Tab
+   * Representation: VO-Tab
    */
-  async gestureIgnoreNextKeyCombination(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.ignoreNextKeyCombination);
+  async commandIgnoreNextKeyCombination(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.ignoreNextKeyCombination);
   }
 
   /**
    * Open the verbosity rotor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-V
+   * Representation: VO-V
    */
-  async gestureOpenVerbosityRotor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openVerbosityRotor);
+  async commandOpenVerbosityRotor(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openVerbosityRotor);
   }
 
   /**
    * Magnify the item in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-}
+   * Representation: VO-}
    */
-  async gestureMagnifyItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.magnifyItem);
+  async commandMagnifyItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.magnifyItem);
   }
 
   /**
    * Shrink the item in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-{
+   * Representation: VO-{
    */
-  async gestureShrinkItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.shrinkItem);
+  async commandShrinkItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.shrinkItem);
   }
 
   /**
    * Temporarily hide or show the VoiceOver cursor and the caption or braille panels
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F11
+   * Representation: VO-F11
    */
-  async gestureToggleVoiceOverCursorAndPanels(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleVoiceOverCursorAndPanels);
+  async commandToggleVoiceOverCursorAndPanels(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleVoiceOverCursorAndPanels);
   }
 
   /**
    * Hide or show the caption panel only
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F10
+   * Representation: VO-Command-F10
    */
-  async gestureToggleCaptionPanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleCaptionPanel);
+  async commandToggleCaptionPanel(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleCaptionPanel);
   }
 
   /**
    * Resize or move the caption panel
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F10
+   * Representation: VO-Shift-F10
    */
-  async gestureResizeOrMoveCaptionPanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.resizeOrMoveCaptionPanel);
+  async commandResizeOrMoveCaptionPanel(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.resizeOrMoveCaptionPanel);
   }
 
   /**
    * Hide or show the braille panel only
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F9
+   * Representation: VO-Command-F9
    */
-  async gestureToggleBraillePanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleBraillePanel);
+  async commandToggleBraillePanel(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleBraillePanel);
   }
 
   /**
    * Resize or move the braille panel
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F9
+   * Representation: VO-Shift-F9
    */
-  async gestureResizeOrMoveBraillePanel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.resizeOrMoveBraillePanel);
+  async commandResizeOrMoveBraillePanel(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.resizeOrMoveBraillePanel);
   }
 
   /**
    * Tile visuals (dim the screen, highlight the caption or braille panel, and show the item in the VoiceOver cursor in the center of the screen).
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F10
+   * Representation: VO-F10
    */
-  async gestureTileVisuals(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.tileVisuals);
+  async commandTileVisuals(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.tileVisuals);
   }
 
   /**
    * Enable or disable the Keyboard Commander
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-K
+   * Representation: VO-Shift-K
    */
-  async gestureToggleKeyboardCommander(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleKeyboardCommander);
+  async commandToggleKeyboardCommander(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleKeyboardCommander);
   }
 
   /**
    * Turn the screen black (screen curtain)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F11
+   * Representation: VO-Shift-F11
    */
-  async gestureToggleScreenCurtain(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleScreenCurtain);
+  async commandToggleScreenCurtain(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleScreenCurtain);
   }
 
   /**
    * Cycle through speech settings (rate, pitch, volume, intonation, voice)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-Right Arrow
+   * Representation: VO-Command-Shift-Right Arrow
    */
-  async gestureCycleRightThroughSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.cycleRightThroughSpeechSettings);
+  async commandCycleRightThroughSpeechSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.cycleRightThroughSpeechSettings);
   }
 
   /**
    * Cycle through speech settings (rate, pitch, volume, intonation, voice)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-Left Arrow
+   * Representation: VO-Command-Shift-Left Arrow
    */
-  async gestureCycleLeftThroughSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.cycleLeftThroughSpeechSettings);
+  async commandCycleLeftThroughSpeechSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.cycleLeftThroughSpeechSettings);
   }
 
   /**
    * Change the current speech setting (rate, pitch, volume, intonation, voice)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-Up Arrow
+   * Representation: VO-Command-Shift-Up Arrow
    */
-  async gestureChangeUpCurrentSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.changeUpCurrentSpeechSettings);
+  async commandChangeUpCurrentSpeechSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.changeUpCurrentSpeechSettings);
   }
 
   /**
    * Change the current speech setting (rate, pitch, volume, intonation, voice)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-Down Arrow
+   * Representation: VO-Command-Shift-Down Arrow
    */
-  async gestureChangeDownCurrentSpeechSettings(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.changeDownCurrentSpeechSettings);
+  async commandChangeDownCurrentSpeechSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.changeDownCurrentSpeechSettings);
   }
 
   /**
    * Press and release mouse button
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Space bar
+   * Representation: VO-Shift-Space bar
    */
-  async gesturePressAndReleaseMouse(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.pressAndReleaseMouse);
+  async commandPressAndReleaseMouse(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.pressAndReleaseMouse);
   }
 
   /**
    * Interact with an item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Down Arrow
+   * Representation: VO-Shift-Down Arrow
    */
-  async gestureInteractWithItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.interactWithItem);
+  async commandInteractWithItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.interactWithItem);
   }
 
   /**
    * Stop interacting with an item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Up Arrow
+   * Representation: VO-Shift-Up Arrow
    */
-  async gestureStopInteractingWithItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.stopInteractingWithItem);
+  async commandStopInteractingWithItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.stopInteractingWithItem);
   }
 
   /**
    * Perform the default action for the item in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Space bar
+   * Representation: VO-Space bar
    */
-  async gesturePerformDefaultActionForItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.performDefaultActionForItem);
+  async commandPerformDefaultActionForItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.performDefaultActionForItem);
   }
 
   /**
    * Select a menu or list item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Return
+   * Representation: VO-Return
    */
-  async gestureSelectItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.selectItem);
+  async commandSelectItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.selectItem);
   }
 
   /**
    * Select multiple items
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Space bar
+   * Representation: VO-Command-Space bar
    */
-  async gestureSelectMultipleItems(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.selectMultipleItems);
+  async commandSelectMultipleItems(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.selectMultipleItems);
   }
 
   /**
    * Perform a sticky mouse down or mouse up (for use when dragging an item from one location to drop in another location)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-Space bar
+   * Representation: VO-Command-Shift-Space bar
    */
-  async gestureToggleStickyMouse(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleStickyMouse);
+  async commandToggleStickyMouse(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleStickyMouse);
   }
 
   /**
    * Click the item under the mouse cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Space bar-Space bar
+   * Representation: VO-Shift-Space bar-Space bar
    */
-  async gestureDoubleClick(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.doubleClick);
+  async commandDoubleClick(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.doubleClick);
   }
 
   /**
    * Open or close a disclosure triangle
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-\
+   * Representation: VO-\
    */
-  async gestureToggleDisclosureTriangle(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleDisclosureTriangle);
+  async commandToggleDisclosureTriangle(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleDisclosureTriangle);
   }
 
   /**
    * Read a row in a table
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-R
+   * Representation: VO-R
    */
-  async gestureReadTableRow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableRow);
+  async commandReadTableRow(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readTableRow);
   }
 
   /**
    * Read a column in a table
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-C-C
+   * Representation: VO-C-C
    */
-  async gestureReadTableColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableColumn);
+  async commandReadTableColumn(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readTableColumn);
   }
 
   /**
    * Read the column header in a table
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-C
+   * Representation: VO-C
    */
-  async gestureReadTableColumnHeader(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableColumnHeader);
+  async commandReadTableColumnHeader(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readTableColumnHeader);
   }
 
   /**
    * Read row and column numbers in a table
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-T
+   * Representation: VO-Shift-T
    */
-  async gestureReadTableRowAndColumnNumbers(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readTableRowAndColumnNumbers);
+  async commandReadTableRowAndColumnNumbers(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readTableRowAndColumnNumbers);
   }
 
   /**
    * Sort a column in a table
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-|
+   * Representation: VO-|
    */
-  async gestureSortTableColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.sortTableColumn);
+  async commandSortTableColumn(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.sortTableColumn);
   }
 
   /**
    * Interact with scroll bars
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-S
+   * Representation: VO-Shift-S
    */
-  async gestureInteractWithScrollbars(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.interactWithScrollbars);
+  async commandInteractWithScrollbars(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.interactWithScrollbars);
   }
 
   /**
    * Resize a window or an object
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-~
+   * Representation: VO-~
    */
-  async gestureResizeObject(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.resizeObject);
+  async commandResizeObject(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.resizeObject);
   }
 
   /**
    * Move a window or an object
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-`
+   * Representation: VO-`
    */
-  async gestureMoveObject(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveObject);
+  async commandMoveObject(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveObject);
   }
 
   /**
    * Move up
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Up Arrow
+   * Representation: VO-Up Arrow
    */
-  async gestureMoveUp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveUp);
+  async commandMoveUp(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveUp);
   }
 
   /**
    * Move down
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Down Arrow
+   * Representation: VO-Down Arrow
    */
-  async gestureMoveDown(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveDown);
+  async commandMoveDown(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveDown);
   }
 
   /**
    * Move to previous
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Left Arrow
+   * Representation: VO-Left Arrow
    */
-  async gestureMoveToPrevious(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPrevious);
+  async commandMoveToPrevious(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToPrevious);
   }
 
   /**
    * Move to next
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Right Arrow
+   * Representation: VO-Right Arrow
    */
-  async gestureMoveToNext(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNext);
+  async commandMoveToNext(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToNext);
   }
 
   /**
    * Move to the top of the visible area (such as a window or text area) where the VoiceOver cursor is located
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Home
+   * Representation: VO-Home
    */
-  async gestureMoveToVisibleAreaTop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToVisibleAreaTop);
+  async commandMoveToVisibleAreaTop(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToVisibleAreaTop);
   }
 
   /**
    * Move to the bottom of the visible area (such as a window or text area) where the VoiceOver cursor is located
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-End
+   * Representation: VO-End
    */
-  async gestureMoveToVisibleAreaBottom(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToVisibleAreaBottom);
+  async commandMoveToVisibleAreaBottom(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToVisibleAreaBottom);
   }
 
   /**
    * Move to the top of the area (such as a window or text area) where the VoiceOver cursor is located, scrolling if necessary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Home
+   * Representation: VO-Shift-Home
    */
-  async gestureMoveToAreaTop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToAreaTop);
+  async commandMoveToAreaTop(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToAreaTop);
   }
 
   /**
    * Move to the bottom of the area (such as a window or text area) where the VoiceOver cursor is located, scrolling if necessary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-End
+   * Representation: VO-Shift-End
    */
-  async gestureMoveToAreaBottom(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToAreaBottom);
+  async commandMoveToAreaBottom(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToAreaBottom);
   }
 
   /**
    * Move to the top of a window, the first item in the Dock, or the first item on your desktop, depending on your location
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Home
+   * Representation: VO-Command-Home
    */
-  async gestureMoveToFirst(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFirst);
+  async commandMoveToFirst(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToFirst);
   }
 
   /**
    * Move to the lower-right corner of a window, the last item in the Dock, or the last item on your desktop, depending on your location
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-End
+   * Representation: VO-Command-End
    */
-  async gestureMoveToLast(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToLast);
+  async commandMoveToLast(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToLast);
   }
 
   /**
    * Move to the front the window where the VoiceOver cursor is located and make it active
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F2
+   * Representation: VO-Shift-F2
    */
-  async gestureMoveToFrontWindow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFrontWindow);
+  async commandMoveToFrontWindow(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToFrontWindow);
   }
 
   /**
    * Close the window where the VoiceOver cursor is located
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F2
+   * Representation: VO-Command-F2
    */
-  async gestureCloseWindow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.closeWindow);
+  async commandCloseWindow(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.closeWindow);
   }
 
   /**
    * Open the Item Chooser
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-I
+   * Representation: VO-I
    */
-  async gestureOpenItemChooser(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openItemChooser);
+  async commandOpenItemChooser(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openItemChooser);
   }
 
   /**
    * Move to the desktop
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-D
+   * Representation: VO-D
    */
-  async gestureMoveToDock(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToDock);
+  async commandMoveToDock(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToDock);
   }
 
   /**
    * Move to the desktop
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-D
+   * Representation: VO-D
    */
-  async gestureMoveToDesktop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToDesktop);
+  async commandMoveToDesktop(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToDesktop);
   }
 
   /**
    * Move to the menu bar
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-M
+   * Representation: VO-M
    */
-  async gestureMoveToMenuBar(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToMenuBar);
+  async commandMoveToMenuBar(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToMenuBar);
   }
 
   /**
    * Move to the first status menu in the menu bar
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-M-M
+   * Representation: VO-M-M
    */
-  async gestureMoveToFirstStatusMenuInMenuBar(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFirstStatusMenuInMenuBar);
+  async commandMoveToFirstStatusMenuInMenuBar(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToFirstStatusMenuInMenuBar);
   }
 
   /**
    * Open the Spotlight menu
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-M-M-M
+   * Representation: VO-M-M-M
    */
-  async gestureOpenSpotlightMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openSpotlightMenu);
+  async commandOpenSpotlightMenu(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openSpotlightMenu);
   }
 
   /**
    * Open a shortcut menu
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-J
+   * Representation: VO-Shift-J
    */
-  async gestureOpenShortcutMenu(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openShortcutMenu);
+  async commandOpenShortcutMenu(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openShortcutMenu);
   }
 
   /**
    * Jump to a linked item (for example, from a Mail message in the Inbox to its message text)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-J
+   * Representation: VO-J
    */
-  async gestureJumpToLinkedItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToLinkedItem);
+  async commandJumpToLinkedItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToLinkedItem);
   }
 
   /**
    * Temporarily disable or enable the cursor tracking options you selected in VoiceOver Utility. The command doesn't change the settings in VoiceOver Utility.
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F3
+   * Representation: VO-Shift-F3
    */
-  async gestureToggleCursorTrackingOptions(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleCursorTrackingOptions);
+  async commandToggleCursorTrackingOptions(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleCursorTrackingOptions);
   }
 
   /**
    * Move VoiceOver cursor to keyboard focus
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F4
+   * Representation: VO-Shift-F4
    */
-  async gestureMoveCursorToKeyboardFocus(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveCursorToKeyboardFocus);
+  async commandMoveCursorToKeyboardFocus(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveCursorToKeyboardFocus);
   }
 
   /**
    * Move keyboard focus to VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F4
+   * Representation: VO-Command-F4
    */
-  async gestureMoveKeyboardFocusToCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveKeyboardFocusToCursor);
+  async commandMoveKeyboardFocusToCursor(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveKeyboardFocusToCursor);
   }
 
   /**
    * Move VoiceOver cursor to mouse cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-F5
+   * Representation: VO-Shift-F5
    */
-  async gestureMoveCursorToMouseFocus(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveCursorToMouseFocus);
+  async commandMoveCursorToMouseFocus(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveCursorToMouseFocus);
   }
 
   /**
    * Move mouse cursor to VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F5
+   * Representation: VO-Command-F5
    */
-  async gestureMoveMouseFocusToCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveMouseFocusToCursor);
+  async commandMoveMouseFocusToCursor(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveMouseFocusToCursor);
   }
 
   /**
    * Jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-J
+   * Representation: VO-Shift-J
    */
-  async gestureJumpCommand(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpCommand);
+  async commandJumpCommand(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpCommand);
   }
 
   /**
    * Jump to the top edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Up Arrow
+   * Representation: VO-Shift-Up Arrow
    */
-  async gestureJumpToTopEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToTopEdge);
+  async commandJumpToTopEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToTopEdge);
   }
 
   /**
    * Jump to the right edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Right Arrow
+   * Representation: VO-Shift-Right Arrow
    */
-  async gestureJumpToRightEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToRightEdge);
+  async commandJumpToRightEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToRightEdge);
   }
 
   /**
    * Jump to the bottom edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Down Arrow
+   * Representation: VO-Shift-Down Arrow
    */
-  async gestureJumpToBottomEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToBottomEdge);
+  async commandJumpToBottomEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToBottomEdge);
   }
 
   /**
    * Jump to the left edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Left Arrow
+   * Representation: VO-Shift-Left Arrow
    */
-  async gestureJumpToLeftEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToLeftEdge);
+  async commandJumpToLeftEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToLeftEdge);
   }
 
   /**
    * Jump to the top visible edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Up Arrow
+   * Representation: VO-Up Arrow
    */
-  async gestureJumpToTopVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToTopVisibleEdge);
+  async commandJumpToTopVisibleEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToTopVisibleEdge);
   }
 
   /**
    * Jump to the right visible edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Right Arrow
+   * Representation: VO-Right Arrow
    */
-  async gestureJumpToRightVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToRightVisibleEdge);
+  async commandJumpToRightVisibleEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToRightVisibleEdge);
   }
 
   /**
    * Jump to the bottom visible edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Down Arrow
+   * Representation: VO-Down Arrow
    */
-  async gestureJumpToBottomVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToBottomVisibleEdge);
+  async commandJumpToBottomVisibleEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToBottomVisibleEdge);
   }
 
   /**
    * Jump to the left visible edge of an area. Used with jump command
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Left Arrow
+   * Representation: VO-Left Arrow
    */
-  async gestureJumpToLeftVisibleEdge(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToLeftVisibleEdge);
+  async commandJumpToLeftVisibleEdge(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToLeftVisibleEdge);
   }
 
   /**
    * Jump to the area that precedes a horizontal or vertical splitter
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-[
+   * Representation: VO-[
    */
-  async gestureJumpBeforeSplitter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpBeforeSplitter);
+  async commandJumpBeforeSplitter(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpBeforeSplitter);
   }
 
   /**
    * Jump to the area that follows a horizontal or vertical splitter
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-]
+   * Representation: VO-]
    */
-  async gestureJumpAfterSplitter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpAfterSplitter);
+  async commandJumpAfterSplitter(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpAfterSplitter);
   }
 
   /**
    * Find text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F
+   * Representation: VO-F
    */
-  async gestureFindText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findText);
+  async commandFindText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findText);
   }
 
   /**
    * Navigate in given direction, wrapping when necessary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Up Arrow
+   * Representation: VO-Command-Up Arrow
    */
-  async gestureNavigateUp(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateUp);
+  async commandNavigateUp(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.navigateUp);
+  }
+
+  /**
+   * Cycle through navigation settings (Headings, Form Controls, Landmarks, etc.)
+   *
+   * Uses VoiceOver keycode command
+   *
+   * Representation: VO-Command-Right Arrow
+   */
+  async commandCycleRightThroughNavigationSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.cycleRightThroughNavigationSettings);
   }
 
   /**
    * Navigate in given direction, wrapping when necessary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Right Arrow
+   * Representation: VO-Command-Down Arrow
    */
-  async gestureNavigateRight(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateRight);
+  async commandNavigateDown(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.navigateDown);
   }
 
   /**
-   * Navigate in given direction, wrapping when necessary
+   * Cycle through navigation settings (Headings, Form Controls, Landmarks, etc.)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Down Arrow
+   * Representation: VO-Command-Left Arrow
    */
-  async gestureNavigateDown(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateDown);
-  }
-
-  /**
-   * Navigate in given direction, wrapping when necessary
-   *
-   * Uses VoiceOver keycode gesture
-   *
-   * Gesture: VO-Command-Left Arrow
-   */
-  async gestureNavigateLeft(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.navigateLeft);
+  async commandCycleLeftThroughNavigationSettings(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.cycleLeftThroughNavigationSettings);
   }
 
   /**
    * Toggle hot spot 1
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-1
+   * Representation: VO-Shift-1
    */
-  async gestureToggleHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot1);
+  async commandToggleHotSpot1(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot1);
   }
 
   /**
    * Toggle hot spot 2
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-2
+   * Representation: VO-Shift-2
    */
-  async gestureToggleHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot2);
+  async commandToggleHotSpot2(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot2);
   }
 
   /**
    * Toggle hot spot 3
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-3
+   * Representation: VO-Shift-3
    */
-  async gestureToggleHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot3);
+  async commandToggleHotSpot3(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot3);
   }
 
   /**
    * Toggle hot spot 4
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-4
+   * Representation: VO-Shift-4
    */
-  async gestureToggleHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot4);
+  async commandToggleHotSpot4(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot4);
   }
 
   /**
    * Toggle hot spot 5
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-5
+   * Representation: VO-Shift-5
    */
-  async gestureToggleHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot5);
+  async commandToggleHotSpot5(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot5);
   }
 
   /**
    * Toggle hot spot 6
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-6
+   * Representation: VO-Shift-6
    */
-  async gestureToggleHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot6);
+  async commandToggleHotSpot6(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot6);
   }
 
   /**
    * Toggle hot spot 7
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-7
+   * Representation: VO-Shift-7
    */
-  async gestureToggleHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot7);
+  async commandToggleHotSpot7(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot7);
   }
 
   /**
    * Toggle hot spot 8
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-8
+   * Representation: VO-Shift-8
    */
-  async gestureToggleHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot8);
+  async commandToggleHotSpot8(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot8);
   }
 
   /**
    * Toggle hot spot 9
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-9
+   * Representation: VO-Shift-9
    */
-  async gestureToggleHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot9);
+  async commandToggleHotSpot9(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot9);
   }
 
   /**
    * Toggle hot spot 0
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-0
+   * Representation: VO-Shift-0
    */
-  async gestureToggleHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleHotSpot0);
+  async commandToggleHotSpot0(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleHotSpot0);
   }
 
   /**
    * Jump to hot spot 1
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-1
+   * Representation: VO-1
    */
-  async gestureJumpToHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot1);
+  async commandJumpToHotSpot1(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot1);
   }
 
   /**
    * Jump to hot spot 2
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-2
+   * Representation: VO-2
    */
-  async gestureJumpToHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot2);
+  async commandJumpToHotSpot2(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot2);
   }
 
   /**
    * Jump to hot spot 3
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-3
+   * Representation: VO-3
    */
-  async gestureJumpToHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot3);
+  async commandJumpToHotSpot3(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot3);
   }
 
   /**
    * Jump to hot spot 4
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-4
+   * Representation: VO-4
    */
-  async gestureJumpToHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot4);
+  async commandJumpToHotSpot4(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot4);
   }
 
   /**
    * Jump to hot spot 5
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-5
+   * Representation: VO-5
    */
-  async gestureJumpToHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot5);
+  async commandJumpToHotSpot5(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot5);
   }
 
   /**
    * Jump to hot spot 6
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-6
+   * Representation: VO-6
    */
-  async gestureJumpToHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot6);
+  async commandJumpToHotSpot6(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot6);
   }
 
   /**
    * Jump to hot spot 7
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-7
+   * Representation: VO-7
    */
-  async gestureJumpToHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot7);
+  async commandJumpToHotSpot7(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot7);
   }
 
   /**
    * Jump to hot spot 8
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-8
+   * Representation: VO-8
    */
-  async gestureJumpToHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot8);
+  async commandJumpToHotSpot8(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot8);
   }
 
   /**
    * Jump to hot spot 9
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-9
+   * Representation: VO-9
    */
-  async gestureJumpToHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot9);
+  async commandJumpToHotSpot9(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot9);
   }
 
   /**
    * Jump to hot spot 0
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-0
+   * Representation: VO-0
    */
-  async gestureJumpToHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToHotSpot0);
+  async commandJumpToHotSpot0(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToHotSpot0);
   }
 
   /**
    * Hear a description of hot spot 1
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-1
+   * Representation: VO-Command-1
    */
-  async gestureDescribeHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot1);
+  async commandDescribeHotSpot1(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot1);
   }
 
   /**
    * Hear a description of hot spot 2
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-2
+   * Representation: VO-Command-2
    */
-  async gestureDescribeHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot2);
+  async commandDescribeHotSpot2(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot2);
   }
 
   /**
    * Hear a description of hot spot 3
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-3
+   * Representation: VO-Command-3
    */
-  async gestureDescribeHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot3);
+  async commandDescribeHotSpot3(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot3);
   }
 
   /**
    * Hear a description of hot spot 4
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-4
+   * Representation: VO-Command-4
    */
-  async gestureDescribeHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot4);
+  async commandDescribeHotSpot4(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot4);
   }
 
   /**
    * Hear a description of hot spot 5
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-5
+   * Representation: VO-Command-5
    */
-  async gestureDescribeHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot5);
+  async commandDescribeHotSpot5(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot5);
   }
 
   /**
    * Hear a description of hot spot 6
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-6
+   * Representation: VO-Command-6
    */
-  async gestureDescribeHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot6);
+  async commandDescribeHotSpot6(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot6);
   }
 
   /**
    * Hear a description of hot spot 7
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-7
+   * Representation: VO-Command-7
    */
-  async gestureDescribeHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot7);
+  async commandDescribeHotSpot7(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot7);
   }
 
   /**
    * Hear a description of hot spot 8
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-8
+   * Representation: VO-Command-8
    */
-  async gestureDescribeHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot8);
+  async commandDescribeHotSpot8(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot8);
   }
 
   /**
    * Hear a description of hot spot 9
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-9
+   * Representation: VO-Command-9
    */
-  async gestureDescribeHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot9);
+  async commandDescribeHotSpot9(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot9);
   }
 
   /**
    * Hear a description of hot spot 0
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-0
+   * Representation: VO-Command-0
    */
-  async gestureDescribeHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeHotSpot0);
+  async commandDescribeHotSpot0(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeHotSpot0);
   }
 
   /**
    * Monitor hot spot 1
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-1
+   * Representation: VO-Command-Shift-1
    */
-  async gestureMonitorHotSpot1(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot1);
+  async commandMonitorHotSpot1(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot1);
   }
 
   /**
    * Monitor hot spot 2
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-2
+   * Representation: VO-Command-Shift-2
    */
-  async gestureMonitorHotSpot2(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot2);
+  async commandMonitorHotSpot2(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot2);
   }
 
   /**
    * Monitor hot spot 3
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-3
+   * Representation: VO-Command-Shift-3
    */
-  async gestureMonitorHotSpot3(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot3);
+  async commandMonitorHotSpot3(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot3);
   }
 
   /**
    * Monitor hot spot 4
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-4
+   * Representation: VO-Command-Shift-4
    */
-  async gestureMonitorHotSpot4(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot4);
+  async commandMonitorHotSpot4(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot4);
   }
 
   /**
    * Monitor hot spot 5
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-5
+   * Representation: VO-Command-Shift-5
    */
-  async gestureMonitorHotSpot5(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot5);
+  async commandMonitorHotSpot5(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot5);
   }
 
   /**
    * Monitor hot spot 6
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-6
+   * Representation: VO-Command-Shift-6
    */
-  async gestureMonitorHotSpot6(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot6);
+  async commandMonitorHotSpot6(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot6);
   }
 
   /**
    * Monitor hot spot 7
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-7
+   * Representation: VO-Command-Shift-7
    */
-  async gestureMonitorHotSpot7(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot7);
+  async commandMonitorHotSpot7(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot7);
   }
 
   /**
    * Monitor hot spot 8
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-8
+   * Representation: VO-Command-Shift-8
    */
-  async gestureMonitorHotSpot8(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot8);
+  async commandMonitorHotSpot8(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot8);
   }
 
   /**
    * Monitor hot spot 9
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-9
+   * Representation: VO-Command-Shift-9
    */
-  async gestureMonitorHotSpot9(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot9);
+  async commandMonitorHotSpot9(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot9);
   }
 
   /**
    * Monitor hot spot 0
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-0
+   * Representation: VO-Command-Shift-0
    */
-  async gestureMonitorHotSpot0(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.monitorHotSpot0);
+  async commandMonitorHotSpot0(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.monitorHotSpot0);
   }
 
   /**
    * Jump back to a parent folder
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-\
+   * Representation: VO-Command-\
    */
-  async gestureJumpToParentFolder(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.jumpToParentFolder);
+  async commandJumpToParentFolder(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.jumpToParentFolder);
   }
 
   /**
    * Hear the application summary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F1
+   * Representation: VO-F1
    */
-  async gestureHearApplicationSummary(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.hearApplicationSummary);
+  async commandHearApplicationSummary(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.hearApplicationSummary);
   }
 
   /**
    * Open the Application Chooser
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F1-F1
+   * Representation: VO-F1-F1
    */
-  async gestureOpenApplicationChooser(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openApplicationChooser);
+  async commandOpenApplicationChooser(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openApplicationChooser);
   }
 
   /**
    * Hear the window summary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F2
+   * Representation: VO-F2
    */
-  async gestureHearWindowSummary(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.hearWindowSummary);
+  async commandHearWindowSummary(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.hearWindowSummary);
   }
 
   /**
    * Open the Window Chooser 
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F2-F2
+   * Representation: VO-F2-F2
    */
-  async gestureOpenWindowChooser(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openWindowChooser);
+  async commandOpenWindowChooser(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openWindowChooser);
   }
 
   /**
    * Describe the item in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F3
+   * Representation: VO-F3
    */
-  async gestureDescribeItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItem);
+  async commandDescribeItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeItem);
   }
 
   /**
    * Describe the size of the item in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F3
+   * Representation: VO-Command-F3
    */
-  async gestureDescribeItemSize(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemSize);
+  async commandDescribeItemSize(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeItemSize);
   }
 
   /**
    * Describe the position of the item in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F3-F3
+   * Representation: VO-Command-F3-F3
    */
-  async gestureDescribeItemPosition(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemPosition);
+  async commandDescribeItemPosition(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeItemPosition);
   }
 
   /**
    * Describe the item that has the keyboard focus
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F4
+   * Representation: VO-F4
    */
-  async gestureDescribeItemWithKeyboardFocus(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemWithKeyboardFocus);
+  async commandDescribeItemWithKeyboardFocus(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeItemWithKeyboardFocus);
   }
 
   /**
    * Describe the location of the insertion point (from upper-left corner of screen)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F4-F4
+   * Representation: VO-F4-F4
    */
-  async gestureDescribeLocationOfInsertionPoint(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeLocationOfInsertionPoint);
+  async commandDescribeLocationOfInsertionPoint(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeLocationOfInsertionPoint);
   }
 
   /**
    * Describe the item under the mouse cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F5
+   * Representation: VO-F5
    */
-  async gestureDescribeItemUnderMouseCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeItemUnderMouseCursor);
+  async commandDescribeItemUnderMouseCursor(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeItemUnderMouseCursor);
   }
 
   /**
    * Describe the location of the mouse in x, y coordinates (from upper-left corner of screen)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F5-F5
+   * Representation: VO-F5-F5
    */
-  async gestureDescribeLocationOfMouseInCoordinates(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeLocationOfMouseInCoordinates);
+  async commandDescribeLocationOfMouseInCoordinates(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeLocationOfMouseInCoordinates);
   }
 
   /**
    * Describe the location of the mouse (from upper-left corner of window)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F5-F5-F5
+   * Representation: VO-F5-F5-F5
    */
-  async gestureDescribeLocationOfMouse(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeLocationOfMouse);
+  async commandDescribeLocationOfMouse(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeLocationOfMouse);
   }
 
   /**
    * Describe the selected item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F6
+   * Representation: VO-F6
    */
-  async gestureDescribeSelectedItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.describeSelectedItem);
+  async commandDescribeSelectedItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.describeSelectedItem);
   }
 
   /**
    * Read everything in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-A
+   * Representation: VO-A
    */
-  async gestureReadEverythingInCursor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readEverythingInCursor);
+  async commandReadEverythingInCursor(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readEverythingInCursor);
   }
 
   /**
    * Read everything visible in the window or the Dock, or on your desktop, depending on your location
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-W
+   * Representation: VO-Shift-W
    */
-  async gestureReadEverythingInWindow(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readEverythingInWindow);
+  async commandReadEverythingInWindow(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readEverythingInWindow);
   }
 
   /**
    * Repeat the last spoken phrase
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Z
+   * Representation: VO-Z
    */
-  async gestureRepeatLastSpokenPhrase(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.repeatLastSpokenPhrase);
+  async commandRepeatLastSpokenPhrase(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.repeatLastSpokenPhrase);
   }
 
   /**
    * Copy the last spoken phrase to the Clipboard (also called the "Pasteboard")
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-C
+   * Representation: VO-Shift-C
    */
-  async gestureCopyLastSpokenPhraseToClipboard(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.copyLastSpokenPhraseToClipboard);
+  async commandCopyLastSpokenPhraseToClipboard(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.copyLastSpokenPhraseToClipboard);
   }
 
   /**
    * Save the last spoken phrase and the crash log to a file on the desktop for troubleshooting
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Z
+   * Representation: VO-Shift-Z
    */
-  async gestureSaveLastSpokenPhraseToDesktop(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.saveLastSpokenPhraseToDesktop);
+  async commandSaveLastSpokenPhraseToDesktop(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.saveLastSpokenPhraseToDesktop);
   }
 
   /**
    * Find
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F
+   * Representation: VO-F
    */
-  async gestureFind(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.find);
+  async commandFind(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.find);
   }
 
   /**
    * Find the next searched text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-G
+   * Representation: VO-G
    */
-  async gestureFindNextSearchedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextSearchedText);
+  async commandFindNextSearchedText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextSearchedText);
   }
 
   /**
    * Find the previous searched text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-G
+   * Representation: VO-Shift-G
    */
-  async gestureFindPreviousSearchedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousSearchedText);
+  async commandFindPreviousSearchedText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousSearchedText);
   }
 
   /**
    * Find the next list
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-X
+   * Representation: VO-Command-X
    */
-  async gestureFindNextList(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextList);
+  async commandFindNextList(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextList);
   }
 
   /**
    * Find the previous list
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-X
+   * Representation: VO-Command-Shift-X
    */
-  async gestureFindPreviousList(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousList);
+  async commandFindPreviousList(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousList);
   }
 
   /**
    * Find the next bold text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-B
+   * Representation: VO-Command-B
    */
-  async gestureFindNextBoldText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextBoldText);
+  async commandFindNextBoldText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextBoldText);
   }
 
   /**
    * Find the previous bold text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-B
+   * Representation: VO-Command-Shift-B
    */
-  async gestureFindPreviousBoldText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousBoldText);
+  async commandFindPreviousBoldText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousBoldText);
   }
 
   /**
    * Find the next style change
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-C
+   * Representation: VO-Command-C
    */
-  async gestureFindNextStyleChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextStyleChange);
+  async commandFindNextStyleChange(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextStyleChange);
   }
 
   /**
    * Find the previous style change
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-C
+   * Representation: VO-Command-Shift-C
    */
-  async gestureFindPreviousStyleChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousStyleChange);
+  async commandFindPreviousStyleChange(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousStyleChange);
   }
 
   /**
    * Find the next italic text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-I
+   * Representation: VO-Command-I
    */
-  async gestureFindNextItalicText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextItalicText);
+  async commandFindNextItalicText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextItalicText);
   }
 
   /**
    * Find the previous italic text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-I
+   * Representation: VO-Command-Shift-I
    */
-  async gestureFindPreviousItalicText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousItalicText);
+  async commandFindPreviousItalicText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousItalicText);
   }
 
   /**
    * Find the next color change
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-K
+   * Representation: VO-Command-K
    */
-  async gestureFindNextColorChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextColorChange);
+  async commandFindNextColorChange(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextColorChange);
   }
 
   /**
    * Find the previous color change
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-K
+   * Representation: VO-Command-Shift-K
    */
-  async gestureFindPreviousColorChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousColorChange);
+  async commandFindPreviousColorChange(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousColorChange);
   }
 
   /**
    * Find the next font change
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-O
+   * Representation: VO-Command-O
    */
-  async gestureFindNextFontChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextFontChange);
+  async commandFindNextFontChange(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextFontChange);
   }
 
   /**
    * Find the previous font change
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-O
+   * Representation: VO-Command-Shift-O
    */
-  async gestureFindPreviousFontChange(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousFontChange);
+  async commandFindPreviousFontChange(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousFontChange);
   }
 
   /**
    * Find the next table
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-T
+   * Representation: VO-Command-T
    */
-  async gestureFindNextTable(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextTable);
+  async commandFindNextTable(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextTable);
   }
 
   /**
    * Find the previous table
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-T
+   * Representation: VO-Command-Shift-T
    */
-  async gestureFindPreviousTable(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousTable);
+  async commandFindPreviousTable(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousTable);
   }
 
   /**
    * Find the next underlined text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-U
+   * Representation: VO-Command-U
    */
-  async gestureFindNextUnderlinedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextUnderlinedText);
+  async commandFindNextUnderlinedText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextUnderlinedText);
   }
 
   /**
    * Find the previous underlined text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-U
+   * Representation: VO-Command-Shift-U
    */
-  async gestureFindPreviousUnderlinedText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousUnderlinedText);
+  async commandFindPreviousUnderlinedText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousUnderlinedText);
   }
 
   /**
    * Find the next control
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-J
+   * Representation: VO-Command-J
    */
-  async gestureFindNextControl(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextControl);
+  async commandFindNextControl(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextControl);
   }
 
   /**
    * Find the previous control
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-J
+   * Representation: VO-Command-Shift-J
    */
-  async gestureFindPreviousControl(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousControl);
+  async commandFindPreviousControl(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousControl);
   }
 
   /**
    * Find the next different item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-D
+   * Representation: VO-Command-D
    */
-  async gestureFindNextDifferentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextDifferentItem);
+  async commandFindNextDifferentItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextDifferentItem);
   }
 
   /**
    * Find the previous different item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-D
+   * Representation: VO-Command-Shift-D
    */
-  async gestureFindPreviousDifferentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousDifferentItem);
+  async commandFindPreviousDifferentItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousDifferentItem);
   }
 
   /**
    * Find the next item that's the same type as the current item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-S
+   * Representation: VO-Command-S
    */
-  async gestureFindNextItemWithSameTypeAsCurrentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextItemWithSameTypeAsCurrentItem);
+  async commandFindNextItemWithSameTypeAsCurrentItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextItemWithSameTypeAsCurrentItem);
   }
 
   /**
    * Find the previous item that's the same type as the current item
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-S
+   * Representation: VO-Command-Shift-S
    */
-  async gestureFindPreviousItemWithSameTypeAsCurrentItem(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousItemWithSameTypeAsCurrentItem);
+  async commandFindPreviousItemWithSameTypeAsCurrentItem(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousItemWithSameTypeAsCurrentItem);
   }
 
   /**
    * Find the next graphic
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-G
+   * Representation: VO-Command-G
    */
-  async gestureFindNextGraphic(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextGraphic);
+  async commandFindNextGraphic(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextGraphic);
   }
 
   /**
    * Find the previous graphic
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-G
+   * Representation: VO-Command-Shift-G
    */
-  async gestureFindPreviousGraphic(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousGraphic);
+  async commandFindPreviousGraphic(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousGraphic);
   }
 
   /**
    * Find the next heading
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-H
+   * Representation: VO-Command-H
    */
-  async gestureFindNextHeading(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextHeading);
+  async commandFindNextHeading(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextHeading);
   }
 
   /**
    * Find the previous heading
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-H
+   * Representation: VO-Command-Shift-H
    */
-  async gestureFindPreviousHeading(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousHeading);
+  async commandFindPreviousHeading(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousHeading);
   }
 
   /**
    * Find the next link
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-L
+   * Representation: VO-Command-L
    */
-  async gestureFindNextLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextLink);
+  async commandFindNextLink(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextLink);
   }
 
   /**
    * Find the previous link
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-L
+   * Representation: VO-Command-Shift-L
    */
-  async gestureFindPreviousLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousLink);
+  async commandFindPreviousLink(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousLink);
   }
 
   /**
    * Find the next heading of the same level
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-M
+   * Representation: VO-Command-M
    */
-  async gestureFindNextHeadingOfSameLevel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextHeadingOfSameLevel);
+  async commandFindNextHeadingOfSameLevel(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextHeadingOfSameLevel);
   }
 
   /**
    * Find the previous heading of the same level
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-M
+   * Representation: VO-Command-Shift-M
    */
-  async gestureFindPreviousHeadingOfSameLevel(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousHeadingOfSameLevel);
+  async commandFindPreviousHeadingOfSameLevel(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousHeadingOfSameLevel);
   }
 
   /**
    * Find the next plain text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-P
+   * Representation: VO-Command-P
    */
-  async gestureFindNextPlainText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextPlainText);
+  async commandFindNextPlainText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextPlainText);
   }
 
   /**
    * Find the previous plain text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-P
+   * Representation: VO-Command-Shift-P
    */
-  async gestureFindPreviousPlainText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousPlainText);
+  async commandFindPreviousPlainText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousPlainText);
   }
 
   /**
    * Find the next visited link
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-V
+   * Representation: VO-Command-V
    */
-  async gestureFindNextVisitedLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextVisitedLink);
+  async commandFindNextVisitedLink(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextVisitedLink);
   }
 
   /**
    * Find the previous visited link
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-V
+   * Representation: VO-Command-Shift-V
    */
-  async gestureFindPreviousVisitedLink(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousVisitedLink);
+  async commandFindPreviousVisitedLink(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousVisitedLink);
   }
 
   /**
    * Find the next misspelled word
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-E
+   * Representation: VO-Command-E
    */
-  async gestureFindNextMisspelledWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findNextMisspelledWord);
+  async commandFindNextMisspelledWord(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findNextMisspelledWord);
   }
 
   /**
    * Find the previous misspelled word
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-E
+   * Representation: VO-Command-Shift-E
    */
-  async gestureFindPreviousMisspelledWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.findPreviousMisspelledWord);
+  async commandFindPreviousMisspelledWord(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.findPreviousMisspelledWord);
   }
 
   /**
    * Read all text from the VoiceOver cursor to the end of the text
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-A
+   * Representation: VO-A
    */
-  async gestureReadAllText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readAllText);
+  async commandReadAllText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readAllText);
   }
 
   /**
    * Select all text in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-A
+   * Representation: VO-Shift-A
    */
-  async gestureSelectAllText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.selectAllText);
+  async commandSelectAllText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.selectAllText);
   }
 
   /**
    * Start and stop text selection in a text field (text selection tracking must be on)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Return
+   * Representation: VO-Return
    */
-  async gestureToggleTextSelection(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleTextSelection);
+  async commandToggleTextSelection(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleTextSelection);
   }
 
   /**
    * Speak text attributes
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-T
+   * Representation: VO-T
    */
-  async gestureSpeakTextAttributes(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.speakTextAttributes);
+  async commandSpeakTextAttributes(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.speakTextAttributes);
   }
 
   /**
    * Read paragraph in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-P
+   * Representation: VO-P
    */
-  async gestureReadParagraph(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readParagraph);
+  async commandReadParagraph(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readParagraph);
   }
 
   /**
    * Read next paragraph
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Page Down
+   * Representation: VO-Shift-Page Down
    */
-  async gestureReadNextParagraph(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextParagraph);
+  async commandReadNextParagraph(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readNextParagraph);
   }
 
   /**
    * Read previous paragraph
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Page Up
+   * Representation: VO-Shift-Page Up
    */
-  async gestureReadPreviousParagraph(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousParagraph);
+  async commandReadPreviousParagraph(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readPreviousParagraph);
   }
 
   /**
    * Read sentence in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-S
+   * Representation: VO-S
    */
-  async gestureReadSentence(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readSentence);
+  async commandReadSentence(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readSentence);
   }
 
   /**
    * Read next sentence
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Page Down
+   * Representation: VO-Command-Page Down
    */
-  async gestureReadNextSentence(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextSentence);
+  async commandReadNextSentence(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readNextSentence);
   }
 
   /**
    * Read previous sentence
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Page Up
+   * Representation: VO-Command-Page Up
    */
-  async gestureReadPreviousSentence(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousSentence);
+  async commandReadPreviousSentence(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readPreviousSentence);
   }
 
   /**
    * Read line in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-L
+   * Representation: VO-L
    */
-  async gestureReadLine(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readLine);
+  async commandReadLine(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readLine);
   }
 
   /**
    * Read next line
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Down Arrow
+   * Representation: VO-Down Arrow
    */
-  async gestureReadNextLine(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextLine);
+  async commandReadNextLine(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readNextLine);
   }
 
   /**
    * Read previous line
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Up Arrow
+   * Representation: VO-Up Arrow
    */
-  async gestureReadPreviousLine(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousLine);
+  async commandReadPreviousLine(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readPreviousLine);
   }
 
   /**
    * Read word in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-W
+   * Representation: VO-W
    */
-  async gestureReadWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWord);
+  async commandReadWord(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readWord);
   }
 
   /**
    * Read word spelled in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-W-W
+   * Representation: VO-W-W
    */
-  async gestureReadWordSpelled(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWordSpelled);
+  async commandReadWordSpelled(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readWordSpelled);
   }
 
   /**
    * Read word spelled phonetically in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-W-W-W
+   * Representation: VO-W-W-W
    */
-  async gestureReadWordPhonetically(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWordPhonetically);
+  async commandReadWordPhonetically(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readWordPhonetically);
   }
 
   /**
    * Read next word
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Right Arrow
+   * Representation: VO-Right Arrow
    */
-  async gestureReadNextWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextWord);
+  async commandReadNextWord(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readNextWord);
   }
 
   /**
    * Read previous word
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Left Arrow
+   * Representation: VO-Left Arrow
    */
-  async gestureReadPreviousWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousWord);
+  async commandReadPreviousWord(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readPreviousWord);
   }
 
   /**
    * Read character in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-W
+   * Representation: VO-W
    */
-  async gestureReadCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readCharacter);
+  async commandReadCharacter(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readCharacter);
   }
 
   /**
    * Read character phonetically in VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-C-C
+   * Representation: VO-C-C
    */
-  async gestureReadCharacterPhonetically(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readCharacterPhonetically);
+  async commandReadCharacterPhonetically(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readCharacterPhonetically);
   }
 
   /**
    * Read next character
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Right Arrow
+   * Representation: VO-Shift-Right Arrow
    */
-  async gestureReadNextCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNextCharacter);
+  async commandReadNextCharacter(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readNextCharacter);
   }
 
   /**
    * Read previous character
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Left Arrow
+   * Representation: VO-Shift-Left Arrow
    */
-  async gestureReadPreviousCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readPreviousCharacter);
+  async commandReadPreviousCharacter(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readPreviousCharacter);
   }
 
   /**
    * Move to first visible word
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Home
+   * Representation: VO-Home
    */
-  async gestureMoveToFirstVisibleWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToFirstVisibleWord);
+  async commandMoveToFirstVisibleWord(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToFirstVisibleWord);
   }
 
   /**
    * Move to last visible word
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-End
+   * Representation: VO-End
    */
-  async gestureMoveToLastVisibleWord(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToLastVisibleWord);
+  async commandMoveToLastVisibleWord(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToLastVisibleWord);
   }
 
   /**
    * Move to beginning of text, scrolling if necessary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-Home
+   * Representation: VO-Shift-Home
    */
-  async gestureMoveToBeginningOfText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToBeginningOfText);
+  async commandMoveToBeginningOfText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToBeginningOfText);
   }
 
   /**
    * Move to end of text, scrolling if necessary
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-End
+   * Representation: VO-Shift-End
    */
-  async gestureMoveToEndOfText(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToEndOfText);
+  async commandMoveToEndOfText(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToEndOfText);
   }
 
   /**
    * Reads the current word and character in the VoiceOver cursor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F3
+   * Representation: VO-F3
    */
-  async gestureReadCurrentWordAndCharacter(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readCurrentWordAndCharacter);
+  async commandReadCurrentWordAndCharacter(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readCurrentWordAndCharacter);
   }
 
   /**
    * Reads the total number of lines and the number of visible lines in a document
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-F3-F3
+   * Representation: VO-F3-F3
    */
-  async gestureReadNumberOfLines(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readNumberOfLines);
+  async commandReadNumberOfLines(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readNumberOfLines);
   }
 
   /**
    * Move to the next column
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Y
+   * Representation: VO-Command-Y
    */
-  async gestureMoveToNextColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextColumn);
+  async commandMoveToNextColumn(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToNextColumn);
   }
 
   /**
    * Move to the previous column
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-Y
+   * Representation: VO-Command-Shift-Y
    */
-  async gestureMoveToPreviousColumn(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousColumn);
+  async commandMoveToPreviousColumn(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToPreviousColumn);
   }
 
   /**
    * Move to the next frame
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-F
+   * Representation: VO-Command-F
    */
-  async gestureMoveToNextFrame(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextFrame);
+  async commandMoveToNextFrame(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToNextFrame);
   }
 
   /**
    * Move to the previous frame
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-F
+   * Representation: VO-Command-Shift-F
    */
-  async gestureMoveToPreviousFrame(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousFrame);
+  async commandMoveToPreviousFrame(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToPreviousFrame);
   }
 
   /**
    * Move to the next auto web spot
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-N
+   * Representation: VO-Command-N
    */
-  async gestureMoveToNextAutoWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextAutoWebSpot);
+  async commandMoveToNextAutoWebSpot(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToNextAutoWebSpot);
   }
 
   /**
    * Move to the previous auto web spot
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-N
+   * Representation: VO-Command-Shift-N
    */
-  async gestureMoveToPreviousAutoWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousAutoWebSpot);
+  async commandMoveToPreviousAutoWebSpot(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToPreviousAutoWebSpot);
   }
 
   /**
    * Move to the next web spot
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-]
+   * Representation: VO-Command-]
    */
-  async gestureMoveToNextWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToNextWebSpot);
+  async commandMoveToNextWebSpot(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToNextWebSpot);
   }
 
   /**
    * Move to the previous web spot
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-[
+   * Representation: VO-Command-[
    */
-  async gestureMoveToPreviousWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.moveToPreviousWebSpot);
+  async commandMoveToPreviousWebSpot(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.moveToPreviousWebSpot);
   }
 
   /**
    * Open the Web Item rotor
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-U
+   * Representation: VO-U
    */
-  async gestureOpenWebItemRotor(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.openWebItemRotor);
+  async commandOpenWebItemRotor(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.openWebItemRotor);
   }
 
   /**
    * Read from the beginning of a webpage to the current location
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-B
+   * Representation: VO-B
    */
-  async gestureReadFromBeginningToCurrent(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readFromBeginningToCurrent);
+  async commandReadFromBeginningToCurrent(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readFromBeginningToCurrent);
   }
 
   /**
    * Read a link address (URL)
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-U
+   * Representation: VO-Shift-U
    */
-  async gestureReadLinkAddress(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readLinkAddress);
+  async commandReadLinkAddress(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readLinkAddress);
   }
 
   /**
    * Read webpage statistics
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Shift-I
+   * Representation: VO-Shift-I
    */
-  async gestureReadWebpageStatistics(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.readWebpageStatistics);
+  async commandReadWebpageStatistics(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.readWebpageStatistics);
   }
 
   /**
    * Remove a web spot
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-{
+   * Representation: VO-Command-Shift-{
    */
-  async gestureRemoveWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.removeWebSpot);
+  async commandRemoveWebSpot(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.removeWebSpot);
   }
 
   /**
    * Set a web spot
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-}
+   * Representation: VO-Command-Shift-}
    */
-  async gestureSetWebSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.setWebSpot);
+  async commandSetWebSpot(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.setWebSpot);
   }
 
   /**
    * Set the sweet spot
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-Command-Shift-}-}
+   * Representation: VO-Command-Shift-}-}
    */
-  async gestureSetSweetSpot(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.setSweetSpot);
+  async commandSetSweetSpot(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.setSweetSpot);
   }
 
   /**
    * Turn the grouping of items within a table on or off
    *
-   * Uses VoiceOver keycode gesture
+   * Uses VoiceOver keycode command
    *
-   * Gesture: VO-=
+   * Representation: VO-=
    */
-  async gestureToggleGroupingItemsWithinTable(): Promise<void> {
-    return await this.keyCode(keyCodeCommands.toggleGroupingItemsWithinTable);
+  async commandToggleGroupingItemsWithinTable(): Promise<void> {
+    return await this.sendKeys(keyCodeCommands.toggleGroupingItemsWithinTable);
   }
 
   /**
