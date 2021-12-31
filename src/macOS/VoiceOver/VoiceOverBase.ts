@@ -26,6 +26,7 @@ import { getItemText } from "./getItemText";
 import { performCommand } from "./performCommand";
 import { performAction } from "./performAction";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
+import { ERR_VOICE_OVER_NOT_SUPPORTED } from "./errors";
 
 /**
  * Class for controlling the VoiceOver ScreenReader on MacOS.
@@ -46,8 +47,6 @@ export class VoiceOverBase {
 
     return result;
   }
-
-  static ERR_VOICE_OVER_NOT_SUPPORTED = "VoiceOver not supported";
 
   /**
    * Detect whether VoiceOver is supported for the current OS.
@@ -72,7 +71,7 @@ export class VoiceOverBase {
    */
   async start(): Promise<void> {
     if (!(await VoiceOverBase.detect())) {
-      throw new Error(VoiceOverBase.ERR_VOICE_OVER_NOT_SUPPORTED);
+      throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
     await disableSplashScreen();
