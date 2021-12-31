@@ -18,10 +18,29 @@ export async function isRunning(): Promise<boolean> {
     return false;
   }
 
-  return await run<boolean, Applications.VOICE_OVER>((name) => {
-    const app = Application(name);
-    app.includeStandardAdditions = true;
+  const appleScriptRunning = await run<boolean, Applications.VOICE_OVER>(
+    (name) => {
+      const app = Application(name);
+      app.includeStandardAdditions = true;
 
-    return app.running();
-  }, Applications.VOICE_OVER);
+      return app.running();
+    },
+    Applications.VOICE_OVER
+  );
+
+  if (!appleScriptRunning) {
+    return false;
+  }
+
+  try {
+    await run<boolean, Applications.VOICE_OVER>((name) => {
+      const app = Application(name);
+      app.includeStandardAdditions = true;
+      app.activate();
+    }, Applications.VOICE_OVER);
+
+    return true;
+  } catch {
+    return false;
+  }
 }

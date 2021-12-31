@@ -20,7 +20,15 @@ export async function waitForCondition(
   await Promise.race([
     new Promise<void>((resolve) => {
       pollIntervalId = setInterval(async () => {
-        if (await condition()) {
+        let result;
+
+        try {
+          result = await condition();
+        } catch {
+          result = false;
+        }
+
+        if (result) {
           clearTimeout(pollTimeoutId);
           clearInterval(pollIntervalId);
           pollTimeoutId = undefined;
