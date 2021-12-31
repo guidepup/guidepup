@@ -5,6 +5,7 @@ import { isNVDAInstalled } from "./isNVDAInstalled";
 import { start } from "./start";
 import { quit } from "./quit";
 import { KeyCodeCommand } from "../KeyCodeCommand";
+import { KeyCodes } from "../KeyCodes";
 import { sendKeys } from "../sendKeys";
 import { KeystrokeCommand } from "../KeystrokeCommand";
 import { notImplemented } from "../../notImplemented";
@@ -87,29 +88,29 @@ export class NVDA {
   /**
    * Move the NVDA cursor up to a new location.
    */
-  moveUp(): Promise<void> {
-    notImplemented();
+  async moveUp(): Promise<void> {
+    await this.keyCode({ keyCode: KeyCodes.KEY_UP_ARROW });
   }
 
   /**
    * Move the NVDA cursor right to a new location.
    */
-  moveRight(): Promise<void> {
-    notImplemented();
+  async moveRight(): Promise<void> {
+    await this.keyCode({ keyCode: KeyCodes.KEY_RIGHT_ARROW });
   }
 
   /**
    * Move the NVDA cursor down to a new location.
    */
-  moveDown(): Promise<void> {
-    notImplemented();
+  async moveDown(): Promise<void> {
+    await this.keyCode({ keyCode: KeyCodes.KEY_DOWN_ARROW });
   }
 
   /**
    * Move the NVDA cursor left to a new location.
    */
-  moveLeft(): Promise<void> {
-    notImplemented();
+  async moveLeft(): Promise<void> {
+    await this.keyCode({ keyCode: KeyCodes.KEY_LEFT_ARROW });
   }
 
   /**
