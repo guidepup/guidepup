@@ -21,7 +21,7 @@ import { VoiceOver } from "@guidepup/guidepup";
 async function run(): Promise<void> {
   const vo = new VoiceOver();
   await vo.start();
-  await vo.moveRight();
+  await vo.moveNext();
   console.log(await vo.getItemText());
   await vo.stop();
 }
@@ -57,8 +57,8 @@ yarn add @guidepup/guidepup
 
 Screen-reader support:
 
-- [x] VoiceOver on MacOS
-- [ ] NVDA on Windows
+- [x] VoiceOver on MacOS (WIP)
+- [ ] NVDA on Windows (WIP)
 - [ ] VoiceOver on iOS
 - [ ] Talkback on Android
 
@@ -77,6 +77,7 @@ Here are some related projects:
 
 - [auto-vo](https://github.com/AccessLint/auto-vo)
 - [screen-reader-reader](https://github.com/phenomnomnominal/screen-reader-reader)
+- [web-test-runner-voiceover](https://github.com/coryrylan/web-test-runner-voiceover)
 
 ## License
 

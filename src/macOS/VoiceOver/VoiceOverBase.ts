@@ -15,8 +15,7 @@ import { ClickButton } from "./ClickButton";
 import { Applications } from "../Applications";
 import { activate } from "../activate";
 import { quit } from "../quit";
-import { keyCode } from "../keyCode";
-import { keystroke } from "../keystroke";
+import { sendKeys } from "../sendKeys";
 import { move } from "./move";
 import { click } from "./click";
 import { getLastSpokenPhrase } from "./getLastSpokenPhrase";
@@ -47,6 +46,8 @@ export class VoiceOverBase {
     return result;
   }
 
+  static ERR_VOICE_OVER_NOT_SUPPORTED = "VoiceOver not supported";
+
   /**
    * Detect whether VoiceOver is supported for the current OS.
    *
@@ -69,6 +70,10 @@ export class VoiceOverBase {
    * Turn VoiceOver on.
    */
   async start(): Promise<void> {
+    if (!VoiceOverBase.detect()) {
+      throw new Error(VoiceOverBase.ERR_VOICE_OVER_NOT_SUPPORTED);
+    }
+
     await disableSplashScreen();
     await start();
     await activate(Applications.VOICE_OVER);
@@ -83,35 +88,12 @@ export class VoiceOverBase {
   }
 
   /**
-   * Send a key code to VoiceOver.
+   * Send a key code or keystroke to VoiceOver.
    *
-   * @param {object} keyCodeCommand Key code command to send to VoiceOver.
+   * @param {object} keyCommand Key code or keystroke command to send to VoiceOver.
    */
-  async keyCode(keyCodeCommand: KeyCodeCommand): Promise<void> {
-    return await this.#tap(keyCode(Applications.VOICE_OVER, keyCodeCommand));
-  }
-
-  /**
-   * Send a keystroke to VoiceOver.
-   *
-   * @param {object} keystrokeCommand Keystroke command to send to VoiceOver.
-   */
-  async keystroke(keystrokeCommand: KeystrokeCommand): Promise<void> {
-    return await this.#tap(
-      keystroke(Applications.VOICE_OVER, keystrokeCommand)
-    );
-  }
-
-  /**
-   * Activate an application.
-   *
-   * This will focus the application if already running, or start and focus it
-   * if not already running.
-   *
-   * @param {string} applicationName Path or alias for MacOS application.
-   */
-  async activate(applicationName: Applications | string): Promise<void> {
-    return await activate(applicationName);
+  async sendKeys(keyCommand: KeyCodeCommand | KeystrokeCommand): Promise<void> {
+    return await this.#tap(sendKeys(Applications.VOICE_OVER, keyCommand));
   }
 
   /**
@@ -128,31 +110,33 @@ export class VoiceOverBase {
   }
 
   /**
-   * Move the VO cursor up to a new location.
+   * Move the VoiceOver cursor to the previous location.
    */
-  async moveUp(): Promise<void> {
-    return await this.move(Directions.UP);
+  async movePrevious(): Promise<void> {
+    return await this.move(Directions.LEFT);
   }
 
   /**
-   * Move the VO cursor right to a new location.
+   * Move the VoiceOver cursor to the next location.
    */
-  async moveRight(): Promise<void> {
+  async moveNext(): Promise<void> {
     return await this.move(Directions.RIGHT);
   }
 
   /**
-   * Move the VO cursor down to a new location.
+   * Perform default action.
    */
-  async moveDown(): Promise<void> {
-    return await this.move(Directions.DOWN);
+  async performAction(): Promise<void> {
+    return await this.#tap(performAction());
   }
 
   /**
-   * Move the VO cursor left to a new location.
+   * Perform a VoiceOver command.
+   *
+   * @param {string} command The English name of the VoiceOver command to perform.
    */
-  async moveLeft(): Promise<void> {
-    return await this.move(Directions.LEFT);
+  async performCommand(command: CommanderCommands): Promise<void> {
+    return await this.#tap(performCommand(command));
   }
 
   /**
@@ -207,6 +191,42 @@ export class VoiceOverBase {
   }
 
   /**
+   * Get the last spoken phrase.
+   *
+   * @returns {Promise<string>} The last spoken phrase.
+   */
+  async getLastSpokenPhrase(): Promise<string> {
+    return await getLastSpokenPhrase();
+  }
+
+  /**
+   * Copy the last spoken phrase to the Clipboard (also called the
+   * "Pasteboard").
+   */
+  async copyLastSpokenPhrase(): Promise<void> {
+    return await copyLastSpokenPhrase();
+  }
+
+  /**
+   * Save the last spoken phrase and the crash log to a file on the desktop for
+   * troubleshooting.
+   */
+  async saveLastSpokenPhrase(): Promise<void> {
+    return await saveLastSpokenPhrase();
+  }
+
+  /**
+   * Get the log of all spoken phrases for this VoiceOver instance.
+   *
+   * Note `vo.startLog()` must first be called for spoken phrases to be logged.
+   *
+   * @returns {Promise<string[]>} The phrase log.
+   */
+  async getSpokenPhraseLog(): Promise<string[]> {
+    return this.#spokenPhraseLog;
+  }
+
+  /**
    * Get the text of the item in the VoiceOver cursor.
    *
    * @returns {Promise<string>} The item's text.
@@ -227,26 +247,6 @@ export class VoiceOverBase {
   }
 
   /**
-   * Get the last spoken phrase.
-   *
-   * @returns {Promise<string>} The last spoken phrase.
-   */
-  async getLastSpokenPhrase(): Promise<string> {
-    return await getLastSpokenPhrase();
-  }
-
-  /**
-   * Get the log of all spoken phrases for this VoiceOver instance.
-   *
-   * Note `vo.startLog()` must first be called for spoken phrases to be logged.
-   *
-   * @returns {Promise<string[]>} The phrase log.
-   */
-  async getSpokenPhraseLog(): Promise<string[]> {
-    return this.#spokenPhraseLog;
-  }
-
-  /**
    * Start logging spoken phrases and item text.
    */
   startLog(): void {
@@ -258,37 +258,5 @@ export class VoiceOverBase {
    */
   stopLog(): void {
     this.#log = false;
-  }
-
-  /**
-   * Copy the last spoken phrase to the Clipboard (also called the
-   * "Pasteboard").
-   */
-  async copyLastSpokenPhrase(): Promise<void> {
-    return await copyLastSpokenPhrase();
-  }
-
-  /**
-   * Save the last spoken phrase and the crash log to a file on the desktop for
-   * troubleshooting.
-   */
-  async saveLastSpokenPhrase(): Promise<void> {
-    return await saveLastSpokenPhrase();
-  }
-
-  /**
-   * Perform a VoiceOver command.
-   *
-   * @param {string} command The English name of the VoiceOver command to perform.
-   */
-  async performCommand(command: CommanderCommands): Promise<void> {
-    return await this.#tap(performCommand(command));
-  }
-
-  /**
-   * Perform VoiceOver action.
-   */
-  async performAction(): Promise<void> {
-    return await this.#tap(performAction());
   }
 }
