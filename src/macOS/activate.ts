@@ -13,7 +13,7 @@ export async function activate(
 
       return app.activate();
     }, applicationName);
-  } catch {
+  } catch (_) {
     throw new Error(`${ERR_ACTIVATE}${applicationName}`);
   }
 }

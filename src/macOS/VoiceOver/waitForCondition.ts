@@ -24,7 +24,7 @@ export async function waitForCondition(
 
         try {
           result = await condition();
-        } catch {
+        } catch (_) {
           result = false;
         }
 
