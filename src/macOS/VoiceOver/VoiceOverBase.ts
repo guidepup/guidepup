@@ -25,6 +25,7 @@ import { takeScreenshot } from "./takeScreenshot";
 import { getItemText } from "./getItemText";
 import { performCommand } from "./performCommand";
 import { performAction } from "./performAction";
+import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
 
 /**
  * Class for controlling the VoiceOver ScreenReader on MacOS.
@@ -51,10 +52,10 @@ export class VoiceOverBase {
   /**
    * Detect whether VoiceOver is supported for the current OS.
    *
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  static detect(): boolean {
-    return isMacOS();
+  static async detect(): Promise<boolean> {
+    return (await isMacOS()) && (await supportsAppleScriptControl());
   }
 
   /**
@@ -62,15 +63,15 @@ export class VoiceOverBase {
    *
    * @returns {boolean}
    */
-  static default(): boolean {
-    return isMacOS();
+  static async default(): Promise<boolean> {
+    return await isMacOS();
   }
 
   /**
    * Turn VoiceOver on.
    */
   async start(): Promise<void> {
-    if (!VoiceOverBase.detect()) {
+    if (!(await VoiceOverBase.detect())) {
       throw new Error(VoiceOverBase.ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
