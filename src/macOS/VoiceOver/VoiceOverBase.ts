@@ -213,26 +213,6 @@ export class VoiceOverBase {
   }
 
   /**
-   * Get the text of the item in the VoiceOver cursor.
-   *
-   * @returns {Promise<string>} The item's text.
-   */
-  async getItemText(): Promise<string> {
-    return await getItemText();
-  }
-
-  /**
-   * Get the log of all visited item text for this VoiceOver instance.
-   *
-   * Note `vo.startLog()` must first be called for item text to be logged.
-   *
-   * @returns {Promise<string[]>} The item text log.
-   */
-  async getItemTextLog(): Promise<string[]> {
-    return this.#itemTextLog;
-  }
-
-  /**
    * Get the last spoken phrase.
    *
    * @returns {Promise<string>} The last spoken phrase.
@@ -253,17 +233,23 @@ export class VoiceOverBase {
   }
 
   /**
-   * Start logging spoken phrases and item text.
+   * Get the text of the item in the VoiceOver cursor.
+   *
+   * @returns {Promise<string>} The item's text.
    */
-  startLog(): void {
-    this.#log = true;
+  async getItemText(): Promise<string> {
+    return await getItemText();
   }
 
   /**
-   * Stop logging spoken phrases and item text.
+   * Get the log of all visited item text for this VoiceOver instance.
+   *
+   * Note `vo.startLog()` must first be called for item text to be logged.
+   *
+   * @returns {Promise<string[]>} The item text log.
    */
-  stopLog(): void {
-    this.#log = false;
+  async getItemTextLog(): Promise<string[]> {
+    return this.#itemTextLog;
   }
 
   /**
@@ -296,5 +282,19 @@ export class VoiceOverBase {
    */
   async performAction(): Promise<void> {
     return await this.#tap(performAction());
+  }
+
+  /**
+   * Start logging spoken phrases and item text.
+   */
+  startLog(): void {
+    this.#log = true;
+  }
+
+  /**
+   * Stop logging spoken phrases and item text.
+   */
+  stopLog(): void {
+    this.#log = false;
   }
 }

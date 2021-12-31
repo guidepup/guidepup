@@ -21,5 +21,5 @@ export interface KeyCodeCommand extends KeyCodeCommandBase {
    * Symbolic representation of the key code and modifier keys this command
    * uses.
    */
-  gesture?: string;
+  representation?: string;
 }

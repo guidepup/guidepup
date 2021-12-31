@@ -17,5 +17,5 @@ export interface KeystrokeCommand extends KeystrokeCommandBase {
    * Symbolic representation of the characters and modifier keys this command
    * uses.
    */
-  gesture?: string;
+  representation?: string;
 }

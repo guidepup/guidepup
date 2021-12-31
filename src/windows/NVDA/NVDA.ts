@@ -7,6 +7,7 @@ import { quit } from "./quit";
 import { KeyCodeCommand } from "../KeyCodeCommand";
 import { sendKeys } from "../sendKeys";
 import { KeystrokeCommand } from "../KeystrokeCommand";
+import { notImplemented } from "../../notImplemented";
 
 /**
  * Class for controlling the NVDA ScreenReader on MacOS.
@@ -84,14 +85,82 @@ export class NVDA {
   }
 
   /**
-   * Get the log of all visited item text for this NVDA instance.
-   *
-   * Note `vo.startLog()` must first be called for item text to be logged.
-   *
-   * @returns {Promise<string[]>} The item text log.
+   * Move the NVDA cursor up to a new location.
    */
-  async getItemTextLog(): Promise<string[]> {
-    return this.#itemTextLog;
+  moveUp(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Move the NVDA cursor right to a new location.
+   */
+  moveRight(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Move the NVDA cursor down to a new location.
+   */
+  moveDown(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Move the NVDA cursor left to a new location.
+   */
+  moveLeft(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Click the mouse once.
+   */
+  click(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Double click the mouse.
+   */
+  doubleClick(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Triple click the mouse.
+   */
+  tripleClick(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Right click the mouse once.
+   */
+  rightClick(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Double right click the mouse.
+   */
+  rightDoubleClick(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Triple right click the mouse.
+   */
+  rightTripleClick(): Promise<void> {
+    notImplemented();
+  }
+
+  /**
+   * Get the last spoken phrase.
+   *
+   * @returns {Promise<string>} The last spoken phrase.
+   */
+  getLastSpokenPhrase(): Promise<string> {
+    notImplemented();
   }
 
   /**
@@ -103,6 +172,26 @@ export class NVDA {
    */
   async getSpokenPhraseLog(): Promise<string[]> {
     return this.#spokenPhraseLog;
+  }
+
+  /**
+   * Get the text of the item in the NVDA cursor.
+   *
+   * @returns {Promise<string>} The item's text.
+   */
+  getItemText(): Promise<string> {
+    notImplemented();
+  }
+
+  /**
+   * Get the log of all visited item text for this NVDA instance.
+   *
+   * Note `vo.startLog()` must first be called for item text to be logged.
+   *
+   * @returns {Promise<string[]>} The item text log.
+   */
+  async getItemTextLog(): Promise<string[]> {
+    return this.#itemTextLog;
   }
 
   /**

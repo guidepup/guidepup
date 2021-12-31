@@ -27,11 +27,11 @@ async function run(): Promise<void> {
     await vo.gestureInteractWithItem();
 
     // Navigate across to the address input.
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
-    await vo.gestureMoveToNext();
+    await vo.moveRight();
+    await vo.moveRight();
+    await vo.moveRight();
+    await vo.moveRight();
+    await vo.moveRight();
 
     // Navigate to Google.
     await keystroke(MacOSApplications.SAFARI, {
@@ -46,10 +46,9 @@ async function run(): Promise<void> {
     await keystroke(MacOSApplications.SAFARI, {
       characters: "GitHub Guidepup",
     });
-    // await keyCode(Applications.SAFARI, {
-    //   keyCode: KeyCodes.KEY_RETURN,
-    // });
-    await vo.performAction();
+    await keyCode(MacOSApplications.SAFARI, {
+      keyCode: MacOSKeyCodes.KEY_RETURN,
+    });
   } catch (e) {
     console.error(e);
   } finally {

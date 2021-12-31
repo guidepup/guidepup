@@ -31,15 +31,15 @@ export class VoiceOver extends VoiceOverBase {
 
 const suffix = `}\n`;
 
-const gestureMethodDefinitions = Object.entries(keyCodeCommands).reduce(
+const commandMethodDefinitions = Object.entries(keyCodeCommands).reduce(
   (definitions, [name, command], i, commandsArray) => {
     const methodSuffix = i === commandsArray.length - 1 ? "\n" : "\n\n";
 
     return (definitions += `  /**\n   * ${
       command.description
-    }\n   *\n   * Uses VoiceOver keycode gesture\n   *\n   * Gesture: ${
-      command.gesture
-    }\n   */\n  async gesture${title(
+    }\n   *\n   * Uses VoiceOver keycode command\n   *\n   * Representation: ${
+      command.representation
+    }\n   */\n  async command${title(
       name
     )}(): Promise<void> {\n    return await this.keyCode(keyCodeCommands.${name});\n  }${methodSuffix}`);
   },
@@ -59,7 +59,7 @@ const commanderMethodDefinitions = Object.entries(CommanderCommands).reduce(
   ""
 );
 
-const generatedClass = `${prefix}${gestureMethodDefinitions}\n${commanderMethodDefinitions}${suffix}`;
+const generatedClass = `${prefix}${commandMethodDefinitions}\n${commanderMethodDefinitions}${suffix}`;
 
 writeFile(resolve(__dirname, "./VoiceOver.ts"), generatedClass, (err) => {
   if (err) {
