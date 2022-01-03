@@ -11,11 +11,8 @@ export async function keystroke(
   await activate(applicationName);
 
   return await run<void, Applications.SYSTEM_EVENTS, KeystrokeCommand>(
-    (name, { characters, modifiers = [] }) => {
-      const app = Application(name);
-
-      return app.keystroke(characters, { using: modifiers });
-    },
+    (name, { characters, modifiers = [] }) =>
+      Application(name).keystroke(characters, { using: modifiers }),
     Applications.SYSTEM_EVENTS,
     command
   );

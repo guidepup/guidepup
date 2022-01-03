@@ -9,6 +9,7 @@ import { KeyCodes } from "../KeyCodes";
 import { sendKeys } from "../sendKeys";
 import { KeystrokeCommand } from "../KeystrokeCommand";
 import { notImplemented } from "../../notImplemented";
+import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
 
 /**
  * Class for controlling the NVDA ScreenReader on MacOS.
@@ -28,8 +29,6 @@ export class NVDA {
 
     return result;
   }
-
-  static ERR_NVDA_NOT_SUPPORTED = "NVDA not supported";
 
   /**
    * Detect whether NVDA is supported for the current OS.
@@ -54,7 +53,7 @@ export class NVDA {
    */
   async start(): Promise<void> {
     if (!(await NVDA.detect())) {
-      throw new Error(NVDA.ERR_NVDA_NOT_SUPPORTED);
+      throw new Error(ERR_NVDA_NOT_SUPPORTED);
     }
 
     await start();

@@ -13,7 +13,6 @@ import { Directions } from "./Directions";
 import { ClickCount } from "./ClickCount";
 import { ClickButton } from "./ClickButton";
 import { Applications } from "../Applications";
-import { activate } from "../activate";
 import { quit } from "../quit";
 import { sendKeys } from "../sendKeys";
 import { move } from "./move";
@@ -26,7 +25,7 @@ import { getItemText } from "./getItemText";
 import { performCommand } from "./performCommand";
 import { performAction } from "./performAction";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
-import { ERR_VOICE_OVER_NOT_SUPPORTED } from "./errors";
+import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
 
 /**
  * Class for controlling the VoiceOver ScreenReader on MacOS.
@@ -76,7 +75,6 @@ export class VoiceOverBase {
 
     await disableSplashScreen();
     await start();
-    await activate(Applications.VOICE_OVER);
     await waitForRunning();
   }
 
