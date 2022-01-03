@@ -6,9 +6,11 @@ const DISABLE_VOICE_OVER_DIALOG =
 
 export async function disableSplashScreen(): Promise<void> {
   return await new Promise<void>((resolve, reject) => {
-    exec(DISABLE_VOICE_OVER_DIALOG, (err) => {
-      if (err) {
-        reject(new Error(ERR_VOICE_OVER_UNABLE_TO_DISABLE_SPLASH));
+    exec(DISABLE_VOICE_OVER_DIALOG, (e) => {
+      if (e) {
+        reject(
+          new Error(`${ERR_VOICE_OVER_UNABLE_TO_DISABLE_SPLASH}\n${e.message}`)
+        );
       } else {
         resolve();
       }

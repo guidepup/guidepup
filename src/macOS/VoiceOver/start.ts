@@ -6,9 +6,9 @@ const VOICE_OVER_STARTER =
 
 export async function start(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    exec(VOICE_OVER_STARTER, (err) => {
-      if (err) {
-        reject(new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED));
+    exec(VOICE_OVER_STARTER, (e) => {
+      if (e) {
+        reject(new Error(`${ERR_VOICE_OVER_CANNOT_BE_STARTED}\n${e.message}`));
       } else {
         resolve();
       }

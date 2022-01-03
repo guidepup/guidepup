@@ -1,8 +1,11 @@
-import { runAppleScript } from "../runAppleScript";
-import { Applications } from "../Applications";
+import { keyCode } from "../keyCode";
+import { KeyCodes } from "../KeyCodes";
+import { ERR_VOICE_OVER_PERFORM_ACTION } from "../errors";
 
 export async function performAction(): Promise<void> {
-  const script = `tell application "${Applications.VOICE_OVER}"\ntell vo cursor to perform action\nend tell`;
-
-  return await runAppleScript(script);
+  try {
+    return await keyCode({ keyCode: KeyCodes.KEY_ENTER });
+  } catch (e) {
+    throw new Error(`${ERR_VOICE_OVER_PERFORM_ACTION}\n${e.message}`);
+  }
 }

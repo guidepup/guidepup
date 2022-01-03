@@ -3,6 +3,7 @@ import { Directions } from "./Directions";
 import { Containments } from "./Containments";
 import { Places } from "./Places";
 import { Applications } from "../Applications";
+import { ERR_VOICE_OVER_MOVE } from "../errors";
 
 export async function move(
   direction: Directions | Containments,
@@ -14,5 +15,9 @@ export async function move(
     place ? ` to ${place}` : ""
   }\nend tell`;
 
-  return await runAppleScript(script);
+  try {
+    return await runAppleScript(script);
+  } catch (e) {
+    throw new Error(`${ERR_VOICE_OVER_MOVE}\n${e.message}`);
+  }
 }

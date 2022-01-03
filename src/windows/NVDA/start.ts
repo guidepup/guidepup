@@ -1,9 +1,14 @@
-import { sendKeys } from "../sendKeys";
-import { Modifiers } from "../Modifiers";
+import { exec } from "child_process";
+import { ERR_NVDA_CANNOT_BE_STARTED } from "../errors";
 
 export async function start(): Promise<void> {
-  return await sendKeys({
-    characters: "n",
-    modifiers: [Modifiers.CONTROL, Modifiers.ALT],
+  return new Promise<void>((resolve, reject) => {
+    exec("nvda", (e) => {
+      if (e) {
+        reject(new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`));
+      } else {
+        resolve();
+      }
+    });
   });
 }

@@ -2,6 +2,7 @@ import type { KeyCodeCommand } from "./KeyCodeCommand";
 import type { KeystrokeCommand } from "./KeystrokeCommand";
 import { runVbsCode } from "./runVbsCode";
 import { isKeyCode } from "../isKeyCode";
+import { ERR_SEND_KEYS } from "./errors";
 
 function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
   const characters = isKeyCode(command) ? command.keyCode : command.characters;
@@ -20,5 +21,9 @@ export async function sendKeys(
   WshShell.SendKeys "${keys}";
   `;
 
-  await runVbsCode(script);
+  try {
+    await runVbsCode(script);
+  } catch (e) {
+    throw new Error(`${ERR_SEND_KEYS}\n${e.message}`);
+  }
 }

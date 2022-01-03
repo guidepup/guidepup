@@ -1,15 +1,9 @@
 import { run } from "@jxa/run";
 import { Applications } from "./Applications";
-import { activate } from "./activate";
 import type { KeyCodeCommand } from "./KeyCodeCommand";
 import "@jxa/global-type";
 
-export async function keyCode(
-  applicationName: Applications | string,
-  command: KeyCodeCommand
-): Promise<void> {
-  await activate(applicationName);
-
+export async function keyCode(command: KeyCodeCommand): Promise<void> {
   return await run<void, Applications.SYSTEM_EVENTS, KeyCodeCommand>(
     (name, { keyCode, modifiers = [] }) =>
       Application(name).keyCode(keyCode, { using: modifiers }),
