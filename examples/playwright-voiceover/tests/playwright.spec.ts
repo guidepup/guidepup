@@ -1,5 +1,4 @@
 import { expect } from "@playwright/test";
-import { PLAYWRIGHT_APPLICATION } from "./constants";
 import test from "./voiceover-test";
 import searchJourneyItemTextSnapshot from "./searchJourneyItemTextSnapshot.json";
 
@@ -7,7 +6,6 @@ test.describe("Playwright VoiceOver", () => {
   test("I can navigate the Playwright website to the Safari section", async ({
     page,
     vo,
-    macOSActivate,
   }) => {
     await page.goto("https://playwright.dev/", {
       waitUntil: "domcontentloaded",
@@ -20,21 +18,13 @@ test.describe("Playwright VoiceOver", () => {
     vo.startLog();
 
     // Move across the navigation menu to the search bar
-    for (let i = 0; i < 10; i++) {
+    while (!(await vo.getLastSpokenPhrase())?.startsWith("Search")) {
       await vo.moveNext();
     }
 
     // Search for Safari
-    await macOSActivate(PLAYWRIGHT_APPLICATION);
     await page.keyboard.type("Safari");
-
-    // Interact with the search listbox. Not the easiest to interact with!
-    // Wonder if it could have a move accessible design?! 🤔
-    await vo.moveNext();
-    await vo.commandInteractWithItem();
-    await macOSActivate(PLAYWRIGHT_APPLICATION);
-    await page.keyboard.press("Enter");
-
+    await vo.performAction();
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
 
     // We're getting there, but seems don't get focus on the section we want!

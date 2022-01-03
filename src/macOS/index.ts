@@ -1,8 +1,7 @@
 export * from "./VoiceOver";
 export { activate as macOSActivate } from "./activate";
+export { quit as macOSQuit } from "./quit";
 export { sendKeys as macOSSendKeys } from "./sendKeys";
-export { keyCode as macOSKeyCode } from "./keyCode";
-export { keystroke as macOSKeystroke } from "./keystroke";
 export { KeyCodes as MacOSKeyCodes } from "./KeyCodes";
 export { Modifiers as MacOSModifiers } from "./Modifiers";
 export { Applications as MacOSApplications } from "./Applications";

@@ -10,13 +10,15 @@ const DEFAULT_NVDA_PATH = join(
 
 let installed: boolean;
 
-try {
-  accessSync(DEFAULT_NVDA_PATH);
-  installed = true;
-} catch (_) {
-  installed = false;
-}
-
 export function isNVDAInstalled(): boolean {
+  if (typeof installed === "undefined") {
+    try {
+      accessSync(DEFAULT_NVDA_PATH);
+      installed = true;
+    } catch (_) {
+      installed = false;
+    }
+  }
+
   return installed;
 }

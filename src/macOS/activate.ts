@@ -11,7 +11,7 @@ export async function activate(
       (name) => Application(name).activate(),
       applicationName
     );
-  } catch (_) {
-    throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}`);
+  } catch (e) {
+    throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}\n${e.message}`);
   }
 }

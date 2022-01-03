@@ -9,7 +9,7 @@ export async function quit(applicationName: Applications): Promise<void> {
       (name) => Application(name).quit(),
       applicationName
     );
-  } catch (_) {
-    throw new Error(`${ERR_PREFIX_QUIT}${applicationName}`);
+  } catch (e) {
+    throw new Error(`${ERR_PREFIX_QUIT}${applicationName}\n${e.message}`);
   }
 }
