@@ -9,9 +9,7 @@ export async function sendKeys(
   applicationName: Applications | string,
   keyCommand: KeyCodeCommand | KeystrokeCommand
 ): Promise<void> {
-  if (isKeyCode(keyCommand)) {
-    return await keyCode(applicationName, keyCommand);
-  } else {
-    return await keystroke(applicationName, keyCommand);
-  }
+  return isKeyCode(keyCommand)
+    ? await keyCode(applicationName, keyCommand)
+    : await keystroke(applicationName, keyCommand);
 }

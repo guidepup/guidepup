@@ -1,12 +1,15 @@
 import { run } from "@jxa/run";
 import { Applications } from "./Applications";
+import { ERR_PREFIX_QUIT } from "./errors";
 import "@jxa/global-type";
 
 export async function quit(applicationName: Applications): Promise<void> {
-  return await run<void, Applications>((name) => {
-    const app = Application(name);
-    app.includeStandardAdditions = true;
-
-    return app.quit();
-  }, applicationName);
+  try {
+    return await run<void, Applications>(
+      (name) => Application(name).quit(),
+      applicationName
+    );
+  } catch (_) {
+    throw new Error(`${ERR_PREFIX_QUIT}${applicationName}`);
+  }
 }

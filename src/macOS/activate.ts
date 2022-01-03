@@ -1,19 +1,17 @@
 import { run } from "@jxa/run";
 import { Applications } from "./Applications";
+import { ERR_PREFIX_ACTIVATE } from "./errors";
 import "@jxa/global-type";
-
-const ERR_ACTIVATE = "Unable to activate application: ";
 
 export async function activate(
   applicationName: Applications | string
 ): Promise<void> {
   try {
-    return await run<void, Applications | string>((name) => {
-      const app = Application(name);
-
-      return app.activate();
-    }, applicationName);
+    return await run<void, Applications | string>(
+      (name) => Application(name).activate(),
+      applicationName
+    );
   } catch (_) {
-    throw new Error(`${ERR_ACTIVATE}${applicationName}`);
+    throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}`);
   }
 }

@@ -11,11 +11,8 @@ export async function keyCode(
   await activate(applicationName);
 
   return await run<void, Applications.SYSTEM_EVENTS, KeyCodeCommand>(
-    (name, { keyCode, modifiers = [] }) => {
-      const app = Application(name);
-
-      return app.keyCode(keyCode, { using: modifiers });
-    },
+    (name, { keyCode, modifiers = [] }) =>
+      Application(name).keyCode(keyCode, { using: modifiers }),
     Applications.SYSTEM_EVENTS,
     command
   );
