@@ -1,4 +1,4 @@
-import { waitForCondition } from "./waitForCondition";
+import { waitForCondition } from "../../waitForCondition";
 import { isSaved } from "./isSaved";
 import { ERR_VOICE_OVER_SAVED_TIMEOUT } from "../errors";
 
