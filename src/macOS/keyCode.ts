@@ -1,13 +1,14 @@
-import { run } from "@jxa/run";
+import { runAppleScript } from "./runAppleScript";
 import { Applications } from "./Applications";
 import type { KeyCodeCommand } from "./KeyCodeCommand";
-import "@jxa/global-type";
 
-export async function keyCode(command: KeyCodeCommand): Promise<void> {
-  return await run<void, Applications.SYSTEM_EVENTS, KeyCodeCommand>(
-    (name, { keyCode, modifiers = [] }) =>
-      Application(name).keyCode(keyCode, { using: modifiers }),
-    Applications.SYSTEM_EVENTS,
-    command
-  );
+export async function keyCode({
+  keyCode,
+  modifiers = [],
+}: KeyCodeCommand): Promise<void> {
+  const script = `tell application "${Applications.SYSTEM_EVENTS}"\nkey code ${
+    Array.isArray(keyCode) ? `{${keyCode.join(", ")}}` : keyCode
+  }${modifiers.length ? ` using {${modifiers.join(", ")}}` : ""}\nend tell`;
+
+  return await runAppleScript(script);
 }

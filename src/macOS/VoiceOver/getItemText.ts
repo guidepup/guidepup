@@ -1,21 +1,13 @@
-import { run } from "@jxa/run";
+import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { retry } from "../../retry";
 import { ERR_VOICE_OVER_GET_ITEM_TEXT } from "../errors";
-import type { VoiceOver } from "@jxa/types";
-import "@jxa/global-type";
 
 export async function getItemText(): Promise<string> {
-  try {
-    return await retry(() =>
-      run<string, Applications.VOICE_OVER>((name) => {
-        const app = Application<VoiceOver.VoiceOver>(name);
-        const voCursor =
-          app.voCursor as unknown as VoiceOver.VoiceOver.VoCursorObject;
+  const script = `tell application "${Applications.VOICE_OVER}"\nreturn text under cursor of vo cursor\nend tell`;
 
-        return voCursor.textUnderCursor();
-      }, Applications.VOICE_OVER)
-    );
+  try {
+    return await retry(() => runAppleScript(script));
   } catch (e) {
     throw new Error(`${ERR_VOICE_OVER_GET_ITEM_TEXT}\n${e.message}`);
   }

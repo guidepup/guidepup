@@ -1,16 +1,14 @@
-import { run } from "@jxa/run";
+import { runAppleScript } from "./runAppleScript";
 import { Applications } from "./Applications";
 import { ERR_PREFIX_ACTIVATE } from "./errors";
-import "@jxa/global-type";
 
 export async function activate(
   applicationName: Applications | string
 ): Promise<void> {
+  const script = `tell application "${applicationName}"\nactivate\nend tell`;
+
   try {
-    return await run<void, Applications | string>(
-      (name) => Application(name).activate(),
-      applicationName
-    );
+    return await runAppleScript(script);
   } catch (e) {
     throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}\n${e.message}`);
   }
