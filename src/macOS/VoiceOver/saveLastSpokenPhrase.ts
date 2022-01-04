@@ -8,7 +8,7 @@ import "@jxa/global-type";
 
 export async function saveLastSpokenPhrase(): Promise<void> {
   try {
-    await retry(
+    await retry(() =>
       run<void, Applications.VOICE_OVER>((name) => {
         const app = Application<VoiceOver.VoiceOver>(name);
         const lastPhrase =

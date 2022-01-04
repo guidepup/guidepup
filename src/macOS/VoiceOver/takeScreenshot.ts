@@ -11,7 +11,7 @@ interface VoCursorObject {
 
 export async function takeScreenshot(): Promise<string> {
   try {
-    return await retry(
+    return await retry(() =>
       run<string, Applications.VOICE_OVER>((name) => {
         const app = Application<VoiceOver.VoiceOver>(name);
         const voCursor = app.voCursor as unknown as VoCursorObject;

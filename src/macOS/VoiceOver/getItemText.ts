@@ -7,7 +7,7 @@ import "@jxa/global-type";
 
 export async function getItemText(): Promise<string> {
   try {
-    return await retry(
+    return await retry(() =>
       run<string, Applications.VOICE_OVER>((name) => {
         const app = Application<VoiceOver.VoiceOver>(name);
         const voCursor =
