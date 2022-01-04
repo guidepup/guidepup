@@ -5,6 +5,7 @@ An example demonstrating using Guidepup for testing VoiceOver automation with [P
 Run this example's test with:
 
 ```console
+yarn install --frozen-lockfile
 cd ./examples/playwright-voiceover
 yarn test
 ```
@@ -17,4 +18,4 @@ yarn test
 2. Navigates to the Playwright website
 3. Moves through the website using VoiceOver controlled by Guidepup to the search input
 4. Searches for Safari
-5. Moves to the Safari section of the docs
+5. Moves to the Webkit section of the docs
