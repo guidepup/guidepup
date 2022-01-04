@@ -1,13 +1,16 @@
-import { run } from "@jxa/run";
+import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { KeystrokeCommand } from "../KeystrokeCommand";
-import "@jxa/global-type";
 
-export async function keystroke(command: KeystrokeCommand): Promise<void> {
-  return await run<void, Applications.SYSTEM_EVENTS, KeystrokeCommand>(
-    (name, { characters, modifiers = [] }) =>
-      Application(name).keystroke(characters, { using: modifiers }),
-    Applications.SYSTEM_EVENTS,
-    command
-  );
+export async function keystroke({
+  characters,
+  modifiers = [],
+}: KeystrokeCommand): Promise<void> {
+  const script = `tell application "${
+    Applications.SYSTEM_EVENTS
+  }"\nkeystroke "${characters}"${
+    modifiers.length ? ` using {${modifiers.join(", ")}}` : ""
+  }\nend tell`;
+
+  return await runAppleScript(script);
 }

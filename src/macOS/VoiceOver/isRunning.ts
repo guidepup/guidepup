@@ -1,8 +1,7 @@
 import { exec } from "child_process";
-import { run } from "@jxa/run";
 import { Applications } from "../Applications";
 import { activate } from "../activate";
-import "@jxa/global-type";
+import { runAppleScript } from "../runAppleScript";
 
 export async function isRunning(): Promise<boolean> {
   const processRunning = await new Promise<boolean>((resolve, reject) => {
@@ -19,12 +18,11 @@ export async function isRunning(): Promise<boolean> {
     return false;
   }
 
-  const appleScriptRunning = await run<boolean, Applications.VOICE_OVER>(
-    (name) => Application(name).running(),
-    Applications.VOICE_OVER
+  const appleScriptRunning = await runAppleScript<string>(
+    `tell application "${Applications.VOICE_OVER}"\nreturn running\nend tell`
   );
 
-  if (!appleScriptRunning) {
+  if (appleScriptRunning === "false") {
     return false;
   }
 
