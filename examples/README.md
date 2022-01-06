@@ -10,3 +10,4 @@ projects:
 | [Hello Voiceover](./hello-voiceover)           | A basic example demonstrating control of VoiceOver to interact with Safari.                                  |
 | [Playwright NVDA](./playwright-nvda)           | An example demonstrating using Guidepup for NVDA automation with [Playwright](https://playwright.dev/).      |
 | [Playwright Voiceover](./playwright-voiceover) | An example demonstrating using Guidepup for VoiceOver automation with [Playwright](https://playwright.dev/). |
+| [CircleCI VoiceOver](./circleci-nvda)          | An example CircleCI configuration file to use for VoiceOver testing with Guidepup.                           |

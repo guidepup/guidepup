@@ -19,6 +19,7 @@ function title(str: string): string {
 const prefix = `// This file was automatically generated.
 // Manual changes will not be preserved.
 
+import type { Options } from "../types";
 import { VoiceOverBase } from "./VoiceOverBase";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { CommanderCommands } from "./CommanderCommands";
@@ -39,9 +40,9 @@ const commandMethodDefinitions = Object.entries(keyCodeCommands).reduce(
       command.description
     }\n   *\n   * Uses VoiceOver keycode command\n   *\n   * Representation: ${
       command.representation
-    }\n   */\n  async command${title(
+    }\n   *\n   * @param {object} [options] Additional options.\n   */\n  async command${title(
       name
-    )}(): Promise<void> {\n    return await this.sendKeys(keyCodeCommands.${name});\n  }${methodSuffix}`);
+    )}(options?: Options): Promise<void> {\n    return await this.sendKeys(keyCodeCommands.${name}, options);\n  }${methodSuffix}`);
   },
   ""
 );
@@ -52,9 +53,9 @@ const commanderMethodDefinitions = Object.entries(CommanderCommands).reduce(
 
     return (definitions += `  /**\n   * ${title(
       command
-    )}\n   *\n   * Uses VoiceOver Commander\n   */\n  async ${camelCase(
+    )}\n   *\n   * Uses VoiceOver Commander\n   *\n   * @param {object} [options] Additional options.\n   */\n  async ${camelCase(
       `commander ${command}`
-    )}(): Promise<void> {\n    return await this.performCommand(CommanderCommands.${name});\n  }${methodSuffix}`);
+    )}(options?: Options): Promise<void> {\n    return await this.performCommand(CommanderCommands.${name}, options);\n  }${methodSuffix}`);
   },
   ""
 );

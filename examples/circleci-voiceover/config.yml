@@ -1,0 +1,33 @@
+version: 2.1
+
+orbs:
+  macos: circleci/macos@2.0.1
+
+jobs:
+  voiceover:
+    macos:
+      xcode: 12.5.1
+    resource_class: medium
+    steps:
+      - checkout
+      - macos/add-uitest-permissions
+      - macos/add-safari-permissions
+      - run:
+          name: Enable VoiceOver Automation
+          command: |
+            sudo bash -c 'echo -n "a" > /private/var/db/Accessibility/.VoiceOverAppleScriptEnabled'
+            defaults write com.apple.VoiceOver4/default SCREnableAppleScript -bool true
+      
+      # Add your steps for your Guidepup tests here
+      # - run:
+      #     name: Install Dependencies
+      #     command: yarn install --frozen-lockfile
+      # - run:
+      #     name: VoiceOver Test
+      #     command: yarn test
+
+workflows:
+  version: 2
+  voiceover-workflow:
+    jobs:
+      - voiceover
