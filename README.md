@@ -1,19 +1,25 @@
-# Guidepup
-
-[![Guidepup NPM version)](https://img.shields.io/npm/v/@guidepup/guidepup)](https://www.npmjs.com/package/@guidepup/guidepup)
-[![Current test status](https://github.com/guidepup/guidepup/workflows/Test/badge.svg)](https://github.com/guidepup/guidepup/actions/workflows/test.yml)
-![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-[![Guidepup open issues](https://img.shields.io/github/issues/guidepup/guidepup)](https://github.com/guidepup/guidepup/issues)
-[![Guidepup stars](https://img.shields.io/github/stars/guidepup/guidepup)](https://github.com/guidepup/guidepup/stargazers)
-[![Guidepup forks](https://img.shields.io/github/forks/guidepup/guidepup)](https://github.com/guidepup/guidepup/network/members)
-[![Guidepup license](https://img.shields.io/github/license/guidepup/guidepup)](https://github.com/guidepup/guidepup/blob/main/LICENSE)
-
-_Screen-reader driver for automation testing._
-
-Guidepup aims to provide a reliable set of APIs to allow users to automate the
-usage of screen-readers through JavaScript.
+<h1 align="center">Guidepup</h1>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@guidepup/guidepup"><img alt="Guidepup available on NPM" src="https://img.shields.io/npm/v/@guidepup/guidepup" /></a>
+  <a href="https://github.com/guidepup/guidepup/actions/workflows/test.yml"><img alt="Guidepup test status" src="https://github.com/guidepup/guidepup/workflows/Test/badge.svg" /></a>
+  <a href="https://github.com/guidepup/guidepup/blob/main/LICENSE"><img alt="Guidepup uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup" /></a>
+</p>
+<p align="center">
+  <i>Screen-reader driver for automation.</i>
+</p>
+<p align="center">
+  Guidepup aims to provide a reliable set of APIs to allow users to automate the usage of screen-readers through JavaScript.
+</p>
 
 ## Getting Started
+
+Install Guidepup to your project:
+
+```bash
+npm install @guidepup/guidepup
+```
+
+And get cracking with your first screen-reader automation code! 🚀
 
 ```ts
 import { VoiceOver } from "@guidepup/guidepup";
@@ -29,29 +35,17 @@ async function run(): Promise<void> {
 run();
 ```
 
-## Installation
-
-Install Guidepup with npm or yarn:
-
-```bash
-# npm
-npm install @guidepup/guidepup
-
-# yarn
-yarn add @guidepup/guidepup
-```
-
 ## Guides
 
-[Guides](https://github.com/guidepup/guidepup/tree/main/guides)
-
-## API Documentation
-
-[API Documentation](https://guidepup.github.io/guidepup/)
+Check out these [fab guides](https://github.com/guidepup/guidepup/tree/main/guides) on how to set up your local or CI environments for using Guidepup. 📚
 
 ## Examples
 
-[Examples](https://github.com/guidepup/guidepup/tree/main/examples)
+Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects. 🤓
+
+## API Documentation
+
+Want to dive in? 🤿 The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows.
 
 ## Roadmap
 
