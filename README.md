@@ -1,7 +1,7 @@
 <h1 align="center">Guidepup</h1>
 <p align="center">
   <a href="https://www.npmjs.com/package/@guidepup/guidepup"><img alt="Guidepup available on NPM" src="https://img.shields.io/npm/v/@guidepup/guidepup" /></a>
-  <a href="https://github.com/guidepup/guidepup/actions/workflows/test.yml"><img alt="Guidepup test status" src="https://github.com/guidepup/guidepup/workflows/Test/badge.svg" /></a>
+  <a href="https://github.com/guidepup/guidepup/actions/workflows/test.yml"><img alt="Guidepup test workflows" src="https://github.com/guidepup/guidepup/workflows/Test/badge.svg" /></a>
   <a href="https://github.com/guidepup/guidepup/blob/main/LICENSE"><img alt="Guidepup uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup" /></a>
 </p>
 <p align="center">
@@ -25,10 +25,16 @@ And get cracking with your first screen-reader automation code! 🚀
 import { VoiceOver } from "@guidepup/guidepup";
 
 async function run(): Promise<void> {
+  // Construct and start your screen-reader instance 🎉
   const vo = new VoiceOver();
   await vo.start();
+
+  // Navigate your environment with screen-readers just as your users do 🏎
   await vo.moveNext();
+
+  // Assert on what your users really see and hear when using screen-readers 👂
   console.log(await vo.getLastSpokenPhrase());
+
   await vo.stop();
 }
 
@@ -45,7 +51,9 @@ Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/mai
 
 ## API Documentation
 
-Want to dive in? 🤿 The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows.
+Want to dive in? 🤿
+
+The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows. 🧑‍💻
 
 ## Roadmap
 
@@ -67,7 +75,7 @@ Environment support:
 
 ## Related
 
-Building on the shoulders of giants!
+Building on the shoulders of giants! 🙌
 
 Here are some related projects:
 
