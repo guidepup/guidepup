@@ -1,11 +1,11 @@
 import type { KeyCodeCommand } from "./KeyCodeCommand";
-import type { Options } from "./types";
+import type { CommandOptions } from "../options";
 import { runAppleScript } from "./runAppleScript";
 import { Applications } from "./Applications";
 
 export async function keyCode(
   { keyCode, modifiers = [] }: KeyCodeCommand,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   const script = `tell application "${Applications.SYSTEM_EVENTS}"\nkey code ${
     Array.isArray(keyCode) ? `{${keyCode.join(", ")}}` : keyCode

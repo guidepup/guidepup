@@ -1,12 +1,12 @@
 import type { CommanderCommands } from "./CommanderCommands";
-import type { Options } from "../types";
+import type { CommandOptions } from "../../options";
 import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_PERFORM_COMMAND } from "../errors";
 
 export async function performCommand(
   command: CommanderCommands,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   const script = `tell application "${
     Applications.VOICE_OVER

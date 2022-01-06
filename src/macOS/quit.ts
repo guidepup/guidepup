@@ -1,11 +1,11 @@
-import type { Options } from "./types";
+import type { CommandOptions } from "../options";
 import { runAppleScript } from "./runAppleScript";
 import { Applications } from "./Applications";
 import { ERR_PREFIX_QUIT } from "./errors";
 
 export async function quit(
   applicationName: Applications,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   const script = `tell application "${applicationName}"\nquit\nend tell`;
 

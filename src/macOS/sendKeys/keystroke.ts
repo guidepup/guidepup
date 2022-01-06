@@ -1,11 +1,11 @@
-import type { Options } from "../types";
+import type { CommandOptions } from "../../options";
 import type { KeystrokeCommand } from "../KeystrokeCommand";
 import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 
 export async function keystroke(
   { characters, modifiers = [] }: KeystrokeCommand,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   const script = `tell application "${
     Applications.SYSTEM_EVENTS

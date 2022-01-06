@@ -1,7 +1,7 @@
 // This file was automatically generated.
 // Manual changes will not be preserved.
 
-import type { Options } from "../types";
+import type { CommandOptions } from "../../options";
 import { VoiceOverBase } from "./VoiceOverBase";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { CommanderCommands } from "./CommanderCommands";
@@ -19,7 +19,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleLock(options?: Options): Promise<void> {
+  async commandToggleLock(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleLock, options);
   }
 
@@ -32,7 +32,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenVoiceOverUtility(options?: Options): Promise<void> {
+  async commandOpenVoiceOverUtility(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openVoiceOverUtility, options);
   }
 
@@ -45,7 +45,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenVoiceOverHelpMenu(options?: Options): Promise<void> {
+  async commandOpenVoiceOverHelpMenu(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openVoiceOverHelpMenu, options);
   }
 
@@ -58,7 +58,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenVoiceOverQuickStart(options?: Options): Promise<void> {
+  async commandOpenVoiceOverQuickStart(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openVoiceOverQuickStart, options);
   }
 
@@ -71,7 +71,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenVoiceOverOnlineHelp(options?: Options): Promise<void> {
+  async commandOpenVoiceOverOnlineHelp(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openVoiceOverOnlineHelp, options);
   }
 
@@ -84,7 +84,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandStartKeyboardHelp(options?: Options): Promise<void> {
+  async commandStartKeyboardHelp(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.startKeyboardHelp, options);
   }
 
@@ -97,7 +97,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandHearItemDescription(options?: Options): Promise<void> {
+  async commandHearItemDescription(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.hearItemDescription, options);
   }
 
@@ -110,7 +110,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenCommandsMenu(options?: Options): Promise<void> {
+  async commandOpenCommandsMenu(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openCommandsMenu, options);
   }
 
@@ -123,7 +123,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenFindMenu(options?: Options): Promise<void> {
+  async commandOpenFindMenu(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openFindMenu, options);
   }
 
@@ -136,7 +136,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandStopAction(options?: Options): Promise<void> {
+  async commandStopAction(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.stopAction, options);
   }
 
@@ -149,7 +149,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandIgnoreNextKeyCombination(options?: Options): Promise<void> {
+  async commandIgnoreNextKeyCombination(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.ignoreNextKeyCombination, options);
   }
 
@@ -162,7 +162,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenVerbosityRotor(options?: Options): Promise<void> {
+  async commandOpenVerbosityRotor(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openVerbosityRotor, options);
   }
 
@@ -175,7 +175,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMagnifyItem(options?: Options): Promise<void> {
+  async commandMagnifyItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.magnifyItem, options);
   }
 
@@ -188,7 +188,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandShrinkItem(options?: Options): Promise<void> {
+  async commandShrinkItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.shrinkItem, options);
   }
 
@@ -201,7 +201,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleVoiceOverCursorAndPanels(options?: Options): Promise<void> {
+  async commandToggleVoiceOverCursorAndPanels(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleVoiceOverCursorAndPanels, options);
   }
 
@@ -214,7 +214,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleCaptionPanel(options?: Options): Promise<void> {
+  async commandToggleCaptionPanel(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleCaptionPanel, options);
   }
 
@@ -227,7 +227,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandResizeOrMoveCaptionPanel(options?: Options): Promise<void> {
+  async commandResizeOrMoveCaptionPanel(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.resizeOrMoveCaptionPanel, options);
   }
 
@@ -240,7 +240,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleBraillePanel(options?: Options): Promise<void> {
+  async commandToggleBraillePanel(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleBraillePanel, options);
   }
 
@@ -253,7 +253,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandResizeOrMoveBraillePanel(options?: Options): Promise<void> {
+  async commandResizeOrMoveBraillePanel(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.resizeOrMoveBraillePanel, options);
   }
 
@@ -266,7 +266,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandTileVisuals(options?: Options): Promise<void> {
+  async commandTileVisuals(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.tileVisuals, options);
   }
 
@@ -279,7 +279,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleKeyboardCommander(options?: Options): Promise<void> {
+  async commandToggleKeyboardCommander(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleKeyboardCommander, options);
   }
 
@@ -292,7 +292,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleScreenCurtain(options?: Options): Promise<void> {
+  async commandToggleScreenCurtain(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleScreenCurtain, options);
   }
 
@@ -305,7 +305,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandCycleRightThroughSpeechSettings(options?: Options): Promise<void> {
+  async commandCycleRightThroughSpeechSettings(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.cycleRightThroughSpeechSettings, options);
   }
 
@@ -318,7 +318,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandCycleLeftThroughSpeechSettings(options?: Options): Promise<void> {
+  async commandCycleLeftThroughSpeechSettings(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.cycleLeftThroughSpeechSettings, options);
   }
 
@@ -331,7 +331,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandChangeUpCurrentSpeechSettings(options?: Options): Promise<void> {
+  async commandChangeUpCurrentSpeechSettings(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.changeUpCurrentSpeechSettings, options);
   }
 
@@ -344,7 +344,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandChangeDownCurrentSpeechSettings(options?: Options): Promise<void> {
+  async commandChangeDownCurrentSpeechSettings(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.changeDownCurrentSpeechSettings, options);
   }
 
@@ -357,7 +357,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandPressAndReleaseMouse(options?: Options): Promise<void> {
+  async commandPressAndReleaseMouse(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.pressAndReleaseMouse, options);
   }
 
@@ -370,7 +370,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandInteractWithItem(options?: Options): Promise<void> {
+  async commandInteractWithItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.interactWithItem, options);
   }
 
@@ -383,7 +383,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandStopInteractingWithItem(options?: Options): Promise<void> {
+  async commandStopInteractingWithItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.stopInteractingWithItem, options);
   }
 
@@ -396,7 +396,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandPerformDefaultActionForItem(options?: Options): Promise<void> {
+  async commandPerformDefaultActionForItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.performDefaultActionForItem, options);
   }
 
@@ -409,7 +409,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSelectItem(options?: Options): Promise<void> {
+  async commandSelectItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.selectItem, options);
   }
 
@@ -422,7 +422,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSelectMultipleItems(options?: Options): Promise<void> {
+  async commandSelectMultipleItems(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.selectMultipleItems, options);
   }
 
@@ -435,7 +435,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleStickyMouse(options?: Options): Promise<void> {
+  async commandToggleStickyMouse(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleStickyMouse, options);
   }
 
@@ -448,7 +448,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDoubleClick(options?: Options): Promise<void> {
+  async commandDoubleClick(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.doubleClick, options);
   }
 
@@ -461,7 +461,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleDisclosureTriangle(options?: Options): Promise<void> {
+  async commandToggleDisclosureTriangle(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleDisclosureTriangle, options);
   }
 
@@ -474,7 +474,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadTableRow(options?: Options): Promise<void> {
+  async commandReadTableRow(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readTableRow, options);
   }
 
@@ -487,7 +487,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadTableColumn(options?: Options): Promise<void> {
+  async commandReadTableColumn(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readTableColumn, options);
   }
 
@@ -500,7 +500,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadTableColumnHeader(options?: Options): Promise<void> {
+  async commandReadTableColumnHeader(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readTableColumnHeader, options);
   }
 
@@ -513,7 +513,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadTableRowAndColumnNumbers(options?: Options): Promise<void> {
+  async commandReadTableRowAndColumnNumbers(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readTableRowAndColumnNumbers, options);
   }
 
@@ -526,7 +526,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSortTableColumn(options?: Options): Promise<void> {
+  async commandSortTableColumn(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.sortTableColumn, options);
   }
 
@@ -539,7 +539,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandInteractWithScrollbars(options?: Options): Promise<void> {
+  async commandInteractWithScrollbars(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.interactWithScrollbars, options);
   }
 
@@ -552,7 +552,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandResizeObject(options?: Options): Promise<void> {
+  async commandResizeObject(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.resizeObject, options);
   }
 
@@ -565,7 +565,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveObject(options?: Options): Promise<void> {
+  async commandMoveObject(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveObject, options);
   }
 
@@ -578,7 +578,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveUp(options?: Options): Promise<void> {
+  async commandMoveUp(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveUp, options);
   }
 
@@ -591,7 +591,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveDown(options?: Options): Promise<void> {
+  async commandMoveDown(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveDown, options);
   }
 
@@ -604,7 +604,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToPrevious(options?: Options): Promise<void> {
+  async commandMoveToPrevious(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToPrevious, options);
   }
 
@@ -617,7 +617,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToNext(options?: Options): Promise<void> {
+  async commandMoveToNext(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToNext, options);
   }
 
@@ -630,7 +630,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToVisibleAreaTop(options?: Options): Promise<void> {
+  async commandMoveToVisibleAreaTop(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToVisibleAreaTop, options);
   }
 
@@ -643,7 +643,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToVisibleAreaBottom(options?: Options): Promise<void> {
+  async commandMoveToVisibleAreaBottom(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToVisibleAreaBottom, options);
   }
 
@@ -656,7 +656,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToAreaTop(options?: Options): Promise<void> {
+  async commandMoveToAreaTop(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToAreaTop, options);
   }
 
@@ -669,7 +669,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToAreaBottom(options?: Options): Promise<void> {
+  async commandMoveToAreaBottom(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToAreaBottom, options);
   }
 
@@ -682,7 +682,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToFirst(options?: Options): Promise<void> {
+  async commandMoveToFirst(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToFirst, options);
   }
 
@@ -695,7 +695,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToLast(options?: Options): Promise<void> {
+  async commandMoveToLast(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToLast, options);
   }
 
@@ -708,7 +708,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToFrontWindow(options?: Options): Promise<void> {
+  async commandMoveToFrontWindow(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToFrontWindow, options);
   }
 
@@ -721,7 +721,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandCloseWindow(options?: Options): Promise<void> {
+  async commandCloseWindow(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.closeWindow, options);
   }
 
@@ -734,7 +734,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenItemChooser(options?: Options): Promise<void> {
+  async commandOpenItemChooser(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openItemChooser, options);
   }
 
@@ -747,7 +747,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToDock(options?: Options): Promise<void> {
+  async commandMoveToDock(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToDock, options);
   }
 
@@ -760,7 +760,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToDesktop(options?: Options): Promise<void> {
+  async commandMoveToDesktop(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToDesktop, options);
   }
 
@@ -773,7 +773,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToMenuBar(options?: Options): Promise<void> {
+  async commandMoveToMenuBar(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToMenuBar, options);
   }
 
@@ -786,7 +786,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToFirstStatusMenuInMenuBar(options?: Options): Promise<void> {
+  async commandMoveToFirstStatusMenuInMenuBar(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToFirstStatusMenuInMenuBar, options);
   }
 
@@ -799,7 +799,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenSpotlightMenu(options?: Options): Promise<void> {
+  async commandOpenSpotlightMenu(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openSpotlightMenu, options);
   }
 
@@ -812,7 +812,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenShortcutMenu(options?: Options): Promise<void> {
+  async commandOpenShortcutMenu(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openShortcutMenu, options);
   }
 
@@ -825,7 +825,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToLinkedItem(options?: Options): Promise<void> {
+  async commandJumpToLinkedItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToLinkedItem, options);
   }
 
@@ -838,7 +838,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleCursorTrackingOptions(options?: Options): Promise<void> {
+  async commandToggleCursorTrackingOptions(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleCursorTrackingOptions, options);
   }
 
@@ -851,7 +851,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveCursorToKeyboardFocus(options?: Options): Promise<void> {
+  async commandMoveCursorToKeyboardFocus(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveCursorToKeyboardFocus, options);
   }
 
@@ -864,7 +864,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveKeyboardFocusToCursor(options?: Options): Promise<void> {
+  async commandMoveKeyboardFocusToCursor(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveKeyboardFocusToCursor, options);
   }
 
@@ -877,7 +877,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveCursorToMouseFocus(options?: Options): Promise<void> {
+  async commandMoveCursorToMouseFocus(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveCursorToMouseFocus, options);
   }
 
@@ -890,7 +890,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveMouseFocusToCursor(options?: Options): Promise<void> {
+  async commandMoveMouseFocusToCursor(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveMouseFocusToCursor, options);
   }
 
@@ -903,7 +903,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpCommand(options?: Options): Promise<void> {
+  async commandJumpCommand(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpCommand, options);
   }
 
@@ -916,7 +916,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToTopEdge(options?: Options): Promise<void> {
+  async commandJumpToTopEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToTopEdge, options);
   }
 
@@ -929,7 +929,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToRightEdge(options?: Options): Promise<void> {
+  async commandJumpToRightEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToRightEdge, options);
   }
 
@@ -942,7 +942,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToBottomEdge(options?: Options): Promise<void> {
+  async commandJumpToBottomEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToBottomEdge, options);
   }
 
@@ -955,7 +955,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToLeftEdge(options?: Options): Promise<void> {
+  async commandJumpToLeftEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToLeftEdge, options);
   }
 
@@ -968,7 +968,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToTopVisibleEdge(options?: Options): Promise<void> {
+  async commandJumpToTopVisibleEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToTopVisibleEdge, options);
   }
 
@@ -981,7 +981,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToRightVisibleEdge(options?: Options): Promise<void> {
+  async commandJumpToRightVisibleEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToRightVisibleEdge, options);
   }
 
@@ -994,7 +994,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToBottomVisibleEdge(options?: Options): Promise<void> {
+  async commandJumpToBottomVisibleEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToBottomVisibleEdge, options);
   }
 
@@ -1007,7 +1007,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToLeftVisibleEdge(options?: Options): Promise<void> {
+  async commandJumpToLeftVisibleEdge(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToLeftVisibleEdge, options);
   }
 
@@ -1020,7 +1020,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpBeforeSplitter(options?: Options): Promise<void> {
+  async commandJumpBeforeSplitter(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpBeforeSplitter, options);
   }
 
@@ -1033,7 +1033,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpAfterSplitter(options?: Options): Promise<void> {
+  async commandJumpAfterSplitter(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpAfterSplitter, options);
   }
 
@@ -1046,7 +1046,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindText(options?: Options): Promise<void> {
+  async commandFindText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findText, options);
   }
 
@@ -1059,7 +1059,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandNavigateUp(options?: Options): Promise<void> {
+  async commandNavigateUp(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.navigateUp, options);
   }
 
@@ -1072,7 +1072,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandCycleRightThroughNavigationSettings(options?: Options): Promise<void> {
+  async commandCycleRightThroughNavigationSettings(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.cycleRightThroughNavigationSettings, options);
   }
 
@@ -1085,7 +1085,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandNavigateDown(options?: Options): Promise<void> {
+  async commandNavigateDown(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.navigateDown, options);
   }
 
@@ -1098,7 +1098,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandCycleLeftThroughNavigationSettings(options?: Options): Promise<void> {
+  async commandCycleLeftThroughNavigationSettings(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.cycleLeftThroughNavigationSettings, options);
   }
 
@@ -1111,7 +1111,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot1(options?: Options): Promise<void> {
+  async commandToggleHotSpot1(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot1, options);
   }
 
@@ -1124,7 +1124,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot2(options?: Options): Promise<void> {
+  async commandToggleHotSpot2(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot2, options);
   }
 
@@ -1137,7 +1137,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot3(options?: Options): Promise<void> {
+  async commandToggleHotSpot3(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot3, options);
   }
 
@@ -1150,7 +1150,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot4(options?: Options): Promise<void> {
+  async commandToggleHotSpot4(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot4, options);
   }
 
@@ -1163,7 +1163,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot5(options?: Options): Promise<void> {
+  async commandToggleHotSpot5(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot5, options);
   }
 
@@ -1176,7 +1176,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot6(options?: Options): Promise<void> {
+  async commandToggleHotSpot6(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot6, options);
   }
 
@@ -1189,7 +1189,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot7(options?: Options): Promise<void> {
+  async commandToggleHotSpot7(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot7, options);
   }
 
@@ -1202,7 +1202,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot8(options?: Options): Promise<void> {
+  async commandToggleHotSpot8(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot8, options);
   }
 
@@ -1215,7 +1215,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot9(options?: Options): Promise<void> {
+  async commandToggleHotSpot9(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot9, options);
   }
 
@@ -1228,7 +1228,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleHotSpot0(options?: Options): Promise<void> {
+  async commandToggleHotSpot0(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleHotSpot0, options);
   }
 
@@ -1241,7 +1241,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot1(options?: Options): Promise<void> {
+  async commandJumpToHotSpot1(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot1, options);
   }
 
@@ -1254,7 +1254,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot2(options?: Options): Promise<void> {
+  async commandJumpToHotSpot2(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot2, options);
   }
 
@@ -1267,7 +1267,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot3(options?: Options): Promise<void> {
+  async commandJumpToHotSpot3(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot3, options);
   }
 
@@ -1280,7 +1280,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot4(options?: Options): Promise<void> {
+  async commandJumpToHotSpot4(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot4, options);
   }
 
@@ -1293,7 +1293,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot5(options?: Options): Promise<void> {
+  async commandJumpToHotSpot5(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot5, options);
   }
 
@@ -1306,7 +1306,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot6(options?: Options): Promise<void> {
+  async commandJumpToHotSpot6(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot6, options);
   }
 
@@ -1319,7 +1319,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot7(options?: Options): Promise<void> {
+  async commandJumpToHotSpot7(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot7, options);
   }
 
@@ -1332,7 +1332,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot8(options?: Options): Promise<void> {
+  async commandJumpToHotSpot8(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot8, options);
   }
 
@@ -1345,7 +1345,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot9(options?: Options): Promise<void> {
+  async commandJumpToHotSpot9(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot9, options);
   }
 
@@ -1358,7 +1358,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToHotSpot0(options?: Options): Promise<void> {
+  async commandJumpToHotSpot0(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToHotSpot0, options);
   }
 
@@ -1371,7 +1371,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot1(options?: Options): Promise<void> {
+  async commandDescribeHotSpot1(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot1, options);
   }
 
@@ -1384,7 +1384,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot2(options?: Options): Promise<void> {
+  async commandDescribeHotSpot2(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot2, options);
   }
 
@@ -1397,7 +1397,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot3(options?: Options): Promise<void> {
+  async commandDescribeHotSpot3(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot3, options);
   }
 
@@ -1410,7 +1410,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot4(options?: Options): Promise<void> {
+  async commandDescribeHotSpot4(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot4, options);
   }
 
@@ -1423,7 +1423,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot5(options?: Options): Promise<void> {
+  async commandDescribeHotSpot5(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot5, options);
   }
 
@@ -1436,7 +1436,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot6(options?: Options): Promise<void> {
+  async commandDescribeHotSpot6(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot6, options);
   }
 
@@ -1449,7 +1449,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot7(options?: Options): Promise<void> {
+  async commandDescribeHotSpot7(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot7, options);
   }
 
@@ -1462,7 +1462,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot8(options?: Options): Promise<void> {
+  async commandDescribeHotSpot8(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot8, options);
   }
 
@@ -1475,7 +1475,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot9(options?: Options): Promise<void> {
+  async commandDescribeHotSpot9(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot9, options);
   }
 
@@ -1488,7 +1488,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeHotSpot0(options?: Options): Promise<void> {
+  async commandDescribeHotSpot0(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeHotSpot0, options);
   }
 
@@ -1501,7 +1501,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot1(options?: Options): Promise<void> {
+  async commandMonitorHotSpot1(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot1, options);
   }
 
@@ -1514,7 +1514,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot2(options?: Options): Promise<void> {
+  async commandMonitorHotSpot2(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot2, options);
   }
 
@@ -1527,7 +1527,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot3(options?: Options): Promise<void> {
+  async commandMonitorHotSpot3(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot3, options);
   }
 
@@ -1540,7 +1540,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot4(options?: Options): Promise<void> {
+  async commandMonitorHotSpot4(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot4, options);
   }
 
@@ -1553,7 +1553,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot5(options?: Options): Promise<void> {
+  async commandMonitorHotSpot5(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot5, options);
   }
 
@@ -1566,7 +1566,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot6(options?: Options): Promise<void> {
+  async commandMonitorHotSpot6(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot6, options);
   }
 
@@ -1579,7 +1579,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot7(options?: Options): Promise<void> {
+  async commandMonitorHotSpot7(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot7, options);
   }
 
@@ -1592,7 +1592,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot8(options?: Options): Promise<void> {
+  async commandMonitorHotSpot8(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot8, options);
   }
 
@@ -1605,7 +1605,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot9(options?: Options): Promise<void> {
+  async commandMonitorHotSpot9(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot9, options);
   }
 
@@ -1618,7 +1618,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMonitorHotSpot0(options?: Options): Promise<void> {
+  async commandMonitorHotSpot0(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.monitorHotSpot0, options);
   }
 
@@ -1631,7 +1631,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandJumpToParentFolder(options?: Options): Promise<void> {
+  async commandJumpToParentFolder(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.jumpToParentFolder, options);
   }
 
@@ -1644,7 +1644,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandHearApplicationSummary(options?: Options): Promise<void> {
+  async commandHearApplicationSummary(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.hearApplicationSummary, options);
   }
 
@@ -1657,7 +1657,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenApplicationChooser(options?: Options): Promise<void> {
+  async commandOpenApplicationChooser(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openApplicationChooser, options);
   }
 
@@ -1670,7 +1670,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandHearWindowSummary(options?: Options): Promise<void> {
+  async commandHearWindowSummary(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.hearWindowSummary, options);
   }
 
@@ -1683,7 +1683,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenWindowChooser(options?: Options): Promise<void> {
+  async commandOpenWindowChooser(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openWindowChooser, options);
   }
 
@@ -1696,7 +1696,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeItem(options?: Options): Promise<void> {
+  async commandDescribeItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeItem, options);
   }
 
@@ -1709,7 +1709,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeItemSize(options?: Options): Promise<void> {
+  async commandDescribeItemSize(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeItemSize, options);
   }
 
@@ -1722,7 +1722,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeItemPosition(options?: Options): Promise<void> {
+  async commandDescribeItemPosition(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeItemPosition, options);
   }
 
@@ -1735,7 +1735,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeItemWithKeyboardFocus(options?: Options): Promise<void> {
+  async commandDescribeItemWithKeyboardFocus(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeItemWithKeyboardFocus, options);
   }
 
@@ -1748,7 +1748,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeLocationOfInsertionPoint(options?: Options): Promise<void> {
+  async commandDescribeLocationOfInsertionPoint(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeLocationOfInsertionPoint, options);
   }
 
@@ -1761,7 +1761,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeItemUnderMouseCursor(options?: Options): Promise<void> {
+  async commandDescribeItemUnderMouseCursor(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeItemUnderMouseCursor, options);
   }
 
@@ -1774,7 +1774,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeLocationOfMouseInCoordinates(options?: Options): Promise<void> {
+  async commandDescribeLocationOfMouseInCoordinates(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeLocationOfMouseInCoordinates, options);
   }
 
@@ -1787,7 +1787,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeLocationOfMouse(options?: Options): Promise<void> {
+  async commandDescribeLocationOfMouse(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeLocationOfMouse, options);
   }
 
@@ -1800,7 +1800,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandDescribeSelectedItem(options?: Options): Promise<void> {
+  async commandDescribeSelectedItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.describeSelectedItem, options);
   }
 
@@ -1813,7 +1813,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadEverythingInCursor(options?: Options): Promise<void> {
+  async commandReadEverythingInCursor(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readEverythingInCursor, options);
   }
 
@@ -1826,7 +1826,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadEverythingInWindow(options?: Options): Promise<void> {
+  async commandReadEverythingInWindow(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readEverythingInWindow, options);
   }
 
@@ -1839,7 +1839,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandRepeatLastSpokenPhrase(options?: Options): Promise<void> {
+  async commandRepeatLastSpokenPhrase(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.repeatLastSpokenPhrase, options);
   }
 
@@ -1852,7 +1852,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandCopyLastSpokenPhraseToClipboard(options?: Options): Promise<void> {
+  async commandCopyLastSpokenPhraseToClipboard(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.copyLastSpokenPhraseToClipboard, options);
   }
 
@@ -1865,7 +1865,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSaveLastSpokenPhraseToDesktop(options?: Options): Promise<void> {
+  async commandSaveLastSpokenPhraseToDesktop(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.saveLastSpokenPhraseToDesktop, options);
   }
 
@@ -1878,7 +1878,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFind(options?: Options): Promise<void> {
+  async commandFind(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.find, options);
   }
 
@@ -1891,7 +1891,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextSearchedText(options?: Options): Promise<void> {
+  async commandFindNextSearchedText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextSearchedText, options);
   }
 
@@ -1904,7 +1904,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousSearchedText(options?: Options): Promise<void> {
+  async commandFindPreviousSearchedText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousSearchedText, options);
   }
 
@@ -1917,7 +1917,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextList(options?: Options): Promise<void> {
+  async commandFindNextList(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextList, options);
   }
 
@@ -1930,7 +1930,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousList(options?: Options): Promise<void> {
+  async commandFindPreviousList(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousList, options);
   }
 
@@ -1943,7 +1943,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextBoldText(options?: Options): Promise<void> {
+  async commandFindNextBoldText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextBoldText, options);
   }
 
@@ -1956,7 +1956,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousBoldText(options?: Options): Promise<void> {
+  async commandFindPreviousBoldText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousBoldText, options);
   }
 
@@ -1969,7 +1969,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextStyleChange(options?: Options): Promise<void> {
+  async commandFindNextStyleChange(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextStyleChange, options);
   }
 
@@ -1982,7 +1982,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousStyleChange(options?: Options): Promise<void> {
+  async commandFindPreviousStyleChange(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousStyleChange, options);
   }
 
@@ -1995,7 +1995,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextItalicText(options?: Options): Promise<void> {
+  async commandFindNextItalicText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextItalicText, options);
   }
 
@@ -2008,7 +2008,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousItalicText(options?: Options): Promise<void> {
+  async commandFindPreviousItalicText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousItalicText, options);
   }
 
@@ -2021,7 +2021,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextColorChange(options?: Options): Promise<void> {
+  async commandFindNextColorChange(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextColorChange, options);
   }
 
@@ -2034,7 +2034,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousColorChange(options?: Options): Promise<void> {
+  async commandFindPreviousColorChange(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousColorChange, options);
   }
 
@@ -2047,7 +2047,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextFontChange(options?: Options): Promise<void> {
+  async commandFindNextFontChange(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextFontChange, options);
   }
 
@@ -2060,7 +2060,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousFontChange(options?: Options): Promise<void> {
+  async commandFindPreviousFontChange(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousFontChange, options);
   }
 
@@ -2073,7 +2073,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextTable(options?: Options): Promise<void> {
+  async commandFindNextTable(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextTable, options);
   }
 
@@ -2086,7 +2086,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousTable(options?: Options): Promise<void> {
+  async commandFindPreviousTable(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousTable, options);
   }
 
@@ -2099,7 +2099,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextUnderlinedText(options?: Options): Promise<void> {
+  async commandFindNextUnderlinedText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextUnderlinedText, options);
   }
 
@@ -2112,7 +2112,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousUnderlinedText(options?: Options): Promise<void> {
+  async commandFindPreviousUnderlinedText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousUnderlinedText, options);
   }
 
@@ -2125,7 +2125,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextControl(options?: Options): Promise<void> {
+  async commandFindNextControl(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextControl, options);
   }
 
@@ -2138,7 +2138,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousControl(options?: Options): Promise<void> {
+  async commandFindPreviousControl(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousControl, options);
   }
 
@@ -2151,7 +2151,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextDifferentItem(options?: Options): Promise<void> {
+  async commandFindNextDifferentItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextDifferentItem, options);
   }
 
@@ -2164,7 +2164,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousDifferentItem(options?: Options): Promise<void> {
+  async commandFindPreviousDifferentItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousDifferentItem, options);
   }
 
@@ -2177,7 +2177,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextItemWithSameTypeAsCurrentItem(options?: Options): Promise<void> {
+  async commandFindNextItemWithSameTypeAsCurrentItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextItemWithSameTypeAsCurrentItem, options);
   }
 
@@ -2190,7 +2190,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousItemWithSameTypeAsCurrentItem(options?: Options): Promise<void> {
+  async commandFindPreviousItemWithSameTypeAsCurrentItem(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousItemWithSameTypeAsCurrentItem, options);
   }
 
@@ -2203,7 +2203,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextGraphic(options?: Options): Promise<void> {
+  async commandFindNextGraphic(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextGraphic, options);
   }
 
@@ -2216,7 +2216,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousGraphic(options?: Options): Promise<void> {
+  async commandFindPreviousGraphic(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousGraphic, options);
   }
 
@@ -2229,7 +2229,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextHeading(options?: Options): Promise<void> {
+  async commandFindNextHeading(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextHeading, options);
   }
 
@@ -2242,7 +2242,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousHeading(options?: Options): Promise<void> {
+  async commandFindPreviousHeading(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousHeading, options);
   }
 
@@ -2255,7 +2255,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextLink(options?: Options): Promise<void> {
+  async commandFindNextLink(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextLink, options);
   }
 
@@ -2268,7 +2268,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousLink(options?: Options): Promise<void> {
+  async commandFindPreviousLink(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousLink, options);
   }
 
@@ -2281,7 +2281,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextHeadingOfSameLevel(options?: Options): Promise<void> {
+  async commandFindNextHeadingOfSameLevel(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextHeadingOfSameLevel, options);
   }
 
@@ -2294,7 +2294,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousHeadingOfSameLevel(options?: Options): Promise<void> {
+  async commandFindPreviousHeadingOfSameLevel(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousHeadingOfSameLevel, options);
   }
 
@@ -2307,7 +2307,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextPlainText(options?: Options): Promise<void> {
+  async commandFindNextPlainText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextPlainText, options);
   }
 
@@ -2320,7 +2320,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousPlainText(options?: Options): Promise<void> {
+  async commandFindPreviousPlainText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousPlainText, options);
   }
 
@@ -2333,7 +2333,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextVisitedLink(options?: Options): Promise<void> {
+  async commandFindNextVisitedLink(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextVisitedLink, options);
   }
 
@@ -2346,7 +2346,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousVisitedLink(options?: Options): Promise<void> {
+  async commandFindPreviousVisitedLink(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousVisitedLink, options);
   }
 
@@ -2359,7 +2359,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindNextMisspelledWord(options?: Options): Promise<void> {
+  async commandFindNextMisspelledWord(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findNextMisspelledWord, options);
   }
 
@@ -2372,7 +2372,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandFindPreviousMisspelledWord(options?: Options): Promise<void> {
+  async commandFindPreviousMisspelledWord(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.findPreviousMisspelledWord, options);
   }
 
@@ -2385,7 +2385,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadAllText(options?: Options): Promise<void> {
+  async commandReadAllText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readAllText, options);
   }
 
@@ -2398,7 +2398,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSelectAllText(options?: Options): Promise<void> {
+  async commandSelectAllText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.selectAllText, options);
   }
 
@@ -2411,7 +2411,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleTextSelection(options?: Options): Promise<void> {
+  async commandToggleTextSelection(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleTextSelection, options);
   }
 
@@ -2424,7 +2424,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSpeakTextAttributes(options?: Options): Promise<void> {
+  async commandSpeakTextAttributes(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.speakTextAttributes, options);
   }
 
@@ -2437,7 +2437,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadParagraph(options?: Options): Promise<void> {
+  async commandReadParagraph(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readParagraph, options);
   }
 
@@ -2450,7 +2450,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadNextParagraph(options?: Options): Promise<void> {
+  async commandReadNextParagraph(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readNextParagraph, options);
   }
 
@@ -2463,7 +2463,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadPreviousParagraph(options?: Options): Promise<void> {
+  async commandReadPreviousParagraph(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readPreviousParagraph, options);
   }
 
@@ -2476,7 +2476,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadSentence(options?: Options): Promise<void> {
+  async commandReadSentence(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readSentence, options);
   }
 
@@ -2489,7 +2489,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadNextSentence(options?: Options): Promise<void> {
+  async commandReadNextSentence(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readNextSentence, options);
   }
 
@@ -2502,7 +2502,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadPreviousSentence(options?: Options): Promise<void> {
+  async commandReadPreviousSentence(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readPreviousSentence, options);
   }
 
@@ -2515,7 +2515,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadLine(options?: Options): Promise<void> {
+  async commandReadLine(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readLine, options);
   }
 
@@ -2528,7 +2528,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadNextLine(options?: Options): Promise<void> {
+  async commandReadNextLine(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readNextLine, options);
   }
 
@@ -2541,7 +2541,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadPreviousLine(options?: Options): Promise<void> {
+  async commandReadPreviousLine(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readPreviousLine, options);
   }
 
@@ -2554,7 +2554,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadWord(options?: Options): Promise<void> {
+  async commandReadWord(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readWord, options);
   }
 
@@ -2567,7 +2567,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadWordSpelled(options?: Options): Promise<void> {
+  async commandReadWordSpelled(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readWordSpelled, options);
   }
 
@@ -2580,7 +2580,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadWordPhonetically(options?: Options): Promise<void> {
+  async commandReadWordPhonetically(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readWordPhonetically, options);
   }
 
@@ -2593,7 +2593,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadNextWord(options?: Options): Promise<void> {
+  async commandReadNextWord(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readNextWord, options);
   }
 
@@ -2606,7 +2606,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadPreviousWord(options?: Options): Promise<void> {
+  async commandReadPreviousWord(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readPreviousWord, options);
   }
 
@@ -2619,7 +2619,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadCharacter(options?: Options): Promise<void> {
+  async commandReadCharacter(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readCharacter, options);
   }
 
@@ -2632,7 +2632,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadCharacterPhonetically(options?: Options): Promise<void> {
+  async commandReadCharacterPhonetically(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readCharacterPhonetically, options);
   }
 
@@ -2645,7 +2645,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadNextCharacter(options?: Options): Promise<void> {
+  async commandReadNextCharacter(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readNextCharacter, options);
   }
 
@@ -2658,7 +2658,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadPreviousCharacter(options?: Options): Promise<void> {
+  async commandReadPreviousCharacter(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readPreviousCharacter, options);
   }
 
@@ -2671,7 +2671,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToFirstVisibleWord(options?: Options): Promise<void> {
+  async commandMoveToFirstVisibleWord(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToFirstVisibleWord, options);
   }
 
@@ -2684,7 +2684,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToLastVisibleWord(options?: Options): Promise<void> {
+  async commandMoveToLastVisibleWord(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToLastVisibleWord, options);
   }
 
@@ -2697,7 +2697,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToBeginningOfText(options?: Options): Promise<void> {
+  async commandMoveToBeginningOfText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToBeginningOfText, options);
   }
 
@@ -2710,7 +2710,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToEndOfText(options?: Options): Promise<void> {
+  async commandMoveToEndOfText(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToEndOfText, options);
   }
 
@@ -2723,7 +2723,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadCurrentWordAndCharacter(options?: Options): Promise<void> {
+  async commandReadCurrentWordAndCharacter(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readCurrentWordAndCharacter, options);
   }
 
@@ -2736,7 +2736,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadNumberOfLines(options?: Options): Promise<void> {
+  async commandReadNumberOfLines(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readNumberOfLines, options);
   }
 
@@ -2749,7 +2749,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToNextColumn(options?: Options): Promise<void> {
+  async commandMoveToNextColumn(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToNextColumn, options);
   }
 
@@ -2762,7 +2762,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToPreviousColumn(options?: Options): Promise<void> {
+  async commandMoveToPreviousColumn(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToPreviousColumn, options);
   }
 
@@ -2775,7 +2775,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToNextFrame(options?: Options): Promise<void> {
+  async commandMoveToNextFrame(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToNextFrame, options);
   }
 
@@ -2788,7 +2788,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToPreviousFrame(options?: Options): Promise<void> {
+  async commandMoveToPreviousFrame(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToPreviousFrame, options);
   }
 
@@ -2801,7 +2801,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToNextAutoWebSpot(options?: Options): Promise<void> {
+  async commandMoveToNextAutoWebSpot(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToNextAutoWebSpot, options);
   }
 
@@ -2814,7 +2814,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToPreviousAutoWebSpot(options?: Options): Promise<void> {
+  async commandMoveToPreviousAutoWebSpot(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToPreviousAutoWebSpot, options);
   }
 
@@ -2827,7 +2827,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToNextWebSpot(options?: Options): Promise<void> {
+  async commandMoveToNextWebSpot(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToNextWebSpot, options);
   }
 
@@ -2840,7 +2840,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandMoveToPreviousWebSpot(options?: Options): Promise<void> {
+  async commandMoveToPreviousWebSpot(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.moveToPreviousWebSpot, options);
   }
 
@@ -2853,7 +2853,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandOpenWebItemRotor(options?: Options): Promise<void> {
+  async commandOpenWebItemRotor(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.openWebItemRotor, options);
   }
 
@@ -2866,7 +2866,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadFromBeginningToCurrent(options?: Options): Promise<void> {
+  async commandReadFromBeginningToCurrent(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readFromBeginningToCurrent, options);
   }
 
@@ -2879,7 +2879,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadLinkAddress(options?: Options): Promise<void> {
+  async commandReadLinkAddress(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readLinkAddress, options);
   }
 
@@ -2892,7 +2892,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandReadWebpageStatistics(options?: Options): Promise<void> {
+  async commandReadWebpageStatistics(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.readWebpageStatistics, options);
   }
 
@@ -2905,7 +2905,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandRemoveWebSpot(options?: Options): Promise<void> {
+  async commandRemoveWebSpot(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.removeWebSpot, options);
   }
 
@@ -2918,7 +2918,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSetWebSpot(options?: Options): Promise<void> {
+  async commandSetWebSpot(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.setWebSpot, options);
   }
 
@@ -2931,7 +2931,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandSetSweetSpot(options?: Options): Promise<void> {
+  async commandSetSweetSpot(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.setSweetSpot, options);
   }
 
@@ -2944,7 +2944,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commandToggleGroupingItemsWithinTable(options?: Options): Promise<void> {
+  async commandToggleGroupingItemsWithinTable(options?: CommandOptions): Promise<void> {
     return await this.sendKeys(keyCodeCommands.toggleGroupingItemsWithinTable, options);
   }
 
@@ -2955,7 +2955,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderActions(options?: Options): Promise<void> {
+  async commanderActions(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.ACTIONS, options);
   }
 
@@ -2966,7 +2966,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderAddPronunciation(options?: Options): Promise<void> {
+  async commanderAddPronunciation(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.ADD_PRONUNCIATION, options);
   }
 
@@ -2977,7 +2977,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderBringWindowToFront(options?: Options): Promise<void> {
+  async commanderBringWindowToFront(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.BRING_WINDOW_TO_FRONT, options);
   }
 
@@ -2988,7 +2988,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderClickMouse(options?: Options): Promise<void> {
+  async commanderClickMouse(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.CLICK_MOUSE, options);
   }
 
@@ -2999,7 +2999,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderCloseWindow(options?: Options): Promise<void> {
+  async commanderCloseWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.CLOSE_WINDOW, options);
   }
 
@@ -3010,7 +3010,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribePositionOfWindow(options?: Options): Promise<void> {
+  async commanderDescribePositionOfWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_POSITION_OF_WINDOW, options);
   }
 
@@ -3021,7 +3021,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeSizeOfWindow(options?: Options): Promise<void> {
+  async commanderDescribeSizeOfWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_SIZE_OF_WINDOW, options);
   }
 
@@ -3032,7 +3032,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDoubleClickMouse(options?: Options): Promise<void> {
+  async commanderDoubleClickMouse(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DOUBLE_CLICK_MOUSE, options);
   }
 
@@ -3043,7 +3043,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDropMarkedItemAfterChosenHotSpot(options?: Options): Promise<void> {
+  async commanderDropMarkedItemAfterChosenHotSpot(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DROP_MARKED_ITEM_AFTER_CHOSEN_HOT_SPOT, options);
   }
 
@@ -3054,7 +3054,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDropMarkedItemAfterVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderDropMarkedItemAfterVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DROP_MARKED_ITEM_AFTER_VOICEOVER_CURSOR, options);
   }
 
@@ -3065,7 +3065,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDropMarkedItemBeforeChosenHotSpot(options?: Options): Promise<void> {
+  async commanderDropMarkedItemBeforeChosenHotSpot(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DROP_MARKED_ITEM_BEFORE_CHOSEN_HOT_SPOT, options);
   }
 
@@ -3076,7 +3076,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDropMarkedItemBeforeVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderDropMarkedItemBeforeVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DROP_MARKED_ITEM_BEFORE_VOICEOVER_CURSOR, options);
   }
 
@@ -3087,7 +3087,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDropMarkedItemOnChosenHotSpot(options?: Options): Promise<void> {
+  async commanderDropMarkedItemOnChosenHotSpot(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DROP_MARKED_ITEM_ON_CHOSEN_HOT_SPOT, options);
   }
 
@@ -3098,7 +3098,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDropMarkedItemOnVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderDropMarkedItemOnVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DROP_MARKED_ITEM_ON_VOICEOVER_CURSOR, options);
   }
 
@@ -3109,7 +3109,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderEscape(options?: Options): Promise<void> {
+  async commanderEscape(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.ESCAPE, options);
   }
 
@@ -3120,7 +3120,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderFastForward(options?: Options): Promise<void> {
+  async commanderFastForward(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.FAST_FORWARD, options);
   }
 
@@ -3131,7 +3131,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderIgnoreNextKeypress(options?: Options): Promise<void> {
+  async commanderIgnoreNextKeypress(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.IGNORE_NEXT_KEYPRESS, options);
   }
 
@@ -3142,7 +3142,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderInteractWithScrollBar(options?: Options): Promise<void> {
+  async commanderInteractWithScrollBar(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.INTERACT_WITH_SCROLL_BAR, options);
   }
 
@@ -3153,7 +3153,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderItemChooser(options?: Options): Promise<void> {
+  async commanderItemChooser(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.ITEM_CHOOSER, options);
   }
 
@@ -3164,7 +3164,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderKeyboardHelp(options?: Options): Promise<void> {
+  async commanderKeyboardHelp(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.KEYBOARD_HELP, options);
   }
 
@@ -3175,7 +3175,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderLabelItem(options?: Options): Promise<void> {
+  async commanderLabelItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.LABEL_ITEM, options);
   }
 
@@ -3186,7 +3186,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMagicTap(options?: Options): Promise<void> {
+  async commanderMagicTap(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MAGIC_TAP, options);
   }
 
@@ -3197,7 +3197,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMarkItemToDragAndDrop(options?: Options): Promise<void> {
+  async commanderMarkItemToDragAndDrop(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MARK_ITEM_TO_DRAG_AND_DROP, options);
   }
 
@@ -3208,7 +3208,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoreContent(options?: Options): Promise<void> {
+  async commanderMoreContent(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MORE_CONTENT, options);
   }
 
@@ -3219,7 +3219,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMouseDown(options?: Options): Promise<void> {
+  async commanderMouseDown(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOUSE_DOWN, options);
   }
 
@@ -3230,7 +3230,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMouseUp(options?: Options): Promise<void> {
+  async commanderMouseUp(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOUSE_UP, options);
   }
 
@@ -3241,7 +3241,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveDown(options?: Options): Promise<void> {
+  async commanderMoveDown(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_DOWN, options);
   }
 
@@ -3252,7 +3252,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveLeft(options?: Options): Promise<void> {
+  async commanderMoveLeft(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_LEFT, options);
   }
 
@@ -3263,7 +3263,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveRight(options?: Options): Promise<void> {
+  async commanderMoveRight(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_RIGHT, options);
   }
 
@@ -3274,7 +3274,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveUp(options?: Options): Promise<void> {
+  async commanderMoveUp(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_UP, options);
   }
 
@@ -3285,7 +3285,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenActivityChooser(options?: Options): Promise<void> {
+  async commanderOpenActivityChooser(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_ACTIVITY_CHOOSER, options);
   }
 
@@ -3296,7 +3296,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenApplicationChooser(options?: Options): Promise<void> {
+  async commanderOpenApplicationChooser(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_APPLICATION_CHOOSER, options);
   }
 
@@ -3307,7 +3307,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenCommandsMenu(options?: Options): Promise<void> {
+  async commanderOpenCommandsMenu(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_COMMANDS_MENU, options);
   }
 
@@ -3318,7 +3318,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenControlCenter(options?: Options): Promise<void> {
+  async commanderOpenControlCenter(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_CONTROL_CENTER, options);
   }
 
@@ -3329,7 +3329,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenNextSpeechAttributeGuide(options?: Options): Promise<void> {
+  async commanderOpenNextSpeechAttributeGuide(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_NEXT_SPEECH_ATTRIBUTE_GUIDE, options);
   }
 
@@ -3340,7 +3340,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenNotificationCentre(options?: Options): Promise<void> {
+  async commanderOpenNotificationCentre(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_NOTIFICATION_CENTRE, options);
   }
 
@@ -3351,7 +3351,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenPreviousSpeechAttributeGuide(options?: Options): Promise<void> {
+  async commanderOpenPreviousSpeechAttributeGuide(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_PREVIOUS_SPEECH_ATTRIBUTE_GUIDE, options);
   }
 
@@ -3362,7 +3362,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenQuickStartTutorial(options?: Options): Promise<void> {
+  async commanderOpenQuickStartTutorial(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_QUICK_START_TUTORIAL, options);
   }
 
@@ -3373,7 +3373,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenShortcutMenu(options?: Options): Promise<void> {
+  async commanderOpenShortcutMenu(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_SHORTCUT_MENU, options);
   }
 
@@ -3384,7 +3384,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenTheAnnouncementHistoryMenu(options?: Options): Promise<void> {
+  async commanderOpenTheAnnouncementHistoryMenu(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_THE_ANNOUNCEMENT_HISTORY_MENU, options);
   }
 
@@ -3395,7 +3395,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenTheNotificationsMenu(options?: Options): Promise<void> {
+  async commanderOpenTheNotificationsMenu(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_THE_NOTIFICATIONS_MENU, options);
   }
 
@@ -3406,7 +3406,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenVerbosityRotor(options?: Options): Promise<void> {
+  async commanderOpenVerbosityRotor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_VERBOSITY_ROTOR, options);
   }
 
@@ -3417,7 +3417,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenVoiceoverHelpMenu(options?: Options): Promise<void> {
+  async commanderOpenVoiceoverHelpMenu(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_VOICEOVER_HELP_MENU, options);
   }
 
@@ -3428,7 +3428,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenVoiceoverUtility(options?: Options): Promise<void> {
+  async commanderOpenVoiceoverUtility(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_VOICEOVER_UTILITY, options);
   }
 
@@ -3439,7 +3439,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderOpenWindowChooser(options?: Options): Promise<void> {
+  async commanderOpenWindowChooser(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.OPEN_WINDOW_CHOOSER, options);
   }
 
@@ -3450,7 +3450,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderPauseOrResumeSpeaking(options?: Options): Promise<void> {
+  async commanderPauseOrResumeSpeaking(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.PAUSE_OR_RESUME_SPEAKING, options);
   }
 
@@ -3461,7 +3461,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderPerformActionForItem(options?: Options): Promise<void> {
+  async commanderPerformActionForItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.PERFORM_ACTION_FOR_ITEM, options);
   }
 
@@ -3472,7 +3472,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderPreviousActivity(options?: Options): Promise<void> {
+  async commanderPreviousActivity(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.PREVIOUS_ACTIVITY, options);
   }
 
@@ -3483,7 +3483,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadContentsOfVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderReadContentsOfVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_CONTENTS_OF_VOICEOVER_CURSOR, options);
   }
 
@@ -3494,7 +3494,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadContentsOfWindow(options?: Options): Promise<void> {
+  async commanderReadContentsOfWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_CONTENTS_OF_WINDOW, options);
   }
 
@@ -3505,7 +3505,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadCurrentItemAlphabetically(options?: Options): Promise<void> {
+  async commanderReadCurrentItemAlphabetically(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_CURRENT_ITEM_ALPHABETICALLY, options);
   }
 
@@ -3516,7 +3516,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadCurrentItemPhonetically(options?: Options): Promise<void> {
+  async commanderReadCurrentItemPhonetically(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_CURRENT_ITEM_PHONETICALLY, options);
   }
 
@@ -3527,7 +3527,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadHelpTagForItem(options?: Options): Promise<void> {
+  async commanderReadHelpTagForItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_HELP_TAG_FOR_ITEM, options);
   }
 
@@ -3538,7 +3538,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadImageDescriptionForItem(options?: Options): Promise<void> {
+  async commanderReadImageDescriptionForItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_IMAGE_DESCRIPTION_FOR_ITEM, options);
   }
 
@@ -3549,7 +3549,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadSelectedTextOrItem(options?: Options): Promise<void> {
+  async commanderReadSelectedTextOrItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_SELECTED_TEXT_OR_ITEM, options);
   }
 
@@ -3560,7 +3560,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadVisibleText(options?: Options): Promise<void> {
+  async commanderReadVisibleText(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_VISIBLE_TEXT, options);
   }
 
@@ -3571,7 +3571,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderReadVoiceoverHint(options?: Options): Promise<void> {
+  async commanderReadVoiceoverHint(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.READ_VOICEOVER_HINT, options);
   }
 
@@ -3582,7 +3582,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderRemoveFromWindowSpots(options?: Options): Promise<void> {
+  async commanderRemoveFromWindowSpots(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.REMOVE_FROM_WINDOW_SPOTS, options);
   }
 
@@ -3593,7 +3593,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderRewind(options?: Options): Promise<void> {
+  async commanderRewind(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.REWIND, options);
   }
 
@@ -3604,7 +3604,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderRightClickMouse(options?: Options): Promise<void> {
+  async commanderRightClickMouse(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.RIGHT_CLICK_MOUSE, options);
   }
 
@@ -3615,7 +3615,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderRotor(options?: Options): Promise<void> {
+  async commanderRotor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.ROTOR, options);
   }
 
@@ -3626,7 +3626,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderSelectItem(options?: Options): Promise<void> {
+  async commanderSelectItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SELECT_ITEM, options);
   }
 
@@ -3637,7 +3637,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderSelectNextOptionDownInSpeechAttributeGuide(options?: Options): Promise<void> {
+  async commanderSelectNextOptionDownInSpeechAttributeGuide(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SELECT_NEXT_OPTION_DOWN_IN_SPEECH_ATTRIBUTE_GUIDE, options);
   }
 
@@ -3648,7 +3648,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderSelectNextOptionUpInSpeechAttributeGuide(options?: Options): Promise<void> {
+  async commanderSelectNextOptionUpInSpeechAttributeGuide(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SELECT_NEXT_OPTION_UP_IN_SPEECH_ATTRIBUTE_GUIDE, options);
   }
 
@@ -3659,7 +3659,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderSetAsAWindowSpot(options?: Options): Promise<void> {
+  async commanderSetAsAWindowSpot(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SET_AS_A_WINDOW_SPOT, options);
   }
 
@@ -3670,7 +3670,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderSetTheSweetSpot(options?: Options): Promise<void> {
+  async commanderSetTheSweetSpot(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SET_THE_SWEET_SPOT, options);
   }
 
@@ -3681,7 +3681,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderStartInteractingWithItem(options?: Options): Promise<void> {
+  async commanderStartInteractingWithItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.START_INTERACTING_WITH_ITEM, options);
   }
 
@@ -3692,7 +3692,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderStopInteractingWithItem(options?: Options): Promise<void> {
+  async commanderStopInteractingWithItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.STOP_INTERACTING_WITH_ITEM, options);
   }
 
@@ -3703,7 +3703,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleCursorTrackingOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleCursorTrackingOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_CURSOR_TRACKING_ON_OR_OFF, options);
   }
 
@@ -3714,7 +3714,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleDisclosureTriangleOpenOrClosed(options?: Options): Promise<void> {
+  async commanderToggleDisclosureTriangleOpenOrClosed(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_DISCLOSURE_TRIANGLE_OPEN_OR_CLOSED, options);
   }
 
@@ -3725,7 +3725,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleKeyboardCommanderOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleKeyboardCommanderOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_KEYBOARD_COMMANDER_ON_OR_OFF, options);
   }
 
@@ -3736,7 +3736,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleMultipleSelectionOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleMultipleSelectionOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_MULTIPLE_SELECTION_ON_OR_OFF, options);
   }
 
@@ -3747,7 +3747,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleNumpadCommanderOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleNumpadCommanderOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_NUMPAD_COMMANDER_ON_OR_OFF, options);
   }
 
@@ -3758,7 +3758,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleQuickNavOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleQuickNavOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_QUICK_NAV_ON_OR_OFF, options);
   }
 
@@ -3769,7 +3769,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleScreenCurtainOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleScreenCurtainOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_SCREEN_CURTAIN_ON_OR_OFF, options);
   }
 
@@ -3780,7 +3780,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleSingleKeyQuickNavOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleSingleKeyQuickNavOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_SINGLE_KEY_QUICK_NAV_ON_OR_OFF, options);
   }
 
@@ -3791,7 +3791,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleTheVoModifierLockOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleTheVoModifierLockOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_THE_VO_MODIFIER_LOCK_ON_OR_OFF, options);
   }
 
@@ -3802,7 +3802,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleTrackpadCommanderOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleTrackpadCommanderOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_TRACKPAD_COMMANDER_ON_OR_OFF, options);
   }
 
@@ -3813,7 +3813,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderUserGuide(options?: Options): Promise<void> {
+  async commanderUserGuide(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.USER_GUIDE, options);
   }
 
@@ -3824,7 +3824,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeItemInMousePointer(options?: Options): Promise<void> {
+  async commanderDescribeItemInMousePointer(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_ITEM_IN_MOUSE_POINTER, options);
   }
 
@@ -3835,7 +3835,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeItemInVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderDescribeItemInVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_ITEM_IN_VOICEOVER_CURSOR, options);
   }
 
@@ -3846,7 +3846,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeItemWithKeyboardFocus(options?: Options): Promise<void> {
+  async commanderDescribeItemWithKeyboardFocus(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_ITEM_WITH_KEYBOARD_FOCUS, options);
   }
 
@@ -3857,7 +3857,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeMousePointerLocationFromTopLeftOfScreen(options?: Options): Promise<void> {
+  async commanderDescribeMousePointerLocationFromTopLeftOfScreen(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_MOUSE_POINTER_LOCATION_FROM_TOP_LEFT_OF_SCREEN, options);
   }
 
@@ -3868,7 +3868,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeMousePointerLocationFromTopLeftOfWindow(options?: Options): Promise<void> {
+  async commanderDescribeMousePointerLocationFromTopLeftOfWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_MOUSE_POINTER_LOCATION_FROM_TOP_LEFT_OF_WINDOW, options);
   }
 
@@ -3879,7 +3879,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeOpenApplications(options?: Options): Promise<void> {
+  async commanderDescribeOpenApplications(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_OPEN_APPLICATIONS, options);
   }
 
@@ -3890,7 +3890,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribePositionOfItemInVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderDescribePositionOfItemInVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_POSITION_OF_ITEM_IN_VOICEOVER_CURSOR, options);
   }
 
@@ -3901,7 +3901,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeSizeOfItemInVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderDescribeSizeOfItemInVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_SIZE_OF_ITEM_IN_VOICEOVER_CURSOR, options);
   }
 
@@ -3912,7 +3912,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderDescribeWindow(options?: Options): Promise<void> {
+  async commanderDescribeWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.DESCRIBE_WINDOW, options);
   }
 
@@ -3923,7 +3923,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoDownOnePage(options?: Options): Promise<void> {
+  async commanderGoDownOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_DOWN_ONE_PAGE, options);
   }
 
@@ -3934,7 +3934,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoLeftABit(options?: Options): Promise<void> {
+  async commanderGoLeftABit(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_LEFT_A_BIT, options);
   }
 
@@ -3945,7 +3945,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoLeftOnePage(options?: Options): Promise<void> {
+  async commanderGoLeftOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_LEFT_ONE_PAGE, options);
   }
 
@@ -3956,7 +3956,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoRightABit(options?: Options): Promise<void> {
+  async commanderGoRightABit(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_RIGHT_A_BIT, options);
   }
 
@@ -3967,7 +3967,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoRightOnePage(options?: Options): Promise<void> {
+  async commanderGoRightOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_RIGHT_ONE_PAGE, options);
   }
 
@@ -3978,7 +3978,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToBeginning(options?: Options): Promise<void> {
+  async commanderGoToBeginning(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_BEGINNING, options);
   }
 
@@ -3989,7 +3989,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToBottomOfWindow(options?: Options): Promise<void> {
+  async commanderGoToBottomOfWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_BOTTOM_OF_WINDOW, options);
   }
 
@@ -4000,7 +4000,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToDesktop(options?: Options): Promise<void> {
+  async commanderGoToDesktop(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_DESKTOP, options);
   }
 
@@ -4011,7 +4011,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToDock(options?: Options): Promise<void> {
+  async commanderGoToDock(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_DOCK, options);
   }
 
@@ -4022,7 +4022,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToEnd(options?: Options): Promise<void> {
+  async commanderGoToEnd(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_END, options);
   }
 
@@ -4033,7 +4033,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToLinkedItem(options?: Options): Promise<void> {
+  async commanderGoToLinkedItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_LINKED_ITEM, options);
   }
 
@@ -4044,7 +4044,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToMenuBar(options?: Options): Promise<void> {
+  async commanderGoToMenuBar(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_MENU_BAR, options);
   }
 
@@ -4055,7 +4055,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToPopUpItem(options?: Options): Promise<void> {
+  async commanderGoToPopUpItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_POP_UP_ITEM, options);
   }
 
@@ -4066,7 +4066,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToStatusMenus(options?: Options): Promise<void> {
+  async commanderGoToStatusMenus(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_STATUS_MENUS, options);
   }
 
@@ -4077,7 +4077,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToTopOfWindow(options?: Options): Promise<void> {
+  async commanderGoToTopOfWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_TOP_OF_WINDOW, options);
   }
 
@@ -4088,7 +4088,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToVisibleBeginning(options?: Options): Promise<void> {
+  async commanderGoToVisibleBeginning(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_VISIBLE_BEGINNING, options);
   }
 
@@ -4099,7 +4099,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoToVisibleEnd(options?: Options): Promise<void> {
+  async commanderGoToVisibleEnd(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_TO_VISIBLE_END, options);
   }
 
@@ -4110,7 +4110,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderGoUpOnePage(options?: Options): Promise<void> {
+  async commanderGoUpOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.GO_UP_ONE_PAGE, options);
   }
 
@@ -4121,7 +4121,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveDownInRotor(options?: Options): Promise<void> {
+  async commanderMoveDownInRotor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_DOWN_IN_ROTOR, options);
   }
 
@@ -4132,7 +4132,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveKeyboardFocusToVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderMoveKeyboardFocusToVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_KEYBOARD_FOCUS_TO_VOICEOVER_CURSOR, options);
   }
 
@@ -4143,7 +4143,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveMousePointerToVoiceoverCursor(options?: Options): Promise<void> {
+  async commanderMoveMousePointerToVoiceoverCursor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_MOUSE_POINTER_TO_VOICEOVER_CURSOR, options);
   }
 
@@ -4154,7 +4154,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveToAreaAfterSplitter(options?: Options): Promise<void> {
+  async commanderMoveToAreaAfterSplitter(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_TO_AREA_AFTER_SPLITTER, options);
   }
 
@@ -4165,7 +4165,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveToAreaBeforeSplitter(options?: Options): Promise<void> {
+  async commanderMoveToAreaBeforeSplitter(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_TO_AREA_BEFORE_SPLITTER, options);
   }
 
@@ -4176,7 +4176,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveToNextSection(options?: Options): Promise<void> {
+  async commanderMoveToNextSection(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_TO_NEXT_SECTION, options);
   }
 
@@ -4187,7 +4187,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveToPreviousSection(options?: Options): Promise<void> {
+  async commanderMoveToPreviousSection(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_TO_PREVIOUS_SECTION, options);
   }
 
@@ -4198,7 +4198,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveUpInRotor(options?: Options): Promise<void> {
+  async commanderMoveUpInRotor(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_UP_IN_ROTOR, options);
   }
 
@@ -4209,7 +4209,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveVoiceoverCursorToKeyboardFocus(options?: Options): Promise<void> {
+  async commanderMoveVoiceoverCursorToKeyboardFocus(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_VOICEOVER_CURSOR_TO_KEYBOARD_FOCUS, options);
   }
 
@@ -4220,7 +4220,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderMoveVoiceoverCursorToMousePointer(options?: Options): Promise<void> {
+  async commanderMoveVoiceoverCursorToMousePointer(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.MOVE_VOICEOVER_CURSOR_TO_MOUSE_POINTER, options);
   }
 
@@ -4231,7 +4231,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderNextContent(options?: Options): Promise<void> {
+  async commanderNextContent(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.NEXT_CONTENT, options);
   }
 
@@ -4242,7 +4242,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderNextRotorItem(options?: Options): Promise<void> {
+  async commanderNextRotorItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.NEXT_ROTOR_ITEM, options);
   }
 
@@ -4253,7 +4253,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderPreviousContent(options?: Options): Promise<void> {
+  async commanderPreviousContent(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.PREVIOUS_CONTENT, options);
   }
 
@@ -4264,7 +4264,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderPreviousRotorItem(options?: Options): Promise<void> {
+  async commanderPreviousRotorItem(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.PREVIOUS_ROTO_ITEM, options);
   }
 
@@ -4275,7 +4275,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderRotateLeft(options?: Options): Promise<void> {
+  async commanderRotateLeft(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.ROTATE_LEFT, options);
   }
 
@@ -4286,7 +4286,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderRotateRight(options?: Options): Promise<void> {
+  async commanderRotateRight(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.ROTATE_RIGHT, options);
   }
 
@@ -4297,7 +4297,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderScrollDownOnePage(options?: Options): Promise<void> {
+  async commanderScrollDownOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SCROLL_DOWN_ONE_PAGE, options);
   }
 
@@ -4308,7 +4308,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderScrollLeftOnePage(options?: Options): Promise<void> {
+  async commanderScrollLeftOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SCROLL_LEFT_ONE_PAGE, options);
   }
 
@@ -4319,7 +4319,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderScrollRightOnePage(options?: Options): Promise<void> {
+  async commanderScrollRightOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SCROLL_RIGHT_ONE_PAGE, options);
   }
 
@@ -4330,7 +4330,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderScrollUpOnePage(options?: Options): Promise<void> {
+  async commanderScrollUpOnePage(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SCROLL_UP_ONE_PAGE, options);
   }
 
@@ -4341,7 +4341,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderSpeakCurrentPageInScrollArea(options?: Options): Promise<void> {
+  async commanderSpeakCurrentPageInScrollArea(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SPEAK_CURRENT_PAGE_IN_SCROLL_AREA, options);
   }
 
@@ -4352,7 +4352,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderSwitchWindow(options?: Options): Promise<void> {
+  async commanderSwitchWindow(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.SWITCH_WINDOW, options);
   }
 
@@ -4363,7 +4363,7 @@ export class VoiceOver extends VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async commanderToggleVoiceoverCursorFollowsMouseOnOrOff(options?: Options): Promise<void> {
+  async commanderToggleVoiceoverCursorFollowsMouseOnOrOff(options?: CommandOptions): Promise<void> {
     return await this.performCommand(CommanderCommands.TOGGLE_VOICEOVER_CURSOR_FOLLOWS_MOUSE_ON_OR_OFF, options);
   }
 }
