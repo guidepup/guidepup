@@ -1,9 +1,10 @@
+import type { Options } from "../types";
 import { exec } from "child_process";
 import { Applications } from "../Applications";
 import { activate } from "../activate";
 import { runAppleScript } from "../runAppleScript";
 
-export async function isRunning(): Promise<boolean> {
+export async function isRunning(options?: Options): Promise<boolean> {
   const processRunning = await new Promise<boolean>((resolve, reject) => {
     exec('ps aux | egrep "[V]oiceOver"', (err, stdout) => {
       if (err) {
@@ -27,7 +28,7 @@ export async function isRunning(): Promise<boolean> {
   }
 
   try {
-    await activate(Applications.VOICE_OVER);
+    await activate(Applications.VOICE_OVER, options);
 
     return true;
   } catch (_) {

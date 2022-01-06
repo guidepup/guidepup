@@ -3,6 +3,7 @@ import type { KeyCodeCommand } from "../KeyCodeCommand";
 import type { KeystrokeCommand } from "../KeystrokeCommand";
 import type { Containments } from "./Containments";
 import type { Places } from "./Places";
+import type { Options } from "../types";
 import { CommanderCommands } from "./CommanderCommands";
 import { decorateStaticImplements } from "../../decorateStaticImplements";
 import { isMacOS } from "../isMacOS";
@@ -67,150 +68,204 @@ export class VoiceOverBase {
 
   /**
    * Turn VoiceOver on.
+   *
+   * @param {object} [options] Additional options.
    */
-  async start(): Promise<void> {
+  async start(options?: Options): Promise<void> {
     if (!(await VoiceOverBase.detect())) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
     await disableSplashScreen();
     await start();
-    await waitForRunning();
+    await waitForRunning(options);
   }
 
   /**
    * Turn VoiceOver off.
+   *
+   * @param {object} [options] Additional options.
    */
-  async stop(): Promise<void> {
-    return await quit(Applications.VOICE_OVER);
+  async stop(options?: Options): Promise<void> {
+    return await quit(Applications.VOICE_OVER, options);
   }
 
   /**
    * Send a key code or keystroke to VoiceOver.
    *
    * @param {object} keyCommand Key code or keystroke command to send to VoiceOver.
+   * @param {object} [options] Additional options.
    */
-  async sendKeys(keyCommand: KeyCodeCommand | KeystrokeCommand): Promise<void> {
-    return await this.#tap(sendKeys(Applications.VOICE_OVER, keyCommand));
+  async sendKeys(
+    keyCommand: KeyCodeCommand | KeystrokeCommand,
+    options?: Options
+  ): Promise<void> {
+    return await this.#tap(
+      sendKeys(Applications.VOICE_OVER, keyCommand, options)
+    );
   }
 
   /**
    * Move the VO cursor to a new location.
    *
    * @param {string} direction The direction to move in.
-   * @param {string} place The place to move to.
+   * @param {string} [place] The place to move to.
+   * @param {object} [options] Additional options.
    */
   async move(
     direction: Directions | Containments,
-    place?: Places
+    place?: Places,
+    options?: Options
   ): Promise<void> {
-    return await this.#tap(move(direction, place));
+    return await this.#tap(move(direction, place, options));
   }
 
   /**
    * Move the VoiceOver cursor to the previous location.
+   *
+   * @param {object} [options] Additional options.
    */
-  async movePrevious(): Promise<void> {
-    return await this.move(Directions.LEFT);
+  async movePrevious(options?: Options): Promise<void> {
+    return await this.move(Directions.LEFT, undefined, options);
   }
 
   /**
    * Move the VoiceOver cursor to the next location.
+   *
+   * @param {object} [options] Additional options.
    */
-  async moveNext(): Promise<void> {
-    return await this.move(Directions.RIGHT);
+  async moveNext(options?: Options): Promise<void> {
+    return await this.move(Directions.RIGHT, undefined, options);
   }
 
   /**
    * Perform default action.
+   *
+   * @param {object} [options] Additional options.
    */
-  async performAction(): Promise<void> {
-    return await this.#tap(performAction());
+  async performAction(options?: Options): Promise<void> {
+    return await this.#tap(performAction(options));
   }
 
   /**
    * Perform a VoiceOver command.
    *
    * @param {string} command The English name of the VoiceOver command to perform.
+   * @param {object} [options] Additional options.
    */
-  async performCommand(command: CommanderCommands): Promise<void> {
-    return await this.#tap(performCommand(command));
+  async performCommand(
+    command: CommanderCommands,
+    options?: Options
+  ): Promise<void> {
+    return await this.#tap(performCommand(command, options));
   }
 
   /**
    * Click the mouse once.
+   *
+   * @param {object} [options] Additional options.
    */
-  async click(): Promise<void> {
-    return await this.#tap(click(ClickCount.ONCE));
+  async click(options?: Options): Promise<void> {
+    return await this.#tap(
+      click(ClickCount.ONCE, ClickButton.LEFT_BUTTON, options)
+    );
   }
 
   /**
    * Double click the mouse.
+   *
+   * @param {object} [options] Additional options.
    */
-  async doubleClick(): Promise<void> {
-    return await this.#tap(click(ClickCount.TWICE));
+  async doubleClick(options?: Options): Promise<void> {
+    return await this.#tap(
+      click(ClickCount.TWICE, ClickButton.LEFT_BUTTON, options)
+    );
   }
 
   /**
    * Triple click the mouse.
+   *
+   * @param {object} [options] Additional options.
    */
-  async tripleClick(): Promise<void> {
-    return await this.#tap(click(ClickCount.THRICE));
+  async tripleClick(options?: Options): Promise<void> {
+    return await this.#tap(
+      click(ClickCount.THRICE, ClickButton.LEFT_BUTTON, options)
+    );
   }
 
   /**
    * Right click the mouse once.
+   *
+   * @param {object} [options] Additional options.
    */
-  async rightClick(): Promise<void> {
-    return await this.#tap(click(ClickCount.ONCE, ClickButton.RIGHT_BUTTON));
+  async rightClick(options?: Options): Promise<void> {
+    return await this.#tap(
+      click(ClickCount.ONCE, ClickButton.RIGHT_BUTTON, options)
+    );
   }
 
   /**
    * Double right click the mouse.
+   *
+   * @param {object} [options] Additional options.
    */
-  async rightDoubleClick(): Promise<void> {
-    return await this.#tap(click(ClickCount.TWICE, ClickButton.RIGHT_BUTTON));
+  async rightDoubleClick(options?: Options): Promise<void> {
+    return await this.#tap(
+      click(ClickCount.TWICE, ClickButton.RIGHT_BUTTON, options)
+    );
   }
 
   /**
    * Triple right click the mouse.
+   *
+   * @param {object} [options] Additional options.
    */
-  async rightTripleClick(): Promise<void> {
-    return await this.#tap(click(ClickCount.THRICE, ClickButton.RIGHT_BUTTON));
+  async rightTripleClick(options?: Options): Promise<void> {
+    return await this.#tap(
+      click(ClickCount.THRICE, ClickButton.RIGHT_BUTTON, options)
+    );
   }
 
   /**
    * Takes a screenshot of the VO cursor and returns the path to the file.
    *
-   * @returns {Promise<string>} The path to the screenshot
+   * @param {object} [options] Additional options.
+   *
+   * @returns {Promise<string>} The path to the screenshot.
    */
-  async takeScreenshot(): Promise<string> {
-    return await takeScreenshot();
+  async takeScreenshot(options?: Options): Promise<string> {
+    return await takeScreenshot(options);
   }
 
   /**
    * Get the last spoken phrase.
    *
+   * @param {object} [options] Additional options.
+   *
    * @returns {Promise<string>} The last spoken phrase.
    */
-  async getLastSpokenPhrase(): Promise<string> {
-    return await getLastSpokenPhrase();
+  async getLastSpokenPhrase(options?: Options): Promise<string> {
+    return await getLastSpokenPhrase(options);
   }
 
   /**
    * Copy the last spoken phrase to the Clipboard (also called the
    * "Pasteboard").
+   *
+   * @param {object} [options] Additional options.
    */
-  async copyLastSpokenPhrase(): Promise<void> {
-    return await copyLastSpokenPhrase();
+  async copyLastSpokenPhrase(options?: Options): Promise<void> {
+    return await copyLastSpokenPhrase(options);
   }
 
   /**
    * Save the last spoken phrase and the crash log to a file on the desktop for
    * troubleshooting.
+   *
+   * @param {object} [options] Additional options.
    */
-  async saveLastSpokenPhrase(): Promise<void> {
-    return await saveLastSpokenPhrase();
+  async saveLastSpokenPhrase(options?: Options): Promise<void> {
+    return await saveLastSpokenPhrase(options);
   }
 
   /**
@@ -227,10 +282,12 @@ export class VoiceOverBase {
   /**
    * Get the text of the item in the VoiceOver cursor.
    *
+   * @param {object} [options] Additional options.
+   *
    * @returns {Promise<string>} The item's text.
    */
-  async getItemText(): Promise<string> {
-    return await getItemText();
+  async getItemText(options?: Options): Promise<string> {
+    return await getItemText(options);
   }
 
   /**

@@ -3,6 +3,7 @@ import {
   MacOSApplications,
   macOSActivate,
   macOSSendKeys,
+  macOSQuit,
 } from "../../src/";
 
 const delay = async (ms: number) =>
@@ -44,11 +45,17 @@ async function run(): Promise<void> {
     await vo.moveNext();
     await vo.moveNext();
     await vo.moveNext();
+
+    // Let it all soak in before we teardown
+    await delay(2000);
   } catch (e) {
     console.error(e);
   } finally {
     // Ensure we stop VoiceOver.
     await vo.stop();
+
+    // Ensure we quit Safari.
+    await macOSQuit(MacOSApplications.SAFARI);
   }
 }
 

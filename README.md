@@ -57,7 +57,7 @@ yarn add @guidepup/guidepup
 
 Screen-reader support:
 
-- [x] VoiceOver on MacOS (WIP)
+- [x] VoiceOver on MacOS
 - [ ] NVDA on Windows (WIP)
 - [ ] VoiceOver on iOS
 - [ ] Talkback on Android
@@ -66,6 +66,8 @@ Environment support:
 
 - [x] MacOS local machine
 - [ ] MacOS virtual machine
+  - [x] CircleCI
+  - [ ] GitHub Actions (WIP)
 - [ ] Windows local machine
 - [ ] Windows virtual machine
 
