@@ -3,7 +3,7 @@ import type { KeyCodeCommand } from "../KeyCodeCommand";
 import type { KeystrokeCommand } from "../KeystrokeCommand";
 import type { Containments } from "./Containments";
 import type { Places } from "./Places";
-import type { Options } from "../types";
+import type { CommandOptions, RetryableCommandOptions } from "../../options";
 import { CommanderCommands } from "./CommanderCommands";
 import { decorateStaticImplements } from "../../decorateStaticImplements";
 import { isMacOS } from "../isMacOS";
@@ -71,7 +71,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async start(options?: Options): Promise<void> {
+  async start(options?: CommandOptions): Promise<void> {
     if (!(await VoiceOverBase.detect())) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
@@ -86,7 +86,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async stop(options?: Options): Promise<void> {
+  async stop(options?: CommandOptions): Promise<void> {
     return await quit(Applications.VOICE_OVER, options);
   }
 
@@ -98,7 +98,7 @@ export class VoiceOverBase {
    */
   async sendKeys(
     keyCommand: KeyCodeCommand | KeystrokeCommand,
-    options?: Options
+    options?: CommandOptions
   ): Promise<void> {
     return await this.#tap(
       sendKeys(Applications.VOICE_OVER, keyCommand, options)
@@ -115,7 +115,7 @@ export class VoiceOverBase {
   async move(
     direction: Directions | Containments,
     place?: Places,
-    options?: Options
+    options?: CommandOptions
   ): Promise<void> {
     return await this.#tap(move(direction, place, options));
   }
@@ -125,7 +125,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async movePrevious(options?: Options): Promise<void> {
+  async movePrevious(options?: CommandOptions): Promise<void> {
     return await this.move(Directions.LEFT, undefined, options);
   }
 
@@ -134,7 +134,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async moveNext(options?: Options): Promise<void> {
+  async moveNext(options?: CommandOptions): Promise<void> {
     return await this.move(Directions.RIGHT, undefined, options);
   }
 
@@ -143,7 +143,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async performAction(options?: Options): Promise<void> {
+  async performAction(options?: CommandOptions): Promise<void> {
     return await this.#tap(performAction(options));
   }
 
@@ -155,7 +155,7 @@ export class VoiceOverBase {
    */
   async performCommand(
     command: CommanderCommands,
-    options?: Options
+    options?: CommandOptions
   ): Promise<void> {
     return await this.#tap(performCommand(command, options));
   }
@@ -165,7 +165,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async click(options?: Options): Promise<void> {
+  async click(options?: CommandOptions): Promise<void> {
     return await this.#tap(
       click(ClickCount.ONCE, ClickButton.LEFT_BUTTON, options)
     );
@@ -176,7 +176,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async doubleClick(options?: Options): Promise<void> {
+  async doubleClick(options?: CommandOptions): Promise<void> {
     return await this.#tap(
       click(ClickCount.TWICE, ClickButton.LEFT_BUTTON, options)
     );
@@ -187,7 +187,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async tripleClick(options?: Options): Promise<void> {
+  async tripleClick(options?: CommandOptions): Promise<void> {
     return await this.#tap(
       click(ClickCount.THRICE, ClickButton.LEFT_BUTTON, options)
     );
@@ -198,7 +198,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async rightClick(options?: Options): Promise<void> {
+  async rightClick(options?: CommandOptions): Promise<void> {
     return await this.#tap(
       click(ClickCount.ONCE, ClickButton.RIGHT_BUTTON, options)
     );
@@ -209,7 +209,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async rightDoubleClick(options?: Options): Promise<void> {
+  async rightDoubleClick(options?: CommandOptions): Promise<void> {
     return await this.#tap(
       click(ClickCount.TWICE, ClickButton.RIGHT_BUTTON, options)
     );
@@ -220,7 +220,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async rightTripleClick(options?: Options): Promise<void> {
+  async rightTripleClick(options?: CommandOptions): Promise<void> {
     return await this.#tap(
       click(ClickCount.THRICE, ClickButton.RIGHT_BUTTON, options)
     );
@@ -233,7 +233,7 @@ export class VoiceOverBase {
    *
    * @returns {Promise<string>} The path to the screenshot.
    */
-  async takeScreenshot(options?: Options): Promise<string> {
+  async takeScreenshot(options?: RetryableCommandOptions): Promise<string> {
     return await takeScreenshot(options);
   }
 
@@ -244,7 +244,9 @@ export class VoiceOverBase {
    *
    * @returns {Promise<string>} The last spoken phrase.
    */
-  async getLastSpokenPhrase(options?: Options): Promise<string> {
+  async getLastSpokenPhrase(
+    options?: RetryableCommandOptions
+  ): Promise<string> {
     return await getLastSpokenPhrase(options);
   }
 
@@ -254,7 +256,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async copyLastSpokenPhrase(options?: Options): Promise<void> {
+  async copyLastSpokenPhrase(options?: RetryableCommandOptions): Promise<void> {
     return await copyLastSpokenPhrase(options);
   }
 
@@ -264,7 +266,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async saveLastSpokenPhrase(options?: Options): Promise<void> {
+  async saveLastSpokenPhrase(options?: RetryableCommandOptions): Promise<void> {
     return await saveLastSpokenPhrase(options);
   }
 
@@ -286,7 +288,7 @@ export class VoiceOverBase {
    *
    * @returns {Promise<string>} The item's text.
    */
-  async getItemText(options?: Options): Promise<string> {
+  async getItemText(options?: RetryableCommandOptions): Promise<string> {
     return await getItemText(options);
   }
 

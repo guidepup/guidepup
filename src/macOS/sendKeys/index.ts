@@ -1,6 +1,6 @@
 import type { KeyCodeCommand } from "../KeyCodeCommand";
 import type { KeystrokeCommand } from "../KeystrokeCommand";
-import type { Options } from "../types";
+import type { CommandOptions } from "../../options";
 import { activate } from "../activate";
 import { Applications } from "../Applications";
 import { keyCode } from "../keyCode";
@@ -11,7 +11,7 @@ import { ERR_PREFIX_SEND_KEYS } from "../errors";
 export async function sendKeys(
   applicationName: Applications | string,
   keyCommand: KeyCodeCommand | KeystrokeCommand,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   await activate(applicationName);
 

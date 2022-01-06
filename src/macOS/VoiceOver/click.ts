@@ -1,4 +1,4 @@
-import type { Options } from "../types";
+import type { CommandOptions } from "../../options";
 import type { ClickCount } from "./ClickCount";
 import type { ClickButton } from "./ClickButton";
 import { Applications } from "../Applications";
@@ -8,7 +8,7 @@ import { ERR_VOICE_OVER_CLICK } from "../errors";
 export async function click(
   clickCount: ClickCount,
   clickButton?: ClickButton,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   const script = `tell application "${
     Applications.VOICE_OVER

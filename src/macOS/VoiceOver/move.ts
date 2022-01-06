@@ -1,7 +1,7 @@
 import type { Directions } from "./Directions";
 import type { Containments } from "./Containments";
 import type { Places } from "./Places";
-import type { Options } from "../types";
+import type { CommandOptions } from "../../options";
 import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_MOVE } from "../errors";
@@ -9,7 +9,7 @@ import { ERR_VOICE_OVER_MOVE } from "../errors";
 export async function move(
   direction: Directions | Containments,
   place?: Places,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   const script = `tell application "${
     Applications.VOICE_OVER

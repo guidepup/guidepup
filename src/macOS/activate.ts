@@ -1,11 +1,11 @@
-import type { Options } from "./types";
+import type { CommandOptions } from "../options";
 import { runAppleScript } from "./runAppleScript";
 import { Applications } from "./Applications";
 import { ERR_PREFIX_ACTIVATE } from "./errors";
 
 export async function activate(
   applicationName: Applications | string,
-  options?: Options
+  options?: CommandOptions
 ): Promise<void> {
   const script = `tell application "${applicationName}"\nactivate\nend tell`;
 

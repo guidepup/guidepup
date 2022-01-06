@@ -19,7 +19,7 @@ function title(str: string): string {
 const prefix = `// This file was automatically generated.
 // Manual changes will not be preserved.
 
-import type { Options } from "../types";
+import type { CommandOptions } from "../../options";
 import { VoiceOverBase } from "./VoiceOverBase";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { CommanderCommands } from "./CommanderCommands";
@@ -42,7 +42,7 @@ const commandMethodDefinitions = Object.entries(keyCodeCommands).reduce(
       command.representation
     }\n   *\n   * @param {object} [options] Additional options.\n   */\n  async command${title(
       name
-    )}(options?: Options): Promise<void> {\n    return await this.sendKeys(keyCodeCommands.${name}, options);\n  }${methodSuffix}`);
+    )}(options?: CommandOptions): Promise<void> {\n    return await this.sendKeys(keyCodeCommands.${name}, options);\n  }${methodSuffix}`);
   },
   ""
 );
@@ -55,7 +55,7 @@ const commanderMethodDefinitions = Object.entries(CommanderCommands).reduce(
       command
     )}\n   *\n   * Uses VoiceOver Commander\n   *\n   * @param {object} [options] Additional options.\n   */\n  async ${camelCase(
       `commander ${command}`
-    )}(options?: Options): Promise<void> {\n    return await this.performCommand(CommanderCommands.${name}, options);\n  }${methodSuffix}`);
+    )}(options?: CommandOptions): Promise<void> {\n    return await this.performCommand(CommanderCommands.${name}, options);\n  }${methodSuffix}`);
   },
   ""
 );
