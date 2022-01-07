@@ -1,4 +1,4 @@
-import type { CommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import { keyCode } from "../keyCode";
 import { KeyCodes } from "../KeyCodes";
 import { ERR_VOICE_OVER_PERFORM_ACTION } from "../errors";

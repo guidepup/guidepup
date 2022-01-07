@@ -1,11 +1,11 @@
-import type { RetryableCommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { retry } from "../../retry";
 import { ERR_VOICE_OVER_TAKE_SCREENSHOT } from "../errors";
 
 export async function takeScreenshot(
-  options?: RetryableCommandOptions
+  options?: CommandOptions
 ): Promise<string> {
   const script = `tell application "${Applications.VOICE_OVER}"\ntell vo cursor to grab screenshot\nend tell`;
 

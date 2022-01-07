@@ -1,5 +1,6 @@
 import type { KeyCodeCommand } from "./KeyCodeCommand";
-import type { CommandOptions } from "../options";
+import type { CommandOptions } from "../CommandOptions";
+import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
 import { Applications } from "./Applications";
 
@@ -11,5 +12,8 @@ export async function keyCode(
     Array.isArray(keyCode) ? `{${keyCode.join(", ")}}` : keyCode
   }${modifiers.length ? ` using {${modifiers.join(", ")}}` : ""}\nend tell`;
 
-  return await runAppleScript(script, options);
+  return await retryIfAppleEventTimeout(
+    () => runAppleScript(script, options),
+    options
+  );
 }
