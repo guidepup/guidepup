@@ -1,7 +1,8 @@
-import type { CommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import type { ClickCount } from "./ClickCount";
 import type { ClickButton } from "./ClickButton";
 import { Applications } from "../Applications";
+import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
 import { ERR_VOICE_OVER_CLICK } from "../errors";
 
@@ -17,7 +18,7 @@ export async function click(
   }\nend tell`;
 
   try {
-    return await runAppleScript(script, options);
+    return await retryIfAppleEventTimeout(() => runAppleScript(script, options), options);
   } catch (e) {
     throw new Error(`${ERR_VOICE_OVER_CLICK}\n${e.message}`);
   }

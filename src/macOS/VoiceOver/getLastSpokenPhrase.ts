@@ -1,11 +1,11 @@
-import type { RetryableCommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { retry } from "../../retry";
 import { ERR_VOICE_OVER_GET_LAST_SPOKEN_PHRASE } from "../errors";
 
 export async function getLastSpokenPhrase(
-  options?: RetryableCommandOptions
+  options?: CommandOptions
 ): Promise<string> {
   const script = `tell application "${Applications.VOICE_OVER}"\nreturn content of last phrase\nend tell`;
 

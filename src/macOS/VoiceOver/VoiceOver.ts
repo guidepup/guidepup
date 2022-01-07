@@ -1,7 +1,7 @@
 // This file was automatically generated.
 // Manual changes will not be preserved.
 
-import type { CommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import { VoiceOverBase } from "./VoiceOverBase";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { CommanderCommands } from "./CommanderCommands";

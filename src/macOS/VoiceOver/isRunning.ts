@@ -1,4 +1,4 @@
-import type { CommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import { exec } from "child_process";
 import { Applications } from "../Applications";
 import { activate } from "../activate";

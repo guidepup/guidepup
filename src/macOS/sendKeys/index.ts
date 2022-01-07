@@ -1,6 +1,6 @@
 import type { KeyCodeCommand } from "../KeyCodeCommand";
 import type { KeystrokeCommand } from "../KeystrokeCommand";
-import type { CommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import { activate } from "../activate";
 import { Applications } from "../Applications";
 import { keyCode } from "../keyCode";

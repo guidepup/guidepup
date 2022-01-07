@@ -3,7 +3,7 @@ import type { KeyCodeCommand } from "../KeyCodeCommand";
 import type { KeystrokeCommand } from "../KeystrokeCommand";
 import type { Containments } from "./Containments";
 import type { Places } from "./Places";
-import type { CommandOptions, RetryableCommandOptions } from "../../options";
+import type { CommandOptions } from "../../CommandOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import { decorateStaticImplements } from "../../decorateStaticImplements";
 import { isMacOS } from "../isMacOS";
@@ -233,7 +233,7 @@ export class VoiceOverBase {
    *
    * @returns {Promise<string>} The path to the screenshot.
    */
-  async takeScreenshot(options?: RetryableCommandOptions): Promise<string> {
+  async takeScreenshot(options?: CommandOptions): Promise<string> {
     return await takeScreenshot(options);
   }
 
@@ -245,7 +245,7 @@ export class VoiceOverBase {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async getLastSpokenPhrase(
-    options?: RetryableCommandOptions
+    options?: CommandOptions
   ): Promise<string> {
     return await getLastSpokenPhrase(options);
   }
@@ -256,7 +256,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async copyLastSpokenPhrase(options?: RetryableCommandOptions): Promise<void> {
+  async copyLastSpokenPhrase(options?: CommandOptions): Promise<void> {
     return await copyLastSpokenPhrase(options);
   }
 
@@ -266,7 +266,7 @@ export class VoiceOverBase {
    *
    * @param {object} [options] Additional options.
    */
-  async saveLastSpokenPhrase(options?: RetryableCommandOptions): Promise<void> {
+  async saveLastSpokenPhrase(options?: CommandOptions): Promise<void> {
     return await saveLastSpokenPhrase(options);
   }
 
@@ -288,7 +288,7 @@ export class VoiceOverBase {
    *
    * @returns {Promise<string>} The item's text.
    */
-  async getItemText(options?: RetryableCommandOptions): Promise<string> {
+  async getItemText(options?: CommandOptions): Promise<string> {
     return await getItemText(options);
   }
 
