@@ -32,7 +32,6 @@ jobs:
               defaults write com.apple.VoiceOverTraining doNotShowSplashScreen -bool true
 
               # TCC.db Updates To Allow Automated Control
-              # Ref: https://rainforest.engineering/2021-02-09-macos-tcc/
 
               configure_tccdb () {
                 local values=$1
@@ -57,11 +56,6 @@ jobs:
                 "'kTCCServiceAccessibility','/usr/sbin/sshd',1,2,3,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate"
                 "'kTCCServiceAccessibility','/bin/bash',1,2,3,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate"
                 "'kTCCServiceAccessibility','com.apple.Terminal',0,2,3,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate"
-                
-                # Permit Full Disk Access
-                "'kTCCServiceSystemPolicyAllFiles','/usr/sbin/sshd',1,2,3,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate"
-                "'kTCCServiceSystemPolicyAllFiles','/bin/bash',1,2,3,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate"
-                "'kTCCServiceSystemPolicyAllFiles','com.apple.Terminal',0,2,3,1,NULL,NULL,NULL,'UNUSED',NULL,0,$epochdate"
 
                 # Permit Control Of System Events
                 "'kTCCServiceAppleEvents','/usr/sbin/sshd',1,2,3,1,NULL,NULL,0,'com.apple.systemevents',NULL,NULL,$epochdate"
@@ -77,6 +71,11 @@ jobs:
                 "'kTCCServiceAppleEvents','/usr/sbin/sshd',1,2,3,1,NULL,NULL,0,'com.apple.VoiceOverUtility',NULL,NULL,$epochdate"
                 "'kTCCServiceAppleEvents','/bin/bash',1,2,3,1,NULL,NULL,0,'com.apple.VoiceOverUtility',NULL,NULL,$epochdate"
                 "'kTCCServiceAppleEvents','com.apple.Terminal',0,2,3,1,NULL,NULL,0,'com.apple.VoiceOverUtility',NULL,NULL,$epochdate"
+
+                # Permit Control Of Finder
+                "'kTCCServiceAppleEvents','/usr/sbin/sshd',1,2,3,1,NULL,NULL,0,'com.apple.finder',NULL,NULL,$epochdate"
+                "'kTCCServiceAppleEvents','/bin/bash',1,2,3,1,NULL,NULL,0,'com.apple.finder',NULL,NULL,$epochdate"
+                "'kTCCServiceAppleEvents','com.apple.Terminal',0,2,3,1,NULL,NULL,0,'com.apple.finder',NULL,NULL,$epochdate"
 
                 # Permit Control Of Safari
                 "'kTCCServiceAppleEvents','/usr/sbin/sshd',1,2,3,1,NULL,NULL,0,'com.apple.Safari',NULL,NULL,$epochdate"
