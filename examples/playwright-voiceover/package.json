@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "postinstall": "npx playwright install",
+    "pretest": "yarn --cwd ../.. gen && yarn --cwd ../.. compile",
     "test": "playwright test"
   },
   "devDependencies": {

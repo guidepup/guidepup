@@ -1,14 +1,18 @@
-import { ERR_WAITING_TIMEOUT, POLL_INTERVAL, POLL_TIMEOUT } from "./constants";
+import {
+  ERR_WAITING_TIMEOUT,
+  DEFAULT_POLL_INTERVAL,
+  DEFAULT_TIMEOUT,
+} from "./constants";
 
 export async function waitForCondition(
   condition: () => boolean | Promise<boolean>,
   {
-    pollInterval = POLL_INTERVAL,
-    pollTimeout = POLL_TIMEOUT,
+    pollInterval = DEFAULT_POLL_INTERVAL,
+    pollTimeout = DEFAULT_TIMEOUT,
     timeoutErrorMessage = ERR_WAITING_TIMEOUT,
   } = {
-    pollInterval: POLL_INTERVAL,
-    pollTimeout: POLL_TIMEOUT,
+    pollInterval: DEFAULT_POLL_INTERVAL,
+    pollTimeout: DEFAULT_TIMEOUT,
     timeoutErrorMessage: ERR_WAITING_TIMEOUT,
   }
 ): Promise<void> {

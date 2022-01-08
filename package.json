@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/guidepup",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "screen-reader driver for automation testing",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
