@@ -73,15 +73,21 @@ Environment support:
 - [ ] Windows local machine
 - [ ] Windows virtual machine
 
+## See Also
+
+Check out some of the other Guidepup modules:
+
+- [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/)
+
 ## Related
 
 Building on the shoulders of giants! 🙌
 
 Here are some related projects:
 
-- [auto-vo](https://github.com/AccessLint/auto-vo)
-- [screen-reader-reader](https://github.com/phenomnomnominal/screen-reader-reader)
-- [web-test-runner-voiceover](https://github.com/coryrylan/web-test-runner-voiceover)
+- [`auto-vo`](https://github.com/AccessLint/auto-vo)
+- [`screen-reader-reader`](https://github.com/phenomnomnominal/screen-reader-reader)
+- [`web-test-runner-voiceover`](https://github.com/coryrylan/web-test-runner-voiceover)
 
 ## License
 
