@@ -19,3 +19,9 @@ npm run test
 3. Moves through the website using VoiceOver controlled by Guidepup to the search input
 4. Searches for Safari
 5. Moves to the Webkit section of the docs
+
+## See also
+
+Check out the dedicated [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright) module for seamless Guidepup integration with Playwright.
+
+For a dedicated example of using Guidepup with Playwright and CircleCI see <https://github.com/guidepup/circleci-voiceover-example>.
