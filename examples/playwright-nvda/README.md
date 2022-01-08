@@ -6,7 +6,8 @@ Run this example's test with:
 
 ```console
 cd ./examples/playwright-nvda
-yarn test
+npm install
+npm run test
 ```
 
 > Note: please ensure you have setup the [NVDA prerequisites](../../guides/nvda-prerequisites/README.md) before running this example.

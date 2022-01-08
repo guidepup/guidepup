@@ -5,9 +5,9 @@ An example demonstrating using Guidepup for testing VoiceOver automation with [P
 Run this example's test with:
 
 ```console
-yarn install --frozen-lockfile
 cd ./examples/playwright-voiceover
-yarn test
+npm install
+npm run test
 ```
 
 > Note: please ensure you have setup the [VoiceOver prerequisites](../../guides/voiceover-prerequisites/README.md) before running this example.
