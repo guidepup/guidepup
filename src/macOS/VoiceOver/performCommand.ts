@@ -2,6 +2,7 @@ import type { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
+import { withTransaction } from "../withTransaction";
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_PERFORM_COMMAND } from "../errors";
 
@@ -9,9 +10,11 @@ export async function performCommand(
   command: CommanderCommands,
   options?: CommandOptions
 ): Promise<void> {
+  const performCommandScript = `tell commander to perform command "${command.toLowerCase()}`;
+
   const script = `tell application "${
     Applications.VOICE_OVER
-  }"\ntell commander to perform command "${command.toLowerCase()}"\nend tell`;
+  }"\n${withTransaction(performCommandScript)}"\nend tell`;
 
   try {
     return await retryIfAppleEventTimeout(

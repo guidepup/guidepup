@@ -1,8 +1,12 @@
-import { RETRY_COUNT } from "../constants";
+import { DEFAULT_MUTATING_ACTION_RETRY_COUNT } from "../constants";
+
+const APPLE_SCRIPT_TIMED_OUT_ERR_SNIPPET = "AppleEvent timed out";
 
 export async function retryIfAppleEventTimeout<T>(
   delegate: () => T | Promise<T>,
-  { retries = RETRY_COUNT } = { retries: RETRY_COUNT }
+  { retries = DEFAULT_MUTATING_ACTION_RETRY_COUNT } = {
+    retries: DEFAULT_MUTATING_ACTION_RETRY_COUNT,
+  }
 ): Promise<T> {
   let error: Error;
 
@@ -12,7 +16,7 @@ export async function retryIfAppleEventTimeout<T>(
     } catch (e) {
       error = e;
 
-      if (!e.message.includes("AppleEvent timed out")) {
+      if (!e.message.includes(APPLE_SCRIPT_TIMED_OUT_ERR_SNIPPET)) {
         break;
       }
     }

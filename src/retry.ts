@@ -1,8 +1,8 @@
-import { RETRY_COUNT } from "./constants";
+import { DEFAULT_RETRY_COUNT } from "./constants";
 
 export async function retry<T>(
   delegate: () => T | Promise<T>,
-  { retries = RETRY_COUNT } = { retries: RETRY_COUNT }
+  { retries = DEFAULT_RETRY_COUNT } = { retries: DEFAULT_RETRY_COUNT }
 ): Promise<T> {
   let error: Error;
 
