@@ -55,6 +55,12 @@ Want to dive in? 🤿
 
 The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows. 🧑‍💻
 
+## See Also
+
+Check out some of the other Guidepup modules:
+
+- [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/)
+
 ## Roadmap
 
 Screen-reader support:
@@ -72,12 +78,6 @@ Environment support:
   - [ ] GitHub Actions (WIP)
 - [ ] Windows local machine
 - [ ] Windows virtual machine
-
-## See Also
-
-Check out some of the other Guidepup modules:
-
-- [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/)
 
 ## Related
 
