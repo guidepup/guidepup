@@ -10,11 +10,11 @@ export async function performCommand(
   command: CommanderCommands,
   options?: CommandOptions
 ): Promise<void> {
-  const performCommandScript = `tell commander to perform command "${command.toLowerCase()}`;
+  const performCommandScript = `tell commander to perform command "${command.toLowerCase()}"`;
 
   const script = `tell application "${
     Applications.VOICE_OVER
-  }"\n${withTransaction(performCommandScript)}"\nend tell`;
+  }"\n${withTransaction(performCommandScript)}\nend tell`;
 
   try {
     return await retryIfAppleEventTimeout(
