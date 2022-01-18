@@ -88,6 +88,8 @@ Here are some related projects:
 - [`auto-vo`](https://github.com/AccessLint/auto-vo)
 - [`screen-reader-reader`](https://github.com/phenomnomnominal/screen-reader-reader)
 - [`web-test-runner-voiceover`](https://github.com/coryrylan/web-test-runner-voiceover)
+- [`nvda-testing-driver`](https://github.com/kastwey/nvda-testing-driver)
+- [`assistive-webdriver`](https://github.com/AmadeusITGroup/Assistive-Webdriver)
 
 ## License
 
