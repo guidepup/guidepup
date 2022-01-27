@@ -7,3 +7,5 @@ export const DEFAULT_TIMEOUT = 10000;
 export const DEFAULT_MAX_BUFFER = 1000 * 1000 * 100;
 
 export const ERR_WAITING_TIMEOUT = "Timed out waiting.";
+
+export const APPLE_SCRIPT_TIMED_OUT_ERR_SNIPPET = "AppleEvent timed out";
