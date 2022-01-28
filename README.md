@@ -13,7 +13,7 @@
 
 ## Getting Started 🦮
 
-Setup your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+Setup your environment for screen-reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
 ```bash
 npx @guidepup/setup
