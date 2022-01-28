@@ -16,11 +16,4 @@ jobs:
           node-version: 16
       - run: npx @guidepup/setup --ci
       - run: yarn install --frozen-lockfile
-      - run: yarn --cwd examples/playwright-voiceover install --frozen-lockfile
-      - run: yarn --cwd examples/playwright-voiceover test
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: test-results
-          path: |
-            examples/playwright-voiceover/test-results/**/*
+      - run: npx ts-node ./examples/hello-voiceover/index.ts
