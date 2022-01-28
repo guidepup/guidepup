@@ -1,4 +1,4 @@
-name: Test
+name: VoiceOver
 
 on:
   push:
@@ -7,12 +7,14 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  voiceover:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 16
+      - run: npx @guidepup/setup --ci
       - run: yarn install --frozen-lockfile
-      - run: yarn ci
+      - run: yarn --cwd examples/playwright-voiceover install --frozen-lockfile
+      - run: yarn --cwd examples/playwright-voiceover test
