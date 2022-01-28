@@ -16,4 +16,4 @@ jobs:
           node-version: 16
       - run: npx @guidepup/setup --ci
       - run: yarn install --frozen-lockfile
-      - run: npx ts-node ./examples/hello-voiceover
+      - run: npx ts-node ./examples/hello-voiceover/index.ts
