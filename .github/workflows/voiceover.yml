@@ -23,4 +23,4 @@ jobs:
         with:
           name: test-results
           path: |
-            test-results
+            examples/playwright-voiceover/test-results/**/*
