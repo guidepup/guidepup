@@ -19,6 +19,7 @@ jobs:
       - run: yarn --cwd examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd examples/playwright-voiceover test
       - uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: test-results
           path: |
