@@ -33,17 +33,14 @@ import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
  */
 @decorateStaticImplements<ScreenReader>()
 export class VoiceOverBase {
-  #log = false;
   #spokenPhraseLog = [];
   #itemTextLog = [];
 
   async #tap<T, S extends Promise<T>>(promise: S): Promise<T> {
     const result = await promise;
 
-    if (this.#log) {
-      this.#spokenPhraseLog.push(await this.getLastSpokenPhrase());
-      this.#itemTextLog.push(await this.getItemText());
-    }
+    this.#spokenPhraseLog.push(await this.getLastSpokenPhrase());
+    this.#itemTextLog.push(await this.getItemText());
 
     return result;
   }
@@ -54,16 +51,16 @@ export class VoiceOverBase {
    * @returns {Promise<boolean>}
    */
   static async detect(): Promise<boolean> {
-    return (await isMacOS()) && (await supportsAppleScriptControl());
+    return isMacOS() && (await supportsAppleScriptControl());
   }
 
   /**
    * Detect whether VoiceOver is the default screen reader for the current OS.
    *
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  static async default(): Promise<boolean> {
-    return await isMacOS();
+  static default(): Promise<boolean> {
+    return Promise.resolve(isMacOS());
   }
 
   /**
@@ -244,9 +241,7 @@ export class VoiceOverBase {
    *
    * @returns {Promise<string>} The last spoken phrase.
    */
-  async getLastSpokenPhrase(
-    options?: CommandOptions
-  ): Promise<string> {
+  async getLastSpokenPhrase(options?: CommandOptions): Promise<string> {
     return await getLastSpokenPhrase(options);
   }
 
@@ -273,11 +268,9 @@ export class VoiceOverBase {
   /**
    * Get the log of all spoken phrases for this VoiceOver instance.
    *
-   * Note `vo.startLog()` must first be called for spoken phrases to be logged.
-   *
-   * @returns {Promise<string[]>} The phrase log.
+   * @returns {string[]} The phrase log.
    */
-  async getSpokenPhraseLog(): Promise<string[]> {
+  getSpokenPhraseLog(): string[] {
     return this.#spokenPhraseLog;
   }
 
@@ -295,25 +288,9 @@ export class VoiceOverBase {
   /**
    * Get the log of all visited item text for this VoiceOver instance.
    *
-   * Note `vo.startLog()` must first be called for item text to be logged.
-   *
-   * @returns {Promise<string[]>} The item text log.
+   * @returns {string[]} The item text log.
    */
-  async getItemTextLog(): Promise<string[]> {
+  getItemTextLog(): string[] {
     return this.#itemTextLog;
-  }
-
-  /**
-   * Start logging spoken phrases and item text.
-   */
-  startLog(): void {
-    this.#log = true;
-  }
-
-  /**
-   * Stop logging spoken phrases and item text.
-   */
-  stopLog(): void {
-    this.#log = false;
   }
 }

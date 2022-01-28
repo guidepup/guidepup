@@ -16,16 +16,13 @@ import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
  */
 @decorateStaticImplements<ScreenReader>()
 export class NVDA {
-  #log = false;
   #spokenPhraseLog = [];
   #itemTextLog = [];
 
   async #tap<T, S extends Promise<T>>(promise: S): Promise<T> {
     const result = await promise;
 
-    if (this.#log) {
-      // TODO: store last logs
-    }
+    // TODO: store last logs
 
     return result;
   }
@@ -109,11 +106,9 @@ export class NVDA {
   /**
    * Get the log of all spoken phrases for this NVDA instance.
    *
-   * Note `vo.startLog()` must first be called for spoken phrases to be logged.
-   *
-   * @returns {Promise<string[]>} The phrase log.
+   * @returns {string[]} The phrase log.
    */
-  async getSpokenPhraseLog(): Promise<string[]> {
+  getSpokenPhraseLog(): string[] {
     return this.#spokenPhraseLog;
   }
 
@@ -130,25 +125,9 @@ export class NVDA {
   /**
    * Get the log of all visited item text for this NVDA instance.
    *
-   * Note `vo.startLog()` must first be called for item text to be logged.
-   *
-   * @returns {Promise<string[]>} The item text log.
+   * @returns {string[]} The item text log.
    */
-  async getItemTextLog(): Promise<string[]> {
+  getItemTextLog(): string[] {
     return this.#itemTextLog;
-  }
-
-  /**
-   * Start logging spoken phrases and item text.
-   */
-  startLog(): void {
-    this.#log = true;
-  }
-
-  /**
-   * Stop logging spoken phrases and item text.
-   */
-  stopLog(): void {
-    this.#log = false;
   }
 }

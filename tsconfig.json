@@ -5,8 +5,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": true,
+    "rootDir": "./src",
     "outDir": "./lib"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "lib"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "lib", "test", "src/**/*.test.ts"]
 }

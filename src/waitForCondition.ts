@@ -4,6 +4,28 @@ import {
   DEFAULT_TIMEOUT,
 } from "./constants";
 
+async function resolveWhenTrue(
+  condition: () => boolean | Promise<boolean>,
+  pollInterval: number,
+  signal: AbortSignal
+): Promise<void> {
+  let result;
+
+  try {
+    result = await condition();
+  } catch (_) {
+    result = false;
+  }
+
+  if (result || signal.aborted) {
+    return;
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, pollInterval));
+
+  resolveWhenTrue(condition, pollInterval, signal);
+}
+
 export async function waitForCondition(
   condition: () => boolean | Promise<boolean>,
   {
@@ -16,37 +38,20 @@ export async function waitForCondition(
     timeoutErrorMessage: ERR_WAITING_TIMEOUT,
   }
 ): Promise<void> {
-  let pollIntervalId: NodeJS.Timer | undefined;
-  let pollTimeoutId: NodeJS.Timer | undefined;
+  let timeoutTimerId: NodeJS.Timer | undefined;
+
+  const controller = new AbortController();
 
   await Promise.race([
-    new Promise<void>((resolve) => {
-      pollIntervalId = setInterval(async () => {
-        let result;
-
-        try {
-          result = await condition();
-        } catch (_) {
-          result = false;
-        }
-
-        if (result) {
-          clearTimeout(pollTimeoutId);
-          clearInterval(pollIntervalId);
-          pollTimeoutId = undefined;
-          pollIntervalId = undefined;
-          resolve();
-        }
-      }, pollInterval);
-    }),
+    resolveWhenTrue(condition, pollInterval, controller.signal),
     new Promise<void>((_, reject) => {
-      pollTimeoutId = setTimeout(() => {
-        clearInterval(pollIntervalId);
-        pollTimeoutId = undefined;
-        pollIntervalId = undefined;
-
+      timeoutTimerId = setTimeout(() => {
+        controller.abort();
         reject(new Error(timeoutErrorMessage));
       }, pollTimeout);
     }),
   ]);
+
+  clearTimeout(timeoutTimerId);
+  timeoutTimerId = undefined;
 }

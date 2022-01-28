@@ -1,6 +1,7 @@
-import { DEFAULT_MUTATING_ACTION_RETRY_COUNT } from "../constants";
-
-const APPLE_SCRIPT_TIMED_OUT_ERR_SNIPPET = "AppleEvent timed out";
+import {
+  DEFAULT_MUTATING_ACTION_RETRY_COUNT,
+  APPLE_SCRIPT_TIMED_OUT_ERR_SNIPPET,
+} from "../constants";
 
 export async function retryIfAppleEventTimeout<T>(
   delegate: () => T | Promise<T>,
