@@ -14,9 +14,6 @@ test.describe("Playwright VoiceOver", () => {
     // Interact with the page
     await vo.commandInteractWithItem();
 
-    // Start the VoiceOver log
-    vo.startLog();
-
     // Move across the navigation menu to the search bar
     while (!(await vo.getLastSpokenPhrase())?.startsWith("Search")) {
       await vo.moveNext();
@@ -24,7 +21,7 @@ test.describe("Playwright VoiceOver", () => {
 
     // Search for Safari
     await page.keyboard.type("Safari");
-    await vo.performAction();
+    await Promise.all([page.waitForNavigation(), vo.performAction()]);
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
 
     // We're getting there, but seems don't get focus on the section we want!
