@@ -1,5 +1,17 @@
 # VoiceOver Prerequisites
 
+## Automated Setup
+
+Checkout [`@guidepup/setup`](https://github.com/guidepup/setup/) for a quick and easy way to setup your environment for screen-reader automation.
+
+```bash
+# Locally
+npx @guidepup/setup
+
+# In CI
+npx @guidepup/setup --ci
+```
+
 ## Manual Local Setup
 
 ### Allow VoiceOver to be controlled
