@@ -11,7 +11,13 @@
   Providing a reliable set of APIs to automate your screen-reader a11y workflows through JavaScript.
 </p>
 
-## Getting Started
+## Getting Started 🦮
+
+Setup your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+
+```bash
+npx @guidepup/setup
+```
 
 Install Guidepup to your project:
 
@@ -41,27 +47,26 @@ async function run(): Promise<void> {
 run();
 ```
 
-## Guides
+## Guides 🐕‍🦺
 
-Check out these [fab guides](https://github.com/guidepup/guidepup/tree/main/guides) on how to set up your local or CI environments for using Guidepup. 📚
+Check out these [fab guides](https://github.com/guidepup/guidepup/tree/main/guides) on how to set up your local or CI environments for using Guidepup.
 
-## Examples
+## Examples 🤓
 
-Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects. 🤓
+Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects.
 
-## API Documentation
+## API Documentation 📚
 
-Want to dive in? 🤿
+The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows. 
 
-The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows. 🧑‍💻
-
-## See Also
+## See Also 🐶
 
 Check out some of the other Guidepup modules:
 
+- [`@guidepup/setup`](https://github.com/guidepup/setup/)
 - [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/)
 
-## Roadmap
+## Roadmap 🐾
 
 Screen-reader support:
 
@@ -79,7 +84,7 @@ Environment support:
 - [ ] Windows local machine
 - [ ] Windows virtual machine
 
-## Related
+## Related 🌭
 
 Building on the shoulders of giants! 🙌
 
@@ -91,6 +96,6 @@ Here are some related projects:
 - [`nvda-testing-driver`](https://github.com/kastwey/nvda-testing-driver)
 - [`assistive-webdriver`](https://github.com/AmadeusITGroup/Assistive-Webdriver)
 
-## License
+## License 🐩
 
 [MIT](https://github.com/guidepup/guidepup/blob/main/LICENSE)
