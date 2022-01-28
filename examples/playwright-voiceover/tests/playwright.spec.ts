@@ -14,9 +14,6 @@ test.describe("Playwright VoiceOver", () => {
     // Interact with the page
     await vo.commandInteractWithItem();
 
-    // Start the VoiceOver log
-    vo.startLog();
-
     // Move across the navigation menu to the search bar
     while (!(await vo.getLastSpokenPhrase())?.startsWith("Search")) {
       await vo.moveNext();
