@@ -42,9 +42,6 @@ async function run(): Promise<void> {
       characters: "https://github.com/guidepup/guidepup",
     });
     await vo.performAction();
-    await vo.moveNext();
-    await vo.moveNext();
-    await vo.moveNext();
 
     // Let it all soak in before we teardown
     await delay(2000);
