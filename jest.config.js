@@ -21,7 +21,10 @@ module.exports = {
     "<rootDir>/src/macOS/VoiceOver/CommanderCommands.ts",
     "<rootDir>/src/macOS/VoiceOver/Containments.ts",
     "<rootDir>/src/macOS/VoiceOver/Directions.ts",
+    "<rootDir>/src/macOS/VoiceOver/generateClass.ts",
     "<rootDir>/src/macOS/VoiceOver/keyCodeCommands.ts",
     "<rootDir>/src/macOS/VoiceOver/Places.ts",
+    "<rootDir>/src/macOS/VoiceOver/VoiceOver.ts",
+    "<rootDir>/src/windows",
   ],
 };
