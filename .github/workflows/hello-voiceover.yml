@@ -1,0 +1,19 @@
+name: Hello VoiceOver
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  hello-voiceover:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - run: npx @guidepup/setup --ci
+      - run: yarn install --frozen-lockfile
+      - run: npx ts-node ./examples/hello-voiceover

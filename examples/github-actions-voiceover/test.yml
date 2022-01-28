@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Enable VoiceOver Automation
+        run: npx @guidepup/setup --ci
+      
+      # Uncomment and add your steps for your Guidepup tests here
+      # - name: Install Dependencies
+      #   run: yarn install --frozen-lockfile
+      # - name: VoiceOver Test
+      #   run: yarn test

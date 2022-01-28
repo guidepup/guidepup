@@ -1,4 +1,4 @@
-name: VoiceOver
+name: Playwright VoiceOver
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  voiceover:
+  playwright-voiceover:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
@@ -16,16 +16,10 @@ jobs:
           node-version: 16
       - run: npx @guidepup/setup --ci
       - run: yarn install --frozen-lockfile
-      - run: yarn --cwd examples/playwright-voiceover install --frozen-lockfile
-      - run: |
-          mkdir -p ./artifacts/
-          ./.github/workflows/capture.sh &
-          yarn --cwd examples/playwright-voiceover test
-          sleep 20
+      - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
+      - run: yarn --cwd ./examples/playwright-voiceover test
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: artifacts
-          path: |
-            ./examples/playwright-voiceover/test-results/**/*
-            ./artifacts/**/*
+          path: ./examples/playwright-voiceover/test-results/**/*
