@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall": "npx playwright install",
+    "postinstall": "npx playwright install webkit",
     "pretest": "yarn --cwd ../.. gen && yarn --cwd ../.. compile",
     "test": "playwright test"
   },

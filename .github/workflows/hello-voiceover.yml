@@ -1,4 +1,4 @@
-name: Test
+name: Hello VoiceOver
 
 on:
   push:
@@ -7,12 +7,13 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  hello-voiceover:
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 16
+      - run: npx @guidepup/setup --ci
       - run: yarn install --frozen-lockfile
-      - run: yarn ci
+      - run: npx ts-node ./examples/hello-voiceover/index.ts

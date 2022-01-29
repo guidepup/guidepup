@@ -43,8 +43,10 @@ async function run(): Promise<void> {
     });
     await vo.performAction();
 
-    // Let it all soak in before we teardown
-    await delay(2000);
+    console.log("Item Text Log:")
+    console.log(await vo.getItemTextLog());
+    console.log("Spoken Phrase Log:");
+    console.log(await vo.getSpokenPhraseLog());
   } catch (e) {
     console.error(e);
   } finally {
