@@ -14,6 +14,11 @@ const test = base.extend<{ vo: VoiceOver }>({
       await use(vo);
     } finally {
       await vo.stop();
+
+      console.log("Item Text Log:");
+      console.log(await vo.getItemTextLog());
+      console.log("Spoken Phrase Log:");
+      console.log(await vo.getSpokenPhraseLog());
     }
   },
 });
