@@ -1,5 +1,3 @@
-// REF: https://eastmanreference.com/complete-list-of-applescript-key-codes
-
 /**
  * MacOS key codes.
  *
@@ -221,7 +219,11 @@ export enum KeyCodes {
   /**
    * ⇧
    */
-  KEY_LEFT_SHIFT = 57,
+  KEY_LEFT_SHIFT = 56,
+  /**
+   * Caps Lock
+   */
+  KEY_CAPS_LOCK = 57,
   /**
    * ⌥
    */
@@ -239,13 +241,101 @@ export enum KeyCodes {
    */
   KEY_RIGHT_OPTION = 61,
   /**
+   * ⌃
+   */
+  KEY_CONTROL_RIGHT = 62,
+  /**
    * fn
    */
   KEY_FUNCTION = 63,
   /**
+   * F17
+   */
+  KEY_F17 = 64,
+  /**
+   * .
+   */
+  KEY_NUMPAD_PERIOD = 65,
+  /**
+   * *
+   */
+  KEY_NUMPAD_ASTERISK = 67,
+  /**
+   * +
+   */
+  KEY_NUMPAD_PLUS = 69,
+  /**
+   * *
+   */
+  KEY_NUMPAD_CLEAR = 71,
+  /**
+   * /
+   */
+  KEY_NUMPAD_FORWARD_SLASH = 71,
+  /**
    * ⌅
    */
   KEY_ENTER = 76,
+  /**
+   * -
+   */
+  KEY_NUMPAD_DASH = 78,
+  /**
+   * F18
+   */
+  KEY_F18 = 79,
+  /**
+   * F19
+   */
+  KEY_F19 = 80,
+  /**
+   * =
+   */
+  KEY_NUMPAD_EQUALS = 81,
+  /**
+   * 0
+   */
+  KEY_NUMPAD_0 = 82,
+  /**
+   * 1
+   */
+  KEY_NUMPAD_1 = 83,
+  /**
+   * 0
+   */
+  KEY_NUMPAD_2 = 84,
+  /**
+   * 3
+   */
+  KEY_NUMPAD_3 = 85,
+  /**
+   * 4
+   */
+  KEY_NUMPAD_4 = 86,
+  /**
+   * 5
+   */
+  KEY_NUMPAD_5 = 87,
+  /**
+   * 6
+   */
+  KEY_NUMPAD_6 = 88,
+  /**
+   * 7
+   */
+  KEY_NUMPAD_7 = 89,
+  /**
+   * F20
+   */
+  KEY_F20 = 90,
+  /**
+   * 8
+   */
+  KEY_NUMPAD_8 = 91,
+  /**
+   * 9
+   */
+  KEY_NUMPAD_9 = 92,
   /**
    * F5
    */
@@ -275,6 +365,18 @@ export enum KeyCodes {
    */
   KEY_F11 = 103,
   /**
+   * F13
+   */
+  KEY_F13 = 105,
+  /**
+   * F16
+   */
+  KEY_F16 = 106,
+  /**
+   * F14
+   */
+  KEY_F14 = 107,
+  /**
    * F10
    */
   KEY_F10 = 109,
@@ -282,6 +384,10 @@ export enum KeyCodes {
    * F12
    */
   KEY_F12 = 111,
+  /**
+   * F15
+   */
+  KEY_F15 = 113,
   /**
    * Home
    */
@@ -291,13 +397,13 @@ export enum KeyCodes {
    */
   KEY_PAGE_UP = 116,
   /**
-   * End
-   */
-  KEY_END = 119,
-  /**
    * F4
    */
   KEY_F4 = 118,
+  /**
+   * End
+   */
+  KEY_END = 119,
   /**
    * F2
    */
@@ -326,4 +432,12 @@ export enum KeyCodes {
    * ↑
    */
   KEY_UP_ARROW = 126,
+  /**
+   * F4
+   */
+  KEY_F4_ALTERNATIVE = 131,
+  /**
+   * F3
+   */
+  KEY_F3_ALTERNATIVE = 160,
 }
