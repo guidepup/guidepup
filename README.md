@@ -78,9 +78,9 @@ Screen-reader support:
 Environment support:
 
 - [x] MacOS local machine
-- [ ] MacOS virtual machine
+- [x] MacOS virtual machine
   - [x] CircleCI
-  - [ ] GitHub Actions (WIP)
+  - [x] GitHub Actions
 - [ ] Windows local machine
 - [ ] Windows virtual machine
 
