@@ -1,8 +1,6 @@
 /* eslint-disable no-empty-pattern */
+import { macOSActivate, VoiceOver } from "../../../lib";
 import { test as base } from "@playwright/test";
-import { VoiceOver, macOSActivate } from "../../../lib";
-
-const PLAYWRIGHT_APPLICATION = "Playwright";
 
 const test = base.extend<{ vo: VoiceOver }>({
   vo: async ({}, use) => {
@@ -10,7 +8,7 @@ const test = base.extend<{ vo: VoiceOver }>({
 
     try {
       await vo.start();
-      await macOSActivate(PLAYWRIGHT_APPLICATION);
+      await macOSActivate("Playwright");
       await use(vo);
     } finally {
       await vo.stop();

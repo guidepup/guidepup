@@ -1,8 +1,8 @@
 import { activate } from "./activate";
 import { mockType } from "../../test/mockType";
-import { withTransaction } from "./withTransaction";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
+import { withTransaction } from "./withTransaction";
 
 jest.mock("./retryIfAppleEventTimeout", () => ({
   retryIfAppleEventTimeout: jest.fn(),

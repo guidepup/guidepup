@@ -1,9 +1,9 @@
-import { waitForCondition } from "./waitForCondition";
 import {
-  ERR_WAITING_TIMEOUT,
-  DEFAULT_TIMEOUT,
   DEFAULT_POLL_INTERVAL,
+  DEFAULT_TIMEOUT,
+  ERR_WAITING_TIMEOUT,
 } from "./constants";
+import { waitForCondition } from "./waitForCondition";
 
 describe("waitForCondition", () => {
   beforeEach(() => {

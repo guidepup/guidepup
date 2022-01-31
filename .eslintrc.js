@@ -7,4 +7,5 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "prettier",
   ],
+  rules: { "sort-imports": ["error", { ignoreCase: true }] },
 };

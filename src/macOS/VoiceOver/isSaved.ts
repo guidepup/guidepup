@@ -1,8 +1,8 @@
 import type { CommandOptions } from "../../CommandOptions";
-import { getLastSpokenPhrase } from "./getLastSpokenPhrase";
+import { lastSpokenPhrase } from "./lastSpokenPhrase";
 
 export async function isSaved(options?: CommandOptions): Promise<boolean> {
-  const lastPhrase = await getLastSpokenPhrase(options);
+  const lastPhrase = await lastSpokenPhrase(options);
 
   return lastPhrase.startsWith("Last phrase saved to Desktop");
 }

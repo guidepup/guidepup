@@ -1,70 +1,43 @@
-import type { KeyCodeCommand } from "./KeyCodeCommand";
-import type { KeystrokeCommand } from "./KeystrokeCommand";
+import type { CommandOptions } from "./CommandOptions";
+import type { ScreenReaderCaption } from "./ScreenReaderCaption";
+import type { ScreenReaderCursor } from "./ScreenReaderCursor";
+import type { ScreenReaderKeyboard } from "./ScreenReaderKeyboard";
+import type { ScreenReaderMouse } from "./ScreenReaderMouse";
 
-export interface ScreenReaderBase {
+export interface ScreenReaderInstance {
   /**
    * Turn the ScreenReader on.
    */
-  start(): Promise<void>;
+  start(options?: CommandOptions): Promise<void>;
 
   /**
    * Turn the ScreenReader off.
    */
-  stop(): Promise<void>;
+  stop(options?: CommandOptions): Promise<void>;
 
   /**
-   * Send a key code or keystroke to the ScreenReader.
-   *
-   * @param {object} keyCommand Key code or keystroke command to send to the ScreenReader.
+   * ScreenReader caption APIs.
    */
-  sendKeys(command: KeyCodeCommand | KeystrokeCommand): Promise<void>;
+  caption: ScreenReaderCaption;
 
   /**
-   * Move the ScreenReader cursor to the previous location.
+   * ScreenReader cursor APIs.
    */
-  movePrevious(): Promise<void>;
+  cursor: ScreenReaderCursor;
 
   /**
-   * Move the ScreenReader cursor to the next location.
+   * ScreenReader keyboard APIs.
    */
-  moveNext(): Promise<void>;
+  keyboard: ScreenReaderKeyboard;
 
   /**
-   * Perform default action.
+   * ScreenReader mouse APIs.
    */
-  performAction(): Promise<void>;
-
-  /**
-   * Get the last spoken phrase.
-   *
-   * @returns {Promise<string>} The last spoken phrase.
-   */
-  getLastSpokenPhrase(): Promise<string>;
-
-  /**
-   * Get the log of all spoken phrases for this ScreenReader instance.
-   *
-   * @returns {string[]} The phrase log.
-   */
-  getSpokenPhraseLog(): string[];
-
-  /**
-   * Get the text of the item in the ScreenReader cursor.
-   *
-   * @returns {Promise<string>} The item's text.
-   */
-  getItemText(): Promise<string>;
-
-  /**
-   * Get the log of all visited item text for this ScreenReader instance.
-   *
-   * @returns {string[]} The item text log.
-   */
-  getItemTextLog(): string[];
+  mouse: ScreenReaderMouse;
 }
 
 export interface ScreenReader {
-  new (): ScreenReaderBase;
+  new (): ScreenReaderInstance;
   /**
    * Detect whether the ScreenReader is supported for the current OS.
    *

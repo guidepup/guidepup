@@ -1,5 +1,5 @@
-import { join } from "path";
 import { accessSync } from "fs";
+import { join } from "path";
 
 const DEFAULT_NVDA_PATH = join(
   "C:/",

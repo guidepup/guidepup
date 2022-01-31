@@ -1,9 +1,9 @@
-import { isRunning } from "./isRunning";
 import { ChildProcess, exec } from "child_process";
-import { runAppleScript } from "../runAppleScript";
-import { mockType } from "../../../test/mockType";
-import { Applications } from "../Applications";
 import { activate } from "../activate";
+import { Applications } from "../Applications";
+import { isRunning } from "./isRunning";
+import { mockType } from "../../../test/mockType";
+import { runAppleScript } from "../runAppleScript";
 
 jest.mock("child_process", () => ({
   exec: jest.fn(),
@@ -35,14 +35,14 @@ describe("isRunning", () => {
     const commonAppleScriptRunningAssertions = () => {
       it("should check to see if the application is running via AppleScript", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VOICE_OVER}"\nreturn running\nend tell`
+          `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`
         );
       });
     };
 
     const commonActivateAssertions = () => {
       it("should try to activate VoiceOver", () => {
-        expect(activate).toHaveBeenCalledWith(Applications.VOICE_OVER, options);
+        expect(activate).toHaveBeenCalledWith(Applications.VoiceOver, options);
       });
     };
 

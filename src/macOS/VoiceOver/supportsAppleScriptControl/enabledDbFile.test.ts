@@ -1,5 +1,5 @@
-import { enabledDbFile } from "./enabledDbFile";
 import { access, constants } from "fs";
+import { enabledDbFile } from "./enabledDbFile";
 import { mockType } from "../../../../test/mockType";
 
 jest.mock("fs", () => ({

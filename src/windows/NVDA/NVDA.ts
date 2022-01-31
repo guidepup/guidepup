@@ -1,31 +1,16 @@
-import type { ScreenReader } from "../../ScreenReader";
-import { decorateStaticImplements } from "../../decorateStaticImplements";
-import { isWindows } from "../isWindows";
-import { isNVDAInstalled } from "./isNVDAInstalled";
-import { start } from "./start";
-import { quit } from "./quit";
-import { KeyCodeCommand } from "../KeyCodeCommand";
-import { KeyCodes } from "../KeyCodes";
-import { sendKeys } from "../sendKeys";
-import { KeystrokeCommand } from "../KeystrokeCommand";
-import { notImplemented } from "../../notImplemented";
 import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
+import { isNVDAInstalled } from "./isNVDAInstalled";
+import { isWindows } from "../isWindows";
+import { notImplemented } from "../../notImplemented";
+import { quit } from "./quit";
+import { start } from "./start";
 
 /**
  * Class for controlling the NVDA ScreenReader on MacOS.
  */
-@decorateStaticImplements<ScreenReader>()
 export class NVDA {
   #spokenPhraseLog = [];
   #itemTextLog = [];
-
-  async #tap<T, S extends Promise<T>>(promise: S): Promise<T> {
-    const result = await promise;
-
-    // TODO: store last logs
-
-    return result;
-  }
 
   /**
    * Detect whether NVDA is supported for the current OS.
@@ -64,41 +49,11 @@ export class NVDA {
   }
 
   /**
-   * Send a key code or keystroke to NVDA.
-   *
-   * @param {object} keyCommand Key code or keystroke command to send to NVDA.
-   */
-  async sendKeys(keyCommand: KeyCodeCommand | KeystrokeCommand): Promise<void> {
-    this.#tap(sendKeys(keyCommand));
-  }
-
-  /**
-   * Move the NVDA cursor to the previous location.
-   */
-  async movePrevious(): Promise<void> {
-    await this.sendKeys({ keyCode: KeyCodes.KEY_UP_ARROW });
-  }
-
-  /**
-   * Move the NVDA cursor to the next location.
-   */
-  async moveNext(): Promise<void> {
-    await this.sendKeys({ keyCode: KeyCodes.KEY_DOWN_ARROW });
-  }
-
-  /**
-   * Perform default action.
-   */
-  async performAction(): Promise<void> {
-    await this.sendKeys({ keyCode: KeyCodes.KEY_ENTER });
-  }
-
-  /**
    * Get the last spoken phrase.
    *
    * @returns {Promise<string>} The last spoken phrase.
    */
-  getLastSpokenPhrase(): Promise<string> {
+  lastSpokenPhrase(): Promise<string> {
     // TODO: interact with NVDA (python) console to retrieve last phrase
     notImplemented();
   }
@@ -108,7 +63,7 @@ export class NVDA {
    *
    * @returns {string[]} The phrase log.
    */
-  getSpokenPhraseLog(): string[] {
+  spokenPhraseLog(): string[] {
     return this.#spokenPhraseLog;
   }
 
@@ -117,7 +72,7 @@ export class NVDA {
    *
    * @returns {Promise<string>} The item's text.
    */
-  getItemText(): Promise<string> {
+  itemText(): Promise<string> {
     // TODO: interact with NVDA (python) console to retrieve item text
     notImplemented();
   }
@@ -127,7 +82,7 @@ export class NVDA {
    *
    * @returns {string[]} The item text log.
    */
-  getItemTextLog(): string[] {
+  itemTextLog(): string[] {
     return this.#itemTextLog;
   }
 }

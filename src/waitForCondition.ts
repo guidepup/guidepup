@@ -1,7 +1,7 @@
 import {
-  ERR_WAITING_TIMEOUT,
   DEFAULT_POLL_INTERVAL,
   DEFAULT_TIMEOUT,
+  ERR_WAITING_TIMEOUT,
 } from "./constants";
 
 async function resolveWhenTrue(

@@ -1,7 +1,7 @@
-import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
-import { enabledDefaults } from "./enabledDefaults";
 import { enabledDbFile } from "./enabledDbFile";
+import { enabledDefaults } from "./enabledDefaults";
 import { mockType } from "../../../../test/mockType";
+import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
 
 jest.mock("./enabledDefaults", () => ({
   enabledDefaults: jest.fn(),
