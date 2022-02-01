@@ -36,10 +36,10 @@ async function run(): Promise<void> {
   await vo.start();
 
   // Navigate your environment with screen-readers just as your users do 🏎
-  await vo.moveNext();
+  await vo.cursor.next();
 
   // Assert on what your users really see and hear when using screen-readers 👂
-  console.log(await vo.getLastSpokenPhrase());
+  console.log(await vo.caption.lastSpokenPhrase());
 
   await vo.stop();
 }

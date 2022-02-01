@@ -1,10 +1,10 @@
+import { Applications } from "../Applications";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
+import { ERR_VOICE_OVER_COPY_LAST_SPOKEN_PHRASE } from "../errors";
 import { mockType } from "../../../test/mockType";
-import { withTransaction } from "../withTransaction";
 import { retry } from "../../retry";
 import { runAppleScript } from "../runAppleScript";
-import { Applications } from "../Applications";
-import { ERR_VOICE_OVER_COPY_LAST_SPOKEN_PHRASE } from "../errors";
+import { withTransaction } from "../withTransaction";
 
 jest.mock("../../retry", () => ({
   retry: jest.fn(),
@@ -56,7 +56,7 @@ describe("copyLastSpokenPhrase", () => {
 
       it("should construct a copyLastSpokenPhrase script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VOICE_OVER}"\n${stubTransactionBlock}\nend tell`,
+          `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
           options
         );
       });

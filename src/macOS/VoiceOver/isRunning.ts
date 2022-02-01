@@ -1,7 +1,7 @@
+import { activate } from "../activate";
+import { Applications } from "../Applications";
 import type { CommandOptions } from "../../CommandOptions";
 import { exec } from "child_process";
-import { Applications } from "../Applications";
-import { activate } from "../activate";
 import { runAppleScript } from "../runAppleScript";
 
 export async function isRunning(options?: CommandOptions): Promise<boolean> {
@@ -20,7 +20,7 @@ export async function isRunning(options?: CommandOptions): Promise<boolean> {
   }
 
   const appleScriptRunning = await runAppleScript<string>(
-    `tell application "${Applications.VOICE_OVER}"\nreturn running\nend tell`
+    `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`
   );
 
   if (appleScriptRunning === "false") {
@@ -28,7 +28,7 @@ export async function isRunning(options?: CommandOptions): Promise<boolean> {
   }
 
   try {
-    await activate(Applications.VOICE_OVER, options);
+    await activate(Applications.VoiceOver, options);
 
     return true;
   } catch (_) {

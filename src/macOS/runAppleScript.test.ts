@@ -1,6 +1,6 @@
 import { ChildProcess, execFile } from "child_process";
-import { mockType } from "../../test/mockType";
 import { DEFAULT_MAX_BUFFER, DEFAULT_TIMEOUT } from "../constants";
+import { mockType } from "../../test/mockType";
 import { runAppleScript } from "./runAppleScript";
 
 jest.mock("child_process", () => ({

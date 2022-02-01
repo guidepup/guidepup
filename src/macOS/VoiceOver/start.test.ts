@@ -1,7 +1,7 @@
-import { start } from "./start";
-import { exec } from "child_process";
 import { ERR_VOICE_OVER_CANNOT_BE_STARTED } from "../errors";
+import { exec } from "child_process";
 import { mockType } from "../../../test/mockType";
+import { start } from "./start";
 
 jest.mock("child_process", () => ({
   exec: jest.fn(),

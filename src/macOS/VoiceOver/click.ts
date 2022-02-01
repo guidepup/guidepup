@@ -1,23 +1,41 @@
-import type { CommandOptions } from "../../CommandOptions";
-import type { ClickCount } from "./ClickCount";
-import type { ClickButton } from "./ClickButton";
+import { DEFAULT_CLICK_BUTTON, DEFAULT_CLICK_COUNT } from "../../constants";
 import { Applications } from "../Applications";
+import { ClickButton } from "./ClickButton";
+import { ClickCount } from "./ClickCount";
+import type { ClickOptions } from "../../ClickOptions";
+import { ERR_VOICE_OVER_CLICK } from "../errors";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
 import { withTransaction } from "../withTransaction";
-import { ERR_VOICE_OVER_CLICK } from "../errors";
+
+const buttonMap = {
+  left: ClickButton.Left,
+  right: ClickButton.Right,
+};
+
+const clickCountMap = {
+  1: ClickCount.Once,
+  2: ClickCount.Twice,
+  3: ClickCount.Thrice,
+};
 
 export async function click(
-  clickCount: ClickCount,
-  clickButton?: ClickButton,
-  options?: CommandOptions
+  {
+    button = DEFAULT_CLICK_BUTTON,
+    clickCount = DEFAULT_CLICK_COUNT,
+    ...options
+  }: ClickOptions = {
+    button: DEFAULT_CLICK_BUTTON,
+    clickCount: DEFAULT_CLICK_COUNT,
+  }
 ): Promise<void> {
-  const clickScript = `tell mouse cursor to click ${clickCount}${
-    clickButton ? ` with ${clickButton}` : ""
-  }`;
+  const mappedButton = buttonMap[button];
+  const mappedClickCount = clickCountMap[clickCount];
+
+  const clickScript = `tell mouse cursor to click ${mappedClickCount} with ${mappedButton}`;
 
   const script = `tell application "${
-    Applications.VOICE_OVER
+    Applications.VoiceOver
   }"\n${withTransaction(clickScript)}\nend tell`;
 
   try {

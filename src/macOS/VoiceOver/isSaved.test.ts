@@ -1,9 +1,9 @@
 import { isSaved } from "./isSaved";
-import { getLastSpokenPhrase } from "./getLastSpokenPhrase";
+import { lastSpokenPhrase } from "./lastSpokenPhrase";
 import { mockType } from "../../../test/mockType";
 
-jest.mock("./getLastSpokenPhrase", () => ({
-  getLastSpokenPhrase: jest.fn(),
+jest.mock("./lastSpokenPhrase", () => ({
+  lastSpokenPhrase: jest.fn(),
 }));
 
 describe("isSaved", () => {
@@ -19,7 +19,7 @@ describe("isSaved", () => {
         lastPhraseResolver = resolve;
       });
 
-      mockType(getLastSpokenPhrase).mockReturnValue(lastPhrasePromise);
+      mockType(lastSpokenPhrase).mockReturnValue(lastPhrasePromise);
 
       resultPromise = isSaved(options);
     });
@@ -30,7 +30,7 @@ describe("isSaved", () => {
     });
 
     it("should get the last phrase", () => {
-      expect(getLastSpokenPhrase).toHaveBeenCalledWith(options);
+      expect(lastSpokenPhrase).toHaveBeenCalledWith(options);
     });
 
     describe("when the last phrase states the save is complete", () => {
