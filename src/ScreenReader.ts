@@ -6,16 +6,6 @@ import type { ScreenReaderMouse } from "./ScreenReaderMouse";
 
 export interface ScreenReaderInstance {
   /**
-   * Turn the ScreenReader on.
-   */
-  start(options?: CommandOptions): Promise<void>;
-
-  /**
-   * Turn the ScreenReader off.
-   */
-  stop(options?: CommandOptions): Promise<void>;
-
-  /**
    * ScreenReader caption APIs.
    */
   caption: ScreenReaderCaption;
@@ -34,6 +24,20 @@ export interface ScreenReaderInstance {
    * ScreenReader mouse APIs.
    */
   mouse: ScreenReaderMouse;
+
+  /**
+   * Turn the ScreenReader on.
+   *
+   * @param {object} [options] Additional options.
+   */
+  start(options?: CommandOptions): Promise<void>;
+
+  /**
+   * Turn the ScreenReader off.
+   *
+   * @param {object} [options] Additional options.
+   */
+  stop(options?: CommandOptions): Promise<void>;
 }
 
 export interface ScreenReader {
@@ -43,8 +47,8 @@ export interface ScreenReader {
    *
    * @returns {Promise<boolean>}
    */
-
   detect(): Promise<boolean>;
+
   /**
    * Detect whether the ScreenReader is the default screen reader for the current OS.
    *

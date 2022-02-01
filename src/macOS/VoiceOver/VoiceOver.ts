@@ -55,7 +55,6 @@ export class VoiceOver {
     this.mouse = new VoiceOverMouse(logStore);
   }
 
-
   /**
    * Detect whether VoiceOver is supported for the current OS.
    *

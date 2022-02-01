@@ -2,6 +2,10 @@ import { expect } from "@playwright/test";
 import searchJourneyItemTextSnapshot from "./searchJourneyItemTextSnapshot.json";
 import test from "./voiceover-test";
 
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 test.describe("Playwright VoiceOver", () => {
   test("I can navigate the Playwright website to the Safari section", async ({
     page,
@@ -13,7 +17,11 @@ test.describe("Playwright VoiceOver", () => {
 
     // Wait for page to be ready and interact.
     await expect(page.locator(".navbar__logo")).toBeVisible();
-    await vo.cursor.interact();
+
+    while ((await vo.caption.lastSpokenPhrase())?.includes("web content")) {
+      await delay(250);
+      await vo.cursor.interact();
+    }
 
     // Move across the navigation menu to the search bar.
     while (!(await vo.caption.lastSpokenPhrase())?.startsWith("Search")) {

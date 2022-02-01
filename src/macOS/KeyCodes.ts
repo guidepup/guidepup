@@ -1,7 +1,9 @@
 /**
  * macOS key codes.
  *
- * reference: {@link https://eastmanreference.com/complete-list-of-applescript-key-codes}
+ * references:
+ * - {@link https://eastmanreference.com/complete-list-of-applescript-key-codes}
+ * - {@link http://macbiblioblog.blogspot.com/2014/12/key-codes-for-function-and-special-keys.html}
  */
 
 export enum KeyCodes {
@@ -65,6 +67,10 @@ export enum KeyCodes {
   v = 9,
   V = 9,
   KeyV = 9,
+  /**
+   * §
+   */
+  SectionSign = 10,
   /**
    * b
    */
@@ -193,7 +199,7 @@ export enum KeyCodes {
   P = 35,
   KeyP = 35,
   /**
-   * ↵
+   * Return ↵
    *
    * This is actually the "Return" key for MacOS.
    */
@@ -261,7 +267,7 @@ export enum KeyCodes {
   Period = 47,
   FullStop = 47,
   /**
-   * ⇥
+   * Tab ⇥
    */
   Tab = 48,
   /**
@@ -276,15 +282,23 @@ export enum KeyCodes {
   "`" = 50,
   Backtick = 50,
   /**
-   * ←
+   * Backspace ← / ⌫
+   *
+   * Labelled as Delete on Mac keyboards, this is actually
+   * a Backspace key.
    */
-  Delete = 51,
+  Backspace = 51,
+  // Delete = 51,
   /**
-   * esc
+   * Line Feed ␊
+   */
+  LineFeed = 52,
+  /**
+   * Escape ⎋
    */
   Escape = 53,
   /**
-   * cmd ⌘
+   * Command ⌘
    */
   Command = 55,
   CommandLeft = 55,
@@ -296,7 +310,7 @@ export enum KeyCodes {
   Shift = 56,
   ShiftLeft = 56,
   /**
-   * caps Lock
+   * Caps Lock ⇪
    */
   CapsLock = 57,
   /**
@@ -345,13 +359,25 @@ export enum KeyCodes {
    */
   Add = 69,
   /**
-   * Numpad clear
+   * Numpad Clear ⌧
    */
   Clear = 71,
   /**
+   * Volume Up
+   */
+  VolumeUp = 72,
+  /**
+   * Volume Down
+   */
+  VolumeDown = 73,
+  /**
+   * Mute
+   */
+  Mute = 74,
+  /**
    * Numpad /
    */
-  Divide = 71,
+  Divide = 75,
   /**
    * ⌅
    *
@@ -493,6 +519,11 @@ export enum KeyCodes {
    */
   F15 = 113,
   /**
+   * Help / Insert
+   */
+  Help = 114,
+  Insert = 114,
+  /**
    * Home
    */
   Home = 115,
@@ -500,6 +531,11 @@ export enum KeyCodes {
    * Page Up
    */
   PageUp = 116,
+  /**
+   * Forward Delete ⌦
+   */
+  ForwardDelete = 117,
+  Delete = 117,
   /**
    * F4
    */

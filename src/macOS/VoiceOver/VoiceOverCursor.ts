@@ -22,6 +22,8 @@ export class VoiceOverCursor implements ScreenReaderCursor {
   /**
    * Move the VoiceOver cursor to the previous location.
    *
+   * Equivalent of executing VO-Left Arrow.
+   *
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
@@ -30,6 +32,8 @@ export class VoiceOverCursor implements ScreenReaderCursor {
 
   /**
    * Move the VoiceOver cursor to the next location.
+   *
+   * Equivalent of executing VO-Right Arrow.
    *
    * @param {object} [options] Additional options.
    */
@@ -40,6 +44,8 @@ export class VoiceOverCursor implements ScreenReaderCursor {
   /**
    * Perform the default action for the item in the VoiceOver cursor.
    *
+   * Equivalent of executing VO-Space bar.
+   *
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
@@ -48,6 +54,8 @@ export class VoiceOverCursor implements ScreenReaderCursor {
 
   /**
    * Interact with the item under the ScreenReader cursor.
+   *
+   * Equivalent of executing VO-Shift-Down Arrow.
    *
    * @param {object} [options] Additional options.
    */
@@ -64,6 +72,8 @@ export class VoiceOverCursor implements ScreenReaderCursor {
   /**
    * Stop interacting with the current item.
    *
+   * Equivalent of executing VO-Shift-Up Arrow.
+   *
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
@@ -77,10 +87,10 @@ export class VoiceOverCursor implements ScreenReaderCursor {
   }
 
   /**
-   * Takes a screenshot of the VoiceOver cursor and returns the path to the file.
+   * Takes a screenshot of the VoiceOver cursor and returns the path to screenshot file.
    *
    * @param {object} [options] Additional options.
-   * @returns {Promise<string>} The path to the screenshot.
+   * @returns {Promise<string>} The path to the screenshot file.
    */
   async takeScreenshot(options?: CommandOptions): Promise<string> {
     return await takeScreenshot(options);

@@ -14,7 +14,7 @@ export class VoiceOverMouse implements ScreenReaderMouse {
   }
 
   /**
-   * Click the mouse once.
+   * Click the mouse.
    *
    * @param {object} [options] Click options.
    */

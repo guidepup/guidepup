@@ -23,7 +23,7 @@ export class VoiceOverCommander {
   /**
    * Perform a VoiceOver commander command.
    *
-   * @param {string} command The English name of the VoiceOver commander command to perform.
+   * @param {string} command The lowercase english command for the VoiceOver commander to perform.
    * @param {object} [options] Additional options.
    */
   async perform(
