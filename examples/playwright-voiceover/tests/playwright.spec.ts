@@ -1,9 +1,24 @@
 import { expect } from "@playwright/test";
 import searchJourneyItemTextSnapshot from "./searchJourneyItemTextSnapshot.json";
 import test from "./voiceover-test";
+import { VoiceOver } from "../../../lib";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function waitForWebContentAnnouncement(vo: VoiceOver) {
+  for (let i = 0; i < 10; i++) {
+    const itemText = await vo.caption.itemText();
+
+    if (itemText?.includes("web content")) {
+      return;
+    }
+
+    await delay(50);
+  }
+
+  throw new Error("web content could not be found");
 }
 
 test.describe("Playwright VoiceOver", () => {
@@ -17,11 +32,8 @@ test.describe("Playwright VoiceOver", () => {
 
     // Wait for page to be ready and interact.
     await expect(page.locator(".navbar__logo")).toBeVisible();
-
-    while ((await vo.caption.lastSpokenPhrase())?.includes("web content")) {
-      await delay(250);
-      await vo.cursor.interact();
-    }
+    await waitForWebContentAnnouncement(vo);
+    await vo.cursor.interact();
 
     // Move across the navigation menu to the search bar.
     while (!(await vo.caption.lastSpokenPhrase())?.startsWith("Search")) {
