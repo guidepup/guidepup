@@ -66,6 +66,13 @@ Check out some of the other Guidepup modules:
 - [`@guidepup/setup`](https://github.com/guidepup/setup/)
 - [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/)
 
+If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to setup your CI ready for screen-reader automation.
+
+```yaml
+- name: Setup Environment
+  uses: guidepup/setup-action
+```
+
 ## Roadmap 🐾
 
 Screen-reader support:
