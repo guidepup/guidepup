@@ -1,5 +1,5 @@
-import { exec } from "child_process";
 import { ERR_NVDA_QUIT } from "../errors";
+import { exec } from "child_process";
 
 export async function quit(): Promise<void> {
   return new Promise<void>((resolve, reject) => {

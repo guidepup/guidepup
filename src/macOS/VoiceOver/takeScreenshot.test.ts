@@ -1,10 +1,10 @@
-import { takeScreenshot } from "./takeScreenshot";
-import { mockType } from "../../../test/mockType";
-import { withTransaction } from "../withTransaction";
-import { retry } from "../../retry";
-import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_TAKE_SCREENSHOT } from "../errors";
+import { mockType } from "../../../test/mockType";
+import { retry } from "../../retry";
+import { runAppleScript } from "../runAppleScript";
+import { takeScreenshot } from "./takeScreenshot";
+import { withTransaction } from "../withTransaction";
 
 jest.mock("../../retry", () => ({
   retry: jest.fn(),
@@ -56,7 +56,7 @@ describe("takeScreenshot", () => {
 
       it("should construct a takeScreenshot script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VOICE_OVER}"\n${stubTransactionBlock}\nend tell`,
+          `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
           options
         );
       });

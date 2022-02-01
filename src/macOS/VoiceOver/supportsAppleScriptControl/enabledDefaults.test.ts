@@ -1,5 +1,5 @@
-import { enabledDefaults } from "./enabledDefaults";
 import { ChildProcess, exec } from "child_process";
+import { enabledDefaults } from "./enabledDefaults";
 import { mockType } from "../../../../test/mockType";
 
 jest.mock("child_process", () => ({

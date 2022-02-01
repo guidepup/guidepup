@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "postinstall": "npx playwright install webkit",
-    "pretest": "yarn --cwd ../.. gen && yarn --cwd ../.. compile",
+    "pretest": "yarn --cwd ../.. compile",
     "test": "playwright test"
   },
   "devDependencies": {

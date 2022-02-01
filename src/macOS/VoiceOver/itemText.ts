@@ -1,13 +1,13 @@
+import { Applications } from "../Applications";
 import type { CommandOptions } from "../../CommandOptions";
+import { ERR_VOICE_OVER_GET_ITEM_TEXT } from "../errors";
+import { retry } from "../../retry";
 import { runAppleScript } from "../runAppleScript";
 import { withTransaction } from "../withTransaction";
-import { retry } from "../../retry";
-import { Applications } from "../Applications";
-import { ERR_VOICE_OVER_GET_ITEM_TEXT } from "../errors";
 
-export async function getItemText(options?: CommandOptions): Promise<string> {
+export async function itemText(options?: CommandOptions): Promise<string> {
   const script = `tell application "${
-    Applications.VOICE_OVER
+    Applications.VoiceOver
   }"\n${withTransaction("return text under cursor of vo cursor")}\nend tell`;
 
   try {

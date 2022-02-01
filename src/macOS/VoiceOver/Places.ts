@@ -2,12 +2,12 @@
  * VoiceOver places for use with move commands.
  */
 export enum Places {
-  DOCK = "dock",
-  DESKTOP = "desktop",
-  MENUBAR = "menubar",
-  MENU_EXTRAS = "menu extras",
-  SPOTLIGHT = "spotlight",
-  LINKED_ITEM = "linked item",
-  FIRST_ITEM = "first item",
-  LAST_ITEM = "last item",
+  Dock = "dock",
+  Desktop = "desktop",
+  Menubar = "menubar",
+  MenuExtras = "menu extras",
+  Spotlight = "spotlight",
+  LinkedItem = "linked item",
+  FirstItem = "first item",
+  LastItem = "last item",
 }

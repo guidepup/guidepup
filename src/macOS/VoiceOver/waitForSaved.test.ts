@@ -1,8 +1,8 @@
-import { waitForSaved } from "./waitForSaved";
-import { waitForCondition } from "../../waitForCondition";
-import { mockType } from "../../../test/mockType";
 import { ERR_VOICE_OVER_SAVED_TIMEOUT } from "../errors";
 import { isSaved } from "./isSaved";
+import { mockType } from "../../../test/mockType";
+import { waitForCondition } from "../../waitForCondition";
+import { waitForSaved } from "./waitForSaved";
 
 jest.mock("../../waitForCondition", () => ({
   waitForCondition: jest.fn(),

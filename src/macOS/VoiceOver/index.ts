@@ -1,6 +1,8 @@
-export { VoiceOver } from "./VoiceOver";
 export { CommanderCommands as VoiceOverCommanderCommands } from "./CommanderCommands";
-export { Containments as VoiceOverContainments } from "./Containments";
-export { Directions as VoiceOverDirections } from "./Directions";
-export { Places as VoiceOverPlaces } from "./Places";
 export { keyCodeCommands as voiceOverKeyCodeCommands } from "./keyCodeCommands";
+export { VoiceOver } from "./VoiceOver";
+export { VoiceOverCaption } from "./VoiceOverCaption";
+export { VoiceOverCommander } from "./VoiceOverCommander";
+export { VoiceOverCursor } from "./VoiceOverCursor";
+export { VoiceOverKeyboard } from "./VoiceOverKeyboard";
+export { VoiceOverMouse } from "./VoiceOverMouse";

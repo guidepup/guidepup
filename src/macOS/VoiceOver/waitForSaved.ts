@@ -1,7 +1,7 @@
 import type { CommandOptions } from "../../CommandOptions";
-import { waitForCondition } from "../../waitForCondition";
-import { isSaved } from "./isSaved";
 import { ERR_VOICE_OVER_SAVED_TIMEOUT } from "../errors";
+import { isSaved } from "./isSaved";
+import { waitForCondition } from "../../waitForCondition";
 
 const ONE_SECOND = 1000;
 const TWENTY_SECONDS = 20000;

@@ -1,6 +1,6 @@
 import { disableSplashScreen } from "./disableSplashScreen";
-import { exec } from "child_process";
 import { ERR_VOICE_OVER_UNABLE_TO_DISABLE_SPLASH } from "../errors";
+import { exec } from "child_process";
 import { mockType } from "../../../test/mockType";
 
 jest.mock("child_process", () => ({

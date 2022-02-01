@@ -1,8 +1,8 @@
 import type { CommandOptions } from "../CommandOptions";
+import { ERR_PREFIX_QUIT } from "./errors";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
 import { withTransaction } from "./withTransaction";
-import { ERR_PREFIX_QUIT } from "./errors";
 
 export async function quit(
   applicationName: string,

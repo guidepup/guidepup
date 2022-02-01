@@ -1,8 +1,8 @@
+import { ERR_SEND_KEYS } from "./errors";
+import { isKeyCode } from "../isKeyCode";
 import type { KeyCodeCommand } from "./KeyCodeCommand";
 import type { KeystrokeCommand } from "./KeystrokeCommand";
 import { runVbsCode } from "./runVbsCode";
-import { isKeyCode } from "../isKeyCode";
-import { ERR_SEND_KEYS } from "./errors";
 
 function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
   const characters = isKeyCode(command) ? command.keyCode : command.characters;

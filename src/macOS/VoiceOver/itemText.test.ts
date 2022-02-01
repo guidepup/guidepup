@@ -1,10 +1,10 @@
-import { getLastSpokenPhrase } from "./getLastSpokenPhrase";
+import { Applications } from "../Applications";
+import { ERR_VOICE_OVER_GET_ITEM_TEXT } from "../errors";
+import { itemText } from "./itemText";
 import { mockType } from "../../../test/mockType";
-import { withTransaction } from "../withTransaction";
 import { retry } from "../../retry";
 import { runAppleScript } from "../runAppleScript";
-import { Applications } from "../Applications";
-import { ERR_VOICE_OVER_GET_LAST_SPOKEN_PHRASE } from "../errors";
+import { withTransaction } from "../withTransaction";
 
 jest.mock("../../retry", () => ({
   retry: jest.fn(),
@@ -18,7 +18,7 @@ jest.mock("../withTransaction", () => ({
 
 const stubTransactionBlock = "test-transaction-block";
 
-describe("getLastSpokenPhrase", () => {
+describe("itemText", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -31,20 +31,17 @@ describe("getLastSpokenPhrase", () => {
     ${"with options"}    | ${{}}
   `("when called $description", ({ options }) => {
     beforeEach(async () => {
-      await getLastSpokenPhrase(options);
+      await itemText(options);
     });
 
-    it("should wrap the getLastSpokenPhrase command with a transaction block", () => {
+    it("should wrap the itemText command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith(
-        "return content of last phrase"
+        "return text under cursor of vo cursor"
       );
     });
 
-    it("should pass the getLastSpokenPhrase script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
-      expect(retry).toHaveBeenCalledWith(
-        expect.any(Function),
-        options
-      );
+    it("should pass the itemText script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
+      expect(retry).toHaveBeenCalledWith(expect.any(Function), options);
     });
 
     describe("when the retry runner invokes the delegate", () => {
@@ -54,9 +51,9 @@ describe("getLastSpokenPhrase", () => {
         delegate();
       });
 
-      it("should construct a getLastSpokenPhrase script executor", () => {
+      it("should construct a itemText script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VOICE_OVER}"\n${stubTransactionBlock}\nend tell`,
+          `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
           options
         );
       });
@@ -70,11 +67,9 @@ describe("getLastSpokenPhrase", () => {
       mockType(retry).mockRejectedValue(stubError);
     });
 
-    it("should throw an error with the getLastSpokenPhrase prefix, application name, and underlying error message", async () => {
-      await expect(() => getLastSpokenPhrase()).rejects.toEqual(
-        new Error(
-          `${ERR_VOICE_OVER_GET_LAST_SPOKEN_PHRASE}\n${stubError.message}`
-        )
+    it("should throw an error with the itemText prefix, application name, and underlying error message", async () => {
+      await expect(() => itemText()).rejects.toEqual(
+        new Error(`${ERR_VOICE_OVER_GET_ITEM_TEXT}\n${stubError.message}`)
       );
     });
   });

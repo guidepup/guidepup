@@ -1,13 +1,13 @@
-import { move } from "./move";
+import { Applications } from "../Applications";
+import { Containments } from "./Containments";
+import { Directions } from "./Directions";
+import { ERR_VOICE_OVER_MOVE } from "../errors";
 import { mockType } from "../../../test/mockType";
-import { withTransaction } from "../withTransaction";
+import { move } from "./move";
+import { Places } from "./Places";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
-import { Directions } from "./Directions";
-import { Containments } from "./Containments";
-import { Places } from "./Places";
-import { Applications } from "../Applications";
-import { ERR_VOICE_OVER_MOVE } from "../errors";
+import { withTransaction } from "../withTransaction";
 
 jest.mock("../retryIfAppleEventTimeout", () => ({
   retryIfAppleEventTimeout: jest.fn(),
@@ -29,13 +29,13 @@ describe("move", () => {
   });
 
   describe.each`
-    description                                          | direction                    | place                | options      | expectedCommandSuffix
-    ${"with move down, without options"}                 | ${Directions.DOWN}           | ${undefined}         | ${undefined} | ${"down"}
-    ${"with move left, with options"}                    | ${Directions.LEFT}           | ${undefined}         | ${{}}        | ${"left"}
-    ${"with move right to the desktop, without options"} | ${Directions.RIGHT}          | ${Places.DESKTOP}    | ${undefined} | ${"right to desktop"}
-    ${"with move up to the dock, with options"}          | ${Directions.UP}             | ${Places.DOCK}       | ${{}}        | ${"up to dock"}
-    ${"with move in to the first item, without options"} | ${Containments.INTERACT_IN}  | ${Places.FIRST_ITEM} | ${undefined} | ${"into item to first item"}
-    ${"with move out to the last item, with options"}    | ${Containments.INTERACT_OUT} | ${Places.LAST_ITEM}  | ${{}}        | ${"out of item to last item"}
+    description                                          | direction                   | place               | options      | expectedCommandSuffix
+    ${"with move down, without options"}                 | ${Directions.Down}          | ${undefined}        | ${undefined} | ${"down"}
+    ${"with move left, with options"}                    | ${Directions.Left}          | ${undefined}        | ${{}}        | ${"left"}
+    ${"with move right to the desktop, without options"} | ${Directions.Right}         | ${Places.Desktop}   | ${undefined} | ${"right to desktop"}
+    ${"with move up to the dock, with options"}          | ${Directions.Up}            | ${Places.Dock}      | ${{}}        | ${"up to dock"}
+    ${"with move in to the first item, without options"} | ${Containments.InteractIn}  | ${Places.FirstItem} | ${undefined} | ${"into item to first item"}
+    ${"with move out to the last item, with options"}    | ${Containments.InteractOut} | ${Places.LastItem}  | ${{}}        | ${"out of item to last item"}
   `(
     "when called $description",
     ({ direction, place, options, expectedCommandSuffix }) => {
@@ -65,7 +65,7 @@ describe("move", () => {
 
         it("should construct a move script executor", () => {
           expect(runAppleScript).toHaveBeenCalledWith(
-            `tell application "${Applications.VOICE_OVER}"\n${stubTransactionBlock}\nend tell`,
+            `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
             options
           );
         });
@@ -81,7 +81,7 @@ describe("move", () => {
     });
 
     it("should throw an error with the move prefix, application name, and underlying error message", async () => {
-      await expect(() => move(Directions.DOWN)).rejects.toEqual(
+      await expect(() => move(Directions.Down)).rejects.toEqual(
         new Error(`${ERR_VOICE_OVER_MOVE}\n${stubError.message}`)
       );
     });

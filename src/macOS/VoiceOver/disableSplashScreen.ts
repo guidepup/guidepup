@@ -1,5 +1,5 @@
-import { exec } from "child_process";
 import { ERR_VOICE_OVER_UNABLE_TO_DISABLE_SPLASH } from "../errors";
+import { exec } from "child_process";
 
 const DISABLE_VOICE_OVER_DIALOG =
   "defaults write com.apple.VoiceOverTraining doNotShowSplashScreen -bool true";

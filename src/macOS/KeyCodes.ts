@@ -1,443 +1,591 @@
 /**
- * MacOS key codes.
+ * macOS key codes.
  *
- * Reference: {@link https://eastmanreference.com/complete-list-of-applescript-key-codes}
+ * references:
+ * - {@link https://eastmanreference.com/complete-list-of-applescript-key-codes}
+ * - {@link http://macbiblioblog.blogspot.com/2014/12/key-codes-for-function-and-special-keys.html}
  */
+
 export enum KeyCodes {
   /**
-   * A
+   * a
    */
-  KEY_A = 0,
+  a = 0,
+  A = 0,
+  KeyA = 0,
   /**
-   * S
+   * s
    */
-  KEY_S = 1,
+  s = 1,
+  S = 1,
+  KeyS = 1,
   /**
-   * D
+   * d
    */
-  KEY_D = 2,
+  d = 2,
+  D = 2,
+  KeyD = 2,
   /**
-   * F
+   * f
    */
-  KEY_F = 3,
+  f = 3,
+  F = 3,
+  KeyF = 3,
   /**
-   * H
+   * h
    */
-  KEY_H = 4,
+  h = 4,
+  H = 4,
+  KeyH = 4,
   /**
-   * G
+   * g
    */
-  KEY_G = 5,
+  g = 5,
+  G = 5,
+  KeyG = 5,
   /**
-   * Z
+   * z
    */
-  KEY_Z = 6,
+  z = 6,
+  Z = 6,
+  KeyZ = 6,
   /**
-   * X
+   * x
    */
-  KEY_X = 7,
+  x = 7,
+  X = 7,
+  KeyX = 7,
   /**
-   * C
+   * c
    */
-  KEY_C = 8,
+  c = 8,
+  C = 8,
+  KeyC = 8,
   /**
-   * V
+   * v
    */
-  KEY_V = 9,
+  v = 9,
+  V = 9,
+  KeyV = 9,
   /**
-   * B
+   * §
    */
-  KEY_B = 11,
+  SectionSign = 10,
   /**
-   * Q
+   * b
    */
-  KEY_Q = 12,
+  b = 11,
+  B = 11,
+  KeyB = 11,
   /**
-   * W
+   * q
    */
-  KEY_W = 13,
+  q = 12,
+  Q = 12,
+  KeyQ = 12,
   /**
-   * E
+   * w
    */
-  KEY_E = 14,
+  w = 13,
+  W = 13,
+  KeyW = 13,
   /**
-   * R
+   * e
    */
-  KEY_R = 15,
+  e = 14,
+  E = 14,
+  KeyE = 14,
   /**
-   * Y
+   * r
    */
-  KEY_Y = 16,
+  r = 15,
+  R = 15,
+  KeyR = 15,
   /**
-   * T
+   * y
    */
-  KEY_T = 17,
+  y = 16,
+  Y = 16,
+  KeyY = 16,
+  /**
+   * t
+   */
+  t = 17,
+  T = 17,
+  KeyT = 17,
   /**
    * 1
    */
-  KEY_1 = 18,
+  Digit1 = 18,
   /**
    * 2
    */
-  KEY_2 = 19,
+  Digit2 = 19,
   /**
    * 3
    */
-  KEY_3 = 20,
+  Digit3 = 20,
   /**
    * 4
    */
-  KEY_4 = 21,
+  Digit4 = 21,
   /**
    * 6
    */
-  KEY_6 = 22,
+  Digit6 = 22,
   /**
    * 5
    */
-  KEY_5 = 23,
+  Digit5 = 23,
   /**
    * =
    */
-  KEY_EQUALS = 24,
+  "=" = 24,
+  Equals = 24,
   /**
    * 9
    */
-  KEY_9 = 25,
+  Digit9 = 25,
   /**
    * 7
    */
-  KEY_7 = 26,
+  Digit7 = 26,
   /**
    * -
    */
-  KEY_DASH = 27,
+  "-" = 27,
+  Dash = 27,
+  Minus = 27,
   /**
    * 8
    */
-  KEY_8 = 28,
+  Digit8 = 28,
   /**
    * 0
    */
-  KEY_0 = 29,
+  Digit0 = 29,
   /**
    * ]
    */
-  KEY_RIGHT_SQUARE_BRACKET = 30,
+  "]" = 30,
+  RightSquareBracket = 30,
   /**
-   * O
+   * o
    */
-  KEY_O = 31,
+  o = 31,
+  O = 31,
+  KeyO = 31,
   /**
-   * U
+   * u
    */
-  KEY_U = 32,
+  u = 32,
+  U = 32,
+  KeyU = 32,
   /**
    * [
    */
-  KEY_LEFT_SQUARE_BRACKET = 33,
+  "[" = 33,
+  LeftSquareBracket = 33,
   /**
-   * I
+   * i
    */
-  KEY_I = 34,
+  i = 34,
+  I = 34,
+  KeyI = 34,
   /**
-   * P
+   * p
    */
-  KEY_P = 35,
+  p = 35,
+  P = 35,
+  KeyP = 35,
   /**
-   * ↵
+   * Return ↵
+   *
+   * This is actually the "Return" key for MacOS.
    */
-  KEY_RETURN = 36,
+  Enter = 36,
+  Return = 36,
   /**
-   * L
+   * l
    */
-  KEY_L = 37,
+  l = 37,
+  L = 37,
+  KeyL = 37,
   /**
-   * J
+   * j
    */
-  KEY_J = 38,
+  j = 38,
+  J = 38,
+  KeyJ = 38,
   /**
    * '
    */
-  KEY_SINGLE_QUOTE = 39,
+  "'" = 39,
+  SingleQuote = 39,
   /**
-   * K
+   * k
    */
-  KEY_K = 40,
+  k = 40,
+  K = 40,
+  KeyK = 40,
   /**
    * ;
    */
-  KEY_SEMI_COLON = 41,
+  ";" = 41,
+  SemiColon = 41,
   /**
    * \
    */
-  KEY_BACK_SLASH = 42,
+  "\\" = 42,
+  Backslash = 42,
   /**
    * ,
    */
-  KEY_COMMA = 43,
+  "," = 43,
+  Comma = 43,
   /**
    * /
    */
-  KEY_FORWARD_SLASH = 44,
+  "/" = 44,
+  ForwardSlash = 44,
   /**
-   * N
+   * n
    */
-  KEY_N = 45,
+  n = 45,
+  N = 45,
+  KeyN = 45,
   /**
-   * M
+   * m
    */
-  KEY_M = 46,
+  m = 46,
+  M = 46,
+  KeyM = 46,
   /**
    * .
    */
-  KEY_PERIOD = 47,
+  "." = 47,
+  Period = 47,
+  FullStop = 47,
   /**
-   * ⇥
+   * Tab ⇥
    */
-  KEY_TAB = 48,
+  Tab = 48,
   /**
    * " "
    */
-  KEY_SPACE_BAR = 49,
+  " " = 49,
+  Space = 49,
+  Spacebar = 49,
   /**
    * `
    */
-  KEY_BACK_TICK = 50,
+  "`" = 50,
+  Backtick = 50,
   /**
-   * ←
+   * Backspace ← / ⌫
+   *
+   * Labelled as Delete on Mac keyboards, this is actually
+   * a Backspace key.
    */
-  KEY_DELETE = 51,
+  Backspace = 51,
+  // Delete = 51,
   /**
-   * esc
+   * Line Feed ␊
    */
-  KEY_ESCAPE = 53,
+  LineFeed = 52,
   /**
-   * cmd ⌘
+   * Escape ⎋
    */
-  KEY_COMMAND = 55,
+  Escape = 53,
   /**
-   * ⇧
+   * Command ⌘
    */
-  KEY_LEFT_SHIFT = 56,
-  /**
-   * Caps Lock
-   */
-  KEY_CAPS_LOCK = 57,
-  /**
-   * ⌥
-   */
-  KEY_LEFT_OPTION = 58,
-  /**
-   * ⌃
-   */
-  KEY_CONTROL = 59,
+  Command = 55,
+  CommandLeft = 55,
+  CommandRight = 55,
+  Meta = 55,
   /**
    * ⇧
    */
-  KEY_RIGHT_SHIFT = 60,
+  Shift = 56,
+  ShiftLeft = 56,
+  /**
+   * Caps Lock ⇪
+   */
+  CapsLock = 57,
   /**
    * ⌥
    */
-  KEY_RIGHT_OPTION = 61,
+  Option = 58,
+  OptionLeft = 58,
+  Alt = 58,
+  AltLeft = 58,
   /**
    * ⌃
    */
-  KEY_CONTROL_RIGHT = 62,
+  Control = 59,
+  ControlLeft = 59,
+  /**
+   * ⇧
+   */
+  ShiftRight = 60,
+  /**
+   * ⌥
+   */
+  OptionRight = 61,
+  AltRight = 61,
+  /**
+   * ⌃
+   */
+  ControlRight = 62,
   /**
    * fn
    */
-  KEY_FUNCTION = 63,
+  Fn = 63,
   /**
    * F17
    */
-  KEY_F17 = 64,
+  F17 = 64,
   /**
-   * .
+   * Numpad .
    */
-  KEY_NUMPAD_PERIOD = 65,
+  Decimal = 65,
   /**
-   * *
+   * Numpad *
    */
-  KEY_NUMPAD_ASTERISK = 67,
+  Multiply = 67,
   /**
-   * +
+   * Numpad +
    */
-  KEY_NUMPAD_PLUS = 69,
+  Add = 69,
   /**
-   * *
+   * Numpad Clear ⌧
    */
-  KEY_NUMPAD_CLEAR = 71,
+  Clear = 71,
   /**
-   * /
+   * Volume Up
    */
-  KEY_NUMPAD_FORWARD_SLASH = 71,
+  VolumeUp = 72,
+  /**
+   * Volume Down
+   */
+  VolumeDown = 73,
+  /**
+   * Mute
+   */
+  Mute = 74,
+  /**
+   * Numpad /
+   */
+  Divide = 75,
   /**
    * ⌅
+   *
+   * Not used.
    */
-  KEY_ENTER = 76,
+  // Enter = 76,
   /**
-   * -
+   * Numpad -
    */
-  KEY_NUMPAD_DASH = 78,
+  Subtract = 78,
   /**
    * F18
    */
-  KEY_F18 = 79,
+  F18 = 79,
   /**
    * F19
    */
-  KEY_F19 = 80,
+  F19 = 80,
   /**
-   * =
+   * Numpad =
+   *
+   * Not used.
    */
-  KEY_NUMPAD_EQUALS = 81,
+  // Equals = 81,
   /**
-   * 0
+   * Numpad 0
+   *
+   * Not used.
    */
-  KEY_NUMPAD_0 = 82,
+  // Digit0 = 82,
   /**
-   * 1
+   * Numpad 1
+   *
+   * Not used.
    */
-  KEY_NUMPAD_1 = 83,
+  // Digit1 = 83,
   /**
-   * 0
+   * Numpad 2
+   *
+   * Not used.
    */
-  KEY_NUMPAD_2 = 84,
+  // Digit2 = 84,
   /**
-   * 3
+   * Numpad 3
+   *
+   * Not used.
    */
-  KEY_NUMPAD_3 = 85,
+  // Digit3 = 85,
   /**
-   * 4
+   * Numpad 4
+   *
+   * Not used.
    */
-  KEY_NUMPAD_4 = 86,
+  // Digit4 = 86,
   /**
-   * 5
+   * Numpad 5
+   *
+   * Not used.
    */
-  KEY_NUMPAD_5 = 87,
+  // Digit5 = 87,
   /**
-   * 6
+   * Numpad 6
+   *
+   * Not used.
    */
-  KEY_NUMPAD_6 = 88,
+  // Digit6 = 88,
   /**
-   * 7
+   * Numpad 7
+   *
+   * Not used.
    */
-  KEY_NUMPAD_7 = 89,
+  // Digit7 = 89,
   /**
    * F20
    */
-  KEY_F20 = 90,
+  F20 = 90,
   /**
-   * 8
+   * Numpad 8
+   *
+   * Not used.
    */
-  KEY_NUMPAD_8 = 91,
+  // Digit8 = 91,
   /**
-   * 9
+   * Numpad 9
+   *
+   * Not used.
    */
-  KEY_NUMPAD_9 = 92,
+  // Digit9 = 92,
   /**
    * F5
    */
-  KEY_F5 = 96,
+  F5 = 96,
   /**
    * F6
    */
-  KEY_F6 = 97,
+  F6 = 97,
   /**
    * F7
    */
-  KEY_F7 = 98,
+  F7 = 98,
   /**
    * F3
    */
-  KEY_F3 = 99,
+  F3 = 99,
   /**
    * F8
    */
-  KEY_F8 = 100,
+  F8 = 100,
   /**
    * F9
    */
-  KEY_F9 = 101,
+  F9 = 101,
   /**
    * F11
    */
-  KEY_F11 = 103,
+  F11 = 103,
   /**
    * F13
    */
-  KEY_F13 = 105,
+  F13 = 105,
   /**
    * F16
    */
-  KEY_F16 = 106,
+  F16 = 106,
   /**
    * F14
    */
-  KEY_F14 = 107,
+  F14 = 107,
   /**
    * F10
    */
-  KEY_F10 = 109,
+  F10 = 109,
   /**
    * F12
    */
-  KEY_F12 = 111,
+  F12 = 111,
   /**
    * F15
    */
-  KEY_F15 = 113,
+  F15 = 113,
+  /**
+   * Help / Insert
+   */
+  Help = 114,
+  Insert = 114,
   /**
    * Home
    */
-  KEY_HOME = 115,
+  Home = 115,
   /**
    * Page Up
    */
-  KEY_PAGE_UP = 116,
+  PageUp = 116,
+  /**
+   * Forward Delete ⌦
+   */
+  ForwardDelete = 117,
+  Delete = 117,
   /**
    * F4
    */
-  KEY_F4 = 118,
+  F4 = 118,
   /**
-   * End
+   * end
    */
-  KEY_END = 119,
+  End = 119,
   /**
    * F2
    */
-  KEY_F2 = 120,
+  F2 = 120,
   /**
    * Page Down
    */
-  KEY_PAGE_DOWN = 121,
+  PageDown = 121,
   /**
    * F1
    */
-  KEY_F1 = 122,
+  F1 = 122,
   /**
    * ←
    */
-  KEY_LEFT_ARROW = 123,
+  Left = 123,
+  ArrowLeft = 123,
   /**
    * →
    */
-  KEY_RIGHT_ARROW = 124,
+  Right = 124,
+  ArrowRight = 124,
   /**
    * ↓
    */
-  KEY_DOWN_ARROW = 125,
+  Down = 125,
+  ArrowDown = 125,
   /**
    * ↑
    */
-  KEY_UP_ARROW = 126,
+  Up = 126,
+  ArrowUp = 126,
   /**
    * F4
+   *
+   * Not used.
    */
-  KEY_F4_ALTERNATIVE = 131,
+  // F4 = 131,
   /**
    * F3
+   *
+   * Not used.
    */
-  KEY_F3_ALTERNATIVE = 160,
+  // F3 = 160,
 }

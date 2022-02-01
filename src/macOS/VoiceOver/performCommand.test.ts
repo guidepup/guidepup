@@ -1,11 +1,11 @@
-import { performCommand } from "./performCommand";
+import { Applications } from "../Applications";
+import { CommanderCommands } from "./CommanderCommands";
+import { ERR_VOICE_OVER_PERFORM_COMMAND } from "../errors";
 import { mockType } from "../../../test/mockType";
-import { withTransaction } from "../withTransaction";
+import { performCommand } from "./performCommand";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
-import { Applications } from "../Applications";
-import { ERR_VOICE_OVER_PERFORM_COMMAND } from "../errors";
-import { CommanderCommands } from "./CommanderCommands";
+import { withTransaction } from "../withTransaction";
 
 jest.mock("../retryIfAppleEventTimeout", () => ({
   retryIfAppleEventTimeout: jest.fn(),
@@ -59,7 +59,7 @@ describe("performCommand", () => {
 
       it("should construct a performCommand script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VOICE_OVER}"\n${stubTransactionBlock}\nend tell`,
+          `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
           options
         );
       });

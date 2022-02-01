@@ -1,11 +1,11 @@
-import type { Directions } from "./Directions";
-import type { Containments } from "./Containments";
-import type { Places } from "./Places";
+import { Applications } from "../Applications";
 import type { CommandOptions } from "../../CommandOptions";
+import type { Containments } from "./Containments";
+import type { Directions } from "./Directions";
+import { ERR_VOICE_OVER_MOVE } from "../errors";
+import type { Places } from "./Places";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
-import { Applications } from "../Applications";
-import { ERR_VOICE_OVER_MOVE } from "../errors";
 import { withTransaction } from "../withTransaction";
 
 export async function move(
@@ -18,7 +18,7 @@ export async function move(
   }`;
 
   const script = `tell application "${
-    Applications.VOICE_OVER
+    Applications.VoiceOver
   }"\n${withTransaction(moveScript)}\nend tell`;
 
   try {

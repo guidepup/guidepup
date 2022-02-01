@@ -1,5 +1,5 @@
+import { ERR_APPLE_SCRIPT_TIMED_OUT } from "../constants";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
-import { APPLE_SCRIPT_TIMED_OUT_ERR_SNIPPET } from "../constants";
 
 const expected = Symbol("test-expected");
 const expectedError = new Error("test-error");
@@ -67,7 +67,7 @@ describe("retryIfAppleEventTimeout", () => {
       const delegate = () =>
         count++ === 1
           ? Promise.resolve(expected)
-          : Promise.reject(new Error(APPLE_SCRIPT_TIMED_OUT_ERR_SNIPPET));
+          : Promise.reject(new Error(ERR_APPLE_SCRIPT_TIMED_OUT));
 
       it("should return the return value of the delegate", async () => {
         await expect(

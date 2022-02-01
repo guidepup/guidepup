@@ -1,11 +1,11 @@
-import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
-import { mockType } from "../../../test/mockType";
-import { withTransaction } from "../withTransaction";
-import { retry } from "../../retry";
-import { runAppleScript } from "../runAppleScript";
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE } from "../errors";
+import { mockType } from "../../../test/mockType";
+import { retry } from "../../retry";
+import { runAppleScript } from "../runAppleScript";
+import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
 import { waitForSaved } from "./waitForSaved";
+import { withTransaction } from "../withTransaction";
 
 jest.mock("../../retry", () => ({
   retry: jest.fn(),
@@ -55,7 +55,7 @@ describe("saveLastSpokenPhrase", () => {
 
       it("should construct a saveLastSpokenPhrase script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VOICE_OVER}"\n${stubTransactionBlock}\nend tell`,
+          `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
           options
         );
       });

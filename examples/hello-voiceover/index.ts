@@ -1,9 +1,8 @@
 import {
-  VoiceOver,
-  MacOSApplications,
   macOSActivate,
-  macOSSendKeys,
+  MacOSApplications,
   macOSQuit,
+  VoiceOver,
 } from "../../src/";
 
 const delay = async (ms: number) =>
@@ -24,29 +23,27 @@ async function run(): Promise<void> {
     // Not best practice, but expectation is that consumer will perform proper
     // checks to ensure that Safari is ready, most likely using something like
     // playwright to launch and control the browser.
-    await macOSActivate(MacOSApplications.SAFARI);
+    await macOSActivate(MacOSApplications.Safari);
     await delay(4000);
 
     // Interact with the toolbar.
-    await vo.commandInteractWithItem();
+    await vo.cursor.interact();
 
     // Navigate across to the address input.
-    await vo.moveNext();
-    await vo.moveNext();
-    await vo.moveNext();
-    await vo.moveNext();
-    await vo.moveNext();
+    await vo.cursor.next();
+    await vo.cursor.next();
+    await vo.cursor.next();
+    await vo.cursor.next();
+    await vo.cursor.next();
 
     // Navigate to guidepup repo.
-    await macOSSendKeys(MacOSApplications.SAFARI, {
-      characters: "https://github.com/guidepup/guidepup",
-    });
-    await vo.performAction();
+    await vo.keyboard.type("https://github.com/guidepup/guidepup");
+    await vo.cursor.act();
 
-    console.log("Item Text Log:")
-    console.log(await vo.getItemTextLog());
+    console.log("Item Text Log:");
+    console.log(await vo.caption.itemTextLog());
     console.log("Spoken Phrase Log:");
-    console.log(await vo.getSpokenPhraseLog());
+    console.log(await vo.caption.spokenPhraseLog());
   } catch (e) {
     console.error(e);
   } finally {
@@ -54,7 +51,7 @@ async function run(): Promise<void> {
     await vo.stop();
 
     // Ensure we quit Safari.
-    await macOSQuit(MacOSApplications.SAFARI);
+    await macOSQuit(MacOSApplications.Safari);
   }
 }
 

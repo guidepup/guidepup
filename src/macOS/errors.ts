@@ -25,5 +25,5 @@ export const ERR_VOICE_OVER_GET_ITEM_TEXT =
 export const ERR_VOICE_OVER_TAKE_SCREENSHOT =
   "VoiceOver unable to take a screenshot";
 export const ERR_PREFIX_ACTIVATE = "Unable to activate application: ";
-export const ERR_PREFIX_SEND_KEYS = "Unable to send keys to application: ";
+export const ERR_PREFIX_SEND_KEYS = "Unable to send keys ";
 export const ERR_PREFIX_QUIT = "Unable to quit application: ";
