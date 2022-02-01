@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 16
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.1.1
+        uses: guidepup/setup-action@0.1.3
       - run: yarn install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover test
