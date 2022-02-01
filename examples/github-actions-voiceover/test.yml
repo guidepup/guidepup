@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 16
       - name: Enable VoiceOver Automation
-        run: npx @guidepup/setup --ci
+        uses: guidepup/setup-action@0.1.1
       
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
