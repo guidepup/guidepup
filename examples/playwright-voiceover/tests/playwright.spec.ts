@@ -9,7 +9,7 @@ function delay(ms: number) {
 
 async function waitForWebContentAnnouncement(vo: VoiceOver) {
   for (let i = 0; i < 10; i++) {
-    const itemText = await vo.caption.itemText();
+    const itemText = await vo.itemText();
 
     if (itemText?.includes("web content")) {
       return;
@@ -33,39 +33,39 @@ test.describe("Playwright VoiceOver", () => {
     // Wait for page to be ready and interact.
     await expect(page.locator(".navbar__logo")).toBeVisible();
     await waitForWebContentAnnouncement(vo);
-    await vo.cursor.interact();
+    await vo.interact();
 
     // Move across the navigation menu to the search bar.
-    while (!(await vo.caption.lastSpokenPhrase())?.startsWith("Search")) {
-      await vo.cursor.next();
+    while (!(await vo.lastSpokenPhrase())?.startsWith("Search")) {
+      await vo.next();
     }
 
     // Search for Safari.
     // Comboboxes are fiddly to get right... 😅 Seems with the Playwright
     // website we need to do some arrow keying to get the required focus
     // on the desired option.
-    await vo.keyboard.type("Safari");
-    await vo.keyboard.press("ArrowDown");
-    await vo.keyboard.press("ArrowUp");
-    await Promise.all([page.waitForNavigation(), vo.cursor.act()]);
+    await vo.type("Safari");
+    await vo.press("ArrowDown");
+    await vo.press("ArrowUp");
+    await Promise.all([page.waitForNavigation(), vo.act()]);
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
 
     // We're getting there, but seems don't get focus on the section we want!
     // We have to navigate to the Webkit section. We do this by navigating
     // by header.
-    while ((await vo.caption.lastSpokenPhrase()) !== "Headings") {
-      await vo.keyboard.perform(
+    while ((await vo.lastSpokenPhrase()) !== "Headings") {
+      await vo.perform(
         vo.keyboard.commands.cycleRightThroughNavigationSettings
       );
     }
 
-    while ((await vo.caption.itemText()) !== "WebKit heading level 2") {
-      await vo.keyboard.perform(vo.keyboard.commands.navigateDown);
+    while ((await vo.itemText()) !== "WebKit heading level 2") {
+      await vo.perform(vo.keyboard.commands.navigateDown);
     }
 
     // Assert that we've ended up where we expected and what we were told on
     // the way there is as expected.
-    const itemTextLog = await vo.caption.itemTextLog();
+    const itemTextLog = await vo.itemTextLog();
 
     for (const expectedItem of searchJourneyItemTextSnapshot) {
       expect(itemTextLog).toContain(expectedItem);
