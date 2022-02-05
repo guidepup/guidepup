@@ -27,23 +27,23 @@ async function run(): Promise<void> {
     await delay(4000);
 
     // Interact with the toolbar.
-    await vo.cursor.interact();
+    await vo.interact();
 
     // Navigate across to the address input.
-    await vo.cursor.next();
-    await vo.cursor.next();
-    await vo.cursor.next();
-    await vo.cursor.next();
-    await vo.cursor.next();
+    await vo.next();
+    await vo.next();
+    await vo.next();
+    await vo.next();
+    await vo.next();
 
     // Navigate to guidepup repo.
-    await vo.keyboard.type("https://github.com/guidepup/guidepup");
-    await vo.cursor.act();
+    await vo.type("https://github.com/guidepup/guidepup");
+    await vo.act();
 
     console.log("Item Text Log:");
-    console.log(await vo.caption.itemTextLog());
+    console.log(await vo.itemTextLog());
     console.log("Spoken Phrase Log:");
-    console.log(await vo.caption.spokenPhraseLog());
+    console.log(await vo.spokenPhraseLog());
   } catch (e) {
     console.error(e);
   } finally {
