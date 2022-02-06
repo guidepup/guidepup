@@ -20,7 +20,7 @@ jobs:
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: |
           ./record.sh &
-          yarn --cwd ./examples/playwright-voiceover test
+          DEBUG=pw:api PWDEBUG=console yarn --cwd ./examples/playwright-voiceover test
       - uses: actions/upload-artifact@v2
         if: always()
         with:
