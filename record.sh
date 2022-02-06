@@ -2,7 +2,7 @@
 
 mkdir -p ./screenshots
 
-for i in {1..30}; do
+for i in {1..60}; do
   screencapture ./screenshots/capture-${i}.png
-  sleep 2
+  sleep 1
 done
