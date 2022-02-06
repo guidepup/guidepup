@@ -115,7 +115,7 @@ export interface ScreenReaderInstance {
    * await keyboard.press("Enter");
    * ```
    *
-   * @param {string} text Text to type into the focused element.
+   * @param {string} text Text to type into the focused item.
    * @param {object} [options] Additional options.
    */
   type(text: string, options?: KeyboardOptions): Promise<void>;
