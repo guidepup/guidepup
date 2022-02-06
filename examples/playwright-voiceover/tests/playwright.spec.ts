@@ -35,9 +35,9 @@ test.describe("Playwright VoiceOver", () => {
     await waitForWebContentAnnouncement(vo);
     await vo.interact();
 
-    // Move across the navigation menu to the search bar.
+    // Navigate to the search bar.
     while (!(await vo.lastSpokenPhrase())?.startsWith("Search")) {
-      await vo.next();
+      await vo.perform(vo.keyboard.commands.findNextControl);
     }
 
     // Search for Safari.
@@ -50,17 +50,9 @@ test.describe("Playwright VoiceOver", () => {
     await Promise.all([page.waitForNavigation(), vo.act()]);
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
 
-    // We're getting there, but seems don't get focus on the section we want!
-    // We have to navigate to the Webkit section. We do this by navigating
-    // by header.
-    while ((await vo.lastSpokenPhrase()) !== "Headings") {
-      await vo.perform(
-        vo.keyboard.commands.cycleRightThroughNavigationSettings
-      );
-    }
-
+    // Let's navigate the page to the WebKit section.
     while ((await vo.itemText()) !== "WebKit heading level 2") {
-      await vo.perform(vo.keyboard.commands.navigateDown);
+      await vo.perform(vo.keyboard.commands.findNextHeading);
     }
 
     // Assert that we've ended up where we expected and what we were told on
