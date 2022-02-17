@@ -6,7 +6,21 @@ import type { ScreenReaderCursor } from "./ScreenReaderCursor";
 import type { ScreenReaderKeyboard } from "./ScreenReaderKeyboard";
 import type { ScreenReaderMouse } from "./ScreenReaderMouse";
 
-export interface ScreenReaderInstance {
+export interface ScreenReader {
+  /**
+   * Detect whether the ScreenReader is supported for the current OS.
+   *
+   * @returns {Promise<boolean>}
+   */
+  detect(): Promise<boolean>;
+
+  /**
+   * Detect whether the ScreenReader is the default screen reader for the current OS.
+   *
+   * @returns {Promise<boolean>}
+   */
+  default(): Promise<boolean>;
+
   /**
    * ScreenReader caption APIs.
    */
@@ -164,21 +178,4 @@ export interface ScreenReaderInstance {
    * @returns {string[]} The item text log.
    */
   itemTextLog(): string[];
-}
-
-export interface ScreenReader {
-  new (): ScreenReaderInstance;
-  /**
-   * Detect whether the ScreenReader is supported for the current OS.
-   *
-   * @returns {Promise<boolean>}
-   */
-  detect(): Promise<boolean>;
-
-  /**
-   * Detect whether the ScreenReader is the default screen reader for the current OS.
-   *
-   * @returns {Promise<boolean>}
-   */
-  default(): Promise<boolean>;
 }

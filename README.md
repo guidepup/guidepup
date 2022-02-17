@@ -28,20 +28,19 @@ npm install @guidepup/guidepup
 And get cracking with your first screen-reader automation code! 🚀
 
 ```ts
-import { VoiceOver } from "@guidepup/guidepup";
+import { voiceOver } from "@guidepup/guidepup";
 
 async function run(): Promise<void> {
-  // Construct and start your screen-reader instance 🎉
-  const vo = new VoiceOver();
-  await vo.start();
+  // Start your screen-reader instance 🎉
+  await voiceOver.start();
 
   // Navigate your environment with screen-readers just as your users do 🏎
-  await vo.next();
+  await voiceOver.next();
 
   // Assert on what your users really see and hear when using screen-readers 👂
-  console.log(await vo.lastSpokenPhrase());
+  console.log(await voiceOver.lastSpokenPhrase());
 
-  await vo.stop();
+  await voiceOver.stop();
 }
 
 run();
