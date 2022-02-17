@@ -3,7 +3,7 @@ import { macOSActivate, voiceOver } from "../../../lib";
 import { test as base } from "@playwright/test";
 
 const test = base.extend<{ voiceOver }>({
-  vo: async ({}, use) => {
+  voiceOver: async ({}, use) => {
     try {
       await voiceOver.start();
       await macOSActivate("Playwright");
