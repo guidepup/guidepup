@@ -96,7 +96,7 @@ Building on the shoulders of giants! 🙌
 
 Here are some related projects:
 
-- [`auto-voiceOver`](https://github.com/AccessLint/auto-voiceOver)
+- [`auto-vo`](https://github.com/AccessLint/auto-vo)
 - [`screen-reader-reader`](https://github.com/phenomnomnominal/screen-reader-reader)
 - [`web-test-runner-voiceover`](https://github.com/coryrylan/web-test-runner-voiceover)
 - [`nvda-testing-driver`](https://github.com/kastwey/nvda-testing-driver)
