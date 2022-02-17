@@ -1,12 +1,5 @@
 import { accessSync } from "fs";
-import { join } from "path";
-
-const DEFAULT_NVDA_PATH = join(
-  "C:/",
-  "Program Files (x86)",
-  "NVDA",
-  "nvda.exe"
-);
+import { DEFAULT_NVDA_PATH } from "./constants"
 
 let installed: boolean;
 
