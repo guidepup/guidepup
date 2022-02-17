@@ -158,7 +158,7 @@ describe("VoiceOver", () => {
             supportsControl
           );
 
-          result = await VoiceOver.detect();
+          result = await vo.detect();
         });
 
         it(`should return ${expected}`, () => {
@@ -177,7 +177,7 @@ describe("VoiceOver", () => {
       beforeEach(async () => {
         mockType(isMacOS).mockReturnValue(macOS);
 
-        result = await VoiceOver.default();
+        result = await vo.default();
       });
 
       it(`should return ${expected}`, () => {
@@ -193,7 +193,7 @@ describe("VoiceOver", () => {
       });
 
       it("should throw", async () => {
-        await expect(vo.start).rejects.toThrowError(
+        await expect(vo.start.bind(vo)).rejects.toThrowError(
           ERR_VOICE_OVER_NOT_SUPPORTED
         );
       });
@@ -442,34 +442,22 @@ describe("VoiceOver", () => {
   });
 
   describe("spokenPhraseLog", () => {
-    describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
-    `("when called $description", ({ options }) => {
-      beforeEach(async () => {
-        await vo.spokenPhraseLog(options);
-      });
+    beforeEach(async () => {
+      await vo.spokenPhraseLog();
+    });
 
-      it("should get the spoken phrase log", () => {
-        expect(vo.caption.spokenPhraseLog).toHaveBeenCalled();
-      });
+    it("should get the spoken phrase log", () => {
+      expect(vo.caption.spokenPhraseLog).toHaveBeenCalled();
     });
   });
 
   describe("itemTextLog", () => {
-    describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
-    `("when called $description", ({ options }) => {
-      beforeEach(async () => {
-        await vo.itemTextLog(options);
-      });
+    beforeEach(async () => {
+      await vo.itemTextLog();
+    });
 
-      it("should get the item text log", () => {
-        expect(vo.caption.itemTextLog).toHaveBeenCalled();
-      });
+    it("should get the item text log", () => {
+      expect(vo.caption.itemTextLog).toHaveBeenCalled();
     });
   });
 });

@@ -1,11 +1,11 @@
-import { ScreenReaderInstance } from "./ScreenReader";
+import { ScreenReader } from "./ScreenReader";
 
 export class LogStore {
-  #screenReader!: ScreenReaderInstance;
+  #screenReader!: ScreenReader;
   #itemTextLogStore = [];
   #spokenPhraseLogStore = [];
 
-  constructor(screenReader: ScreenReaderInstance) {
+  constructor(screenReader: ScreenReader) {
     this.#screenReader = screenReader;
   }
 

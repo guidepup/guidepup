@@ -2,7 +2,6 @@ import { Applications } from "../Applications";
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
-import { decorateStaticImplements } from "../../decorateStaticImplements";
 import { disableSplashScreen } from "./disableSplashScreen";
 import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
 import { isKeyboard } from "../../isKeyboard";
@@ -24,8 +23,7 @@ import { waitForRunning } from "./waitForRunning";
 /**
  * Class for controlling the VoiceOver ScreenReader on MacOS.
  */
-@decorateStaticImplements<ScreenReader>()
-export class VoiceOver {
+export class VoiceOver implements ScreenReader {
   /**
    * VoiceOver caption APIs.
    */
@@ -65,7 +63,7 @@ export class VoiceOver {
    *
    * @returns {Promise<boolean>}
    */
-  static async detect(): Promise<boolean> {
+  async detect(): Promise<boolean> {
     return isMacOS() && (await supportsAppleScriptControl());
   }
 
@@ -74,7 +72,7 @@ export class VoiceOver {
    *
    * @returns {Promise<boolean>}
    */
-  static default(): Promise<boolean> {
+  default(): Promise<boolean> {
     return Promise.resolve(isMacOS());
   }
 
@@ -84,7 +82,7 @@ export class VoiceOver {
    * @param {object} [options] Additional options.
    */
   async start(options?: CommandOptions): Promise<void> {
-    if (!(await VoiceOver.detect())) {
+    if (!(await this.detect())) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
