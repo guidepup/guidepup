@@ -1,4 +1,4 @@
-import { NVDA } from "../../src";
+import { nvda } from "../../src";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
@@ -7,8 +7,6 @@ const delay = async (ms: number) =>
  * Starts and stops NVDA.
  */
 async function run(): Promise<void> {
-  const nvda = new NVDA();
-
   try {
     // Start the NVDA screenreader
     await nvda.start();

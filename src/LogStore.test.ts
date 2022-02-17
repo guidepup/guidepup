@@ -1,13 +1,13 @@
 import { LogStore } from "./LogStore";
 import { mockType } from "../test/mockType";
-import { ScreenReaderInstance } from "./ScreenReader";
+import { ScreenReader } from "./ScreenReader";
 
-const screenReaderInstanceStub = {
+const screenReaderStub = {
   caption: {
     itemText: jest.fn(),
     lastSpokenPhrase: jest.fn(),
   },
-} as unknown as ScreenReaderInstance;
+} as unknown as ScreenReader;
 
 const itemTextDummy = "test-item-text";
 const lastSpokenPhraseDummy = "test-last-spoken-phrase";
@@ -19,14 +19,14 @@ describe("LogStore", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    mockType(screenReaderInstanceStub.caption.itemText).mockResolvedValue(
+    mockType(screenReaderStub.caption.itemText).mockResolvedValue(
       itemTextDummy
     );
     mockType(
-      screenReaderInstanceStub.caption.lastSpokenPhrase
+      screenReaderStub.caption.lastSpokenPhrase
     ).mockResolvedValue(lastSpokenPhraseDummy);
 
-    logStore = new LogStore(screenReaderInstanceStub);
+    logStore = new LogStore(screenReaderStub);
   });
 
   it("should initialize with an empty item text log store", () => {

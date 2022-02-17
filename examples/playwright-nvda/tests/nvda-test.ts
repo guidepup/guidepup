@@ -1,11 +1,9 @@
 /* eslint-disable no-empty-pattern */
 import { test as base } from "@playwright/test";
-import { NVDA } from "../../../lib";
+import { nvda } from "../../../lib";
 
-const test = base.extend<{ nvda: NVDA }>({
+const test = base.extend<{ nvda }>({
   nvda: async ({}, use) => {
-    const nvda = new NVDA();
-
     try {
       await nvda.start();
       await use(nvda);

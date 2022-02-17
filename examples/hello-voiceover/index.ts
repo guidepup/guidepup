@@ -2,7 +2,7 @@ import {
   macOSActivate,
   MacOSApplications,
   macOSQuit,
-  VoiceOver,
+  voiceOver,
 } from "../../src/";
 
 const delay = async (ms: number) =>
@@ -12,11 +12,9 @@ const delay = async (ms: number) =>
  * Opens Safari and navigates to the guidepup GitHub repo.
  */
 async function run(): Promise<void> {
-  const vo = new VoiceOver();
-
   try {
     // Start the VoiceOver screenreader
-    await vo.start();
+    await voiceOver.start();
 
     // Open Safari and wait for it to be ready.
     //
@@ -27,28 +25,28 @@ async function run(): Promise<void> {
     await delay(4000);
 
     // Interact with the toolbar.
-    await vo.interact();
+    await voiceOver.interact();
 
     // Navigate across to the address input.
-    await vo.next();
-    await vo.next();
-    await vo.next();
-    await vo.next();
-    await vo.next();
+    await voiceOver.next();
+    await voiceOver.next();
+    await voiceOver.next();
+    await voiceOver.next();
+    await voiceOver.next();
 
     // Navigate to guidepup repo.
-    await vo.type("https://github.com/guidepup/guidepup");
-    await vo.act();
+    await voiceOver.type("https://github.com/guidepup/guidepup");
+    await voiceOver.act();
 
     console.log("Item Text Log:");
-    console.log(await vo.itemTextLog());
+    console.log(await voiceOver.itemTextLog());
     console.log("Spoken Phrase Log:");
-    console.log(await vo.spokenPhraseLog());
+    console.log(await voiceOver.spokenPhraseLog());
   } catch (e) {
     console.error(e);
   } finally {
     // Ensure we stop VoiceOver.
-    await vo.stop();
+    await voiceOver.stop();
 
     // Ensure we quit Safari.
     await macOSQuit(MacOSApplications.Safari);
