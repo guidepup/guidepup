@@ -1,1 +1,3 @@
-export { NVDA } from "./NVDA";
+import { NVDA } from "./NVDA";
+
+export const nvda = new NVDA();
