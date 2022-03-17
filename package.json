@@ -46,5 +46,8 @@
     "ts-node": "^10.4.0",
     "typedoc": "^0.22.10",
     "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "shelljs": "^0.8.5"
   }
 }

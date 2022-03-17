@@ -8,3 +8,9 @@ export const DEFAULT_NVDA_PATH = join(
   "NVDA",
   "nvda.exe"
 );
+
+export const DEFAULT_NVDA_DIRECTORY = join(
+  "C:/",
+  "Program Files (x86)",
+  "NVDA"
+);

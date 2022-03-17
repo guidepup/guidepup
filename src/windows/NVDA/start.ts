@@ -1,17 +1,25 @@
+import { ChildProcess, spawn } from "child_process";
 import { DEFAULT_NVDA_PATH } from "./constants";
 import { ERR_NVDA_CANNOT_BE_STARTED } from "../errors";
-import { spawnSync } from "child_process";
 import { waitForRunning } from "./waitForRunning";
 
 export async function start(): Promise<void> {
+  let child: ChildProcess;
+
   try {
-    const a = spawnSync(`"${DEFAULT_NVDA_PATH}" --minimal`, { shell: true, stdio: "ignore", encoding: "utf-8" });
-    console.log(a);
+    child = spawn(`"${DEFAULT_NVDA_PATH}"`, ["--minimal"], {
+      shell: true,
+      stdio: "ignore",
+    });
   } catch (e) {
-    new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`)
+    new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`);
   }
 
-  console.log("started");
+  await waitForRunning();
 
-  return await waitForRunning();
+  try {
+    child.kill();
+  } catch {
+    // swallow error
+  }
 }

@@ -10,7 +10,6 @@ async function run(): Promise<void> {
   try {
     // Start the NVDA screenreader
     await nvda.start();
-    console.log("started");
 
     await delay(2000);
   } catch (e) {
@@ -18,7 +17,6 @@ async function run(): Promise<void> {
   } finally {
     // Ensure we stop NVDA.
     await nvda.stop();
-    console.log("stopped");
   }
 }
 

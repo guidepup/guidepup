@@ -23,7 +23,7 @@ async function resolveWhenTrue(
 
   await new Promise((resolve) => setTimeout(resolve, pollInterval));
 
-  resolveWhenTrue(condition, pollInterval, signal);
+  await resolveWhenTrue(condition, pollInterval, signal);
 }
 
 export async function waitForCondition(
@@ -47,6 +47,7 @@ export async function waitForCondition(
     new Promise<void>((_, reject) => {
       timeoutTimerId = setTimeout(() => {
         controller.abort();
+        console.log("timed out waiting");
         reject(new Error(timeoutErrorMessage));
       }, pollTimeout);
     }),
