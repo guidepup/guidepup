@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import searchJourneyItemTextSnapshot from "./searchJourneyItemTextSnapshot.json";
+import itemTextSnapshot from "./itemTextSnapshot.json";
 import test from "./voiceover-test";
 
 function delay(ms: number) {
@@ -21,36 +21,22 @@ async function waitForWebContentAnnouncement(voiceOver) {
 }
 
 test.describe("Playwright VoiceOver", () => {
-  test("I can navigate the Playwright website to the Safari section", async ({
+  test("I can navigate the Guidepup Github page", async ({
     page,
     voiceOver,
   }) => {
-    await page.goto("https://playwright.dev/", {
+    // Navigate to Guidepup GitHub page 🎉
+    await page.goto("https://github.com/guidepup/guidepup", {
       waitUntil: "domcontentloaded",
     });
 
-    // Wait for page to be ready and interact.
-    await expect(page.locator(".navbar__logo")).toBeVisible();
+    // Wait for page to be ready and interact 🙌
+    await expect(page.locator('header[role="banner"]')).toBeVisible();
     await waitForWebContentAnnouncement(voiceOver);
     await voiceOver.interact();
 
-    // Navigate to the search bar.
-    while (!(await voiceOver.lastSpokenPhrase())?.startsWith("Search")) {
-      await voiceOver.perform(voiceOver.keyboard.commands.findNextControl);
-    }
-
-    // Search for Safari.
-    // Comboboxes are fiddly to get right... 😅 Seems with the Playwright
-    // website we need to do some arrow keying to get the required focus
-    // on the desired option.
-    await voiceOver.type("Safari");
-    await voiceOver.press("ArrowDown");
-    await voiceOver.press("ArrowUp");
-    await Promise.all([page.waitForNavigation(), voiceOver.act()]);
-    expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
-
-    // Let's navigate the page to the WebKit section.
-    while ((await voiceOver.itemText()) !== "WebKit heading level 2") {
+    // Move across the page menu to the Guidepup heading using VoiceOver 🔎
+    while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
       await voiceOver.perform(voiceOver.keyboard.commands.findNextHeading);
     }
 
@@ -58,7 +44,7 @@ test.describe("Playwright VoiceOver", () => {
     // the way there is as expected.
     const itemTextLog = await voiceOver.itemTextLog();
 
-    for (const expectedItem of searchJourneyItemTextSnapshot) {
+    for (const expectedItem of itemTextSnapshot) {
       expect(itemTextLog).toContain(expectedItem);
     }
   });
