@@ -16,10 +16,7 @@ export async function sendKeys(
 ): Promise<void> {
   const keys = getKeys(command);
 
-  const script = `
-  set WshShell = CreateObject("WScript.Shell")
-  WshShell.SendKeys "${keys}";
-  `;
+  const script = `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${keys}"`;
 
   try {
     await runVbsCode(script);

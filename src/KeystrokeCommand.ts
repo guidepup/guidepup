@@ -9,5 +9,5 @@ export interface KeystrokeCommand {
   /**
    * List of modifier keys to press while sending the character(s).
    */
-  modifiers?: string[];
+  modifiers?: unknown[];
 }

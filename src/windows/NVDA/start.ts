@@ -12,14 +12,9 @@ export async function start(): Promise<void> {
       stdio: "ignore",
     });
   } catch (e) {
-    new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`);
+    throw new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`);
   }
 
   await waitForRunning();
-
-  try {
-    child.kill();
-  } catch {
-    // swallow error
-  }
+  child.kill();
 }

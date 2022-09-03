@@ -9,5 +9,5 @@ export interface KeyCodeCommand {
   /**
    * List of modifier keys to press while sending the key code(s).
    */
-  modifiers?: string[];
+  modifiers?: unknown[];
 }

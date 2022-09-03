@@ -30,7 +30,7 @@ module.exports = {
     "<rootDir>/src/macOS/VoiceOver/Containments.ts",
     "<rootDir>/src/macOS/VoiceOver/Directions.ts",
     "<rootDir>/src/macOS/VoiceOver/Places.ts",
-    "<rootDir>/src/windows",
+    "<rootDir>/src/windows/KeyCodes.ts"
   ],
   coverageThreshold: {
     global: {

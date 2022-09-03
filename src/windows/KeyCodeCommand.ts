@@ -1,3 +1,4 @@
+import type { Key } from "./Key";
 import type { KeyCodeCommand as KeyCodeCommandBase } from "../KeyCodeCommand";
 import type { Modifiers } from "./Modifiers";
 
@@ -8,7 +9,7 @@ export interface KeyCodeCommand extends KeyCodeCommandBase {
   /**
    * The key code to send.
    */
-  keyCode: string;
+  keyCode: string | string[] | Key | Key[];
   /**
    * List of modifier keys to press while sending the key code(s).
    */

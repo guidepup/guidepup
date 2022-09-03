@@ -1,15 +1,18 @@
-import { DEFAULT_NVDA_PATH } from "./constants";
-import { spawnSync } from "child_process";
+import { NVDA_HOST, NVDA_PORT } from "./constants";
+import { connect } from "net";
 
 export async function isRunning(): Promise<boolean> {
-  try {
-    const a = spawnSync(`"${DEFAULT_NVDA_PATH}"`, ["--check-running"], {
-      shell: true,
-      stdio: "ignore",
+  return new Promise((resolve) => {
+    const client = connect(NVDA_PORT, NVDA_HOST);
+
+    client.on("connect", () => {
+      client.end();
+      resolve(true);
     });
 
-    return a.status === 0;
-  } catch (_) {
-    return false;
-  }
+    client.on("error", () => {
+      client.end();
+      resolve(false);
+    });
+  });
 }
