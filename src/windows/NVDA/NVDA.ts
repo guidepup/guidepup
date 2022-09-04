@@ -24,7 +24,7 @@ export class NVDA {
    * @returns {Promise<boolean>}
    */
   static async detect(): Promise<boolean> {
-    return (await isWindows()) && (await isNVDAInstalled());
+    return Promise.resolve(isWindows() && isNVDAInstalled());
   }
 
   /**
@@ -33,7 +33,7 @@ export class NVDA {
    * @returns {Promise<boolean>}
    */
   static async default(): Promise<boolean> {
-    return await Promise.resolve(false);
+    return await Promise.resolve(isWindows());
   }
 
   /**
@@ -74,12 +74,47 @@ export class NVDA {
     return await this.#stream.sendKeyCode(keyCodeCommands.moveToNext);
   }
 
-  async type(text: string) {
-    return await sendKeys({ characters: text });
-  }
-
+  /**
+   * Perform the default action for the item in the NVDA cursor.
+   *
+   * Equivalent of executing Enter.
+   */
   async act() {
     return await sendKeys({ keyCode: KeyCodes.KEY_ENTER });
+  }
+
+  /**
+   * No-op to provide same API across screenreaders.
+   *
+   * NVDA does not require users to perform an additional command to interact
+   * with the item in the NVDA cursor.
+   */
+  async interact(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  /**
+   * No-op to provide same API across screenreaders.
+   *
+   * NVDA does not require users to perform an additional command to interact
+   * with the item in the NVDA cursor.
+   */
+  async stopInteracting(): Promise<void> {
+    return await Promise.resolve();
+  }
+
+  /**
+   * Type text into the focused item.
+   *
+   * ```ts
+   * await nvda.type("my-username");
+   * ```
+   *
+   * @param {string} text Text to type into the focused item.
+   * @param {object} [options] Additional options.
+   */
+  async type(text: string) {
+    return await sendKeys({ characters: text });
   }
 
   /**

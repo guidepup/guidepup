@@ -10,9 +10,9 @@ export class Key {
     extended,
     symbol,
   }: {
-    keyCode: number;
-    scanCode: number;
-    extended: boolean;
+    keyCode?: number;
+    scanCode?: number;
+    extended?: boolean;
     symbol: string;
   }) {
     this.keyCode = keyCode;

@@ -1,10 +1,15 @@
 import { connect, TLSSocket } from "tls";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
+import { EventEmitter } from "events";
 import { KeyCodeCommand } from "../KeyCodeCommand";
-import { KeystrokeCommand } from "../KeystrokeCommand";
 
 interface NVDABaseMessage extends Record<string, unknown> {
   type: string;
+}
+
+interface NVDAChannelJoinedMessage extends NVDABaseMessage {
+  type: "channel_joined";
+  user_id: number;
 }
 
 interface NVDACancelMessage extends NVDABaseMessage {
@@ -17,26 +22,50 @@ interface NVDASpeakMessage extends NVDABaseMessage {
   priority: number;
 }
 
-type NVDAMessage = NVDABaseMessage | NVDACancelMessage | NVDASpeakMessage;
-
 const connectionMessage = JSON.stringify({
-  connection_type: "master",
   type: "join",
+  connection_type: "master",
   channel: "guidepup",
 });
 
 const protocolMessage = JSON.stringify({
-  version: 2,
   type: "protocol_version",
+  version: 2,
 });
 
-const isSpeakMessage = (message: NVDAMessage): message is NVDASpeakMessage => {
-  return message.type === "speak";
+export const CHANNEL_JOINED = "channel_joined";
+export const CANCEL = "cancel";
+export const SPEAK = "speak";
+
+const isChannelJoinedMessage = (
+  message: NVDABaseMessage
+): message is NVDAChannelJoinedMessage => {
+  return message.type === CHANNEL_JOINED;
 };
 
-export class NVDAStream {
+const isCancelMessage = (
+  message: NVDABaseMessage
+): message is NVDACancelMessage => {
+  return message.type === CANCEL;
+};
+
+const isSpeakMessage = (
+  message: NVDABaseMessage
+): message is NVDASpeakMessage => {
+  return message.type === SPEAK;
+};
+
+export class NVDAStream extends EventEmitter {
   #stream: TLSSocket;
   #spokenPhrases = [];
+
+  constructor() {
+    super();
+
+    this.addListener(SPEAK, (spokenPhrase: string) => {
+      this.#spokenPhrases.push(spokenPhrase);
+    });
+  }
 
   lastSpokenPhrase(): string {
     return this.#spokenPhrases.at(-1);
@@ -56,10 +85,12 @@ export class NVDAStream {
         NVDA_HOST,
         { checkServerIdentity: () => null },
         () => {
+          this.once(CHANNEL_JOINED, () => {
+            resolve();
+          });
+
           this.send(connectionMessage);
           this.send(protocolMessage);
-
-          resolve();
         }
       );
 
@@ -71,15 +102,27 @@ export class NVDAStream {
       this.#stream.setEncoding("utf8");
 
       this.#stream.on("data", (data: string) => {
-        if (data.trim().length === 0) {
+        if (!data.trim().length) {
           return;
         }
 
-        let parsedData: NVDAMessage;
+        let parsedData: NVDABaseMessage;
 
         try {
           parsedData = JSON.parse(data);
         } catch {
+          return;
+        }
+
+        if (isChannelJoinedMessage(parsedData)) {
+          this.emit(CHANNEL_JOINED);
+
+          return;
+        }
+
+        if (isCancelMessage(parsedData)) {
+          this.emit(CANCEL);
+
           return;
         }
 
@@ -99,9 +142,9 @@ export class NVDAStream {
           );
         }
 
-        const spokenPhrase = spokenPhraseParts.join(" - ");
+        const spokenPhrase = spokenPhraseParts.join(", ");
 
-        this.#spokenPhrases.push(spokenPhrase);
+        this.emit(SPEAK, spokenPhrase);
       });
     });
   }
@@ -131,5 +174,6 @@ export class NVDAStream {
   stop() {
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "1";
     this.#stream?.destroy();
+    this.#stream = null;
   }
 }

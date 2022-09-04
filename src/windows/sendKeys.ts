@@ -5,7 +5,11 @@ import type { KeystrokeCommand } from "./KeystrokeCommand";
 import { runVbsCode } from "./runVbsCode";
 
 function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
-  const characters = isKeyCode(command) ? command.keyCode : command.characters;
+  const characters = isKeyCode(command)
+    ? Array.isArray(command.keyCode)
+      ? command.keyCode.map((key) => key.symbol).join()
+      : command.keyCode.symbol
+    : command.characters;
   const modifiers = (command.modifiers ?? []).join("");
 
   return `${modifiers}${characters}`;

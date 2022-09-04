@@ -176,7 +176,7 @@ export class VoiceOver implements ScreenReader {
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * ```ts
-   * await keyboard.press("Control+f");
+   * await voiceOver.press("Control+f");
    * ```
    *
    * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
@@ -189,11 +189,11 @@ export class VoiceOver implements ScreenReader {
   /**
    * Type text into the focused item.
    *
-   * To press a special key, like `Control` or `ArrowDown`, use `keyboard.press(key[, options])`.
+   * To press a special key, like `Control` or `ArrowDown`, use `voiceOver.press(key[, options])`.
    *
    * ```ts
-   * await keyboard.type("my-username");
-   * await keyboard.press("Enter");
+   * await voiceOver.type("my-username");
+   * await voiceOver.press("Enter");
    * ```
    *
    * @param {string} text Text to type into the focused item.

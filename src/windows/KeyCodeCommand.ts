@@ -9,7 +9,7 @@ export interface KeyCodeCommand extends KeyCodeCommandBase {
   /**
    * The key code to send.
    */
-  keyCode: string | string[] | Key | Key[];
+  keyCode: Key | Key[];
   /**
    * List of modifier keys to press while sending the key code(s).
    */
