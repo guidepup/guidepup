@@ -13,7 +13,7 @@ export class Key {
     keyCode?: number;
     scanCode?: number;
     extended?: boolean;
-    symbol: string;
+    symbol?: string;
   }) {
     this.keyCode = keyCode;
     this.scanCode = scanCode;
@@ -24,9 +24,9 @@ export class Key {
   toJSON(down: boolean) {
     return {
       scan_code: this.scanCode,
-      extended: this.extended ? "true" : "false",
+      extended: this.extended,
       vk_code: this.keyCode,
-      pressed: down ? "true" : "false",
+      pressed: down,
       type: "key",
     };
   }

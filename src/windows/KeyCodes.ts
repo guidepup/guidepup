@@ -210,4 +210,13 @@ export const KeyCodes = {
    * A TAB keystroke
    */
   KEY_TAB: new Key({ symbol: "{TAB}" }),
+  /**
+   * A Control (ctrl) keystroke
+   */
+  KEY_CONTROL: new Key({
+    keyCode: 162,
+    scanCode: 29,
+    extended: false,
+    symbol: "^",
+  }),
 };

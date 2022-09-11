@@ -11,4 +11,9 @@ export const keyCodeCommands = {
     description: "Move to next",
     representation: "Down Arrow",
   },
+  stopReading: {
+    keyCode: KeyCodes.KEY_CONTROL,
+    description: "Stop reading",
+    representation: "Control",
+  },
 };

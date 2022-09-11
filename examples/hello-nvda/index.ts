@@ -27,7 +27,6 @@ async function run(): Promise<void> {
     // Navigate across the page.
     for (let i = 0; i < 10; i++) {
       await nvda.next();
-      await delay(1000);
     }
 
     console.log("Spoken Phrase Log:");

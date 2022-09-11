@@ -5,14 +5,35 @@ import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
 import { NVDAStream } from "./NVDAStream";
 import { quit } from "./quit";
+import type { ScreenReader } from "../../ScreenReader";
 import { sendKeys } from "../sendKeys";
 import { start } from "./start";
 
 /**
  * Class for controlling the NVDA ScreenReader on MacOS.
  */
-export class NVDA {
+export class NVDA implements ScreenReader {
   #stream: NVDAStream;
+
+  /**
+   * NVDA caption APIs.
+   */
+  caption!: any;
+
+  /**
+   * NVDA cursor APIs.
+   */
+  cursor!: any;
+
+  /**
+   * NVDA keyboard APIs.
+   */
+  keyboard!: any;
+
+  /**
+   * NVDA mouse APIs.
+   */
+  mouse!: any;
 
   constructor() {
     this.#stream = new NVDAStream();
@@ -23,7 +44,7 @@ export class NVDA {
    *
    * @returns {Promise<boolean>}
    */
-  static async detect(): Promise<boolean> {
+  async detect(): Promise<boolean> {
     return Promise.resolve(isWindows() && isNVDAInstalled());
   }
 
@@ -32,7 +53,7 @@ export class NVDA {
    *
    * @returns {Promise<boolean>}
    */
-  static async default(): Promise<boolean> {
+  async default(): Promise<boolean> {
     return await Promise.resolve(isWindows());
   }
 
@@ -40,7 +61,7 @@ export class NVDA {
    * Turn NVDA on.
    */
   async start(): Promise<void> {
-    if (!(await NVDA.detect())) {
+    if (!(await this.detect())) {
       throw new Error(ERR_NVDA_NOT_SUPPORTED);
     }
 
@@ -62,7 +83,9 @@ export class NVDA {
    * Equivalent of executing Up Arrow.
    */
   async previous(): Promise<void> {
-    return await this.#stream.sendKeyCode(keyCodeCommands.moveToPrevious);
+    return await this.#stream.waitForSpokenPhrase(() =>
+      this.#stream.sendKeyCode(keyCodeCommands.moveToPrevious)
+    );
   }
 
   /**
@@ -71,7 +94,9 @@ export class NVDA {
    * Equivalent of executing Down Arrow.
    */
   async next(): Promise<void> {
-    return await this.#stream.sendKeyCode(keyCodeCommands.moveToNext);
+    return await this.#stream.waitForSpokenPhrase(() =>
+      this.#stream.sendKeyCode(keyCodeCommands.moveToNext)
+    );
   }
 
   /**
@@ -80,7 +105,9 @@ export class NVDA {
    * Equivalent of executing Enter.
    */
   async act() {
-    return await sendKeys({ keyCode: KeyCodes.KEY_ENTER });
+    return await this.#stream.waitForSpokenPhrase(() =>
+      sendKeys({ keyCode: KeyCodes.KEY_ENTER })
+    );
   }
 
   /**
@@ -103,6 +130,10 @@ export class NVDA {
     return await Promise.resolve();
   }
 
+  async press(_key: string): Promise<void> {
+    return await Promise.resolve();
+  }
+
   /**
    * Type text into the focused item.
    *
@@ -114,7 +145,25 @@ export class NVDA {
    * @param {object} [options] Additional options.
    */
   async type(text: string) {
-    return await sendKeys({ characters: text });
+    return await this.#stream.waitForSpokenPhrase(() =>
+      sendKeys({ characters: text })
+    );
+  }
+
+  /**
+   * Perform a NVDA command.
+   *
+   * @param {any} command NVDA keyboard command or commander command to execute.
+   */
+  async perform(_command: unknown): Promise<void> {
+    return await Promise.resolve();
+  }
+
+  /**
+   * Click the mouse.
+   */
+  async click(): Promise<void> {
+    return await Promise.resolve();
   }
 
   /**
@@ -122,8 +171,17 @@ export class NVDA {
    *
    * @returns {string} The last spoken phrase.
    */
-  lastSpokenPhrase(): string {
-    return this.#stream.lastSpokenPhrase();
+  async lastSpokenPhrase(): Promise<string> {
+    return await Promise.resolve(this.#stream.lastSpokenPhrase());
+  }
+
+  /**
+   * Get the text of the item in the NVDA cursor.
+   *
+   * @returns {Promise<string>} The item's text.
+   */
+  async itemText(): Promise<string> {
+    return await Promise.resolve("");
   }
 
   /**
@@ -133,5 +191,14 @@ export class NVDA {
    */
   spokenPhraseLog(): string[] {
     return this.#stream.spokenPhraseLog();
+  }
+
+  /**
+   * Get the log of all visited item text for this NVDA instance.
+   *
+   * @returns {string[]} The item text log.
+   */
+  itemTextLog(): string[] {
+    return [];
   }
 }
