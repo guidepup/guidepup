@@ -2,7 +2,6 @@ import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { KeyCodes } from "../KeyCodes";
 import { NVDAStream } from "./NVDAStream";
 import { quit } from "./quit";
 import type { ScreenReader } from "../../ScreenReader";
@@ -106,12 +105,12 @@ export class NVDA implements ScreenReader {
    */
   async act() {
     return await this.#stream.waitForSpokenPhrase(() =>
-      sendKeys({ keyCode: KeyCodes.KEY_ENTER })
+      this.#stream.sendKeyCode(keyCodeCommands.activate)
     );
   }
 
   /**
-   * No-op to provide same API across screenreaders.
+   * No-op to provide same API across screen-readers.
    *
    * NVDA does not require users to perform an additional command to interact
    * with the item in the NVDA cursor.
@@ -121,7 +120,7 @@ export class NVDA implements ScreenReader {
   }
 
   /**
-   * No-op to provide same API across screenreaders.
+   * No-op to provide same API across screen-readers.
    *
    * NVDA does not require users to perform an additional command to interact
    * with the item in the NVDA cursor.
@@ -130,7 +129,7 @@ export class NVDA implements ScreenReader {
     return await Promise.resolve();
   }
 
-  async press(_key: string): Promise<void> {
+  async press(): Promise<void> {
     return await Promise.resolve();
   }
 
@@ -155,7 +154,7 @@ export class NVDA implements ScreenReader {
    *
    * @param {any} command NVDA keyboard command or commander command to execute.
    */
-  async perform(_command: unknown): Promise<void> {
+  async perform(): Promise<void> {
     return await Promise.resolve();
   }
 

@@ -10,7 +10,8 @@ function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
       ? command.keyCode.map((key) => key.symbol).join()
       : command.keyCode.symbol
     : command.characters;
-  const modifiers = (command.modifiers ?? []).join("");
+
+  const modifiers = command.modifiers.map((modifier) => modifier.symbol).join();
 
   return `${modifiers}${characters}`;
 }

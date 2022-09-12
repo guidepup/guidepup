@@ -153,8 +153,27 @@ export class NVDAStream extends EventEmitter {
   }
 
   async sendKeyCode(keyCommand: KeyCodeCommand) {
-    await this.send(keyCommand.keyCode.toString(true));
-    await this.send(keyCommand.keyCode.toString(false));
+    const modifiers = keyCommand.modifiers
+      ? Array.isArray(keyCommand.modifiers)
+        ? keyCommand.modifiers
+        : [keyCommand.modifiers]
+      : [];
+
+    const keyCodes = keyCommand.keyCode
+      ? Array.isArray(keyCommand.keyCode)
+        ? keyCommand.keyCode
+        : [keyCommand.keyCode]
+      : [];
+
+    const keys = [...modifiers, ...keyCodes];
+
+    for (const key of keys) {
+      await this.send(key.toString(true));
+    }
+
+    for (const key of keys.reverse()) {
+      await this.send(key.toString(false));
+    }
   }
 
   async send(message: string) {
