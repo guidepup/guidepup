@@ -10,7 +10,12 @@ import { unlinkSync } from "fs";
  */
 export function record(filepath: string): () => void {
   execSync(`mkdir -p ${dirname(filepath)}`);
-  unlinkSync(filepath);
+  
+  try {
+    unlinkSync(filepath);
+  } catch (_) {
+    // file doesn't exist.
+  }
 
   const screencapture = spawn("/usr/sbin/screencapture", [
     "-v",
