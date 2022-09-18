@@ -8,13 +8,16 @@ on:
 
 jobs:
   hello-voiceover:
-    runs-on: macos-11
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-11, macos-12, macos-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 16
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.1.3
+        uses: guidepup/setup-action@0.2.1
       - run: yarn install --frozen-lockfile
       - run: npx ts-node ./examples/hello-voiceover/index.ts
