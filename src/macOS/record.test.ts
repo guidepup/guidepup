@@ -27,7 +27,7 @@ describe("record", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(spawn).mockReturnValue(mockProcess as any);
+    mockType(spawn).mockReturnValue(mockProcess as unknown as ChildProcess);
 
     stopRecording = record(mockFilepath);
   });
