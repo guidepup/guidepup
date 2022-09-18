@@ -1,7 +1,11 @@
-import { delay } from "./delay";
 import { expect } from "@playwright/test";
 import itemTextSnapshot from "./itemTextSnapshot.json";
+import { macOSRecord } from "../../../lib";
 import test from "./voiceover-test";
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 async function waitForWebContentAnnouncement(voiceOver) {
   for (let i = 0; i < 10; i++) {
@@ -22,6 +26,10 @@ test.describe("Playwright VoiceOver", () => {
     page,
     voiceOver,
   }) => {
+    const stopRecording = macOSRecord(
+      `./recordings/playwright-voiceover-${+new Date()}.mov`
+    );
+
     // Navigate to Guidepup GitHub page 🎉
     await page.goto("https://github.com/guidepup/guidepup", {
       waitUntil: "domcontentloaded",
@@ -44,5 +52,7 @@ test.describe("Playwright VoiceOver", () => {
     for (const expectedItem of itemTextSnapshot) {
       expect(itemTextLog).toContain(expectedItem);
     }
+
+    stopRecording();
   });
 });
