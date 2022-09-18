@@ -11,8 +11,20 @@ export function record(
 ): typeof AbortController.prototype.abort {
   const abortController = new AbortController();
 
-  spawn("/usr/sbin/screencapture", ["-v", "-C", "-k", "-T0", "-g", filepath], {
-    signal: abortController.signal,
+  const screencapture = spawn(
+    "/usr/sbin/screencapture",
+    ["-v", "-C", "-k", "-T0", "-g", filepath],
+    {
+      signal: abortController.signal,
+    }
+  );
+
+  screencapture.on("error", (err) => {
+    if (err.name === "AbortError") {
+      return;
+    }
+
+    throw err;
   });
 
   return () => abortController.abort();
