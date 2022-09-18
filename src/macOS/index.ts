@@ -7,3 +7,4 @@ export type { KeyCodes as MacOSKeyCodes } from "./KeyCodes";
 export type { KeystrokeCommand as MacOSKeystrokeCommand } from "./KeystrokeCommand";
 export { Modifiers as MacOSModifiers } from "./Modifiers";
 export { quit as macOSQuit } from "./quit";
+export { record as macOSRecord } from "./record";

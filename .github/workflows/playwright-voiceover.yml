@@ -26,4 +26,6 @@ jobs:
         if: always()
         with:
           name: artifacts
-          path: ./examples/playwright-voiceover/test-results/**/*
+          path: |
+            examples/playwright-voiceover/test-results/**/*
+            **/recordings/**/*

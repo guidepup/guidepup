@@ -21,3 +21,9 @@ jobs:
         uses: guidepup/setup-action@0.2.1
       - run: yarn install --frozen-lockfile
       - run: npx ts-node ./examples/hello-voiceover/index.ts
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: artifacts
+          path: |
+            **/recordings/**/*
