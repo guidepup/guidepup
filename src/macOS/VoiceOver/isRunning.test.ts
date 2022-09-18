@@ -56,17 +56,13 @@ describe("isRunning", () => {
           return {} as unknown as ChildProcess;
         });
 
-        try {
-          await isRunning(options);
-        } catch (error) {
-          result = error;
-        }
+        result = await isRunning(options);
       });
 
       commonProcessAssertions();
 
-      it("should throw an error", () => {
-        expect(result).toBe(errorStub);
+      it("should return false", () => {
+        expect(result).toBe(false);
       });
     });
 
