@@ -1,4 +1,5 @@
-import { spawn } from "child_process";
+import { execSync, spawn } from "child_process";
+import { dirname } from "path";
 
 /**
  * Start a screen recording.
@@ -9,12 +10,15 @@ import { spawn } from "child_process";
 export function record(
   filepath: string
 ): typeof AbortController.prototype.abort {
+  execSync(`mkdir -p ${dirname(filepath)}`);
+
   const abortController = new AbortController();
 
   const screencapture = spawn(
     "/usr/sbin/screencapture",
     ["-v", "-C", "-k", "-T0", "-g", filepath],
     {
+      detached: true,
       signal: abortController.signal,
     }
   );
