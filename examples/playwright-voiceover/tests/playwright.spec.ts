@@ -1,10 +1,7 @@
+import { delay } from "./delay";
 import { expect } from "@playwright/test";
 import itemTextSnapshot from "./itemTextSnapshot.json";
 import test from "./voiceover-test";
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 async function waitForWebContentAnnouncement(voiceOver) {
   for (let i = 0; i < 10; i++) {
