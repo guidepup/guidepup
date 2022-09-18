@@ -18,6 +18,7 @@ import { VoiceOverCommander } from "./VoiceOverCommander";
 import { VoiceOverCursor } from "./VoiceOverCursor";
 import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 import { VoiceOverMouse } from "./VoiceOverMouse";
+import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
 /**
@@ -97,7 +98,8 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async stop(options?: CommandOptions): Promise<void> {
-    return await quit(Applications.VoiceOver, options);
+    await quit(Applications.VoiceOver, options);
+    await waitForNotRunning(options);
   }
 
   /**

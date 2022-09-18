@@ -15,6 +15,7 @@ import { VoiceOverCommander } from "./VoiceOverCommander";
 import { VoiceOverCursor } from "./VoiceOverCursor";
 import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 import { VoiceOverMouse } from "./VoiceOverMouse";
+import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
 jest.mock("./disableSplashScreen", () => ({
@@ -52,6 +53,9 @@ jest.mock("./VoiceOverKeyboard", () => ({
 }));
 jest.mock("./VoiceOverMouse", () => ({
   VoiceOverMouse: jest.fn(),
+}));
+jest.mock("./waitForNotRunning", () => ({
+  waitForNotRunning: jest.fn(),
 }));
 jest.mock("./waitForRunning", () => ({
   waitForRunning: jest.fn(),
@@ -239,6 +243,10 @@ describe("VoiceOver", () => {
 
       it("should quit VoiceOver", () => {
         expect(quit).toHaveBeenCalledWith(Applications.VoiceOver, options);
+      });
+
+      it("should wait for VoiceOver to not be running", () => {
+        expect(waitForNotRunning).toHaveBeenCalledWith(options);
       });
     });
   });

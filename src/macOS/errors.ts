@@ -5,6 +5,8 @@ export const ERR_VOICE_OVER_CANNOT_BE_STARTED = "VoiceOver cannot be started";
 
 export const ERR_VOICE_OVER_RUNNING_TIMEOUT =
   "Timed out waiting for VoiceOver to be running";
+export const ERR_VOICE_OVER_NOT_RUNNING_TIMEOUT =
+  "Timed out waiting for VoiceOver to not be running";
 export const ERR_VOICE_OVER_SAVED_TIMEOUT =
   "Timed out waiting for VoiceOver to save file";
 
