@@ -21,11 +21,6 @@ jobs:
         uses: guidepup/setup-action@0.2.1
       - run: yarn install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
-      - name: Record
-        shell: bash
-        run: |
-          mkdir -p ./recordings/
-          screencapture -v -C -k -T0 -g ./recordings/playwright-voiceover.mov &
       - run: yarn --cwd ./examples/playwright-voiceover test
       - uses: actions/upload-artifact@v2
         if: always()
@@ -33,4 +28,4 @@ jobs:
           name: artifacts
           path: |
             ./examples/playwright-voiceover/test-results/**/*
-            ./recordings
+            ./recordings/**/*

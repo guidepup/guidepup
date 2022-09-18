@@ -2,6 +2,7 @@ import {
   macOSActivate,
   MacOSApplications,
   macOSQuit,
+  macOSRecord,
   voiceOver,
 } from "../../src/";
 
@@ -12,8 +13,13 @@ const delay = async (ms: number) =>
  * Opens Safari and navigates to the guidepup GitHub repo.
  */
 async function run(): Promise<void> {
+  let stopRecording;
+
   try {
-    // Start the VoiceOver screenreader
+    // Start the screen recording.
+    stopRecording = macOSRecord("./recordings/hello-voiceover.mov");
+
+    // Start the VoiceOver screenreader.
     await voiceOver.start();
 
     // Open Safari and wait for it to be ready.
@@ -50,6 +56,9 @@ async function run(): Promise<void> {
 
     // Ensure we quit Safari.
     await macOSQuit(MacOSApplications.Safari);
+
+    // Ensure we stop the recording.
+    stopRecording();
   }
 }
 
