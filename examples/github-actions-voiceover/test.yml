@@ -11,14 +11,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-11, macos-12, macos-latest]
+        os: [macos-11, macos-12]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 16
       - name: Enable VoiceOver Automation
-        uses: guidepup/setup-action@0.2.1
+        uses: guidepup/setup-action@0.4.0
       
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
