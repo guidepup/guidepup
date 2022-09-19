@@ -1,4 +1,5 @@
 import { ChildProcess, execSync, spawn } from "child_process";
+import { getDimensions } from "./getDimensions";
 import { join } from "path";
 import { mockType } from "../../test/mockType";
 import { record } from "./record";
@@ -11,9 +12,13 @@ jest.mock("child_process", () => ({
 jest.mock("fs", () => ({
   unlinkSync: jest.fn(),
 }));
+jest.mock("./getDimensions", () => ({
+  getDimensions: jest.fn(),
+}));
 
 const mockDirectory = "test-directory";
 const mockFilepath = join(mockDirectory, "test-filepath.ext");
+const mockDimensions = "test-dimensions";
 
 const mockProcess = {
   stdin: {
@@ -24,12 +29,13 @@ const mockProcess = {
 describe("record", () => {
   let stopRecording;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
 
     mockType(spawn).mockReturnValue(mockProcess as unknown as ChildProcess);
+    mockType(getDimensions).mockResolvedValue(mockDimensions);
 
-    stopRecording = record(mockFilepath);
+    stopRecording = await record(mockFilepath);
   });
 
   it("should create the directory path", () => {
@@ -40,6 +46,10 @@ describe("record", () => {
     expect(unlinkSync).toHaveBeenCalledWith(mockFilepath);
   });
 
+  it("should get the screen dimensions", () => {
+    expect(getDimensions).toHaveBeenCalled();
+  });
+
   it("should spawn a screencapture child process for recording", () => {
     expect(spawn).toHaveBeenCalledWith("/usr/sbin/screencapture", [
       "-v",
@@ -47,6 +57,7 @@ describe("record", () => {
       "-k",
       "-T0",
       "-g",
+      `-R${mockDimensions}`,
       mockFilepath,
     ]);
   });

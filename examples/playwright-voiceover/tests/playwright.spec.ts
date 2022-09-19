@@ -1,10 +1,19 @@
+import { platform, release } from "os";
 import { expect } from "@playwright/test";
 import itemTextSnapshot from "./itemTextSnapshot.json";
+import { join } from "path";
 import { macOSRecord } from "../../../lib";
 import test from "./voiceover-test";
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function record() {
+  const fileName = `playwright-voiceover_${platform()}_${release()}_${+new Date()}.mov`;
+  const filePath = join("./recordings/", fileName);
+
+  return await macOSRecord(filePath);
 }
 
 async function waitForWebContentAnnouncement(voiceOver) {
@@ -26,9 +35,7 @@ test.describe("Playwright VoiceOver", () => {
     page,
     voiceOver,
   }) => {
-    const stopRecording = macOSRecord(
-      `./recordings/playwright-voiceover-${+new Date()}.mov`
-    );
+    const stopRecording = await record();
 
     // Navigate to Guidepup GitHub page 🎉
     await page.goto("https://github.com/guidepup/guidepup", {

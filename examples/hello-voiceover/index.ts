@@ -5,9 +5,18 @@ import {
   macOSRecord,
   voiceOver,
 } from "../../src/";
+import { platform, release } from "os";
+import { join } from "path";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
+
+const record = async () => {
+  const fileName = `hello-voiceover_${platform()}_${release()}_${+new Date()}.mov`;
+  const filePath = join("./recordings/", fileName);
+
+  return await macOSRecord(filePath);
+};
 
 /**
  * Opens Safari and navigates to the guidepup GitHub repo.
@@ -17,7 +26,7 @@ async function run(): Promise<void> {
 
   try {
     // Start the screen recording.
-    stopRecording = macOSRecord("./recordings/hello-voiceover.mov");
+    stopRecording = await record();
 
     // Start the VoiceOver screenreader.
     await voiceOver.start();

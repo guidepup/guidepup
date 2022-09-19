@@ -1,5 +1,6 @@
 import { execSync, spawn } from "child_process";
 import { dirname } from "path";
+import { getDimensions } from "./getDimensions";
 import { unlinkSync } from "fs";
 
 /**
@@ -8,14 +9,16 @@ import { unlinkSync } from "fs";
  * @param {string} filepath The file path to save the screen recording to.
  * @returns {Function} A function to stop the screen recording.
  */
-export function record(filepath: string): () => void {
+export async function record(filepath: string): Promise<() => void> {
   execSync(`mkdir -p ${dirname(filepath)}`);
-  
+
   try {
     unlinkSync(filepath);
   } catch (_) {
     // file doesn't exist.
   }
+
+  const dimensions = (await getDimensions()).replaceAll(" ", "");
 
   const screencapture = spawn("/usr/sbin/screencapture", [
     "-v",
@@ -23,6 +26,7 @@ export function record(filepath: string): () => void {
     "-k",
     "-T0",
     "-g",
+    `-R${dimensions}`,
     filepath,
   ]);
 
