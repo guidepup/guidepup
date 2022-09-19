@@ -5,31 +5,31 @@
  */
 export enum Modifiers {
   /**
-   * Hold down the Command (alias cmd, ⌘) key.
+   * The Command (alias cmd, ⌘) key.
    */
-  Command = "command down",
-  CommandLeft = "command down",
-  CommandRight = "command down",
-  Meta = "command down",
+  Command = "command",
+  CommandLeft = "command",
+  CommandRight = "command",
+  Meta = "command",
   /**
-   * Hold down the Control (alias ctrl, ⌃) key.
+   * The Control (alias ctrl, ⌃) key.
    */
-  Control = "control down",
-  ControlLeft = "control down",
-  ControlRight = "control down",
+  Control = "control",
+  ControlLeft = "control",
+  ControlRight = "control",
   /**
-   * Hold down the Option (alias alt, ⌥) key.
+   * The Option (alias alt, ⌥) key.
    */
-  Option = "option down",
-  OptionLeft = "option down",
-  OptionRight = "option down",
-  Alt = "option down",
-  AltLeft = "option down",
-  AltRight = "option down",
+  Option = "option",
+  OptionLeft = "option",
+  OptionRight = "option",
+  Alt = "option",
+  AltLeft = "option",
+  AltRight = "option",
   /**
-   * Hold down the Shift (alias ⇧) key.
+   * The Shift (alias ⇧) key.
    */
-  Shift = "shift down",
-  ShiftLeft = "shift down",
-  ShiftRight = "shift down",
+  Shift = "shift",
+  ShiftLeft = "shift",
+  ShiftRight = "shift",
 }
