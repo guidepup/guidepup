@@ -2,7 +2,7 @@ import { withTransaction } from "./withTransaction";
 
 const script = "test-script";
 
-describe("withTransaction.test.js", () => {
+describe("withTransaction", () => {
   it("should start with a newline to ensure the transaction statement doesn't invalidate additional script wrappers", () => {
     expect(withTransaction(script).startsWith("\n")).toBeTruthy();
   });

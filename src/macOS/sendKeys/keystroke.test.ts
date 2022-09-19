@@ -2,6 +2,7 @@ import { keystroke } from "./keystroke";
 import { mockType } from "../../../test/mockType";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
+import { withModifiers } from "../withModifiers";
 
 jest.mock("../retryIfAppleEventTimeout", () => ({
   retryIfAppleEventTimeout: jest.fn(),
@@ -9,21 +10,35 @@ jest.mock("../retryIfAppleEventTimeout", () => ({
 jest.mock("../runAppleScript", () => ({
   runAppleScript: jest.fn(),
 }));
+jest.mock("../withModifiers", () => ({
+  withModifiers: jest.fn(),
+}));
+
+const mockScriptWithModifiers = "test-script-with-modifiers";
 
 describe("keystroke", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockType(withModifiers).mockReturnValue(mockScriptWithModifiers);
   });
 
   describe.each`
-    description                                | command                                                            | options      | expectedScript
-    ${"without modifiers and without options"} | ${{ characters: "test-characters" }}                               | ${undefined} | ${'keystroke "test-characters"'}
-    ${"without modifiers and with options"}    | ${{ characters: "test-characters" }}                               | ${{}}        | ${'keystroke "test-characters"'}
-    ${"with modifiers and without options"}    | ${{ characters: "test-characters", modifiers: ["test-modifier"] }} | ${undefined} | ${'keystroke "test-characters" using {test-modifier}'}
-    ${"with modifiers and with options"}       | ${{ characters: "test-characters", modifiers: ["test-modifier"] }} | ${{}}        | ${'keystroke "test-characters" using {test-modifier}'}
-  `("when called $description", ({ command, options, expectedScript }) => {
+    description                                | command                                                            | options
+    ${"without modifiers and without options"} | ${{ characters: "test-characters" }}                               | ${undefined}
+    ${"without modifiers and with options"}    | ${{ characters: "test-characters" }}                               | ${{}}
+    ${"with modifiers and without options"}    | ${{ characters: "test-characters", modifiers: ["test-modifier"] }} | ${undefined}
+    ${"with modifiers and with options"}       | ${{ characters: "test-characters", modifiers: ["test-modifier"] }} | ${{}}
+  `("when called $description", ({ command, options }) => {
     beforeEach(async () => {
       await keystroke(command, options);
+    });
+
+    it("should augment the command with modifiers", () => {
+      expect(withModifiers).toHaveBeenCalledWith(
+        command.modifiers ?? [],
+        `keystroke "${command.characters}"`
+      );
     });
 
     it("should pass the keystroke script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
@@ -42,7 +57,7 @@ describe("keystroke", () => {
 
       it("should construct a keystroke script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "System Events"\n${expectedScript}\nend tell`,
+          `tell application "System Events"\n${mockScriptWithModifiers}\nend tell`,
           options
         );
       });
