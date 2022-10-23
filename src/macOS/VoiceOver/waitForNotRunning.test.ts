@@ -36,8 +36,8 @@ describe("waitForNotRunning", () => {
         await mockType(waitForCondition).mock.calls[0][0]();
       });
 
-      it("should check whether VoiceOver is not running", () => {
-        expect(isRunning).toHaveBeenCalledWith(options);
+      it("should check whether VoiceOver is not running, making sure to skip the activation check (which would restart VoiceOver!)", () => {
+        expect(isRunning).toHaveBeenCalledWith(options, true);
       });
     });
   });
