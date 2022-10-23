@@ -16,6 +16,10 @@ jest.mock("../runAppleScript", () => ({
 }));
 
 describe("isRunning", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  })
+
   describe.each`
     description          | options
     ${"without options"} | ${undefined}
@@ -108,39 +112,104 @@ describe("isRunning", () => {
         });
       });
 
-      describe("when AppleScript says VoiceOver is running", () => {
-        beforeEach(() => {
-          mockType(runAppleScript).mockResolvedValue("true");
+      describe("when called without a skipActivate argument", () => {
+        describe("when AppleScript says VoiceOver is running", () => {
+          beforeEach(() => {
+            mockType(runAppleScript).mockResolvedValue("true");
+          });
+
+          describe("when attempting to activate VoiceOver throws an error", () => {
+            const errorStub = new Error("test-error");
+
+            beforeEach(async () => {
+              mockType(activate).mockRejectedValue(errorStub);
+
+              result = await isRunning(options);
+            });
+
+            commonProcessAssertions();
+            commonAppleScriptRunningAssertions();
+            commonActivateAssertions();
+
+            it("should return false", () => {
+              expect(result).toBe(false);
+            });
+          });
+
+          describe("when attempting to activate VoiceOver is successful", () => {
+            beforeEach(async () => {
+              mockType(activate).mockResolvedValue();
+
+              result = await isRunning(options);
+            });
+
+            commonProcessAssertions();
+            commonAppleScriptRunningAssertions();
+            commonActivateAssertions();
+
+            it("should return true", () => {
+              expect(result).toBe(true);
+            });
+          });
         });
+      });
 
-        describe("when attempting to activate VoiceOver throws an error", () => {
-          const errorStub = new Error("test-error");
+      describe("when called with skipActivate set to false", () => {
+        describe("when AppleScript says VoiceOver is running", () => {
+          beforeEach(() => {
+            mockType(runAppleScript).mockResolvedValue("true");
+          });
 
+          describe("when attempting to activate VoiceOver throws an error", () => {
+            const errorStub = new Error("test-error");
+
+            beforeEach(async () => {
+              mockType(activate).mockRejectedValue(errorStub);
+
+              result = await isRunning(options, false);
+            });
+
+            commonProcessAssertions();
+            commonAppleScriptRunningAssertions();
+            commonActivateAssertions();
+
+            it("should return false", () => {
+              expect(result).toBe(false);
+            });
+          });
+
+          describe("when attempting to activate VoiceOver is successful", () => {
+            beforeEach(async () => {
+              mockType(activate).mockResolvedValue();
+
+              result = await isRunning(options, false);
+            });
+
+            commonProcessAssertions();
+            commonAppleScriptRunningAssertions();
+            commonActivateAssertions();
+
+            it("should return true", () => {
+              expect(result).toBe(true);
+            });
+          });
+        });
+      });
+
+      describe("when called with skipActivate set to true", () => {
+        describe("when AppleScript says VoiceOver is running", () => {
           beforeEach(async () => {
-            mockType(activate).mockRejectedValue(errorStub);
+            mockType(runAppleScript).mockResolvedValue("true");
 
-            result = await isRunning(options);
+            result = await isRunning(options, true);
           });
 
           commonProcessAssertions();
           commonAppleScriptRunningAssertions();
-          commonActivateAssertions();
 
-          it("should return false", () => {
-            expect(result).toBe(false);
+          it("should not try to activate VoiceOver", () => {
+            expect(activate).not.toHaveBeenCalled();
           });
-        });
-
-        describe("when attempting to activate VoiceOver is successful", () => {
-          beforeEach(async () => {
-            mockType(activate).mockResolvedValue();
-
-            result = await isRunning(options);
-          });
-
-          commonProcessAssertions();
-          commonAppleScriptRunningAssertions();
-          commonActivateAssertions();
 
           it("should return true", () => {
             expect(result).toBe(true);
