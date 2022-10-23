@@ -4,7 +4,7 @@ import { isRunning } from "./isRunning";
 import { waitForCondition } from "../../waitForCondition";
 
 export async function waitForNotRunning(options?: CommandOptions): Promise<void> {
-  return await waitForCondition(async () => !(await isRunning(options)), {
+  return await waitForCondition(async () => !(await isRunning(options, true)), {
     timeoutErrorMessage: ERR_VOICE_OVER_NOT_RUNNING_TIMEOUT,
   });
 }
