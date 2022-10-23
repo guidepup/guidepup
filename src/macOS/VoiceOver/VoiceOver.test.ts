@@ -1,6 +1,7 @@
 import { CommanderCommands } from "./CommanderCommands";
 import { disableSplashScreen } from "./disableSplashScreen";
 import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
+import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { LogStore } from "../../LogStore";
@@ -28,8 +29,8 @@ jest.mock("../isMacOS", () => ({
 jest.mock("../../LogStore", () => ({
   LogStore: jest.fn(),
 }));
-jest.mock("../quit", () => ({
-  quit: jest.fn(),
+jest.mock("./forceQuit", () => ({
+  forceQuit: jest.fn(),
 }));
 jest.mock("./start", () => ({
   start: jest.fn(),
@@ -82,9 +83,6 @@ const VoiceOverKeyboardStub = {
   press: jest.fn(),
   type: jest.fn(),
   perform: jest.fn(),
-  commands: {
-    quit: Symbol("test-quit")
-  }
 };
 
 const VoiceOverMouseStub = {
@@ -239,12 +237,11 @@ describe("VoiceOver", () => {
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
-        mockType(isKeyboard).mockReturnValue(true);
         await vo.stop(options);
       });
 
       it("should quit VoiceOver", () => {
-        expect(vo.keyboard.perform).toHaveBeenCalledWith(vo.keyboard.commands.quit, options);
+        expect(forceQuit).toHaveBeenCalled();
       });
 
       it("should wait for VoiceOver to not be running", () => {
