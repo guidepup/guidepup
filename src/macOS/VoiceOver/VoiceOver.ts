@@ -98,7 +98,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async stop(options?: CommandOptions): Promise<void> {
-    await quit(Applications.VoiceOver, options);
+    await this.perform(this.keyboard.commands.quit, options);
     await waitForNotRunning(options);
   }
 
