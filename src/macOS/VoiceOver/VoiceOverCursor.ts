@@ -44,8 +44,6 @@ export class VoiceOverCursor implements ScreenReaderCursor {
   /**
    * Perform the default action for the item in the VoiceOver cursor.
    *
-   * Equivalent of executing VO-Space bar.
-   *
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {

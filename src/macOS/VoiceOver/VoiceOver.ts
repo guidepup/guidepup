@@ -1,15 +1,14 @@
-import { Applications } from "../Applications";
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
 import { disableSplashScreen } from "./disableSplashScreen";
 import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
+import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
 import { LogStore } from "../../LogStore";
-import { quit } from "../quit";
 import type { ScreenReader } from "../../ScreenReader";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
@@ -98,7 +97,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async stop(options?: CommandOptions): Promise<void> {
-    await this.perform(this.keyboard.commands.quit, options);
+    await forceQuit();
     await waitForNotRunning(options);
   }
 
@@ -126,8 +125,6 @@ export class VoiceOver implements ScreenReader {
 
   /**
    * Perform the default action for the item in the VoiceOver cursor.
-   *
-   * Equivalent of executing VO-Space bar.
    *
    * @param {object} [options] Additional options.
    */
