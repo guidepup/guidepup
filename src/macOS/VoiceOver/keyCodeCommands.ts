@@ -14,13 +14,13 @@ export const keyCodeCommands = {
   start: {
     keyCode: KeyCodes.F5,
     modifiers: [Modifiers.Command],
-    description: "Start VoiceOVer",
+    description: "Start VoiceOver",
     representation: "Command-F5",
   },
   quit: {
     keyCode: KeyCodes.F5,
     modifiers: [Modifiers.Command],
-    description: "Quit VoiceOVer",
+    description: "Quit VoiceOver",
     representation: "Command-F5",
   },
 
