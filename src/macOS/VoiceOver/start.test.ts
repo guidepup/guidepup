@@ -26,7 +26,7 @@ describe("start", () => {
     }
   });
 
-  it("should execute a command to start VoiceOVer", () => {
+  it("should execute a command to start VoiceOver", () => {
     expect(exec).toHaveBeenCalledWith(
       "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOverStarter",
       expect.any(Function)
