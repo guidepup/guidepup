@@ -143,6 +143,7 @@ export enum CommanderCommands {
   TOGGLE_VOICEOVER_CURSOR_FOLLOWS_MOUSE_ON_OR_OFF = "toggle voiceover cursor follows mouse on or off",
 
   // Text Commands
+  
   READ_CURRENT_CHARACTER = "read current character",
   READ_CURRENT_CHARACTER_PHONETICALLY = "read current character phonetically",
   READ_CURRENT_LINE = "read current line",
