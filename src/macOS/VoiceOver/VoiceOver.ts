@@ -72,7 +72,7 @@ export class VoiceOver implements ScreenReader {
    *
    * @returns {Promise<boolean>}
    */
-  default(): Promise<boolean> {
+  async default(): Promise<boolean> {
     return Promise.resolve(isMacOS());
   }
 
