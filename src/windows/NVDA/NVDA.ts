@@ -13,7 +13,7 @@ export class NVDA {
    *
    * @returns {Promise<boolean>}
    */
-  static async detect(): Promise<boolean> {
+  async detect(): Promise<boolean> {
     return (await isWindows()) && (await isNVDAInstalled());
   }
 
@@ -22,7 +22,7 @@ export class NVDA {
    *
    * @returns {Promise<boolean>}
    */
-  static async default(): Promise<boolean> {
+  async default(): Promise<boolean> {
     return await Promise.resolve(false);
   }
 
@@ -30,7 +30,7 @@ export class NVDA {
    * Turn NVDA on.
    */
   async start(): Promise<void> {
-    if (!(await NVDA.detect())) {
+    if (!(await this.detect())) {
       throw new Error(ERR_NVDA_NOT_SUPPORTED);
     }
 
