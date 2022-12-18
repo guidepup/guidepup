@@ -4,11 +4,14 @@ import type { CommandOptions } from "../../CommandOptions";
 import { exec } from "child_process";
 import { runAppleScript } from "../runAppleScript";
 
-export async function isRunning(options?: CommandOptions): Promise<boolean> {
-  const processRunning = await new Promise<boolean>((resolve, reject) => {
+export async function isRunning(
+  options?: CommandOptions,
+  skipActivate = false
+): Promise<boolean> {
+  const processRunning = await new Promise<boolean>((resolve) => {
     exec('ps aux | egrep "[V]oiceOver"', (err, stdout) => {
       if (err) {
-        reject(err);
+        resolve(false);
       } else {
         resolve(stdout !== "");
       }
@@ -25,6 +28,10 @@ export async function isRunning(options?: CommandOptions): Promise<boolean> {
 
   if (appleScriptRunning === "false") {
     return false;
+  }
+
+  if (skipActivate) {
+    return true;
   }
 
   try {

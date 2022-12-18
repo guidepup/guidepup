@@ -1,5 +1,5 @@
 import type { KeystrokeCommand as KeystrokeCommandBase } from "../KeystrokeCommand";
-import type { Modifiers } from "./Modifiers";
+import { Modifiers } from "./Modifiers";
 
 /**
  * A MacOS keystroke command.
@@ -8,7 +8,7 @@ export interface KeystrokeCommand extends KeystrokeCommandBase {
   /**
    * List of modifier keys to press while sending the character(s).
    */
-  modifiers?: Modifiers[];
+  modifiers?: (typeof Modifiers)[];
   /**
    * Description of the action the keypress performs.
    */

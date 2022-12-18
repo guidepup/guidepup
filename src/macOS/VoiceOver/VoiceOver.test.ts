@@ -1,12 +1,11 @@
-import { Applications } from "../Applications";
 import { CommanderCommands } from "./CommanderCommands";
 import { disableSplashScreen } from "./disableSplashScreen";
 import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
+import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { LogStore } from "../../LogStore";
 import { mockType } from "../../../test/mockType";
-import { quit } from "../quit";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
 import { VoiceOver } from "./VoiceOver";
@@ -15,6 +14,7 @@ import { VoiceOverCommander } from "./VoiceOverCommander";
 import { VoiceOverCursor } from "./VoiceOverCursor";
 import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 import { VoiceOverMouse } from "./VoiceOverMouse";
+import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
 jest.mock("./disableSplashScreen", () => ({
@@ -29,8 +29,8 @@ jest.mock("../isMacOS", () => ({
 jest.mock("../../LogStore", () => ({
   LogStore: jest.fn(),
 }));
-jest.mock("../quit", () => ({
-  quit: jest.fn(),
+jest.mock("./forceQuit", () => ({
+  forceQuit: jest.fn(),
 }));
 jest.mock("./start", () => ({
   start: jest.fn(),
@@ -52,6 +52,9 @@ jest.mock("./VoiceOverKeyboard", () => ({
 }));
 jest.mock("./VoiceOverMouse", () => ({
   VoiceOverMouse: jest.fn(),
+}));
+jest.mock("./waitForNotRunning", () => ({
+  waitForNotRunning: jest.fn(),
 }));
 jest.mock("./waitForRunning", () => ({
   waitForRunning: jest.fn(),
@@ -238,7 +241,11 @@ describe("VoiceOver", () => {
       });
 
       it("should quit VoiceOver", () => {
-        expect(quit).toHaveBeenCalledWith(Applications.VoiceOver, options);
+        expect(forceQuit).toHaveBeenCalled();
+      });
+
+      it("should wait for VoiceOver to not be running", () => {
+        expect(waitForNotRunning).toHaveBeenCalledWith(options);
       });
     });
   });

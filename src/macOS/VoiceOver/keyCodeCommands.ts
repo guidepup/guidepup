@@ -11,6 +11,19 @@ const VO = [Modifiers.Control, Modifiers.Option];
  * Reference: {@link https://www.apple.com/voiceover/info/guide/_1131.html}
  */
 export const keyCodeCommands = {
+  start: {
+    keyCode: KeyCodes.F5,
+    modifiers: [Modifiers.Command],
+    description: "Start VoiceOver",
+    representation: "Command-F5",
+  },
+  quit: {
+    keyCode: KeyCodes.F5,
+    modifiers: [Modifiers.Command],
+    description: "Quit VoiceOver",
+    representation: "Command-F5",
+  },
+
   // General Commands
 
   toggleLock: {

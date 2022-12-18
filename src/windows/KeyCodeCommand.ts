@@ -1,6 +1,6 @@
 import type { Key } from "./Key";
 import type { KeyCodeCommand as KeyCodeCommandBase } from "../KeyCodeCommand";
-import type { Modifiers } from "./Modifiers";
+import { Modifiers } from "./Modifiers";
 
 /**
  * A Windows key code command.
