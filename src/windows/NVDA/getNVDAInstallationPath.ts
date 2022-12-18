@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
-import getMaxVersion from "semver/ranges/max-satisfying";
 import { getNVDARegistryData } from "./getNVDARegistryData";
 import { join } from "path";
+import { maxSatisfying } from "semver";
 
 let installationPath: string;
 
@@ -22,7 +22,7 @@ export async function getNVDAInstallationPath() {
     return null;
   }
 
-  const latestVersion = getMaxVersion(versions, ">=0");
+  const latestVersion = maxSatisfying(versions, ">=0");
   const guidepupNVDADirectory = values[latestVersion]?.value;
 
   console.log({ versions, latestVersion, guidepupNVDADirectory });
