@@ -11,7 +11,7 @@ function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
       : command.keyCode.symbol
     : command.characters;
 
-  const modifiers = command.modifiers.map((modifier) => modifier.symbol).join();
+  const modifiers = (command.modifiers ?? []).map((modifier) => modifier.symbol).join();
 
   return `${modifiers}${characters}`;
 }

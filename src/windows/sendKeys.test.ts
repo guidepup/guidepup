@@ -1,5 +1,6 @@
 import { ERR_SEND_KEYS } from "./errors";
 import { isKeyCode } from "../isKeyCode";
+import { Key } from "./Key";
 import { mockType } from "../../test/mockType";
 import { Modifiers } from "./Modifiers";
 import { runVbsCode } from "./runVbsCode";
@@ -18,7 +19,7 @@ describe("sendKeys", () => {
   });
 
   describe("when a key code command without modifiers is provided", () => {
-    const mockCommand = { keyCode: "test-key-code" };
+    const mockCommand = { keyCode: new Key({ symbol: "test-symbol" }) };
 
     beforeEach(async () => {
       mockType(isKeyCode).mockReturnValue(true);
@@ -32,14 +33,14 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsCode).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.keyCode}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.keyCode.symbol}"`
       );
     });
   });
 
   describe("when a key code command with modifiers is provided", () => {
     const mockCommand = {
-      keyCode: "test-key-code",
+      keyCode: new Key({ symbol: "test-symbol" }),
       modifiers: [Modifiers.CONTROL],
     };
 
@@ -55,9 +56,7 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsCode).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers.join(
-          ""
-        )}${mockCommand.keyCode}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.keyCode.symbol}"`
       );
     });
   });
@@ -100,15 +99,13 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsCode).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers.join(
-          ""
-        )}${mockCommand.characters}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.characters}"`
       );
     });
   });
 
   describe("when running the vbs script throws an error", () => {
-    const mockCommand = { keyCode: "test-key-code" };
+    const mockCommand = { keyCode: new Key({ symbol: "test-symbol" }) };
     const mockError = new Error("test-error");
 
     beforeEach(() => {

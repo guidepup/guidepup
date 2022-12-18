@@ -12,11 +12,11 @@ export async function getNVDAInstallationPath() {
 
   const { exists, values } = await getNVDARegistryData();
 
+  console.log({ exists, values });
+
   if (!exists || !values.length) {
     return null;
   }
-
-  console.log({ exists, values });
 
   const versions = Object.keys(values);
   const latestVersion = getMaxVersion(versions, ">=0");
