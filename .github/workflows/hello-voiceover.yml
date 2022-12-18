@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 16
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.5.0
+        uses: guidepup/setup-action@0.6.1
       - run: yarn install --frozen-lockfile
       - run: npx ts-node ./examples/hello-voiceover/index.ts
       - uses: actions/upload-artifact@v2
