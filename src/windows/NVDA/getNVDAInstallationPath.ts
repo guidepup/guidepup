@@ -27,13 +27,17 @@ export async function getNVDAInstallationPath() {
 
   console.log({ versions, latestVersion, guidepupNVDADirectory });
 
-  if (!guidepupNVDADirectory || !existsSync(guidepupNVDADirectory)) {
+  if (!guidepupNVDADirectory) {
     return null;
   }
 
   const guidepupNVDAExecutablePath = join(guidepupNVDADirectory, "nvda.exe");
 
   console.log({ guidepupNVDAExecutablePath });
+
+  if (!existsSync(guidepupNVDAExecutablePath)) {
+    return null;
+  }
 
   return (installationPath = guidepupNVDAExecutablePath);
 }
