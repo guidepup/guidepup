@@ -13,7 +13,7 @@ export interface KeyCodeCommand extends KeyCodeCommandBase {
   /**
    * List of modifier keys to press while sending the key code(s).
    */
-  modifiers?: (typeof Modifiers)[];
+  modifiers?: (typeof Modifiers[keyof typeof Modifiers])[];
   /**
    * Description of the action the key code performs.
    */

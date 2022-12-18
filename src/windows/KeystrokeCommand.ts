@@ -8,7 +8,7 @@ export interface KeystrokeCommand extends KeystrokeCommandBase {
   /**
    * List of modifier keys to press while sending the character(s).
    */
-  modifiers?: (typeof Modifiers)[];
+  modifiers?: typeof Modifiers[keyof typeof Modifiers][];
   /**
    * Description of the action the keypress performs.
    */
