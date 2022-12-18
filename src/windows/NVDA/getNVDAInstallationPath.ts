@@ -1,4 +1,4 @@
-import { existsSync, readdirSync } from "fs";
+import { existsSync } from "fs";
 import { getNVDARegistryData } from "./getNVDARegistryData";
 import { join } from "path";
 import { maxSatisfying } from "semver";

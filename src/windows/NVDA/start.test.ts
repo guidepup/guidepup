@@ -1,7 +1,7 @@
-import { ChildProcess, spawn } from "child_process";
 import { ERR_NVDA_CANNOT_BE_STARTED } from "../errors";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { mockType } from "../../../test/mockType";
+import { spawn } from "child_process";
 import { start } from "./start";
 import { waitForRunning } from "./waitForRunning";
 
@@ -62,11 +62,7 @@ describe("start", () => {
   });
 
   describe("when starting NVDA is successful", () => {
-    const mockChild = { kill: jest.fn() as () => void };
-
     beforeEach(async () => {
-      mockType(spawn).mockReturnValue(mockChild as ChildProcess);
-
       await start();
     });
 
@@ -83,10 +79,6 @@ describe("start", () => {
 
     it("should wait for NVDA to be running", () => {
       expect(waitForRunning).toHaveBeenCalled();
-    });
-
-    it("should kill the child process", () => {
-      expect(mockChild.kill).toHaveBeenCalled();
     });
   });
 });
