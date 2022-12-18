@@ -1,22 +1,31 @@
-import { DEFAULT_NVDA_PATH } from "./constants";
 import { ERR_NVDA_QUIT } from "../errors";
+import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { mockType } from "../../../test/mockType";
 import { quit } from "./quit";
 import { spawnSync } from "child_process";
 
+jest.mock("./getNVDAInstallationPath", () => ({
+  getNVDAInstallationPath: jest.fn(),
+}));
 jest.mock("child_process", () => ({
   spawnSync: jest.fn(),
 }));
 
+const mockInstallationPath = "test-installation-path";
+
 describe("quit", () => {
   describe("when no error is thrown", () => {
-    beforeEach(() => {
-      quit();
+    beforeEach(async () => {
+      jest.clearAllMocks();
+
+      mockType(getNVDAInstallationPath).mockResolvedValue(mockInstallationPath);
+
+      await quit();
     });
 
     it("should spawn a shell to run the nvda --quit command without stdio", () => {
       expect(spawnSync).toHaveBeenCalledWith(
-        `"${DEFAULT_NVDA_PATH}"`,
+        `"${mockInstallationPath}"`,
         ["--quit"],
         { shell: true, stdio: "ignore" }
       );
@@ -28,13 +37,13 @@ describe("quit", () => {
 
     let error;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       mockType(spawnSync).mockImplementation(() => {
         throw mockError;
       });
 
       try {
-        quit();
+        await quit();
       } catch (e) {
         error = e;
       }
@@ -42,7 +51,7 @@ describe("quit", () => {
 
     it("should spawn a shell to run the nvda --quit command without stdio", () => {
       expect(spawnSync).toHaveBeenCalledWith(
-        `"${DEFAULT_NVDA_PATH}"`,
+        `"${mockInstallationPath}"`,
         ["--quit"],
         { shell: true, stdio: "ignore" }
       );

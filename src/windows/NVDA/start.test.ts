@@ -1,10 +1,13 @@
 import { ChildProcess, spawn } from "child_process";
-import { DEFAULT_NVDA_PATH } from "./constants";
 import { ERR_NVDA_CANNOT_BE_STARTED } from "../errors";
+import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { mockType } from "../../../test/mockType";
 import { start } from "./start";
 import { waitForRunning } from "./waitForRunning";
 
+jest.mock("./getNVDAInstallationPath", () => ({
+  getNVDAInstallationPath: jest.fn(),
+}));
 jest.mock("child_process", () => ({
   spawn: jest.fn(),
 }));
@@ -12,11 +15,15 @@ jest.mock("./waitForRunning", () => ({
   waitForRunning: jest.fn(),
 }));
 
+const mockInstallationPath = "test-installation-path";
+
 describe("start", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(waitForRunning).mockResolvedValue(null);
+    mockType(waitForRunning).mockResolvedValue();
+
+    mockType(getNVDAInstallationPath).mockResolvedValue(mockInstallationPath);
   });
 
   describe("when starting NVDA throws an error", () => {
@@ -38,7 +45,7 @@ describe("start", () => {
 
     it("should spawn a NVDA command", () => {
       expect(spawn).toHaveBeenCalledWith(
-        `"${DEFAULT_NVDA_PATH}"`,
+        `"${mockInstallationPath}"`,
         ["--minimal"],
         {
           shell: true,
@@ -65,7 +72,7 @@ describe("start", () => {
 
     it("should spawn a NVDA command", () => {
       expect(spawn).toHaveBeenCalledWith(
-        `"${DEFAULT_NVDA_PATH}"`,
+        `"${mockInstallationPath}"`,
         ["--minimal"],
         {
           shell: true,

@@ -1,17 +1,7 @@
-import { accessSync } from "fs";
-import { DEFAULT_NVDA_PATH } from "./constants"
+import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 
-let installed: boolean;
+export async function isNVDAInstalled() {
+  const path = await getNVDAInstallationPath();
 
-export function isNVDAInstalled(): boolean {
-  if (typeof installed === "undefined") {
-    try {
-      accessSync(DEFAULT_NVDA_PATH);
-      installed = true;
-    } catch (_) {
-      installed = false;
-    }
-  }
-
-  return installed;
+  return !!path;
 }

@@ -1,0 +1,29 @@
+name: Hello NVDA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  hello-voiceover:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2019, windows-2022]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Guidepup Setup
+        uses: guidepup/setup-action@0.6.0
+      - run: yarn install --frozen-lockfile
+      - run: npx ts-node ./examples/hello-nvda/index.ts
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: artifacts
+          path: |
+            **/recordings/**/*

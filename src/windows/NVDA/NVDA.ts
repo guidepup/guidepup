@@ -44,7 +44,7 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<boolean>}
    */
   async detect(): Promise<boolean> {
-    return Promise.resolve(isWindows() && isNVDAInstalled());
+    return isWindows() && (await isNVDAInstalled());
   }
 
   /**
