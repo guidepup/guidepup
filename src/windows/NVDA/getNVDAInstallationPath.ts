@@ -22,7 +22,7 @@ export async function getNVDAInstallationPath() {
     return null;
   }
 
-  const latestVersion = maxSatisfying(versions, ">=0");
+  const latestVersion = `guidepup_nvda_${maxSatisfying(versions, ">=0")}`;
   const guidepupNVDADirectory = values[latestVersion]?.value;
 
   console.log({ versions, latestVersion, guidepupNVDADirectory });
