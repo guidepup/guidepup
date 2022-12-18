@@ -13,7 +13,7 @@ export async function start(): Promise<void> {
   try {
     const child = spawn(`"${executablePath}"`, ["--minimal"], {
       shell: true,
-      stdio: "ignore",
+      // stdio: "ignore",
     });
 
     child.stdout.setEncoding("utf8");
