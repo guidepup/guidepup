@@ -18,7 +18,9 @@ export async function getNVDAInstallationPath() {
     return null;
   }
 
-  const versions = Object.keys(values);
+  const versions = Object.keys(values).map((value) =>
+    value.replace("guidepup_nvda_", "")
+  );
   const latestVersion = getMaxVersion(versions, ">=0");
   const guidepupNVDADirectory = values[latestVersion]?.value;
 
