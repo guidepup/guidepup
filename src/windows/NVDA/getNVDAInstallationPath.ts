@@ -12,8 +12,6 @@ export async function getNVDAInstallationPath() {
 
   const { exists, values } = await getNVDARegistryData();
 
-  console.log({ exists, values });
-
   const versions = Object.keys(values).map((value) =>
     value.replace("guidepup_nvda_", "")
   );
@@ -25,21 +23,11 @@ export async function getNVDAInstallationPath() {
   const latestVersion = `guidepup_nvda_${maxSatisfying(versions, ">=0")}`;
   const guidepupNVDADirectory = values[latestVersion]?.value;
 
-  console.log({ versions, latestVersion, guidepupNVDADirectory });
-
   if (!guidepupNVDADirectory) {
     return null;
   }
 
-  try {
-    console.log(readdirSync(guidepupNVDADirectory.replace(/guidepup_nvda$/, "")));
-  } catch (e) {
-    console.error(e);
-  }
-
   const guidepupNVDAExecutablePath = join(guidepupNVDADirectory, "nvda.exe");
-
-  console.log({ guidepupNVDAExecutablePath });
 
   if (!existsSync(guidepupNVDAExecutablePath)) {
     return null;
