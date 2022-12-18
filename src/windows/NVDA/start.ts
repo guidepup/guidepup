@@ -11,10 +11,17 @@ export async function start(): Promise<void> {
   }
 
   try {
-    spawn(`"${executablePath}"`, ["--minimal"], {
+    const child = spawn(`"${executablePath}"`, ["--minimal"], {
       shell: true,
       stdio: "ignore",
     });
+
+    child.stdout.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => console.log(chunk));
+    child.stderr.setEncoding("utf8");
+    child.stderr.on("data", (chunk) => console.log(chunk));
+    child.on("close", (code) => console.log({ code }));
+    child.on("error", (e) => console.log(e));
   } catch (e) {
     throw new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`);
   }
