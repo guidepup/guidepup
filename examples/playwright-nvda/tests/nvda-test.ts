@@ -2,7 +2,7 @@
 import { test as base } from "@playwright/test";
 import { nvda } from "../../../lib";
 
-const test = base.extend<{ nvda }>({
+const test = base.extend<{ nvda: typeof nvda }>({
   nvda: async ({}, use) => {
     try {
       await nvda.start();

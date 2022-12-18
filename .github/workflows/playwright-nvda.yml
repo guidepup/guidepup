@@ -1,4 +1,4 @@
-name: Hello NVDA
+name: Playwright NVDA
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  hello-nvda:
+  playwright-nvda:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -20,10 +20,12 @@ jobs:
       - name: Guidepup Setup
         uses: guidepup/setup-action@0.6.2
       - run: yarn install --frozen-lockfile
-      - run: npx ts-node ./examples/hello-nvda/index.ts
+      - run: yarn --cwd ./examples/playwright-nvda install --frozen-lockfile
+      - run: yarn --cwd ./examples/playwright-nvda test
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: artifacts
           path: |
+            examples/playwright-nvda/test-results/**/*
             **/recordings/**/*

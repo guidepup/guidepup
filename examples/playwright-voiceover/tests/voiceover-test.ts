@@ -2,7 +2,7 @@
 import { macOSActivate, voiceOver } from "../../../lib";
 import { test as base } from "@playwright/test";
 
-const test = base.extend<{ voiceOver }>({
+const test = base.extend<{ voiceOver: typeof voiceOver }>({
   voiceOver: async ({}, use) => {
     try {
       await voiceOver.start();
