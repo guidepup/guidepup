@@ -14,13 +14,14 @@ export async function getNVDAInstallationPath() {
 
   console.log({ exists, values });
 
-  if (!exists || !values.length) {
-    return null;
-  }
-
   const versions = Object.keys(values).map((value) =>
     value.replace("guidepup_nvda_", "")
   );
+
+  if (!exists || !versions.length) {
+    return null;
+  }
+
   const latestVersion = getMaxVersion(versions, ">=0");
   const guidepupNVDADirectory = values[latestVersion]?.value;
 
