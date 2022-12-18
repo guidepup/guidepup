@@ -1,5 +1,4 @@
 import { Key } from "./Key";
-import { Modifiers } from "./Modifiers";
 
 const KeyA = new Key({
   keyCode: 65,
@@ -251,19 +250,19 @@ const Shift = new Key({
   keyCode: 160,
   scanCode: 42,
   extended: false,
-  symbol: Modifiers.SHIFT,
+  symbol: "+",
 });
 const Control = new Key({
   keyCode: 162,
   scanCode: 29,
   extended: false,
-  symbol: Modifiers.CONTROL,
+  symbol: "^",
 });
 const AltLeft = new Key({
   keyCode: 164,
   scanCode: 56,
   extended: false,
-  symbol: Modifiers.ALT,
+  symbol: "%",
 });
 const Space = new Key({
   keyCode: 32,
@@ -967,7 +966,7 @@ export const KeyCodes = {
     keyCode: 162,
     scanCode: 541,
     extended: false,
-    symbol: Modifiers.ALT,
+    symbol: "%",
   }),
   /**
    * " "
