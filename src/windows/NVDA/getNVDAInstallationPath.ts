@@ -1,4 +1,4 @@
-import { existsSync } from "fs";
+import { existsSync, readdirSync } from "fs";
 import { getNVDARegistryData } from "./getNVDARegistryData";
 import { join } from "path";
 import { maxSatisfying } from "semver";
@@ -29,6 +29,12 @@ export async function getNVDAInstallationPath() {
 
   if (!guidepupNVDADirectory) {
     return null;
+  }
+
+  try {
+  console.log(readdirSync(guidepupNVDADirectory));
+  } catch (e) {
+    console.error(e);
   }
 
   const guidepupNVDAExecutablePath = join(guidepupNVDADirectory, "nvda.exe");
