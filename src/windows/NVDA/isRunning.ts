@@ -10,8 +10,7 @@ export async function isRunning(): Promise<boolean> {
       resolve(true);
     });
 
-    client.on("error", (e) => {
-      console.error(e);
+    client.on("error", () => {
       client.end();
       resolve(false);
     });
