@@ -32,7 +32,7 @@ export async function getNVDAInstallationPath() {
   }
 
   try {
-  console.log(readdirSync(guidepupNVDADirectory));
+    console.log(readdirSync(guidepupNVDADirectory.replace(/guidepup_nvda$/, "")));
   } catch (e) {
     console.error(e);
   }
