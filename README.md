@@ -56,7 +56,7 @@ Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/mai
 
 ## API Documentation 📚
 
-The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows. 
+The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows.
 
 ## See Also 🐶
 
@@ -69,7 +69,7 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ```yaml
 - name: Setup Environment
-  uses: guidepup/setup-action@0.6.1
+  uses: guidepup/setup-action@0.6.2
 ```
 
 ## Roadmap 🐾
