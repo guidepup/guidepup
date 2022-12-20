@@ -1,6 +1,6 @@
 import { runVbsCode } from "./runVbsCode";
 
-export async function activate(application): Promise<void> {
+export async function activate(application: string): Promise<void> {
   const script = `set WshShell = CreateObject("WScript.Shell")\nWshShell.Run """${application}"" -p1 -c"\nset WshShell = Nothing`;
 
   try {

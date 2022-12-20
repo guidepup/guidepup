@@ -12,7 +12,7 @@ export async function start(): Promise<void> {
     throw new Error(ERR_NVDA_NOT_INSTALLED);
   }
 
-  for (let attempt = 0; attempt < MAX_START_ATTEMPTS; attempt) {
+  for (let attempt = 0; attempt < MAX_START_ATTEMPTS; attempt++) {
     let nvdaProcess: ChildProcess;
 
     try {

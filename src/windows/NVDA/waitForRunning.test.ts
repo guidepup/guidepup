@@ -16,8 +16,9 @@ describe("waitForRunning", () => {
     await waitForRunning();
   });
 
-  it("should wait for the condition of NVDA running", () => {
+  it("should wait for the condition of NVDA running with a 30s timeout", () => {
     expect(waitForCondition).toHaveBeenCalledWith(expect.any(Function), {
+      pollTimeout: 30000,
       timeoutErrorMessage: ERR_NVDA_RUNNING_TIMEOUT,
     });
 
