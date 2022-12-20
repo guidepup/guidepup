@@ -11,17 +11,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [
-            macos-11,
-            # macos-12
-          ]
+        os: [macos-11, macos-12]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 16
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.6.3
+        uses: guidepup/setup-action@0.6.4
       - run: yarn install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover test
