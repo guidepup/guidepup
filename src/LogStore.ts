@@ -38,8 +38,8 @@ export class LogStore {
     const result = await promise;
 
     const [itemText, lastSpokenPhrase] = await Promise.all([
-      this.#screenReader.caption.itemText(),
-      this.#screenReader.caption.lastSpokenPhrase(),
+      this.#screenReader.itemText(),
+      this.#screenReader.lastSpokenPhrase(),
     ]);
 
     this.#itemTextLogStore.push(itemText);

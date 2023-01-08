@@ -1,9 +1,9 @@
 import { activate } from "./activate";
 import { mockType } from "../../test/mockType";
-import { runVbsCode } from "./runVbsCode";
+import { runVbsScript } from "./runVbsScript";
 
-jest.mock("./runVbsCode", () => ({
-  runVbsCode: jest.fn(),
+jest.mock("./runVbsScript", () => ({
+  runVbsScript: jest.fn(),
 }));
 
 const mockApplication = "test-application";
@@ -16,7 +16,7 @@ describe("activate", () => {
   it("should run a vbs script to activate the application", async () => {
     await activate(mockApplication);
 
-    expect(runVbsCode).toHaveBeenCalledWith(
+    expect(runVbsScript).toHaveBeenCalledWith(
       `set WshShell = CreateObject("WScript.Shell")\nWshShell.Run """${mockApplication}"" -p1 -c"\nset WshShell = Nothing`
     );
   });
@@ -25,7 +25,7 @@ describe("activate", () => {
     const mockError = new Error("test-error");
 
     beforeEach(() => {
-      mockType(runVbsCode).mockRejectedValue(mockError);
+      mockType(runVbsScript).mockRejectedValue(mockError);
     });
 
     it("should throw a wrapped error", async () => {

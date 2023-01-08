@@ -1,9 +1,9 @@
 import { mockType } from "../../test/mockType";
 import { quit } from "./quit";
-import { runVbsCode } from "./runVbsCode";
+import { runVbsScript } from "./runVbsScript";
 
-jest.mock("./runVbsCode", () => ({
-  runVbsCode: jest.fn(),
+jest.mock("./runVbsScript", () => ({
+  runVbsScript: jest.fn(),
 }));
 
 const mockApplication = "test-application";
@@ -16,7 +16,7 @@ describe("quit", () => {
   it("should run a vbs script to quit the application", async () => {
     await quit(mockApplication);
 
-    expect(runVbsCode).toHaveBeenCalledWith(
+    expect(runVbsScript).toHaveBeenCalledWith(
       `set WshShell = CreateObject("WScript.Shell")\nWshShell.Run "taskkill /im ""${mockApplication}""",0,False\nset WshShell = Nothing`
     );
   });
@@ -25,7 +25,7 @@ describe("quit", () => {
     const mockError = new Error("test-error");
 
     beforeEach(() => {
-      mockType(runVbsCode).mockRejectedValue(mockError);
+      mockType(runVbsScript).mockRejectedValue(mockError);
     });
 
     it("should throw a wrapped error", async () => {

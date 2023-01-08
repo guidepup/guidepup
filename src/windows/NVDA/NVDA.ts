@@ -14,26 +14,6 @@ import { start } from "./start";
 export class NVDA implements ScreenReader {
   #stream: NVDAStream;
 
-  /**
-   * NVDA caption APIs.
-   */
-  caption!: any;
-
-  /**
-   * NVDA cursor APIs.
-   */
-  cursor!: any;
-
-  /**
-   * NVDA keyboard APIs.
-   */
-  keyboard!: any;
-
-  /**
-   * NVDA mouse APIs.
-   */
-  mouse!: any;
-
   constructor() {
     this.#stream = new NVDAStream();
   }
@@ -180,7 +160,7 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<string>} The item's text.
    */
   async itemText(): Promise<string> {
-    return await Promise.resolve("");
+    return await Promise.resolve(this.#stream.lastSpokenPhrase());
   }
 
   /**
@@ -198,6 +178,6 @@ export class NVDA implements ScreenReader {
    * @returns {string[]} The item text log.
    */
   itemTextLog(): string[] {
-    return [];
+    return this.#stream.spokenPhraseLog();
   }
 }

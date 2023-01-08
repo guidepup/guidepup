@@ -66,10 +66,6 @@ export class NVDAStream extends EventEmitter {
   #stream: TLSSocket;
   #spokenPhrases = [];
 
-  constructor() {
-    super();
-  }
-
   lastSpokenPhrase(): string {
     return this.#spokenPhrases.at(-1);
   }

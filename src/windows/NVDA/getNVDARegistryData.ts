@@ -16,11 +16,11 @@ export async function getNVDARegistryData(): Promise<NVDARegistryItem> {
   }
 
   try {
-    const { [SUB_KEY_GUIDEPUP_NVDA]: data } = await regedit.list([
+    ({ [SUB_KEY_GUIDEPUP_NVDA]: data } = (await regedit.list([
       SUB_KEY_GUIDEPUP_NVDA,
-    ]);
+    ])) as { [SUB_KEY_GUIDEPUP_NVDA]: NVDARegistryItem });
 
-    return data as NVDARegistryItem;
+    return data;
   } catch (e) {
     throw new Error(`${ERR_WINDOWS_UNABLE_TO_ACCESS_REGISTRY}\n${e.message}`);
   }

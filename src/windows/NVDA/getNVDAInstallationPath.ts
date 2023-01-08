@@ -5,7 +5,7 @@ import { maxSatisfying } from "semver";
 
 let installationPath: string;
 
-export async function getNVDAInstallationPath() {
+export async function getNVDAInstallationPath(): Promise<string | null>{
   if (installationPath) {
     return installationPath;
   }

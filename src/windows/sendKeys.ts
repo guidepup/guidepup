@@ -2,12 +2,12 @@ import { ERR_SEND_KEYS } from "./errors";
 import { isKeyCode } from "../isKeyCode";
 import type { KeyCodeCommand } from "./KeyCodeCommand";
 import type { KeystrokeCommand } from "./KeystrokeCommand";
-import { runVbsCode } from "./runVbsCode";
+import { runVbsScript } from "./runVbsScript";
 
 function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
   const characters = isKeyCode(command)
     ? Array.isArray(command.keyCode)
-      ? command.keyCode.map((key) => key.symbol).join()
+      ? command.keyCode.map((key) => key.symbol).join("")
       : command.keyCode.symbol
     : command.characters;
 
@@ -24,7 +24,7 @@ export async function sendKeys(
   const script = `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${keys}"`;
 
   try {
-    await runVbsCode(script);
+    await runVbsScript(script);
   } catch (e) {
     throw new Error(`${ERR_SEND_KEYS}\n${e.message}`);
   }

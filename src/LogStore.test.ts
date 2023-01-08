@@ -3,10 +3,8 @@ import { mockType } from "../test/mockType";
 import { ScreenReader } from "./ScreenReader";
 
 const screenReaderStub = {
-  caption: {
-    itemText: jest.fn(),
-    lastSpokenPhrase: jest.fn(),
-  },
+  itemText: jest.fn(),
+  lastSpokenPhrase: jest.fn(),
 } as unknown as ScreenReader;
 
 const itemTextDummy = "test-item-text";
@@ -19,12 +17,12 @@ describe("LogStore", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    mockType(screenReaderStub.caption.itemText).mockResolvedValue(
+    mockType(screenReaderStub.itemText).mockResolvedValue(
       itemTextDummy
     );
-    mockType(
-      screenReaderStub.caption.lastSpokenPhrase
-    ).mockResolvedValue(lastSpokenPhraseDummy);
+    mockType(screenReaderStub.lastSpokenPhrase).mockResolvedValue(
+      lastSpokenPhraseDummy
+    );
 
     logStore = new LogStore(screenReaderStub);
   });

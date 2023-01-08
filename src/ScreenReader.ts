@@ -1,10 +1,6 @@
 import type { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
 import type { KeyboardOptions } from "./KeyboardOptions";
-import type { ScreenReaderCaption } from "./ScreenReaderCaption";
-import type { ScreenReaderCursor } from "./ScreenReaderCursor";
-import type { ScreenReaderKeyboard } from "./ScreenReaderKeyboard";
-import type { ScreenReaderMouse } from "./ScreenReaderMouse";
 
 export interface ScreenReader {
   /**
@@ -20,26 +16,6 @@ export interface ScreenReader {
    * @returns {Promise<boolean>}
    */
   default(): Promise<boolean>;
-
-  /**
-   * ScreenReader caption APIs.
-   */
-  caption: ScreenReaderCaption;
-
-  /**
-   * ScreenReader cursor APIs.
-   */
-  cursor: ScreenReaderCursor;
-
-  /**
-   * ScreenReader keyboard APIs.
-   */
-  keyboard: ScreenReaderKeyboard;
-
-  /**
-   * ScreenReader mouse APIs.
-   */
-  mouse: ScreenReaderMouse;
 
   /**
    * Turn the ScreenReader on.
