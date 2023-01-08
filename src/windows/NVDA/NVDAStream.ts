@@ -83,13 +83,13 @@ export class NVDAStream extends EventEmitter {
         NVDA_PORT,
         NVDA_HOST,
         { checkServerIdentity: () => null },
-        () => {
+        async () => {
           this.once(CHANNEL_JOINED, () => {
             resolve();
           });
 
-          this.send(connectionMessage);
-          this.send(protocolMessage);
+          await this.send(connectionMessage);
+          await this.send(protocolMessage);
         }
       );
 
@@ -178,7 +178,7 @@ export class NVDAStream extends EventEmitter {
     }
 
     return new Promise<void>((resolve, reject) => {
-      this.#stream.write(message, (err) => {
+      this.#stream?.write(message, (err) => {
         if (err) {
           reject(err);
 

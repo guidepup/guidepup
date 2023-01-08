@@ -1,12 +1,12 @@
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
-import { isNVDAInstalled } from "./isNvdaInstalled";
+import { isNVDAInstalled } from "./isNVDAInstalled";
 import { mockType } from "../../../test/mockType";
 
 jest.mock("./getNVDAInstallationPath", () => ({
   getNVDAInstallationPath: jest.fn(),
 }));
 
-describe("isNvdaInstalled", () => {
+describe("isNVDAInstalled", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
