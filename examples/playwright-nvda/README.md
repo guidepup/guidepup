@@ -6,8 +6,8 @@ Run this example's test with:
 
 ```console
 cd ./examples/playwright-nvda
-npm install
-npm run test
+yarn install --frozen-lockfile
+yarn test
 ```
 
 > Note: please ensure you have setup the [NVDA prerequisites](../../guides/nvda-prerequisites/README.md) before running this example.

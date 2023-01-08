@@ -22,7 +22,7 @@ npx @guidepup/setup
 Install Guidepup to your project:
 
 ```bash
-npm install @guidepup/guidepup
+yarn install --frozen-lockfile @guidepup/guidepup
 ```
 
 And get cracking with your first screen-reader automation code! 🚀
