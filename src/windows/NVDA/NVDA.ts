@@ -1,8 +1,12 @@
 import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
+import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
+import { KeyCodes } from "../KeyCodes";
+import { Modifiers } from "../Modifiers";
 import { NVDAStream } from "./NVDAStream";
+import { parseKey } from "../../parseKey";
 import { quit } from "./quit";
 import type { ScreenReader } from "../../ScreenReader";
 import { sendKeys } from "../sendKeys";
@@ -109,8 +113,36 @@ export class NVDA implements ScreenReader {
     return await Promise.resolve();
   }
 
-  async press(): Promise<void> {
-    return await Promise.resolve();
+  /**
+   * Press a key on the focused item.
+   *
+   * `key` can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
+   * value or a single character to generate the text for. A superset of the `key` values can be found
+   * [on the MDN key values page](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   *
+   * `F1` - `F20`, `Digit0` - `Digit9`, `KeyA` - `KeyZ`, `Backquote`, `Minus`, `Equal`, `Backslash`, `Backspace`, `Tab`,
+   * `Delete`, `Escape`, `ArrowDown`, `End`, `Enter`, `Home`, `Insert`, `PageDown`, `PageUp`, `ArrowRight`, `ArrowUp`, etc.
+   *
+   * Following modification shortcuts are also supported: `Shift`, `Control`, `Alt`, `Meta`, `Command`.
+   *
+   * Holding down `Shift` will type the text that corresponds to the `key` in the upper case.
+   *
+   * If `key` is a single character, it is case-sensitive, so the values `a` and `A` will generate different respective
+   * texts.
+   *
+   * Shortcuts such as `key: "Control+f"` or `key: "Control+Shift+f"` are supported as well. When specified with the
+   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   *
+   * ```ts
+   * await nvda.press("Control+f");
+   * ```
+   *
+   * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
+   */
+  async press(key: string): Promise<void> {
+    return await this.#stream.waitForSpokenPhrase(() =>
+      sendKeys(parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes))
+    );
   }
 
   /**
@@ -121,7 +153,6 @@ export class NVDA implements ScreenReader {
    * ```
    *
    * @param {string} text Text to type into the focused item.
-   * @param {object} [options] Additional options.
    */
   async type(text: string) {
     return await this.#stream.waitForSpokenPhrase(() =>
@@ -132,17 +163,12 @@ export class NVDA implements ScreenReader {
   /**
    * Perform a NVDA command.
    *
-   * @param {any} command NVDA keyboard command or commander command to execute.
+   * @param {any} command NVDA keyboard command to execute.
    */
-  async perform(): Promise<void> {
-    return await Promise.resolve();
-  }
-
-  /**
-   * Click the mouse.
-   */
-  async click(): Promise<void> {
-    return await Promise.resolve();
+  async perform(command: KeyCodeCommand): Promise<void> {
+    return await this.#stream.waitForSpokenPhrase(() =>
+      this.#stream.sendKeyCode(command)
+    );
   }
 
   /**
@@ -155,9 +181,11 @@ export class NVDA implements ScreenReader {
   }
 
   /**
-   * Get the text of the item in the NVDA cursor.
+   * Get the last spoken phrase.
    *
-   * @returns {Promise<string>} The item's text.
+   * @alias lastSpokenPhrase
+   *
+   * @returns {Promise<string>} The last spoken phrase.
    */
   async itemText(): Promise<string> {
     return await Promise.resolve(this.#stream.lastSpokenPhrase());
@@ -173,9 +201,11 @@ export class NVDA implements ScreenReader {
   }
 
   /**
-   * Get the log of all visited item text for this NVDA instance.
+   * Get the log of all spoken phrases for this NVDA instance.
    *
-   * @returns {string[]} The item text log.
+   * @alias lastSpokenPhrase
+   *
+   * @returns {string[]} The spoken phrase log.
    */
   itemTextLog(): string[] {
     return this.#stream.spokenPhraseLog();
