@@ -11,7 +11,7 @@
   Providing a reliable set of APIs to automate your screen-reader a11y workflows through JavaScript.
 </p>
 
-## Getting Started 🦮
+## Getting Started
 
 Setup your environment for screen-reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
@@ -25,19 +25,19 @@ Install Guidepup to your project:
 npm install @guidepup/guidepup
 ```
 
-And get cracking with your first screen-reader automation code! 🚀
+And get cracking with your first screen-reader automation code!
 
 ```ts
 import { voiceOver } from "@guidepup/guidepup";
 
 async function run(): Promise<void> {
-  // Start your screen-reader instance 🎉
+  // Start your screen-reader instance
   await voiceOver.start();
 
-  // Navigate your environment with screen-readers just as your users do 🏎
+  // Navigate your environment with screen-readers just as your users do
   await voiceOver.next();
 
-  // Assert on what your users really see and hear when using screen-readers 👂
+  // Assert on what your users really see and hear when using screen-readers
   console.log(await voiceOver.lastSpokenPhrase());
 
   await voiceOver.stop();
@@ -46,19 +46,19 @@ async function run(): Promise<void> {
 run();
 ```
 
-## Guides 🐕‍🦺
+## Guides
 
 Check out these [fab guides](https://github.com/guidepup/guidepup/tree/main/guides) on how to set up your local or CI environments for using Guidepup.
 
-## Examples 🤓
+## Examples
 
 Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects.
 
-## API Documentation 📚
+## API Documentation
 
 The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows. 
 
-## See Also 🐶
+## See Also
 
 Check out some of the other Guidepup modules:
 
@@ -72,7 +72,7 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
   uses: guidepup/setup-action@0.5.0
 ```
 
-## Roadmap 🐾
+## Roadmap
 
 Screen-reader support:
 
@@ -90,9 +90,9 @@ Environment support:
 - [ ] Windows local machine
 - [ ] Windows virtual machine
 
-## Related 🌭
+## Related
 
-Building on the shoulders of giants! 🙌
+Building on the shoulders of giants!
 
 Here are some related projects:
 
@@ -102,6 +102,6 @@ Here are some related projects:
 - [`nvda-testing-driver`](https://github.com/kastwey/nvda-testing-driver)
 - [`assistive-webdriver`](https://github.com/AmadeusITGroup/Assistive-Webdriver)
 
-## License 🐩
+## License
 
 [MIT](https://github.com/guidepup/guidepup/blob/main/LICENSE)
