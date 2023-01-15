@@ -1,6 +1,6 @@
 <h1 align="center">Guidepup</h1>
 <p align="center">
-  <i>Screen reader driver for automation.</i>
+  <i>Screen reader driver for test automation.</i>
 </p>
 <p align="center">
   <a href="https://www.npmjs.com/package/@guidepup/guidepup"><img alt="Guidepup available on NPM" src="https://img.shields.io/npm/v/@guidepup/guidepup" /></a>
