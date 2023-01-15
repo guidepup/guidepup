@@ -1,6 +1,6 @@
 <h1 align="center">Guidepup</h1>
 <p align="center">
-  <i>Screen-reader driver for automation.</i>
+  <i>Screen reader driver for automation.</i>
 </p>
 <p align="center">
   <a href="https://www.npmjs.com/package/@guidepup/guidepup"><img alt="Guidepup available on NPM" src="https://img.shields.io/npm/v/@guidepup/guidepup" /></a>
@@ -8,12 +8,12 @@
   <a href="https://github.com/guidepup/guidepup/blob/main/LICENSE"><img alt="Guidepup uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup" /></a>
 </p>
 <p align="center">
-  Providing a reliable set of APIs to automate your screen-reader a11y workflows through JavaScript.
+  Providing a reliable set of APIs to automate your screen reader a11y workflows through JavaScript.
 </p>
 
 ## Getting Started
 
-Setup your environment for screen-reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+Setup your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
 ```bash
 npx @guidepup/setup
@@ -25,19 +25,19 @@ Install Guidepup to your project:
 npm install @guidepup/guidepup
 ```
 
-And get cracking with your first screen-reader automation code!
+And get cracking with your first screen reader automation code!
 
 ```ts
 import { voiceOver } from "@guidepup/guidepup";
 
 async function run(): Promise<void> {
-  // Start your screen-reader instance
+  // Start your screen reader instance
   await voiceOver.start();
 
-  // Navigate your environment with screen-readers just as your users do
+  // Navigate your environment with screen readers just as your users do
   await voiceOver.next();
 
-  // Assert on what your users really see and hear when using screen-readers
+  // Assert on what your users really see and hear when using screen readers
   console.log(await voiceOver.lastSpokenPhrase());
 
   await voiceOver.stop();
@@ -56,7 +56,7 @@ Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/mai
 
 ## API Documentation
 
-The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen-reader driven workflows. 
+The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen reader driven workflows. 
 
 ## See Also
 
@@ -65,7 +65,7 @@ Check out some of the other Guidepup modules:
 - [`@guidepup/setup`](https://github.com/guidepup/setup/)
 - [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/)
 
-If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to setup your CI ready for screen-reader automation.
+If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to setup your CI ready for screen reader automation.
 
 ```yaml
 - name: Setup Environment
@@ -74,7 +74,7 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ## Roadmap
 
-Screen-reader support:
+Screen reader support:
 
 - [x] VoiceOver on MacOS
 - [ ] NVDA on Windows (WIP)
