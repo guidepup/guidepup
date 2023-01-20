@@ -5,7 +5,7 @@ import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
 import { Modifiers } from "../Modifiers";
-import { NVDAStream } from "./NVDAStream";
+import { NVDAClient } from "./NVDAClient";
 import { parseKey } from "../../parseKey";
 import { quit } from "./quit";
 import type { ScreenReader } from "../../ScreenReader";
@@ -16,10 +16,10 @@ import { start } from "./start";
  * Class for controlling the NVDA ScreenReader on MacOS.
  */
 export class NVDA implements ScreenReader {
-  #stream: NVDAStream;
+  #client: NVDAClient;
 
   constructor() {
-    this.#stream = new NVDAStream();
+    this.#client = new NVDAClient();
   }
 
   /**
@@ -49,14 +49,14 @@ export class NVDA implements ScreenReader {
     }
 
     await start();
-    await this.#stream.start();
+    await this.#client.connect();
   }
 
   /**
    * Turn NVDA off.
    */
   async stop(): Promise<void> {
-    this.#stream.stop();
+    this.#client.disconnect();
     await quit();
   }
 
@@ -66,8 +66,8 @@ export class NVDA implements ScreenReader {
    * Equivalent of executing Up Arrow.
    */
   async previous(): Promise<void> {
-    return await this.#stream.waitForSpokenPhrase(() =>
-      this.#stream.sendKeyCode(keyCodeCommands.moveToPrevious)
+    return await this.#client.waitForSpokenPhrase(() =>
+      this.#client.sendKeyCode(keyCodeCommands.moveToPrevious)
     );
   }
 
@@ -77,8 +77,8 @@ export class NVDA implements ScreenReader {
    * Equivalent of executing Down Arrow.
    */
   async next(): Promise<void> {
-    return await this.#stream.waitForSpokenPhrase(() =>
-      this.#stream.sendKeyCode(keyCodeCommands.moveToNext)
+    return await this.#client.waitForSpokenPhrase(() =>
+      this.#client.sendKeyCode(keyCodeCommands.moveToNext)
     );
   }
 
@@ -88,8 +88,8 @@ export class NVDA implements ScreenReader {
    * Equivalent of executing Enter.
    */
   async act() {
-    return await this.#stream.waitForSpokenPhrase(() =>
-      this.#stream.sendKeyCode(keyCodeCommands.activate)
+    return await this.#client.waitForSpokenPhrase(() =>
+      this.#client.sendKeyCode(keyCodeCommands.activate)
     );
   }
 
@@ -140,7 +140,7 @@ export class NVDA implements ScreenReader {
    * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
    */
   async press(key: string): Promise<void> {
-    return await this.#stream.waitForSpokenPhrase(() =>
+    return await this.#client.waitForSpokenPhrase(() =>
       sendKeys(parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes))
     );
   }
@@ -155,7 +155,7 @@ export class NVDA implements ScreenReader {
    * @param {string} text Text to type into the focused item.
    */
   async type(text: string) {
-    return await this.#stream.waitForSpokenPhrase(() =>
+    return await this.#client.waitForSpokenPhrase(() =>
       sendKeys({ characters: text })
     );
   }
@@ -166,8 +166,8 @@ export class NVDA implements ScreenReader {
    * @param {any} command NVDA keyboard command to execute.
    */
   async perform(command: KeyCodeCommand): Promise<void> {
-    return await this.#stream.waitForSpokenPhrase(() =>
-      this.#stream.sendKeyCode(command)
+    return await this.#client.waitForSpokenPhrase(() =>
+      this.#client.sendKeyCode(command)
     );
   }
 
@@ -177,7 +177,7 @@ export class NVDA implements ScreenReader {
    * @returns {string} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
-    return await Promise.resolve(this.#stream.lastSpokenPhrase());
+    return await Promise.resolve(this.#client.spokenPhraseLog().at(-1));
   }
 
   /**
@@ -188,7 +188,7 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async itemText(): Promise<string> {
-    return await Promise.resolve(this.#stream.lastSpokenPhrase());
+    return await this.lastSpokenPhrase();
   }
 
   /**
@@ -197,7 +197,7 @@ export class NVDA implements ScreenReader {
    * @returns {string[]} The spoken phrase log.
    */
   spokenPhraseLog(): string[] {
-    return this.#stream.spokenPhraseLog();
+    return this.#client.spokenPhraseLog();
   }
 
   /**
@@ -208,6 +208,6 @@ export class NVDA implements ScreenReader {
    * @returns {string[]} The spoken phrase log.
    */
   itemTextLog(): string[] {
-    return this.#stream.spokenPhraseLog();
+    return this.#client.spokenPhraseLog();
   }
 }

@@ -1,12 +1,13 @@
 import { connect, TLSSocket } from "tls";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
+import { ERR_NVDA_CANNOT_CONNECT } from "../errors";
 import { EventEmitter } from "events";
 import { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 
-export const CHANNEL_JOINED = "channel_joined";
-export const CANCEL = "cancel";
-export const SPEAK = "speak";
+const CHANNEL_JOINED = "channel_joined";
+const CANCEL = "cancel";
+const SPEAK = "speak";
 
 interface NVDABaseMessage extends Record<string, unknown> {
   type: string;
@@ -62,45 +63,47 @@ const isSpeakMessage = (
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
 
-export class NVDAStream extends EventEmitter {
-  #stream: TLSSocket;
+export class NVDAClient extends EventEmitter {
+  #socket: TLSSocket;
   #spokenPhrases = [];
 
-  lastSpokenPhrase(): string {
-    return this.#spokenPhrases.at(-1);
-  }
-
+  /**
+   * Get the log of all spoken phrases for this NVDA connection.
+   *
+   * @returns {string[]} All spoken phrases
+   */
   spokenPhraseLog(): string[] {
     return this.#spokenPhrases;
   }
 
-  async start() {
-    // TODO: generate some certs
-    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-
-    return new Promise<void>((resolve, reject) => {
-      this.#stream = connect(
+  /**
+   * Connect to a NVDA instance.
+   */
+  async connect(): Promise<void> {
+    return await new Promise<void>((resolve, reject) => {
+      this.#socket = connect(
         NVDA_PORT,
         NVDA_HOST,
-        { checkServerIdentity: () => null },
+        // TODO: generate some certs
+        { rejectUnauthorized: false, checkServerIdentity: () => null },
         async () => {
           this.once(CHANNEL_JOINED, () => {
             resolve();
           });
 
-          await this.send(connectionMessage);
-          await this.send(protocolMessage);
+          await this.#send(connectionMessage);
+          await this.#send(protocolMessage);
         }
       );
 
-      this.#stream.on("error", () => {
-        this.stop();
-        reject();
+      this.#socket.setEncoding("utf8");
+
+      this.#socket.on("error", () => {
+        this.disconnect();
+        reject(new Error(ERR_NVDA_CANNOT_CONNECT));
       });
 
-      this.#stream.setEncoding("utf8");
-
-      this.#stream.on("data", (data: string) => {
+      this.#socket.on("data", (data: string) => {
         if (!data.trim().length) {
           return;
         }
@@ -148,12 +151,21 @@ export class NVDAStream extends EventEmitter {
     });
   }
 
-  async sendKeyCode(keyCommand: KeyCodeCommand) {
-    const modifiers = keyCommand.modifiers
-      ? Array.isArray(keyCommand.modifiers)
-        ? keyCommand.modifiers
-        : [keyCommand.modifiers]
-      : [];
+  /**
+   * disconnect the NVDA connection.
+   */
+  disconnect(): void {
+    this.#socket?.destroy();
+    this.#socket = null;
+  }
+
+  /**
+   * Send a Key Code command to NVDA.
+   *
+   * @param {object} keyCommand Key Code command to send to NVDA.
+   */
+  async sendKeyCode(keyCommand: KeyCodeCommand): Promise<void> {
+    const modifiers = keyCommand.modifiers ? keyCommand.modifiers : [];
 
     const keyCodes = keyCommand.keyCode
       ? Array.isArray(keyCommand.keyCode)
@@ -164,66 +176,12 @@ export class NVDAStream extends EventEmitter {
     const keys = [...modifiers, ...keyCodes];
 
     for (const key of keys) {
-      await this.send(key.toString(true));
+      await this.#send(key.toString(true));
     }
 
     for (const key of keys.reverse()) {
-      await this.send(key.toString(false));
+      await this.#send(key.toString(false));
     }
-  }
-
-  async send(message: string) {
-    if (!message.endsWith("\n")) {
-      message += "\n";
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      this.#stream?.write(message, (err) => {
-        if (err) {
-          reject(err);
-
-          return;
-        }
-
-        resolve();
-      });
-    });
-  }
-
-  stop() {
-    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "1";
-    this.#stream?.destroy();
-    this.#stream = null;
-  }
-
-  async stopReading(): Promise<void> {
-    let spoken: boolean;
-    let cancelPromiseResolver: () => void;
-
-    const speakHandler = () => {
-      spoken = true;
-    };
-    const cancelHandler = () => {
-      cancelPromiseResolver();
-    };
-
-    this.addListener(SPEAK, speakHandler);
-
-    while (spoken) {
-      spoken = false;
-
-      const cancelPromise = new Promise<void>((resolve) => {
-        cancelPromiseResolver = resolve;
-      });
-
-      this.once(CANCEL, cancelHandler);
-      this.sendKeyCode(keyCodeCommands.stopReading);
-
-      await cancelPromise;
-      await delay(CANCEL_DEBOUNCE_TIMEOUT);
-    }
-
-    this.removeListener(SPEAK, speakHandler);
   }
 
   /**
@@ -237,7 +195,7 @@ export class NVDAStream extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   async waitForSpokenPhrase<T>(action: () => Promise<T>): Promise<T> {
-    await this.stopReading();
+    await this.#stopReading();
 
     let speakPromiseResolver: () => void;
 
@@ -272,5 +230,53 @@ export class NVDAStream extends EventEmitter {
     timeoutId = null;
 
     return result;
+  }
+
+  async #stopReading(): Promise<void> {
+    let spoken: boolean;
+    let cancelPromiseResolver: () => void;
+
+    const speakHandler = () => {
+      spoken = true;
+    };
+    const cancelHandler = () => {
+      cancelPromiseResolver();
+    };
+
+    this.addListener(SPEAK, speakHandler);
+
+    while (spoken) {
+      spoken = false;
+
+      const cancelPromise = new Promise<void>((resolve) => {
+        cancelPromiseResolver = resolve;
+      });
+
+      this.once(CANCEL, cancelHandler);
+      this.sendKeyCode(keyCodeCommands.stopReading);
+
+      await cancelPromise;
+      await delay(CANCEL_DEBOUNCE_TIMEOUT);
+    }
+
+    this.removeListener(SPEAK, speakHandler);
+  }
+
+  async #send(message: string): Promise<void> {
+    if (!message.endsWith("\n")) {
+      message += "\n";
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      this.#socket?.write(message, (err) => {
+        if (err) {
+          reject(err);
+
+          return;
+        }
+
+        resolve();
+      });
+    });
   }
 }

@@ -32,7 +32,7 @@ module.exports = {
     "<rootDir>/src/macOS/VoiceOver/Places.ts",
     "<rootDir>/src/windows/NVDA/keyCodeCommands.ts",
     "<rootDir>/src/windows/NVDA/NVDA.ts",
-    "<rootDir>/src/windows/NVDA/NVDAStream.ts",
+    "<rootDir>/src/windows/NVDA/NVDAClient.ts",
   ],
   coverageThreshold: {
     global: {
