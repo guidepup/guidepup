@@ -5,7 +5,7 @@ import type { KeyboardOptions } from "../../KeyboardOptions";
 import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
 import type { ScreenReaderKeyboard } from "../../ScreenReaderKeyboard";
