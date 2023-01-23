@@ -33,6 +33,9 @@ test.describe("Playwright VoiceOver", () => {
     const itemTextLog = await voiceOver.itemTextLog();
     const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
+    console.table({ itemTextLog, itemTextSnapshot });
+    console.table({ spokenPhraseLog, spokenPhraseSnapshot });
+
     for (const expectedItem of itemTextSnapshot) {
       expect(!!itemTextLog.find((log) => log.includes(expectedItem))).toBe(
         true
