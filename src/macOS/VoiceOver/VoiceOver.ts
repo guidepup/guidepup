@@ -56,7 +56,7 @@ export class VoiceOver implements ScreenReader {
   mouse!: VoiceOverMouse;
 
   constructor() {
-    const logStore = new LogStore(this);
+    const logStore = new LogStore();
     this.caption = new VoiceOverCaption(logStore);
     this.commander = new VoiceOverCommander(logStore);
     this.cursor = new VoiceOverCursor(logStore);
@@ -107,7 +107,7 @@ export class VoiceOver implements ScreenReader {
   async stop(options?: CommandOptions): Promise<void> {
     await forceQuit();
     await waitForNotRunning(options);
-    
+
     if (this.#resetSettings) {
       await this.#resetSettings();
       this.#resetSettings = null;
@@ -244,38 +244,36 @@ export class VoiceOver implements ScreenReader {
   /**
    * Get the last spoken phrase.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The last spoken phrase.
    */
-  async lastSpokenPhrase(options?: CommandOptions): Promise<string> {
-    return await this.caption.lastSpokenPhrase(options);
+  async lastSpokenPhrase(): Promise<string> {
+    return await this.caption.lastSpokenPhrase();
   }
 
   /**
    * Get the text of the item in the VoiceOver cursor.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The item's text.
    */
-  async itemText(options?: CommandOptions): Promise<string> {
-    return await this.caption.itemText(options);
+  async itemText(): Promise<string> {
+    return await this.caption.itemText();
   }
 
   /**
    * Get the log of all spoken phrases for this VoiceOver instance.
    *
-   * @returns {string[]} The spoken phrase log.
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
-  spokenPhraseLog(): string[] {
-    return this.caption.spokenPhraseLog();
+  async spokenPhraseLog(): Promise<string[]> {
+    return await this.caption.spokenPhraseLog();
   }
 
   /**
    * Get the log of all visited item text for this VoiceOver instance.
    *
-   * @returns {string[]} The item text log.
+   * @returns {Promise<string[]>} The item text log.
    */
-  itemTextLog(): string[] {
-    return this.caption.itemTextLog();
+  async itemTextLog(): Promise<string[]> {
+    return await this.caption.itemTextLog();
   }
 }

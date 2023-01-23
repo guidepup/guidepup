@@ -1,8 +1,5 @@
-import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
-import { itemText } from "./itemText";
-import { lastSpokenPhrase } from "./lastSpokenPhrase";
 import { LogStore } from "./LogStore";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
 import type { ScreenReaderCaption } from "../../ScreenReaderCaption";
@@ -20,11 +17,10 @@ export class VoiceOverCaption implements ScreenReaderCaption {
   /**
    * Get the last spoken phrase.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The last spoken phrase.
    */
-  async lastSpokenPhrase(options?: CommandOptions): Promise<string> {
-    return cleanSpokenPhrase(await lastSpokenPhrase(options));
+  async lastSpokenPhrase(): Promise<string> {
+    return await this.#logStore.lastSpokenPhrase();
   }
 
   /**
@@ -54,28 +50,27 @@ export class VoiceOverCaption implements ScreenReaderCaption {
   /**
    * Get the text of the item in the VoiceOver cursor.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The item's text.
    */
-  async itemText(options?: CommandOptions): Promise<string> {
-    return cleanSpokenPhrase(await itemText(options));
+  async itemText(): Promise<string> {
+    return await this.#logStore.itemText();
   }
 
   /**
    * Get the log of all spoken phrases for this VoiceOver instance.
    *
-   * @returns {string[]} The spoken phrase log.
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
-  spokenPhraseLog(): string[] {
-    return this.#logStore.spokenPhraseLog;
+  async spokenPhraseLog(): Promise<string[]> {
+    return await this.#logStore.spokenPhraseLog();
   }
 
   /**
    * Get the log of all visited item text for this VoiceOver instance.
    *
-   * @returns {string[]} The item text log.
+   * @returns {Promise<string[]>} The item text log.
    */
-  itemTextLog(): string[] {
-    return this.#logStore.itemTextLog
+  async itemTextLog(): Promise<string[]> {
+    return await this.#logStore.itemTextLog();
   }
 }

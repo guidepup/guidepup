@@ -1,5 +1,7 @@
+import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import { DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS } from "./configureSettings";
-import { ScreenReader } from "../../ScreenReader";
+import { itemText as getItemText } from "./itemText";
+import { lastSpokenPhrase } from "./lastSpokenPhrase";
 
 const SPOKEN_PHRASES_POLL_INTERVAL = 100;
 const SPOKEN_PHRASES_RETRY_COUNT = 5;
@@ -15,29 +17,62 @@ function countApproxWords(str) {
 }
 
 export class LogStore {
-  #screenReader!: ScreenReader;
+  #activePromise = null;
+
   #itemTextLogStore = [];
   #spokenPhraseLogStore = [];
 
-  constructor(screenReader: ScreenReader) {
-    this.#screenReader = screenReader;
+  /**
+   * Get the text of the item in the VoiceOver cursor.
+   *
+   * @returns {Promise<string>} The item's text.
+   */
+  async itemText(): Promise<string> {
+    return (await this.itemTextLog()).at(-1);
+  }
+
+  /**
+   * Get the last spoken phrase.
+   *
+   * @returns {Promise<string>} The last spoken phrase.
+   */
+  async lastSpokenPhrase(): Promise<string> {
+    return (await this.spokenPhraseLog()).at(-1);
   }
 
   /**
    * Get the item text logs.
    *
-   * @returns {string[]} The item text log.
+   * @returns {Promise<string[]>} The item text log.
    */
-  get itemTextLog(): string[] {
+  async itemTextLog(): Promise<string[]> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
+    // Edge-case that ask for phrase before performing any actions.
+    if (!this.#itemTextLogStore.length) {
+      await this.tap(Promise.resolve());
+    }
+
     return this.#itemTextLogStore;
   }
 
   /**
    * Get the last spoken phrase logs.
    *
-   * @returns {string[]} The spoken phrase log.
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
-  get spokenPhraseLog(): string[] {
+  async spokenPhraseLog(): Promise<string[]> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
+    // Edge-case that ask for phrase before performing any actions.
+    if (!this.#spokenPhraseLogStore.length) {
+      await this.tap(Promise.resolve());
+    }
+
     return this.#spokenPhraseLogStore;
   }
 
@@ -49,15 +84,23 @@ export class LogStore {
    * @returns {Promise<unknown>}
    */
   async tap<T, S extends Promise<T>>(promise: S): Promise<T> {
+    let activePromiseResolver: () => void;
+    this.#activePromise = new Promise<void>(
+      (resolve) => (activePromiseResolver = resolve)
+    );
+
     const result = await promise;
 
     const [itemText, lastSpokenPhrase] = await Promise.all([
-      this.#screenReader.caption.itemText(),
+      getItemText().then(cleanSpokenPhrase),
       this.#pollForSpokenPhrases(),
     ]);
 
     this.#itemTextLogStore.push(itemText);
     this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+
+    activePromiseResolver();
+    this.#activePromise = null;
 
     return result;
   }
@@ -68,23 +111,22 @@ export class LogStore {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const lastSpokenPhrase =
-        await this.#screenReader.caption.lastSpokenPhrase();
+      const phrase = cleanSpokenPhrase(await lastSpokenPhrase());
 
       let pollTimeout;
 
-      if (lastSpokenPhrase === phrases.at(-1)) {
+      if (phrase === phrases.at(-1)) {
         stableCount++;
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else {
-        const approxWords = countApproxWords(lastSpokenPhrase);
+        const approxWords = countApproxWords(phrase);
 
         stableCount = 0;
         pollTimeout =
           (approxWords / APPROX_WORDS_PER_SECOND) * 1000 -
           SPOKEN_PHRASES_POLL_INTERVAL;
 
-        phrases.push(lastSpokenPhrase);
+        phrases.push(phrase);
       }
 
       if (stableCount < SPOKEN_PHRASES_RETRY_COUNT) {

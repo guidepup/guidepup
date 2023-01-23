@@ -20,14 +20,14 @@ export interface ScreenReaderCaption {
   /**
    * Get the log of all spoken phrases for this ScreenReader instance.
    *
-   * @returns {string[]} The phrase log.
+   * @returns {Promise<string[]>} The phrase log.
    */
-  spokenPhraseLog(): string[];
+  spokenPhraseLog(): Promise<string[]>;
 
   /**
    * Get the log of all visited item text for this ScreenReader instance.
    *
-   * @returns {string[]} The item text log.
+   * @returns {Promise<string[]>} The item text log.
    */
-  itemTextLog(): string[];
+  itemTextLog(): Promise<string[]>;
 }

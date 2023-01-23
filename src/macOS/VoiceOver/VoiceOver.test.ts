@@ -125,7 +125,7 @@ describe("VoiceOver", () => {
   });
 
   it("should construct a log store instance", () => {
-    expect(LogStore).toHaveBeenCalledWith(vo);
+    expect(LogStore).toHaveBeenCalled();
   });
 
   it("should construct a caption instance", () => {
