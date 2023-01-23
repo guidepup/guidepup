@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
-import itemTextSnapshot from "./itemTextSnapshot.json";
+import itemTextSnapshot from "./itemText.snapshot.json";
 import { macOSRecord } from "../../../lib";
+import spokenPhraseSnapshot from "./spokenPhrase.snapshot.json";
 import test from "./voiceover-test";
 
 test.describe("Playwright VoiceOver", () => {
@@ -28,10 +29,20 @@ test.describe("Playwright VoiceOver", () => {
 
     // Assert that we've ended up where we expected and what we were told on
     // the way there is as expected.
+
     const itemTextLog = await voiceOver.itemTextLog();
+    const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
     for (const expectedItem of itemTextSnapshot) {
-      expect(itemTextLog).toContain(expectedItem);
+      expect(!!itemTextLog.find((log) => log.includes(expectedItem))).toBe(
+        true
+      );
+    }
+
+    for (const expectedPhrase of spokenPhraseSnapshot) {
+      expect(
+        !!spokenPhraseLog.find((log) => log.includes(expectedPhrase))
+      ).toBe(true);
     }
 
     stopRecording();
