@@ -3,10 +3,10 @@ import { DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS } from "./configureSettings";
 import { itemText as getItemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
 
-const SPOKEN_PHRASES_POLL_INTERVAL = 100;
-const SPOKEN_PHRASES_RETRY_COUNT = 5;
+const SPOKEN_PHRASES_POLL_INTERVAL = 50;
+const SPOKEN_PHRASES_RETRY_COUNT = 20;
 const APPROX_WORDS_PER_SECOND =
-  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS.rateAsPercent / 10;
+  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS.rateAsPercent / 12;
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
