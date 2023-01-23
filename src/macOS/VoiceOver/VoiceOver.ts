@@ -2,7 +2,7 @@ import {
   configureSettings,
   DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
   storeOriginalSettings,
-} from "./configureSettings.ts";
+} from "./configureSettings";
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
