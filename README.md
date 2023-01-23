@@ -76,19 +76,10 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 Screen reader support:
 
-- [x] VoiceOver on MacOS
-- [ ] NVDA on Windows (WIP)
-- [ ] VoiceOver on iOS
-- [ ] Talkback on Android
-
-Environment support:
-
-- [x] MacOS local machine
-- [x] MacOS virtual machine
-  - [x] CircleCI
-  - [x] GitHub Actions
-- [ ] Windows local machine
-- [ ] Windows virtual machine
+- VoiceOver on MacOS - Done
+- NVDA on Windows - [WIP](https://github.com/guidepup/guidepup/pull/33)
+- VoiceOver on iOS - TBD
+- Talkback on Android - TBD
 
 ## Related
 
