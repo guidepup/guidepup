@@ -1,7 +1,7 @@
 {
   "name": "@guidepup/guidepup",
-  "version": "0.14.7",
-  "description": "Screen-reader driver for automation.",
+  "version": "0.15.0",
+  "description": "Screen reader driver for test automation.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Craig Morten <craig.morten@hotmail.co.uk>",

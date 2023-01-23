@@ -2,7 +2,7 @@
 
 ## Automated Setup
 
-Checkout [`@guidepup/setup`](https://github.com/guidepup/setup/) for a quick and easy way to setup your environment for screen-reader automation.
+Checkout [`@guidepup/setup`](https://github.com/guidepup/setup/) for a quick and easy way to setup your environment for screen reader test automation.
 
 ```bash
 # Locally
