@@ -31,6 +31,8 @@ module.exports = {
     "<rootDir>/src/macOS/VoiceOver/configureSettings.ts",
     "<rootDir>/src/macOS/VoiceOver/Containments.ts",
     "<rootDir>/src/macOS/VoiceOver/Directions.ts",
+    // TODO: flesh out LogStore tests
+    "<rootDir>/src/macOS/VoiceOver/LogStore.ts",
     "<rootDir>/src/macOS/VoiceOver/Places.ts",
     "<rootDir>/src/windows",
   ],

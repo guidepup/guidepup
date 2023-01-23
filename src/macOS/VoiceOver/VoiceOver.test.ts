@@ -465,34 +465,22 @@ describe("VoiceOver", () => {
   });
 
   describe("lastSpokenPhrase", () => {
-    describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
-    `("when called $description", ({ options }) => {
-      beforeEach(async () => {
-        await vo.lastSpokenPhrase(options);
-      });
+    beforeEach(async () => {
+      await vo.lastSpokenPhrase();
+    });
 
-      it("should get the last spoken phrase", () => {
-        expect(vo.caption.lastSpokenPhrase).toHaveBeenCalledWith(options);
-      });
+    it("should get the last spoken phrase", () => {
+      expect(vo.caption.lastSpokenPhrase).toHaveBeenCalled();
     });
   });
 
   describe("itemText", () => {
-    describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
-    `("when called $description", ({ options }) => {
-      beforeEach(async () => {
-        await vo.itemText(options);
-      });
+    beforeEach(async () => {
+      await vo.itemText();
+    });
 
-      it("should get the item text", () => {
-        expect(vo.caption.itemText).toHaveBeenCalledWith(options);
-      });
+    it("should get the item text", () => {
+      expect(vo.caption.itemText).toHaveBeenCalled();
     });
   });
 

@@ -28,7 +28,7 @@ export class LogStore {
    * @returns {Promise<string>} The item's text.
    */
   async itemText(): Promise<string> {
-    return (await this.itemTextLog()).at(-1);
+    return (await this.itemTextLog()).at(-1) ?? "";
   }
 
   /**
@@ -37,7 +37,7 @@ export class LogStore {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
-    return (await this.spokenPhraseLog()).at(-1);
+    return (await this.spokenPhraseLog()).at(-1) ?? "";
   }
 
   /**
@@ -48,11 +48,6 @@ export class LogStore {
   async itemTextLog(): Promise<string[]> {
     if (this.#activePromise) {
       await this.#activePromise;
-    }
-
-    // Edge-case that ask for phrase before performing any actions.
-    if (!this.#itemTextLogStore.length) {
-      await this.tap(Promise.resolve());
     }
 
     return this.#itemTextLogStore;
@@ -66,11 +61,6 @@ export class LogStore {
   async spokenPhraseLog(): Promise<string[]> {
     if (this.#activePromise) {
       await this.#activePromise;
-    }
-
-    // Edge-case that ask for phrase before performing any actions.
-    if (!this.#spokenPhraseLogStore.length) {
-      await this.tap(Promise.resolve());
     }
 
     return this.#spokenPhraseLogStore;
@@ -115,7 +105,9 @@ export class LogStore {
 
       let pollTimeout;
 
-      if (phrase === phrases.at(-1)) {
+      if (!phrase) {
+        pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
+      } else if (phrase === phrases.at(-1)) {
         stableCount++;
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else {
