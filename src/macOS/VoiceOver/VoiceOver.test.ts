@@ -1,10 +1,14 @@
+import {
+  configureSettings,
+  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
+  storeOriginalSettings,
+} from "./configureSettings";
 import { CommanderCommands } from "./CommanderCommands";
-import { disableSplashScreen } from "./disableSplashScreen";
 import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
 import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { mockType } from "../../../test/mockType";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
@@ -17,8 +21,12 @@ import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
-jest.mock("./disableSplashScreen", () => ({
-  disableSplashScreen: jest.fn(),
+jest.mock("./configureSettings", () => ({
+  configureSettings: jest.fn(),
+  storeOriginalSettings: jest.fn(),
+  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS: Symbol(
+    "test-default-guidepup-voiceover-settings"
+  ),
 }));
 jest.mock("../../isKeyboard", () => ({
   isKeyboard: jest.fn(),
@@ -26,7 +34,7 @@ jest.mock("../../isKeyboard", () => ({
 jest.mock("../isMacOS", () => ({
   isMacOS: jest.fn(),
 }));
-jest.mock("../../LogStore", () => ({
+jest.mock("./LogStore", () => ({
   LogStore: jest.fn(),
 }));
 jest.mock("./forceQuit", () => ({
@@ -117,7 +125,7 @@ describe("VoiceOver", () => {
   });
 
   it("should construct a log store instance", () => {
-    expect(LogStore).toHaveBeenCalledWith(vo);
+    expect(LogStore).toHaveBeenCalled();
   });
 
   it("should construct a caption instance", () => {
@@ -215,8 +223,14 @@ describe("VoiceOver", () => {
           await vo.start(options);
         });
 
-        it("should disable the splash screen", () => {
-          expect(disableSplashScreen).toHaveBeenCalled();
+        it("should store original settings (so they can be reset back when done)", () => {
+          expect(storeOriginalSettings).toHaveBeenCalled();
+        });
+
+        it("should configure settings", () => {
+          expect(configureSettings).toHaveBeenCalledWith(
+            DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS
+          );
         });
 
         it("should start VoiceOver", () => {
@@ -236,7 +250,17 @@ describe("VoiceOver", () => {
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
+      const resetSettingsSpy = jest.fn();
+
       beforeEach(async () => {
+        mockType(isMacOS).mockReturnValue(true);
+        mockType(supportsAppleScriptControl).mockResolvedValue(true);
+        mockType(storeOriginalSettings).mockResolvedValue(resetSettingsSpy);
+
+        await vo.start();
+
+        jest.clearAllMocks();
+
         await vo.stop(options);
       });
 
@@ -246,6 +270,30 @@ describe("VoiceOver", () => {
 
       it("should wait for VoiceOver to not be running", () => {
         expect(waitForNotRunning).toHaveBeenCalledWith(options);
+      });
+
+      it("should reset settings", () => {
+        expect(resetSettingsSpy).toHaveBeenCalled();
+      });
+
+      describe("when called again and start hasn't been called this time", () => {
+        beforeEach(async () => {
+          jest.clearAllMocks();
+
+          await vo.stop(options);
+        });
+
+        it("should quit VoiceOver", () => {
+          expect(forceQuit).toHaveBeenCalled();
+        });
+
+        it("should wait for VoiceOver to not be running", () => {
+          expect(waitForNotRunning).toHaveBeenCalledWith(options);
+        });
+
+        it("should not reset settings again", () => {
+          expect(resetSettingsSpy).not.toHaveBeenCalled();
+        });
       });
     });
   });
@@ -417,34 +465,22 @@ describe("VoiceOver", () => {
   });
 
   describe("lastSpokenPhrase", () => {
-    describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
-    `("when called $description", ({ options }) => {
-      beforeEach(async () => {
-        await vo.lastSpokenPhrase(options);
-      });
+    beforeEach(async () => {
+      await vo.lastSpokenPhrase();
+    });
 
-      it("should get the last spoken phrase", () => {
-        expect(vo.caption.lastSpokenPhrase).toHaveBeenCalledWith(options);
-      });
+    it("should get the last spoken phrase", () => {
+      expect(vo.caption.lastSpokenPhrase).toHaveBeenCalled();
     });
   });
 
   describe("itemText", () => {
-    describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
-    `("when called $description", ({ options }) => {
-      beforeEach(async () => {
-        await vo.itemText(options);
-      });
+    beforeEach(async () => {
+      await vo.itemText();
+    });
 
-      it("should get the item text", () => {
-        expect(vo.caption.itemText).toHaveBeenCalledWith(options);
-      });
+    it("should get the item text", () => {
+      expect(vo.caption.itemText).toHaveBeenCalled();
     });
   });
 

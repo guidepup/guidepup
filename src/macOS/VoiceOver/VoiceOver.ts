@@ -1,14 +1,18 @@
+import {
+  configureSettings,
+  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
+  storeOriginalSettings,
+} from "./configureSettings";
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
-import { disableSplashScreen } from "./disableSplashScreen";
 import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
 import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import type { ScreenReader } from "../../ScreenReader";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
@@ -24,6 +28,8 @@ import { waitForRunning } from "./waitForRunning";
  * Class for controlling the VoiceOver ScreenReader on MacOS.
  */
 export class VoiceOver implements ScreenReader {
+  #resetSettings: () => Promise<void>;
+
   /**
    * VoiceOver caption APIs.
    */
@@ -50,7 +56,7 @@ export class VoiceOver implements ScreenReader {
   mouse!: VoiceOverMouse;
 
   constructor() {
-    const logStore = new LogStore(this);
+    const logStore = new LogStore();
     this.caption = new VoiceOverCaption(logStore);
     this.commander = new VoiceOverCommander(logStore);
     this.cursor = new VoiceOverCursor(logStore);
@@ -86,7 +92,9 @@ export class VoiceOver implements ScreenReader {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
-    await disableSplashScreen();
+    this.#resetSettings = await storeOriginalSettings();
+
+    await configureSettings(DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS);
     await start();
     await waitForRunning(options);
   }
@@ -99,6 +107,11 @@ export class VoiceOver implements ScreenReader {
   async stop(options?: CommandOptions): Promise<void> {
     await forceQuit();
     await waitForNotRunning(options);
+
+    if (this.#resetSettings) {
+      await this.#resetSettings();
+      this.#resetSettings = null;
+    }
   }
 
   /**
@@ -231,38 +244,36 @@ export class VoiceOver implements ScreenReader {
   /**
    * Get the last spoken phrase.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The last spoken phrase.
    */
-  async lastSpokenPhrase(options?: CommandOptions): Promise<string> {
-    return await this.caption.lastSpokenPhrase(options);
+  async lastSpokenPhrase(): Promise<string> {
+    return await this.caption.lastSpokenPhrase();
   }
 
   /**
    * Get the text of the item in the VoiceOver cursor.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The item's text.
    */
-  async itemText(options?: CommandOptions): Promise<string> {
-    return await this.caption.itemText(options);
+  async itemText(): Promise<string> {
+    return await this.caption.itemText();
   }
 
   /**
    * Get the log of all spoken phrases for this VoiceOver instance.
    *
-   * @returns {string[]} The spoken phrase log.
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
-  spokenPhraseLog(): string[] {
-    return this.caption.spokenPhraseLog();
+  async spokenPhraseLog(): Promise<string[]> {
+    return await this.caption.spokenPhraseLog();
   }
 
   /**
    * Get the log of all visited item text for this VoiceOver instance.
    *
-   * @returns {string[]} The item text log.
+   * @returns {Promise<string[]>} The item text log.
    */
-  itemTextLog(): string[] {
-    return this.caption.itemTextLog();
+  async itemTextLog(): Promise<string[]> {
+    return await this.caption.itemTextLog();
   }
 }

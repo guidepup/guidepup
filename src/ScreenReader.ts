@@ -152,30 +152,28 @@ export interface ScreenReader {
   /**
    * Get the last spoken phrase.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The last spoken phrase.
    */
-  lastSpokenPhrase(options?: CommandOptions): Promise<string>;
+  lastSpokenPhrase(): Promise<string>;
 
   /**
    * Get the text of the item in the ScreenReader cursor.
    *
-   * @param {object} [options] Additional options.
    * @returns {Promise<string>} The item's text.
    */
-  itemText(options?: CommandOptions): Promise<string>;
+  itemText(): Promise<string>;
 
   /**
    * Get the log of all spoken phrases for this ScreenReader instance.
    *
-   * @returns {string[]} The spoken phrase log.
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
-  spokenPhraseLog(): string[];
+  spokenPhraseLog(): Promise<string[]>;
 
   /**
    * Get the log of all visited item text for this ScreenReader instance.
    *
-   * @returns {string[]} The item text log.
+   * @returns {Promise<string[]>} The item text log.
    */
-  itemTextLog(): string[];
+  itemTextLog(): Promise<string[]>;
 }

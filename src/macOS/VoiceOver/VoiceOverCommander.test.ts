@@ -1,9 +1,9 @@
 import { CommanderCommands } from "./CommanderCommands";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { performCommand } from "./performCommand";
 import { VoiceOverCommander } from "./VoiceOverCommander";
 
-jest.mock("../../LogStore", () => ({
+jest.mock("./LogStore", () => ({
   LogStore: jest.fn(),
 }));
 jest.mock("./performCommand", () => ({

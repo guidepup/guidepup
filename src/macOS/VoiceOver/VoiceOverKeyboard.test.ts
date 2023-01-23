@@ -1,14 +1,14 @@
 import { Applications } from "../Applications";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { mockType } from "../../../test/mockType";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
 import { sendKeys } from "../sendKeys";
 import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 
-jest.mock("../../LogStore", () => ({
+jest.mock("./LogStore", () => ({
   LogStore: jest.fn(),
 }));
 jest.mock("../../parseKey", () => ({

@@ -1,7 +1,7 @@
 import { Applications } from "../Applications";
 import { Directions } from "./Directions";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { mockType } from "../../../test/mockType";
 import { move } from "./move";
 import { performAction } from "./performAction";
@@ -9,7 +9,7 @@ import { sendKeys } from "../sendKeys";
 import { takeScreenshot } from "./takeScreenshot";
 import { VoiceOverCursor } from "./VoiceOverCursor";
 
-jest.mock("../../LogStore", () => ({
+jest.mock("./LogStore", () => ({
   LogStore: jest.fn(),
 }));
 jest.mock("./move", () => ({

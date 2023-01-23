@@ -2,7 +2,7 @@ import { Applications } from "../Applications";
 import type { CommandOptions } from "../../CommandOptions";
 import { Directions } from "./Directions";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { move } from "./move";
 import { performAction } from "./performAction";
 import type { ScreenReaderCursor } from "../../ScreenReaderCursor";

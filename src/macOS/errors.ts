@@ -1,6 +1,6 @@
 export const ERR_VOICE_OVER_NOT_SUPPORTED = "VoiceOver not supported";
-export const ERR_VOICE_OVER_UNABLE_TO_DISABLE_SPLASH =
-  "Unable to disable VoiceOver welcome dialog";
+export const ERR_VOICE_OVER_UNABLE_TO_CONFIGURE_VOICEOVER_SETTING =
+  "Unable to configure a VoiceOver setting";
 export const ERR_VOICE_OVER_CANNOT_BE_STARTED = "VoiceOver cannot be started";
 
 export const ERR_VOICE_OVER_RUNNING_TIMEOUT =
