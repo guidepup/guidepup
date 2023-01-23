@@ -1,6 +1,6 @@
 import { LogStore } from "./LogStore";
-import { mockType } from "../test/mockType";
-import { ScreenReader } from "./ScreenReader";
+import { mockType } from "../../../test/mockType";
+import { ScreenReader } from "../../ScreenReader";
 
 const screenReaderStub = {
   caption: {
@@ -67,11 +67,15 @@ describe("LogStore", () => {
         resolver(expectedResult);
       });
 
-      it("should log the item text", () => {
+      it("should log the item text", async () => {
+        await resultPromise;
+
         expect(logStore.itemTextLog).toEqual([itemTextDummy]);
       });
 
-      it("should log the last spoken phrase", () => {
+      it("should log the last spoken phrase", async () => {
+        await resultPromise;
+
         expect(logStore.spokenPhraseLog).toEqual([lastSpokenPhraseDummy]);
       });
 

@@ -1,14 +1,18 @@
+import {
+  configureSettings,
+  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
+  storeOriginalSettings,
+} from "./configureSettings.ts";
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
-import { disableSplashScreen } from "./disableSplashScreen";
 import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
 import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import type { ScreenReader } from "../../ScreenReader";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
@@ -24,6 +28,8 @@ import { waitForRunning } from "./waitForRunning";
  * Class for controlling the VoiceOver ScreenReader on MacOS.
  */
 export class VoiceOver implements ScreenReader {
+  #resetSettings: () => Promise<void>;
+
   /**
    * VoiceOver caption APIs.
    */
@@ -86,7 +92,9 @@ export class VoiceOver implements ScreenReader {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
-    await disableSplashScreen();
+    this.#resetSettings = await storeOriginalSettings();
+
+    await configureSettings(DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS);
     await start();
     await waitForRunning(options);
   }
@@ -99,6 +107,11 @@ export class VoiceOver implements ScreenReader {
   async stop(options?: CommandOptions): Promise<void> {
     await forceQuit();
     await waitForNotRunning(options);
+    
+    if (this.#resetSettings) {
+      await this.#resetSettings();
+      this.#resetSettings = null;
+    }
   }
 
   /**

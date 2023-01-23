@@ -1,11 +1,11 @@
 import { click } from "./click";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { VoiceOverMouse } from "./VoiceOverMouse";
 
 jest.mock("./click", () => ({
   click: jest.fn(),
 }));
-jest.mock("../../LogStore", () => ({
+jest.mock("./LogStore", () => ({
   LogStore: jest.fn(),
 }));
 

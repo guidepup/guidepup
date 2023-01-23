@@ -19,6 +19,8 @@ module.exports = {
     "<rootDir>/src/ScreenReaderKeyboard.ts",
     "<rootDir>/src/ScreenReaderMouse.ts",
     "<rootDir>/src/macOS/Applications.ts",
+    // TODO: add tests for setting configuration
+    "<rootDir>/src/macOS/configureSettings.ts",
     "<rootDir>/src/macOS/KeyboardCommand.ts",
     "<rootDir>/src/macOS/KeyCodeCommand.ts",
     "<rootDir>/src/macOS/KeyCodes.ts",

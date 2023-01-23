@@ -1,8 +1,9 @@
+import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
 import { itemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
 import type { ScreenReaderCaption } from "../../ScreenReaderCaption";
 
@@ -23,7 +24,7 @@ export class VoiceOverCaption implements ScreenReaderCaption {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async lastSpokenPhrase(options?: CommandOptions): Promise<string> {
-    return await lastSpokenPhrase(options);
+    return cleanSpokenPhrase(await lastSpokenPhrase(options));
   }
 
   /**
@@ -57,7 +58,7 @@ export class VoiceOverCaption implements ScreenReaderCaption {
    * @returns {Promise<string>} The item's text.
    */
   async itemText(options?: CommandOptions): Promise<string> {
-    return await itemText(options);
+    return cleanSpokenPhrase(await itemText(options));
   }
 
   /**

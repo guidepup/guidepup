@@ -1,11 +1,15 @@
+import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
 import { itemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { mockType } from "../../../test/mockType";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
 import { VoiceOverCaption } from "./VoiceOverCaption";
 
+jest.mock("./cleanSpokenPhrase", () => ({
+  cleanSpokenPhrase: jest.fn(),
+}));
 jest.mock("./copyLastSpokenPhrase", () => ({
   copyLastSpokenPhrase: jest.fn(),
 }));
@@ -15,13 +19,14 @@ jest.mock("./itemText", () => ({
 jest.mock("./lastSpokenPhrase", () => ({
   lastSpokenPhrase: jest.fn(),
 }));
-jest.mock("../../LogStore", () => ({
+jest.mock("./LogStore", () => ({
   LogStore: jest.fn(),
 }));
 jest.mock("./saveLastSpokenPhrase", () => ({
   saveLastSpokenPhrase: jest.fn(),
 }));
 
+const cleanPhraseDummy = "test-clean-phrase";
 const spokenPhraseDummy = "test-spoken-phrase";
 const itemTextDummy = "test-item-text";
 
@@ -34,6 +39,7 @@ describe("VoiceOverCaption", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
+    mockType(cleanSpokenPhrase).mockReturnValue(cleanPhraseDummy);
     mockType(lastSpokenPhrase).mockResolvedValue(spokenPhraseDummy);
     mockType(itemText).mockResolvedValue(itemTextDummy);
 
@@ -60,8 +66,12 @@ describe("VoiceOverCaption", () => {
         expect(lastSpokenPhrase).toHaveBeenCalledWith(options);
       });
 
-      it("should return the last spoken phrase", () => {
-        expect(result).toEqual(spokenPhraseDummy);
+      it("should 'clean' the last spoken phrase to remove the VoiceOver 'missing value' syntax", () => {
+        expect(cleanSpokenPhrase).toHaveBeenCalledWith(spokenPhraseDummy);
+      });
+
+      it("should return the cleaned last spoken phrase", () => {
+        expect(result).toEqual(cleanPhraseDummy);
       });
     });
   });
@@ -118,8 +128,12 @@ describe("VoiceOverCaption", () => {
         expect(itemText).toHaveBeenCalledWith(options);
       });
 
-      it("should return the item text", () => {
-        expect(result).toEqual(itemTextDummy);
+      it("should 'clean' the item text to remove the VoiceOver 'missing value' syntax", () => {
+        expect(cleanSpokenPhrase).toHaveBeenCalledWith(itemTextDummy);
+      });
+
+      it("should return the cleaned item text", () => {
+        expect(result).toEqual(cleanPhraseDummy);
       });
     });
   });
