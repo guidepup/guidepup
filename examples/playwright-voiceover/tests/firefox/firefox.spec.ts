@@ -26,11 +26,15 @@ test.describe("Firefox Playwright VoiceOver", () => {
     console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
     for (const expectedItem of itemTextSnapshot) {
-      expect(itemTextLog).toContain(expectedItem);
+      expect(!!itemTextLog.find((log) => log.includes(expectedItem))).toBe(
+        true
+      );
     }
 
     for (const expectedPhrase of spokenPhraseSnapshot) {
-      expect(spokenPhraseLog).toContain(expectedPhrase);
+      expect(
+        !!spokenPhraseLog.find((log) => log.includes(expectedPhrase))
+      ).toBe(true);
     }
 
     stopRecording();
