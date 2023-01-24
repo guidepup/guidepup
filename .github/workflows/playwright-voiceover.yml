@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-11, macos-12]
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -21,7 +22,8 @@ jobs:
         uses: guidepup/setup-action@0.7.0
       - run: yarn install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
-      - run: yarn --cwd ./examples/playwright-voiceover test
+      - run: yarn --cwd ./examples/playwright-voiceover pretest
+      - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v2
         if: always()
         with:
