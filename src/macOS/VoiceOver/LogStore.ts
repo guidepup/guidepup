@@ -5,6 +5,10 @@ import { lastSpokenPhrase } from "./lastSpokenPhrase";
 
 const SPOKEN_PHRASES_POLL_INTERVAL = 50;
 const SPOKEN_PHRASES_RETRY_COUNT = 20;
+
+const ITEM_TEXT_POLL_INTERVAL = 50;
+const ITEM_TEXT_RETRY_COUNT = 10;
+
 const APPROX_WORDS_PER_SECOND =
   DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS.rateAsPercent / 12;
 
@@ -82,7 +86,7 @@ export class LogStore {
     const result = await promise;
 
     const [itemText, lastSpokenPhrase] = await Promise.all([
-      getItemText().then(cleanSpokenPhrase),
+      this.#pollForItemText(),
       this.#pollForSpokenPhrases(),
     ]);
 
@@ -93,6 +97,20 @@ export class LogStore {
     this.#activePromise = null;
 
     return result;
+  }
+
+  async #pollForItemText() {
+    for (let i = 0; i < ITEM_TEXT_RETRY_COUNT; i++) {
+      const itemText = cleanSpokenPhrase(await getItemText());
+
+      if (itemText) {
+        return itemText;
+      }
+
+      await delay(ITEM_TEXT_POLL_INTERVAL);
+    }
+
+    return "";
   }
 
   async #pollForSpokenPhrases() {
