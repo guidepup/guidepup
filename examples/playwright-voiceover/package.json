@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall": "npx playwright install webkit chromium",
+    "postinstall": "npx playwright install chrome chromium firefox msedge webkit",
     "pretest": "yarn --cwd ../.. compile",
     "test:chrome": "playwright test --browser chrome chrome/",
     "test:chromium": "playwright test --browser chromium chromium/",
