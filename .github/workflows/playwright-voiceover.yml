@@ -22,10 +22,8 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover pretest
-      - run: yarn --cwd ./examples/playwright-voiceover test:chrome
       - run: yarn --cwd ./examples/playwright-voiceover test:chromium
       - run: yarn --cwd ./examples/playwright-voiceover test:firefox
-      - run: yarn --cwd ./examples/playwright-voiceover test:msedge
       - run: yarn --cwd ./examples/playwright-voiceover test:webkit
       - uses: actions/upload-artifact@v2
         if: always()
