@@ -22,6 +22,9 @@ test.describe("Chromium Playwright VoiceOver", () => {
     const itemTextLog = await voiceOver.itemTextLog();
     const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
+    console.log(JSON.stringify(itemTextLog, undefined, 2));
+    console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+
     for (const expectedItem of itemTextSnapshot) {
       expect(itemTextLog).toContain(expectedItem);
     }
