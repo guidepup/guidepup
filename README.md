@@ -26,7 +26,7 @@ With [Guidepup](https://www.guidepup.dev/) you can automate your screen reader t
 ## Quick Features
 
 - **Full Control** - if a screen reader has a keyboard command, then Guidepup supports it.
-- **Mirrors Real User Experience** - assert on what your users really do, see, and hear when using screen readers.
+- **Mirrors Real User Experience** - assert on what users really do and hear when using screen readers.
 - **Framework Agnostic** - run with Jest, with Playwright, as an independent script, no vendor lock-in.
 
 ## Get Started
