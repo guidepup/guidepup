@@ -2,28 +2,28 @@ import type { CommandOptions } from "./CommandOptions";
 
 export interface ScreenReaderCursor {
   /**
-   * Move the ScreenReader cursor to the previous location.
+   * Move the screen reader cursor to the previous location.
    *
    * @param {object} [options] Additional options.
    */
   previous(options?: CommandOptions): Promise<void>;
 
   /**
-   * Move the ScreenReader cursor to the next location.
+   * Move the screen reader cursor to the next location.
    *
    * @param {object} [options] Additional options.
    */
   next(options?: CommandOptions): Promise<void>;
 
   /**
-   * Perform the default action for the item in the ScreenReader cursor.
+   * Perform the default action for the item in the screen reader cursor.
    *
    * @param {object} [options] Additional options.
    */
   act(options?: CommandOptions): Promise<void>;
 
   /**
-   * Interact with the item under the ScreenReader cursor.
+   * Interact with the item under the screen reader cursor.
    *
    * @param {object} [options] Additional options.
    */

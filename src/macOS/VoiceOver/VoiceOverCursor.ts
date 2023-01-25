@@ -51,7 +51,7 @@ export class VoiceOverCursor implements ScreenReaderCursor {
   }
 
   /**
-   * Interact with the item under the ScreenReader cursor.
+   * Interact with the item under the VoiceOver cursor.
    *
    * Equivalent of executing VO-Shift-Down Arrow.
    *

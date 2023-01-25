@@ -1,17 +1,17 @@
 /* eslint-disable no-empty-pattern */
-import { nvda, windowsActivate } from "../../lib";
+import { nvda } from "../../lib";
 import { test } from "@playwright/test";
 
-const applicationNameMap = {
-  chromium: "Chromium",
-  chrome: "Google Chrome",
-  "chrome-beta": "Google Chrome Beta",
-  msedge: "Microsoft Edge",
-  "msedge-beta": "Microsoft Edge Beta",
-  "msedge-dev": "Microsoft Edge Dev",
-  firefox: "Nightly",
-  webkit: "Playwright",
-};
+// const applicationNameMap = {
+//   chromium: "Chromium",
+//   chrome: "Google Chrome",
+//   "chrome-beta": "Google Chrome Beta",
+//   msedge: "Microsoft Edge",
+//   "msedge-beta": "Microsoft Edge Beta",
+//   "msedge-dev": "Microsoft Edge Dev",
+//   firefox: "Nightly",
+//   webkit: "Playwright",
+// };
 
 /**
  * These tests extend the default Playwright environment that launches the
@@ -23,7 +23,9 @@ const voTest = test.extend<{ nvda: typeof nvda }>({
   nvda: async ({ browserName }, use) => {
     try {
       await nvda.start();
-      await windowsActivate(applicationNameMap[browserName]);
+      // TODO: focus the browser
+      console.log({ browserName });
+      // await windowsActivate(applicationNameMap[browserName]);
       await use(nvda);
     } finally {
       await nvda.stop();

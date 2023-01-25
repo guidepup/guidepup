@@ -8,7 +8,7 @@ const delay = async (ms: number) =>
  */
 async function run(): Promise<void> {
   try {
-    // Start the NVDA screenreader
+    // Start the NVDA screen reader
     await nvda.start();
 
     // Open Edge and wait for it to be ready.

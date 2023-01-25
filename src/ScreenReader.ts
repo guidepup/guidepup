@@ -3,56 +3,56 @@ import type { KeyboardOptions } from "./KeyboardOptions";
 
 export interface ScreenReader {
   /**
-   * Detect whether the ScreenReader is supported for the current OS.
+   * Detect whether the screen reader is supported for the current OS.
    *
    * @returns {Promise<boolean>}
    */
   detect(): Promise<boolean>;
 
   /**
-   * Detect whether the ScreenReader is the default screen reader for the current OS.
+   * Detect whether the screen reader is the default screen reader for the current OS.
    *
    * @returns {Promise<boolean>}
    */
   default(): Promise<boolean>;
 
   /**
-   * Turn the ScreenReader on.
+   * Turn the screen reader on.
    *
    * @param {object} [options] Additional options.
    */
   start(options?: CommandOptions): Promise<void>;
 
   /**
-   * Turn the ScreenReader off.
+   * Turn the screen reader off.
    *
    * @param {object} [options] Additional options.
    */
   stop(options?: CommandOptions): Promise<void>;
 
   /**
-   * Move the ScreenReader cursor to the previous location.
+   * Move the screen reader cursor to the previous location.
    *
    * @param {object} [options] Additional options.
    */
   previous(options?: CommandOptions): Promise<void>;
 
   /**
-   * Move the ScreenReader cursor to the next location.
+   * Move the screen reader cursor to the next location.
    *
    * @param {object} [options] Additional options.
    */
   next(options?: CommandOptions): Promise<void>;
 
   /**
-   * Perform the default action for the item in the ScreenReader cursor.
+   * Perform the default action for the item in the screen reader cursor.
    *
    * @param {object} [options] Additional options.
    */
   act(options?: CommandOptions): Promise<void>;
 
   /**
-   * Interact with the item under the ScreenReader cursor.
+   * Interact with the item under the screen reader cursor.
    *
    * @param {object} [options] Additional options.
    */
@@ -110,9 +110,9 @@ export interface ScreenReader {
   type(text: string, options?: KeyboardOptions): Promise<void>;
 
   /**
-   * Perform a ScreenReader command.
+   * Perform a screen reader command.
    *
-   * @param {any} command ScreenReader keyboard command or commander command to execute.
+   * @param {any} command Screen reader keyboard command or commander command to execute.
    * @param {object} [options] Additional options.
    */
   perform(command: unknown, options?: CommandOptions): Promise<void>;
@@ -125,21 +125,21 @@ export interface ScreenReader {
   lastSpokenPhrase(): Promise<string>;
 
   /**
-   * Get the text of the item in the ScreenReader cursor.
+   * Get the text of the item in the screen reader cursor.
    *
    * @returns {Promise<string>} The item's text.
    */
   itemText(): Promise<string>;
 
   /**
-   * Get the log of all spoken phrases for this ScreenReader instance.
+   * Get the log of all spoken phrases for this screen reader instance.
    *
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   spokenPhraseLog(): Promise<string[]>;
 
   /**
-   * Get the log of all visited item text for this ScreenReader instance.
+   * Get the log of all visited item text for this screen reader instance.
    *
    * @returns {Promise<string[]>} The item text log.
    */

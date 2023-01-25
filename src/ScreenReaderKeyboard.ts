@@ -48,14 +48,14 @@ export interface ScreenReaderKeyboard {
   type(text: string, options?: KeyboardOptions): Promise<void>;
 
   /**
-   * ScreenReader keyboard commands.
+   * Screen reader keyboard commands.
    */
   get commands(): Record<string, KeyboardCommand>;
 
   /**
-   * Perform a ScreenReader keyboard command.
+   * Perform a screen reader keyboard command.
    *
-   * @param {object} command ScreenReader keyboard command to execute.
+   * @param {object} command screen reader keyboard command to execute.
    * @param {object} [options] Additional options.
    */
   perform(command: KeyboardCommand, options?: CommandOptions): Promise<void>;

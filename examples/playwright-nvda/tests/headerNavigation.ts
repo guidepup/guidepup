@@ -1,5 +1,5 @@
-import { nvda as _nvda, WindowsKeyCodes } from "../../../lib";
 import { expect, Page } from "@playwright/test";
+import { nvda as _nvda } from "../../../lib";
 
 type NVDA = typeof _nvda;
 
@@ -27,6 +27,6 @@ export async function headerNavigation({
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
   while ((await nvda.lastSpokenPhrase()) !== "heading, level 1, Guidepup") {
-    await nvda.perform({ keyCode: WindowsKeyCodes.h });
+    await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
   }
 }

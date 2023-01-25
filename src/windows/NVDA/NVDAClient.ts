@@ -253,7 +253,7 @@ export class NVDAClient extends EventEmitter {
       });
 
       this.once(CANCEL, cancelHandler);
-      this.sendKeyCode(keyCodeCommands.stopReading);
+      this.sendKeyCode(keyCodeCommands.stopSpeech);
 
       await cancelPromise;
       await delay(CANCEL_DEBOUNCE_TIMEOUT);

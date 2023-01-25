@@ -25,7 +25,7 @@ import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
 /**
- * Class for controlling the VoiceOver ScreenReader on MacOS.
+ * Class for controlling the VoiceOver screen reader on MacOS.
  */
 export class VoiceOver implements ScreenReader {
   #resetSettings: () => Promise<void>;
@@ -146,7 +146,7 @@ export class VoiceOver implements ScreenReader {
   }
 
   /**
-   * Interact with the item under the ScreenReader cursor.
+   * Interact with the item under the VoiceOver cursor.
    *
    * Equivalent of executing VO-Shift-Down Arrow.
    *

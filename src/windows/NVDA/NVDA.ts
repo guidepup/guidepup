@@ -13,10 +13,12 @@ import { sendKeys } from "../sendKeys";
 import { start } from "./start";
 
 /**
- * Class for controlling the NVDA ScreenReader on MacOS.
+ * Class for controlling the NVDA screen reader on Windows.
  */
 export class NVDA implements ScreenReader {
   #client: NVDAClient;
+
+  keyboardCommands = keyCodeCommands;
 
   constructor() {
     this.#client = new NVDAClient();
