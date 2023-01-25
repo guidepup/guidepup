@@ -28,6 +28,7 @@ jobs:
       - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v3
         if: always()
+        continue-on-error: true
         with:
           name: artifacts
           path: |
