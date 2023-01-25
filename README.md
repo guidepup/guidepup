@@ -69,7 +69,7 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ```yaml
 - name: Setup Environment
-  uses: guidepup/setup-action@0.8.0
+  uses: guidepup/setup-action@0.8.1
 ```
 
 ## Roadmap
