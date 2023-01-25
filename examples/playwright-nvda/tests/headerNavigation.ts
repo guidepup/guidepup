@@ -1,10 +1,19 @@
-import { expect } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
+import { nvda as _nvda, WindowsKeyCodes } from "../../../lib";
+
+type NVDA = typeof _nvda;
 
 async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function headerNavigation({ page, nvda }) {
+export async function headerNavigation({
+  page,
+  nvda,
+}: {
+  page: Page;
+  nvda: NVDA;
+}) {
   // Navigate to Guidepup GitHub page 🎉
   await page.goto("https://github.com/guidepup/guidepup", {
     waitUntil: "domcontentloaded",
@@ -18,6 +27,6 @@ export async function headerNavigation({ page, nvda }) {
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
   while ((await nvda.lastSpokenPhrase()) !== "heading, level 1, Guidepup") {
-    await nvda.next();
+    await nvda.perform({ keyCode: WindowsKeyCodes.h });
   }
 }
