@@ -29,6 +29,18 @@ describe("NVDAClient", () => {
     let nvdaServerFake: Server;
     let clientSocket: TLSSocket;
 
+    async function createServerDataPromise(expectedMessages: number) {
+      let counter = 0;
+
+      return await new Promise<void>((resolve) =>
+        clientSocket.on("data", () => {
+          if (++counter === expectedMessages) {
+            resolve();
+          }
+        })
+      );
+    }
+
     beforeEach(async () => {
       const options = {
         key: readKey("agent1-key.pem"),
@@ -121,11 +133,13 @@ describe("NVDAClient", () => {
       beforeEach(async () => {
         jest.clearAllMocks();
 
+        const serverDataPromise = createServerDataPromise(2);
+
         await client.sendKeyCode({
           keyCode: new Key({ keyCode: 1, scanCode: 2, extended: false }),
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await serverDataPromise;
       });
 
       it("should send a key down and a key up command to NVDA", () => {
@@ -156,6 +170,8 @@ describe("NVDAClient", () => {
       beforeEach(async () => {
         jest.clearAllMocks();
 
+        const serverDataPromise = createServerDataPromise(4);
+
         await client.sendKeyCode({
           keyCode: [
             new Key({ keyCode: 1, scanCode: 2, extended: false }),
@@ -163,7 +179,7 @@ describe("NVDAClient", () => {
           ],
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await serverDataPromise;
       });
 
       it("should send a key down command for each key, and then a key up command for each key in the reverse order to NVDA", () => {
@@ -214,29 +230,31 @@ describe("NVDAClient", () => {
       beforeEach(async () => {
         jest.clearAllMocks();
 
+        const serverDataPromise = createServerDataPromise(4);
+
         await client.sendKeyCode({
           keyCode: new Key({ keyCode: 1, scanCode: 2, extended: false }),
           modifiers: [Modifiers.ALT],
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await serverDataPromise;
       });
 
-      it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {       
+      it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.ALT.toString(true)+ "\n"
+          Modifiers.ALT.toString(true) + "\n"
         );
-         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
-           2,
-           JSON.stringify({
-             scan_code: 2,
-             extended: false,
-             vk_code: 1,
-             pressed: true,
-             type: "key",
-           }) + "\n"
-         );
+        expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
+          2,
+          JSON.stringify({
+            scan_code: 2,
+            extended: false,
+            vk_code: 1,
+            pressed: true,
+            type: "key",
+          }) + "\n"
+        );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
           JSON.stringify({
@@ -258,6 +276,8 @@ describe("NVDAClient", () => {
       beforeEach(async () => {
         jest.clearAllMocks();
 
+        const serverDataPromise = createServerDataPromise(8);
+
         await client.sendKeyCode({
           keyCode: [
             new Key({ keyCode: 1, scanCode: 2, extended: false }),
@@ -266,38 +286,38 @@ describe("NVDAClient", () => {
           modifiers: [Modifiers.ALT, Modifiers.CONTROL],
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await serverDataPromise;
       });
 
-      it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {       
+      it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.ALT.toString(true)+ "\n"
+          Modifiers.ALT.toString(true) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
-          Modifiers.CONTROL.toString(true)+ "\n"
+          Modifiers.CONTROL.toString(true) + "\n"
         );
-         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
-           3,
-           JSON.stringify({
-             scan_code: 2,
-             extended: false,
-             vk_code: 1,
-             pressed: true,
-             type: "key",
-           }) + "\n"
-         );
-         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
-           4,
-           JSON.stringify({
-             scan_code: 4,
-             extended: true,
-             vk_code: 3,
-             pressed: true,
-             type: "key",
-           }) + "\n"
-         );
+        expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
+          3,
+          JSON.stringify({
+            scan_code: 2,
+            extended: false,
+            vk_code: 1,
+            pressed: true,
+            type: "key",
+          }) + "\n"
+        );
+        expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
+          4,
+          JSON.stringify({
+            scan_code: 4,
+            extended: true,
+            vk_code: 3,
+            pressed: true,
+            type: "key",
+          }) + "\n"
+        );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           5,
           JSON.stringify({
