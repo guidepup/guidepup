@@ -11,10 +11,10 @@
   Reliable automation for your screen reader a11y workflows through JavaScript supporting:
 </p>
 <p align="center">
-  <b>VoiceOver</b> on MacOS
+  <b>VoiceOver on MacOS</b>
 </p>
 <p align="center">
-  <b>NVDA</b> on Windows - <a href="https://github.com/guidepup/guidepup/pull/33">Coming Soon!</a>
+  <b>NVDA on Windows</b> - <a href="https://github.com/guidepup/guidepup/pull/33">Coming Soon!</a>
 </p>
 
 ## Intro
@@ -25,21 +25,21 @@ With [Guidepup](https://www.guidepup.dev/) you can automate your screen reader t
 
 ## Quick Features
 
-- Full Control - if a screen reader has a keyboard command, then Guidepup supports it
-- Mirrors Real User Experience - assert on what your users really do, see, and hear when using screen readers
-- Framework Agnostic - run with Jest, with Playwright, as an independent script, no vendor lock-in
+- **Full Control** - if a screen reader has a keyboard command, then Guidepup supports it.
+- **Mirrors Real User Experience** - assert on what your users really do, see, and hear when using screen readers.
+- **Framework Agnostic** - run with Jest, with Playwright, as an independent script, no vendor lock-in.
 
 ## Get Started
 
 Setup your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
-```bash
+```console
 npx @guidepup/setup
 ```
 
 Install Guidepup to your project:
 
-```bash
+```console
 npm install @guidepup/guidepup
 ```
 
@@ -80,8 +80,8 @@ Alternatively checkout [this project](https://github.com/guidepup/aria-at-tests)
 
 Check out some of the other Guidepup modules:
 
-- [`@guidepup/setup`](https://github.com/guidepup/setup/)
-- [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/)
+- [`@guidepup/setup`](https://github.com/guidepup/setup/) - set up your local or CI environment for screen reader test automation.
+- [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/) - seemless integration of Guidepup with Playwright.
 
 If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to setup your CI ready for screen reader automation.
 
