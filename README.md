@@ -11,7 +11,7 @@
   Reliable automation for your screen reader a11y workflows through JavaScript supporting:
 </p>
 <p align="center">
-  <b>VoiceOver on MacOS</b>
+  <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a>
 </p>
 <p align="center">
   <b>NVDA on Windows</b> - <a href="https://github.com/guidepup/guidepup/pull/33">Coming Soon!</a>
