@@ -8,10 +8,28 @@
   <a href="https://github.com/guidepup/guidepup/blob/main/LICENSE"><img alt="Guidepup uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup" /></a>
 </p>
 <p align="center">
-  Providing a reliable set of APIs to automate your screen reader a11y workflows through JavaScript.
+  Reliable automation for your screen reader a11y workflows through JavaScript supporting:
+</p>
+<p align="center">
+  <b>VoiceOver</b> on MacOS
+</p>
+<p align="center">
+  <b>NVDA</b> on Windows - <a href="https://github.com/guidepup/guidepup/pull/33">Coming Soon!</a>
 </p>
 
-## Getting Started
+## Intro
+
+A11y static analysis tools [can only get you so far](https://karlgroves.com/web-accessibility-testing-what-can-be-tested-and-how/) and don't assure on the quality of the user experience for screen reader users. This means teams need to perform lots of manual tests with multiple screen readers to ensure great UX which can take a lot of time... **not anymore!**
+
+With [Guidepup](https://www.guidepup.dev/) you can automate your screen reader test workflows the same you as would for mouse or keyboard based scenarios, no sweat!
+
+## Quick Features
+
+- Full Control - if a screen reader has a keyboard command, then Guidepup supports it
+- Mirrors Real User Experience - assert on what your users really do, see, and hear when using screen readers
+- Framework Agnostic - run with Jest, with Playwright, as an independent script, no vendor lock-in
+
+## Get Started
 
 Setup your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
@@ -46,17 +64,17 @@ async function run(): Promise<void> {
 run();
 ```
 
-## Guides
+## Documentation
 
-Check out these [fab guides](https://github.com/guidepup/guidepup/tree/main/guides) on how to set up your local or CI environments for using Guidepup.
+Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real world examples, environment setup, and complete API documentation with examples.
+
+Alternatively, you can also check out the [typedoc API documentation](https://guidepup.github.io/guidepup/) for all the information you need to write fantastic screen reader driven workflows.
 
 ## Examples
 
 Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects.
 
-## API Documentation
-
-The [API documentation](https://guidepup.github.io/guidepup/) has all the information you need to write fantastic screen reader driven workflows. 
+Alternatively checkout [this project](https://github.com/guidepup/aria-at-tests) to check out the Guidepup compatibility against <https://github.com/w3c/aria-at> test suite.
 
 ## See Also
 
@@ -72,18 +90,12 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
   uses: guidepup/setup-action@0.8.1
 ```
 
-## Roadmap
+## Support
 
-Screen reader support:
-
-- VoiceOver on MacOS - Done
-- NVDA on Windows - [WIP](https://github.com/guidepup/guidepup/pull/33)
-- VoiceOver on iOS - TBD
-- Talkback on Android - TBD
+- VoiceOver on MacOS - Full Support 🎉
+- NVDA on Windows - [Coming Soon](https://github.com/guidepup/guidepup/pull/33)
 
 ## Related
-
-Building on the shoulders of giants!
 
 Here are some related projects:
 
