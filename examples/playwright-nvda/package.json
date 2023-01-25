@@ -6,9 +6,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall": "npx playwright install",
-    "pretest": "yarn --cwd ../../ build",
-    "test": "playwright test"
+    "postinstall": "npx playwright install chromium firefox",
+    "pretest": "yarn --cwd ../../ compile",
+    "test": "yarn test:chromium && yarn test:firefox",
+    "test:chromium": "playwright test --config chromium.config.ts ./chromium/",
+    "test:firefox": "playwright test --config firefox.config.ts ./firefox/"
   },
   "devDependencies": {
     "@playwright/test": "^1.17.1",
