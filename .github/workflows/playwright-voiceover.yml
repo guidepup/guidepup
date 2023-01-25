@@ -32,5 +32,5 @@ jobs:
         with:
           name: artifacts
           path: |
-            examples/playwright-voiceover/test-results/**/*
+            **/test-results/**/*
             **/recordings/**/*
