@@ -1,6 +1,6 @@
 import { CommanderCommands } from "./CommanderCommands";
 import { CommandOptions } from "../../CommandOptions";
-import { LogStore } from "../../LogStore";
+import { LogStore } from "./LogStore";
 import { performCommand } from "./performCommand";
 
 export class VoiceOverCommander {

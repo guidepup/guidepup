@@ -4,7 +4,7 @@ An example demonstrating using Guidepup for testing VoiceOver automation with [P
 
 Run this example's test with:
 
-```console
+```bash
 cd ./examples/playwright-voiceover
 yarn install --frozen-lockfile
 yarn test

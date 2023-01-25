@@ -1,14 +1,14 @@
-import { ChildProcess, execSync, spawn } from "child_process";
+import { ChildProcess, spawn } from "child_process";
+import { mkdirSync, unlinkSync } from "fs";
 import { join } from "path";
 import { mockType } from "../../test/mockType";
 import { record } from "./record";
-import { unlinkSync } from "fs";
 
 jest.mock("child_process", () => ({
-  execSync: jest.fn(),
   spawn: jest.fn(),
 }));
 jest.mock("fs", () => ({
+  mkdirSync: jest.fn(),
   unlinkSync: jest.fn(),
 }));
 
@@ -33,7 +33,7 @@ describe("record", () => {
   });
 
   it("should create the directory path", () => {
-    expect(execSync).toHaveBeenCalledWith(`mkdir -p ${mockDirectory}`);
+    expect(mkdirSync).toHaveBeenCalledWith(mockDirectory, { recursive: true });
   });
 
   it("should delete the file if already exists (because the screencapture command won't overwrite)", () => {

@@ -1,6 +1,6 @@
-import { execSync, spawn } from "child_process";
+import { mkdirSync, unlinkSync } from "fs";
 import { dirname } from "path";
-import { unlinkSync } from "fs";
+import { spawn } from "child_process";
 
 /**
  * Start a screen recording.
@@ -9,7 +9,7 @@ import { unlinkSync } from "fs";
  * @returns {Function} A function to stop the screen recording.
  */
 export function record(filepath: string): () => void {
-  execSync(`mkdir -p ${dirname(filepath)}`);
+  mkdirSync(dirname(filepath), { recursive: true });
   
   try {
     unlinkSync(filepath);

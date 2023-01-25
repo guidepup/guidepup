@@ -194,10 +194,10 @@ export class NVDA implements ScreenReader {
   /**
    * Get the log of all spoken phrases for this NVDA instance.
    *
-   * @returns {string[]} The spoken phrase log.
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
-  spokenPhraseLog(): string[] {
-    return this.#client.spokenPhraseLog();
+  spokenPhraseLog(): Promise<string[]> {
+    return Promise.resolve(this.#client.spokenPhraseLog());
   }
 
   /**
@@ -205,9 +205,9 @@ export class NVDA implements ScreenReader {
    *
    * @alias lastSpokenPhrase
    *
-   * @returns {string[]} The spoken phrase log.
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
-  itemTextLog(): string[] {
-    return this.#client.spokenPhraseLog();
+  itemTextLog(): Promise<string[]> {
+    return Promise.resolve(this.#client.spokenPhraseLog());
   }
 }

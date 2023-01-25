@@ -4,7 +4,7 @@ A basic example demonstrating control of NVDA.
 
 Run this example with:
 
-```console
+```bash
 cd ./examples/hello-nvda
 npx ts-node ./index.ts
 ```

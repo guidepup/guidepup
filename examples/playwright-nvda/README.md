@@ -4,7 +4,7 @@ An example demonstrating using Guidepup for testing NVDA automation with [Playwr
 
 Run this example's test with:
 
-```console
+```bash
 cd ./examples/playwright-nvda
 yarn install --frozen-lockfile
 yarn test
