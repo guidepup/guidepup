@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/guidepup",
-  "version": "0.15.3",
+  "version": "0.16.0",
   "description": "Screen reader driver for test automation.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -34,7 +34,7 @@
     "prepublish": "yarn build"
   },
   "devDependencies": {
-    "@types/jest": "^29.2.6",
+    "@types/jest": "^29.4.0",
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
