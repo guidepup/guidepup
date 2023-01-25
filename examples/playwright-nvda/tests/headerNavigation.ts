@@ -25,17 +25,20 @@ export async function headerNavigation({
 
   await nvda.act();
 
+  // Make sure not in focus mode
+  await nvda.perform(nvda.keyboardCommands.exitFocusMode);
+
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const lastSpokenPhrase = await nvda.lastSpokenPhrase();
+    const spokenPhraseLog = await nvda.spokenPhraseLog();
 
-    console.log(lastSpokenPhrase);
-
-    if (lastSpokenPhrase === "heading, level 1, Guidepup") {
+    if (spokenPhraseLog.find(log => log.includes("heading, level 1, Guidepup"))) {
       break;
     }
 
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
   }
+
+  console.log(await nvda.spokenPhraseLog());
 }
