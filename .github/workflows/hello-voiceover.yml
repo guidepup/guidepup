@@ -13,16 +13,19 @@ jobs:
       matrix:
         os: [macos-11, macos-12]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.7.0
+        uses: guidepup/setup-action@0.8.1
+        with:
+          record: true
       - run: yarn install --frozen-lockfile
       - run: npx ts-node ./examples/hello-voiceover/index.ts
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
+        continue-on-error: true
         with:
           name: artifacts
           path: |
