@@ -1,5 +1,5 @@
-import { expect, Page } from "@playwright/test";
 import { nvda as _nvda, WindowsKeyCodes } from "../../../lib";
+import { expect, Page } from "@playwright/test";
 
 type NVDA = typeof _nvda;
 
