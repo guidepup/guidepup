@@ -31,7 +31,7 @@ With [Guidepup](https://www.guidepup.dev/) you can automate your screen reader t
 
 ## Get Started
 
-Setup your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+Set up your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
 ```console
 npx @guidepup/setup
@@ -83,7 +83,7 @@ Check out some of the other Guidepup modules:
 - [`@guidepup/setup`](https://github.com/guidepup/setup/) - set up your local or CI environment for screen reader test automation.
 - [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/) - seemless integration of Guidepup with Playwright.
 
-If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to setup your CI ready for screen reader automation.
+If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to set up your CI ready for screen reader automation.
 
 ```yaml
 - name: Setup Environment
