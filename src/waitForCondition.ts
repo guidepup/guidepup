@@ -47,7 +47,6 @@ export async function waitForCondition(
     new Promise<void>((_, reject) => {
       timeoutTimerId = setTimeout(() => {
         controller.abort();
-        console.log("timed out waiting");
         reject(new Error(timeoutErrorMessage));
       }, pollTimeout);
     }),

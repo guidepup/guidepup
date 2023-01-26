@@ -1,12 +1,24 @@
 import { createServer, Server, TLSSocket } from "tls";
+import { dirname, join } from "path";
+import { ERR_NVDA_CANNOT_CONNECT, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
-import { ERR_NVDA_CANNOT_CONNECT } from "../errors";
+import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { Key } from "../Key";
+import { mockType } from "../../../test/mockType";
 import { Modifiers } from "../Modifiers";
 import { NVDAClient } from "./NVDAClient";
+import { readFileSync } from "fs";
 import { readKey } from "../../../test/fixtures";
 
 const nvdaDataHandlerStub = jest.fn();
+const installationPathDummy = "test-installation-path";
+
+jest.mock("./getNVDAInstallationPath", () => ({
+  getNVDAInstallationPath: jest.fn(),
+}));
+jest.mock("fs", () => ({
+  readFileSync: jest.fn(),
+}));
 
 describe("NVDAClient", () => {
   let client: NVDAClient;
@@ -14,7 +26,50 @@ describe("NVDAClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    mockType(getNVDAInstallationPath).mockResolvedValue(installationPathDummy);
+
+    mockType(readFileSync).mockImplementation((path, ...args) => {
+      if (
+        path ===
+        join(
+          dirname(installationPathDummy),
+          "userConfig",
+          "addons",
+          "remote",
+          "globalPlugins",
+          "remoteClient",
+          "server.pem"
+        )
+      ) {
+        return readKey("server.pem");
+      }
+
+      return jest.requireActual("fs").readFileSync(path, ...args);
+    });
+
     client = new NVDAClient();
+  });
+
+  it("should get the NVDA installation path so it can find the server CA", async () => {
+    try {
+      await client.connect();
+    } catch {
+      // swallow;
+    }
+
+    expect(getNVDAInstallationPath).toHaveBeenCalled();
+  });
+
+  describe("when NVDA is not installed", () => {
+    beforeEach(() => {
+      mockType(getNVDAInstallationPath).mockResolvedValue(null);
+    });
+
+    it("should reject with a 'not installed' error", async () => {
+      await expect(client.connect()).rejects.toThrowError(
+        ERR_NVDA_NOT_INSTALLED
+      );
+    });
   });
 
   describe("when NVDA is not running", () => {
@@ -77,6 +132,20 @@ describe("NVDAClient", () => {
       nvdaServerFake.close();
       client.disconnect();
       (clientSocket as unknown) = undefined;
+    });
+
+    it("should read the CA from the NVDA plugin", () => {
+      expect(readFileSync).toHaveBeenCalledWith(
+        join(
+          dirname(installationPathDummy),
+          "userConfig",
+          "addons",
+          "remote",
+          "globalPlugins",
+          "remoteClient",
+          "server.pem"
+        )
+      );
     });
 
     it("should send a connection message and a protocol message to NVDA", () => {
