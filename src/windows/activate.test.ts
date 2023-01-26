@@ -6,18 +6,24 @@ jest.mock("./runVbsScript", () => ({
   runVbsScript: jest.fn(),
 }));
 
-const mockApplication = "test-application";
+const mockApplicationPath = "test\\application\\path";
+const mockApplicationWindowTitle = "test-application-window-title";
 
 describe("activate", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should run a vbs script to activate the application", async () => {
-    await activate(mockApplication);
+  it("should run a vbs script to activate the application using the application path (escaped) and application window title", async () => {
+    await activate(mockApplicationPath, mockApplicationWindowTitle);
 
     expect(runVbsScript).toHaveBeenCalledWith(
-      `set WshShell = CreateObject("WScript.Shell")\nWshShell.Run """${mockApplication}"" -p1 -c"\nset WshShell = Nothing`
+      expect.stringContaining(mockApplicationPath.replaceAll("\\", "\\\\"))
+    );
+    expect(runVbsScript).toHaveBeenCalledWith(
+      expect.stringContaining(
+        mockApplicationWindowTitle
+      )
     );
   });
 
@@ -32,7 +38,7 @@ describe("activate", () => {
       let error;
 
       try {
-        await activate(mockApplication);
+        await activate(mockApplicationPath, mockApplicationWindowTitle);
       } catch (e) {
         error = e;
       }
