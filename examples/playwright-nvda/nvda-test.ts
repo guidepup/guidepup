@@ -1,17 +1,63 @@
 /* eslint-disable no-empty-pattern */
-import { nvda } from "../../lib";
+import { nvda, windowsActivate } from "../../lib";
+import { homedir } from "os";
+import { join } from "path";
+import { readdirSync } from "fs";
 import { test } from "@playwright/test";
 
-// const applicationNameMap = {
-//   chromium: "Chromium",
-//   chrome: "Google Chrome",
-//   "chrome-beta": "Google Chrome Beta",
-//   msedge: "Microsoft Edge",
-//   "msedge-beta": "Microsoft Edge Beta",
-//   "msedge-dev": "Microsoft Edge Dev",
-//   firefox: "Nightly",
-//   webkit: "Playwright",
-// };
+const BROWSER_INSTALLATION_DIRECTORY = join(
+  homedir(),
+  "AppData",
+  "Local",
+  "ms-playwright"
+);
+
+const CHROMIUM_PATH = join("chrome-win", "chrome.exe");
+const FIREFOX_PATH = join("firefox", "firefox.exe");
+
+const directories = readdirSync(BROWSER_INSTALLATION_DIRECTORY, {
+  withFileTypes: true,
+}).filter((item) => item.isDirectory());
+
+const chromiumDirectory = directories
+  .filter((directory) => directory.name.startsWith("chromium"))
+  .sort(byLatestRevision)
+  .at(0)?.name;
+
+const firefoxDirectory = directories
+  .filter((directory) => directory.name.startsWith("firefox"))
+  .sort(byLatestRevision)
+  .at(0)?.name;
+
+function byLatestRevision(directoryA, directoryB) {
+  const revisionA = directoryA.split("-").at(-1);
+  const revisionB = directoryB.split("-").at(-1);
+
+  return revisionB - revisionA;
+}
+
+const applicationNameMap = {
+  chromium: chromiumDirectory
+    ? {
+        path: join(
+          BROWSER_INSTALLATION_DIRECTORY,
+          chromiumDirectory,
+          CHROMIUM_PATH
+        ),
+        name: "Chromium",
+      }
+    : null,
+  firefox: firefoxDirectory
+    ? {
+        path: join(
+          BROWSER_INSTALLATION_DIRECTORY,
+          firefoxDirectory,
+          FIREFOX_PATH
+        ),
+        name: "Nightly",
+      }
+    : null,
+};
 
 /**
  * These tests extend the default Playwright environment that launches the
@@ -22,10 +68,14 @@ import { test } from "@playwright/test";
 const voTest = test.extend<{ nvda: typeof nvda }>({
   nvda: async ({ browserName }, use) => {
     try {
+      const application = applicationNameMap[browserName];
+
+      if (!application) {
+        throw new Error(`Browser ${browserName} is not installed.`);
+      }
+
       await nvda.start();
-      // TODO: focus the browser
-      console.log({ browserName });
-      // await windowsActivate(applicationNameMap[browserName]);
+      await windowsActivate(application.path, application.name);
       await use(nvda);
     } finally {
       await nvda.stop();

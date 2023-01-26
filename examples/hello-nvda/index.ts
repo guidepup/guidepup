@@ -16,7 +16,7 @@ async function run(): Promise<void> {
     // Not best practice, but expectation is that consumer will perform proper
     // checks to ensure that Edge is ready, most likely using something like
     // playwright to launch and control the browser.
-    await windowsActivate("msedge.exe");
+    await windowsActivate("msedge.exe", "Edge");
     await delay(4000);
 
     // Navigate to guidepup repo.

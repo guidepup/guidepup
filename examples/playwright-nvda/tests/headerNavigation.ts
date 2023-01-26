@@ -33,7 +33,9 @@ export async function headerNavigation({
   while (true) {
     const spokenPhraseLog = await nvda.spokenPhraseLog();
 
-    if (spokenPhraseLog.find(log => log.includes("heading, level 1, Guidepup"))) {
+    if (
+      spokenPhraseLog.find((log) => log.includes("Guidepup, heading, level 1"))
+    ) {
       break;
     }
 
