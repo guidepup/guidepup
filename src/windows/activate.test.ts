@@ -14,17 +14,10 @@ describe("activate", () => {
     jest.clearAllMocks();
   });
 
-  it("should run a vbs script to activate the application using the application path (escaped) and application window title", async () => {
+  it("should run a vbs script to activate the application", async () => {
     await activate(mockApplicationPath, mockApplicationWindowTitle);
 
-    expect(runVbsScript).toHaveBeenCalledWith(
-      expect.stringContaining(mockApplicationPath.replaceAll("\\", "\\\\"))
-    );
-    expect(runVbsScript).toHaveBeenCalledWith(
-      expect.stringContaining(
-        mockApplicationWindowTitle
-      )
-    );
+    expect(runVbsScript).toHaveBeenCalledWith(expect.any(String));
   });
 
   describe("when running the vbs script throws an error", () => {

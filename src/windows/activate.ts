@@ -1,27 +1,23 @@
+import { basename } from "path";
 import { runVbsScript } from "./runVbsScript";
 
 export async function activate(
   applicationPath: string,
   applicationWindowTitle: string
 ): Promise<void> {
+  const escapedApplicationPath = applicationPath.replaceAll("\\", "\\\\");
+
   const script = `
-DIM strApplicationPath, strApplicationWindowName, strApplicationBaseName
+SET WshShell = CreateObject("WScript.Shell")
 
-strApplicationPath = "${applicationPath.replaceAll("\\", "\\\\")}"
-strApplicationWindowTitle = "${applicationWindowTitle}"
-
-SET objFSO = CreateObject("Scripting.FileSystemObject")
-strApplicationBaseName = objFSO.GetBaseName(strApplicationPath)
-SET objFSO = Nothing
-
-IF NOT isProcessRunning(strApplicationPath) THEN
-  SET WshShell = CreateObject("WScript.Shell")
-  WshShell.Run strApplicationPath
-  WshShell.AppActivate strApplicationWindowTitle
-  SET WshShell = Nothing
+IF NOT IsProcessRunning("${escapedApplicationPath}") THEN
+  WshShell.Run """${escapedApplicationPath}"" -p1 -c"
 END IF
 
-ShowWindow strApplicationBaseName, strApplicationWindowTitle
+WshShell.AppActivate("${applicationWindowTitle}")
+SET WshShell = Nothing
+
+ShowWindow "${basename(applicationPath)}", "${applicationWindowTitle}"
 
 Function ShowWindow(BYVAL strProcessName, BYVAL strWindowTitle)
   SET WshShell = CreateObject( "WScript.Shell")
@@ -35,17 +31,18 @@ Function ShowWindow(BYVAL strProcessName, BYVAL strWindowTitle)
   SET WshShell = Nothing
 End Function
 
-FUNCTION isProcessRunning(BYVAL strExecutablePath)
+FUNCTION IsProcessRunning(BYVAL strExecutablePath)
   DIM objWMIService, strWMIQuery
 
   strWMIQuery = "Select * from Win32_Process where ExecutablePath like '%" & strExecutablePath & "%'"
-  
-  SET objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2") 
 
-  IF objWMIService.ExecQuery(strWMIQuery).Count > 0 THEN
-    isProcessRunning = TRUE
+  SET objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!" & chr(92) & chr(92) & "." & chr(92) & "root" & chr(92) & "cimv2")
+  SET colProcesses = objWMIService.ExecQuery(strWMIQuery)
+
+  IF colProcesses.Count > 0 THEN
+    IsProcessRunning = TRUE
   ELSE
-    isProcessRunning = FALSE
+    IsProcessRunning = FALSE
   END IF
 
   SET objWMIService = Nothing

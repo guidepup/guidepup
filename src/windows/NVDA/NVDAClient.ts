@@ -1,9 +1,12 @@
 import { connect, TLSSocket } from "tls";
+import { dirname, join } from "path";
+import { ERR_NVDA_CANNOT_CONNECT, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
-import { ERR_NVDA_CANNOT_CONNECT } from "../errors";
 import { EventEmitter } from "events";
+import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
+import { readFileSync } from "fs";
 
 const CHANNEL_JOINED = "channel_joined";
 const CANCEL = "cancel";
@@ -80,12 +83,30 @@ export class NVDAClient extends EventEmitter {
    * Connect to a NVDA instance.
    */
   async connect(): Promise<void> {
+    const executablePath = await getNVDAInstallationPath();
+
+    if (!executablePath) {
+      throw new Error(ERR_NVDA_NOT_INSTALLED);
+    }
+
+    const caPath = join(
+      dirname(executablePath),
+      "userConfig",
+      "addons",
+      "remote",
+      "globalPlugins",
+      "remoteClient",
+      "server.pem"
+    );
+
     return await new Promise<void>((resolve, reject) => {
       this.#socket = connect(
         NVDA_PORT,
         NVDA_HOST,
-        // TODO: generate some certs
-        { rejectUnauthorized: false, checkServerIdentity: () => null },
+        {
+          ca: [readFileSync(caPath)],
+          checkServerIdentity: () => null,
+        },
         async () => {
           this.once(CHANNEL_JOINED, () => {
             resolve();
@@ -98,9 +119,9 @@ export class NVDAClient extends EventEmitter {
 
       this.#socket.setEncoding("utf8");
 
-      this.#socket.on("error", () => {
+      this.#socket.on("error", (e) => {
         this.disconnect();
-        reject(new Error(ERR_NVDA_CANNOT_CONNECT));
+        reject(new Error(`${ERR_NVDA_CANNOT_CONNECT}\n${e.message}`));
       });
 
       this.#socket.on("data", (data: string) => {

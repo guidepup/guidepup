@@ -43,9 +43,9 @@ describe("NVDAClient", () => {
 
     beforeEach(async () => {
       const options = {
-        key: readKey("agent1-key.pem"),
-        cert: readKey("agent1-cert.pem"),
-        rejectUnauthorized: false,
+        key: readKey("server.key"),
+        cert: readKey("server.cert"),
+        requestCert: false,
       };
 
       nvdaServerFake = createServer(options, (socket) => {
