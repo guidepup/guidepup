@@ -8,9 +8,11 @@ async function delay(ms: number) {
 }
 
 export async function headerNavigation({
+  browserName,
   page,
   nvda,
 }: {
+  browserName: string;
   page: Page;
   nvda: NVDA;
 }) {
@@ -25,6 +27,13 @@ export async function headerNavigation({
 
   // Make sure not in focus mode
   await nvda.perform(nvda.keyboardCommands.exitFocusMode);
+
+  if (browserName === "chromium") {
+    // Get to the main page - sometimes focus can land on the address bar
+    while (!(await nvda.lastSpokenPhrase()).includes("document")) {
+      await nvda.press("F6");
+    }
+  }
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
   while ((await nvda.lastSpokenPhrase()) !== "Guidepup, heading, level 1") {
