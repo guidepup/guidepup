@@ -193,7 +193,7 @@ describe("NVDAClient", () => {
         );
 
         expect(await speakEmittedPromise).toEqual(
-          "test. test with extra spaces"
+          "test, test with extra spaces"
         );
       });
     });
