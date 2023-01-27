@@ -1,5 +1,10 @@
 /* eslint-disable no-empty-pattern */
-import { nvda, windowsActivate } from "../../lib";
+import {
+  nvda,
+  windowsActivate,
+  WindowsKeyCodes,
+  WindowsModifiers,
+} from "../../lib";
 import { homedir } from "os";
 import { join } from "path";
 import { readdirSync } from "fs";
@@ -76,6 +81,21 @@ const voTest = test.extend<{ nvda: typeof nvda }>({
 
       await nvda.start();
       await windowsActivate(application.path, application.name);
+
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        await nvda.perform({
+          keyCode: [WindowsKeyCodes.Tab],
+          modifiers: [WindowsModifiers.ALT],
+        });
+
+        const lastSpokenPhrase = await nvda.lastSpokenPhrase();
+
+        if (lastSpokenPhrase.includes(application.name)) {
+          break;
+        }
+      }
+
       await use(nvda);
     } finally {
       await nvda.stop();
