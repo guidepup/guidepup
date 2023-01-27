@@ -1,9 +1,8 @@
 import { click } from "./click";
 import type { ClickOptions } from "../../ClickOptions";
 import { LogStore } from "./LogStore";
-import type { ScreenReaderMouse } from "../../ScreenReaderMouse";
 
-export class VoiceOverMouse implements ScreenReaderMouse {
+export class VoiceOverMouse {
   /**
    * @ignore
    */

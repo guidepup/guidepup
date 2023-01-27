@@ -1,3 +1,4 @@
+import type { ClickOptions } from "../../ClickOptions";
 import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
@@ -18,10 +19,15 @@ import { start } from "./start";
 export class NVDA implements ScreenReader {
   #client: NVDAClient;
 
-  keyboardCommands = keyCodeCommands;
-
   constructor() {
     this.#client = new NVDAClient();
+  }
+
+  /**
+   * NVDA keyboard commands.
+   */
+  get keyboardCommands(): typeof keyCodeCommands {
+    return keyCodeCommands;
   }
 
   /**
@@ -89,7 +95,7 @@ export class NVDA implements ScreenReader {
    *
    * Equivalent of executing Enter.
    */
-  async act() {
+  async act(): Promise<void> {
     return await this.#client.waitForSpokenPhrase(() =>
       this.#client.sendKeyCode(keyCodeCommands.activate)
     );
@@ -156,7 +162,7 @@ export class NVDA implements ScreenReader {
    *
    * @param {string} text Text to type into the focused item.
    */
-  async type(text: string) {
+  async type(text: string): Promise<void> {
     return await this.#client.waitForSpokenPhrase(() =>
       sendKeys({ characters: text })
     );
@@ -174,6 +180,26 @@ export class NVDA implements ScreenReader {
   }
 
   /**
+   * Click the mouse.
+   *
+   * @param {object} [options] Click options.
+   */
+  async click(options?: ClickOptions): Promise<void> {
+    const command =
+      options.button === "right"
+        ? keyCodeCommands.rightMouseClick
+        : keyCodeCommands.leftMouseClick;
+
+    await this.#client.waitForSpokenPhrase(() =>
+      Promise.all(
+        [...new Array(options.clickCount)].map(() =>
+          this.#client.sendKeyCode(command)
+        )
+      )
+    );
+  }
+
+  /**
    * Get the last spoken phrase.
    *
    * @returns {string} The last spoken phrase.
@@ -184,6 +210,8 @@ export class NVDA implements ScreenReader {
 
   /**
    * Get the last spoken phrase.
+   *
+   * For NVDA this is the same as `lastSpokenPhrase`.
    *
    * @alias lastSpokenPhrase
    *
@@ -198,18 +226,20 @@ export class NVDA implements ScreenReader {
    *
    * @returns {Promise<string[]>} The spoken phrase log.
    */
-  spokenPhraseLog(): Promise<string[]> {
-    return Promise.resolve(this.#client.spokenPhraseLog());
+  async spokenPhraseLog(): Promise<string[]> {
+    return await Promise.resolve(this.#client.spokenPhraseLog());
   }
 
   /**
    * Get the log of all spoken phrases for this NVDA instance.
    *
+   * For NVDA this is the same as `spokenPhraseLog`.
+   *
    * @alias lastSpokenPhrase
    *
    * @returns {Promise<string[]>} The spoken phrase log.
    */
-  itemTextLog(): Promise<string[]> {
-    return Promise.resolve(this.#client.spokenPhraseLog());
+  async itemTextLog(): Promise<string[]> {
+    return await Promise.resolve(this.#client.spokenPhraseLog());
   }
 }

@@ -161,11 +161,11 @@ export class NVDAClient extends EventEmitter {
           }
 
           spokenPhraseParts.push(
-            spokenPhrasePart.trim().replaceAll(/\s+/g, " ")
+            spokenPhrasePart.trim().replaceAll(/\s\s+/g, " ")
           );
         }
 
-        const spokenPhrase = spokenPhraseParts.join(", ");
+        const spokenPhrase = spokenPhraseParts.join(". ");
 
         this.emit(SPEAK, spokenPhrase);
       });

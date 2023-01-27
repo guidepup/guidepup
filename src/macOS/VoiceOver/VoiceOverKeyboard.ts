@@ -8,10 +8,9 @@ import { KeyCodes } from "../KeyCodes";
 import { LogStore } from "./LogStore";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
-import type { ScreenReaderKeyboard } from "../../ScreenReaderKeyboard";
 import { sendKeys } from "../sendKeys";
 
-export class VoiceOverKeyboard implements ScreenReaderKeyboard {
+export class VoiceOverKeyboard {
   /**
    * @ignore
    */

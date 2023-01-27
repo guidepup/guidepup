@@ -5,11 +5,10 @@ import { keyCodeCommands } from "./keyCodeCommands";
 import { LogStore } from "./LogStore";
 import { move } from "./move";
 import { performAction } from "./performAction";
-import type { ScreenReaderCursor } from "../../ScreenReaderCursor";
 import { sendKeys } from "../sendKeys";
 import { takeScreenshot } from "./takeScreenshot";
 
-export class VoiceOverCursor implements ScreenReaderCursor {
+export class VoiceOverCursor {
   /**
    * @ignore
    */

@@ -2,9 +2,8 @@ import type { CommandOptions } from "../../CommandOptions";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
 import { LogStore } from "./LogStore";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
-import type { ScreenReaderCaption } from "../../ScreenReaderCaption";
 
-export class VoiceOverCaption implements ScreenReaderCaption {
+export class VoiceOverCaption {
   /**
    * @ignore
    */

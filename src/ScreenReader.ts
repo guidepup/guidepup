@@ -1,3 +1,4 @@
+import { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
 import type { KeyboardOptions } from "./KeyboardOptions";
 
@@ -116,6 +117,13 @@ export interface ScreenReader {
    * @param {object} [options] Additional options.
    */
   perform(command: unknown, options?: CommandOptions): Promise<void>;
+
+  /**
+   * Click the mouse.
+   *
+   * @param {object} [options] Click options.
+   */
+  click(options?: ClickOptions): Promise<void>;
 
   /**
    * Get the last spoken phrase.
