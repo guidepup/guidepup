@@ -205,7 +205,7 @@ export class NVDA implements ScreenReader {
    * @returns {string} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
-    return (await this.#client.spokenPhraseLog()).at(-1);
+    return (await this.#client.spokenPhraseLog()).at(-1) ?? "";
   }
 
   /**
