@@ -1,5 +1,6 @@
 import { click } from "./click";
 import { LogStore } from "./LogStore";
+import { mockType } from "../../../test/mockType";
 import { VoiceOverMouse } from "./VoiceOverMouse";
 
 jest.mock("./click", () => ({
@@ -17,6 +18,10 @@ describe("VoiceOverMouse", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
+
+    mockType(logStoreStub.tap).mockImplementation(
+      async (action) => await action()
+    );
 
     mouse = new VoiceOverMouse(logStoreStub);
   });

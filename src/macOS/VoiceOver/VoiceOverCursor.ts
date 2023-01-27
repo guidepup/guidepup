@@ -26,7 +26,9 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(move(Directions.Left, undefined, options));
+    return await this.#logStore.tap(() =>
+      move(Directions.Left, undefined, options)
+    );
   }
 
   /**
@@ -37,7 +39,9 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async next(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(move(Directions.Right, undefined, options));
+    return await this.#logStore.tap(() =>
+      move(Directions.Right, undefined, options)
+    );
   }
 
   /**
@@ -46,7 +50,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(performAction(options));
+    return await this.#logStore.tap(() => performAction(options));
   }
 
   /**
@@ -57,7 +61,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async interact(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#logStore.tap(() =>
       sendKeys(
         keyCodeCommands.interactWithItem,
         Applications.VoiceOver,
@@ -74,7 +78,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#logStore.tap(() =>
       sendKeys(
         keyCodeCommands.stopInteractingWithItem,
         Applications.VoiceOver,

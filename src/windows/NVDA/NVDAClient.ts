@@ -42,8 +42,8 @@ const protocolMessage = JSON.stringify({
   version: 2,
 });
 
-const CANCEL_DEBOUNCE_TIMEOUT = 100;
-const SPEAK_DEBOUNCE_TIMEOUT = 250;
+const CANCEL_DEBOUNCE_TIMEOUT = 250;
+const SPEAK_DEBOUNCE_TIMEOUT = 500;
 
 const isChannelJoinedMessage = (
   message: NVDABaseMessage
@@ -67,15 +67,21 @@ const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
 
 export class NVDAClient extends EventEmitter {
+  #activePromise = null;
+
   #socket: TLSSocket;
   #spokenPhrases = [];
 
   /**
    * Get the log of all spoken phrases for this NVDA connection.
    *
-   * @returns {string[]} All spoken phrases
+   * @returns {Promise<string[]>} All spoken phrases
    */
-  spokenPhraseLog(): string[] {
+  async spokenPhraseLog(): Promise<string[]> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
     return this.#spokenPhrases;
   }
 
@@ -165,7 +171,7 @@ export class NVDAClient extends EventEmitter {
           );
         }
 
-        const spokenPhrase = spokenPhraseParts.join(". ");
+        const spokenPhrase = spokenPhraseParts.join(", ");
 
         this.emit(SPEAK, spokenPhrase);
       });
@@ -216,6 +222,15 @@ export class NVDAClient extends EventEmitter {
    * @returns {Promise<unknown>}
    */
   async waitForSpokenPhrase<T>(action: () => Promise<T>): Promise<T> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
+    let activePromiseResolver: () => void;
+    this.#activePromise = new Promise<void>(
+      (resolve) => (activePromiseResolver = resolve)
+    );
+
     await this.#stopReading();
 
     let speakPromiseResolver: () => void;
@@ -226,8 +241,10 @@ export class NVDAClient extends EventEmitter {
 
     let timeoutId: NodeJS.Timeout = null;
 
+    const spokenPhrases = [];
+
     const speakHandler = (spokenPhrase) => {
-      this.#spokenPhrases.push(spokenPhrase);
+      spokenPhrases.push(spokenPhrase);
 
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
@@ -249,6 +266,11 @@ export class NVDAClient extends EventEmitter {
     await speakPromise;
 
     timeoutId = null;
+
+    this.#spokenPhrases.push(spokenPhrases.join(". "));
+
+    activePromiseResolver();
+    this.#activePromise = null;
 
     return result;
   }

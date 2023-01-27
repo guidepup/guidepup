@@ -31,6 +31,9 @@ describe("VoiceOverKeyboard", () => {
     jest.clearAllMocks();
 
     mockType(parseKey).mockReturnValue(parsedKeyDummy);
+    mockType(logStoreStub.tap).mockImplementation(
+      async (action) => await action()
+    );
 
     keyboard = new VoiceOverKeyboard(logStoreStub);
   });

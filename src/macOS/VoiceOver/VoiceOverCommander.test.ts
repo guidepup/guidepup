@@ -1,5 +1,6 @@
 import { CommanderCommands } from "./CommanderCommands";
 import { LogStore } from "./LogStore";
+import { mockType } from "../../../test/mockType";
 import { performCommand } from "./performCommand";
 import { VoiceOverCommander } from "./VoiceOverCommander";
 
@@ -18,6 +19,10 @@ describe("VoiceOverCommander", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
+
+    mockType(logStoreStub.tap).mockImplementation(
+      async (action) => await action()
+    );
 
     commander = new VoiceOverCommander(logStoreStub);
   });

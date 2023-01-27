@@ -23,6 +23,7 @@ export async function headerNavigation({
   await expect(page.locator('header[role="banner"]')).toBeVisible();
   await delay(500);
 
+  // Make sure interacting with the web content
   await voiceOver.interact();
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎

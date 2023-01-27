@@ -420,8 +420,8 @@ describe("NVDAClient", () => {
   });
 
   describe("when no phrases have been spoken", () => {
-    it("should return an empty array", () => {
-      expect(client.spokenPhraseLog()).toEqual([]);
+    it("should return an empty array", async () => {
+      expect(await client.spokenPhraseLog()).toEqual([]);
     });
   });
 });

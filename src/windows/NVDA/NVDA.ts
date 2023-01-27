@@ -205,7 +205,7 @@ export class NVDA implements ScreenReader {
    * @returns {string} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
-    return await Promise.resolve(this.#client.spokenPhraseLog().at(-1));
+    return (await this.#client.spokenPhraseLog()).at(-1);
   }
 
   /**
@@ -227,7 +227,7 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
-    return await Promise.resolve(this.#client.spokenPhraseLog());
+    return await this.#client.spokenPhraseLog();
   }
 
   /**
@@ -240,6 +240,6 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async itemTextLog(): Promise<string[]> {
-    return await Promise.resolve(this.#client.spokenPhraseLog());
+    return await this.spokenPhraseLog();
   }
 }
