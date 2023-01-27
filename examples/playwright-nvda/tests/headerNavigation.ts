@@ -30,6 +30,4 @@ export async function headerNavigation({
   while ((await nvda.lastSpokenPhrase()) !== "Guidepup, heading, level 1") {
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
   }
-
-  console.log(await nvda.spokenPhraseLog());
 }
