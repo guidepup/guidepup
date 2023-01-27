@@ -23,7 +23,7 @@ export async function headerNavigation({
 
   // Wait for page to be ready and interact 🙌
   await expect(page.locator('header[role="banner"]')).toBeVisible();
-  await delay(500);
+  await delay(1000);
 
   // Make sure not in focus mode
   await nvda.perform(nvda.keyboardCommands.exitFocusMode);
@@ -31,13 +31,15 @@ export async function headerNavigation({
   if (browserName === "chromium") {
     // Get to the main page - sometimes focus can land on the address bar
     while (!(await nvda.lastSpokenPhrase()).includes("document")) {
+      console.log(await nvda.spokenPhraseLog());
+
       await nvda.press("F6");
     }
   }
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
   while (!(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")) {
-    console.log(await nvda.lastSpokenPhrase());
+    console.log(await nvda.spokenPhraseLog());
 
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
   }
