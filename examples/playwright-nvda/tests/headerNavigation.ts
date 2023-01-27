@@ -36,7 +36,9 @@ export async function headerNavigation({
   }
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
-  while ((await nvda.lastSpokenPhrase()) !== "Guidepup, heading, level 1") {
+  while (!(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")) {
+    console.log(await nvda.lastSpokenPhrase());
+
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
   }
 }
