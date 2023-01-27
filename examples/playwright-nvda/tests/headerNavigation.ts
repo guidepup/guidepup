@@ -8,9 +8,11 @@ async function delay(ms: number) {
 }
 
 export async function headerNavigation({
+  browserName,
   page,
   nvda,
 }: {
+  browserName: string;
   page: Page;
   nvda: NVDA;
 }) {
@@ -24,8 +26,17 @@ export async function headerNavigation({
 
   await delay(1000);
 
-  // Force focus to the web content - alternatives include keying F6 etc.
-  await page.locator("a").first().focus();
+  if (browserName === "chromium") {
+    // Get to the main page - sometimes focus can land on the address bar
+    while (!(await nvda.lastSpokenPhrase()).includes("document")) {
+      console.log(await nvda.lastSpokenPhrase());
+
+      await nvda.press("F6");
+    }
+  } else if (browserName === "firefox") {
+    // Force focus to somewhere in the web content
+    await page.locator("a").first().focus();
+  }
 
   // Make sure not in focus mode
   await nvda.perform(nvda.keyboardCommands.exitFocusMode);
@@ -34,6 +45,8 @@ export async function headerNavigation({
   while (
     !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
   ) {
+    console.log(await nvda.lastSpokenPhrase());
+
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
   }
 }
