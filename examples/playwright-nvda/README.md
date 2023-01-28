@@ -4,13 +4,13 @@ An example demonstrating using Guidepup for testing NVDA automation with [Playwr
 
 Run this example's test with:
 
-```console
+```bash
 cd ./examples/playwright-nvda
-npm install
-npm run test
+yarn install --frozen-lockfile
+yarn test
 ```
 
-> Note: please ensure you have setup the [NVDA prerequisites](../../guides/nvda-prerequisites/README.md) before running this example.
+> Note: please ensure you have setup the [NVDA prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.
 
 ## Test flow
 

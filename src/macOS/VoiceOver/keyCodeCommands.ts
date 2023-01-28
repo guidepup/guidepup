@@ -6,7 +6,7 @@ import { Modifiers } from "../Modifiers";
 const VO = [Modifiers.Control, Modifiers.Option];
 
 /**
- * Object of key code commands for the VoiceOver ScreenReader on MacOS.
+ * Object of key code commands for the VoiceOver screen reader on MacOS.
  *
  * Reference: {@link https://www.apple.com/voiceover/info/guide/_1131.html}
  */
@@ -32,25 +32,25 @@ export const keyCodeCommands = {
     description: "Lock and unlock the VO (Control and Option) keys",
     representation: "VO-;",
   },
-  openVoiceOverUtility: {
+  openUtilityMenu: {
     keyCode: KeyCodes.F8,
     modifiers: VO,
     description: "Open VoiceOver Utility",
     representation: "VO-F8",
   },
-  openVoiceOverHelpMenu: {
+  openHelpMenu: {
     keyCode: KeyCodes.H,
     modifiers: VO,
     description: "Open the VoiceOver Help menu",
     representation: "VO-H",
   },
-  openVoiceOverQuickStart: {
+  openQuickStart: {
     keyCode: KeyCodes.F8,
     modifiers: [...VO, Modifiers.Command],
     description: "Open the VoiceOver Quick Start",
     representation: "VO-Command-F8",
   },
-  openVoiceOverOnlineHelp: {
+  openOnlineHelp: {
     keyCode: KeyCodes.ForwardSlash,
     modifiers: [...VO, Modifiers.Shift],
     description: "Open VoiceOver online help",
@@ -109,7 +109,7 @@ export const keyCodeCommands = {
     description: "Shrink the item in the VoiceOver cursor",
     representation: "VO-{",
   },
-  toggleVoiceOverCursorAndPanels: {
+  toggleCursorAndPanels: {
     keyCode: KeyCodes.F11,
     modifiers: VO,
     description:
@@ -898,13 +898,13 @@ export const keyCodeCommands = {
     description: "Describe the selected item",
     representation: "VO-F6",
   },
-  readEverythingInCursor: {
+  readCurrentSelection: {
     keyCode: KeyCodes.a,
     modifiers: VO,
     description: "Read everything in the VoiceOver cursor",
     representation: "VO-A",
   },
-  readEverythingInWindow: {
+  readActiveWindow: {
     keyCode: KeyCodes.w,
     modifiers: [...VO, Modifiers.Shift],
     description:
@@ -1241,13 +1241,13 @@ export const keyCodeCommands = {
     representation: "VO-L",
   },
   readNextLine: {
-    keyCode: KeyCodes.PageDown,
+    keyCode: KeyCodes.ArrowDown,
     modifiers: VO,
     description: "Read next line",
     representation: "VO-Down Arrow",
   },
   readPreviousLine: {
-    keyCode: KeyCodes.PageUp,
+    keyCode: KeyCodes.ArrowUp,
     modifiers: VO,
     description: "Read previous line",
     representation: "VO-Up Arrow",

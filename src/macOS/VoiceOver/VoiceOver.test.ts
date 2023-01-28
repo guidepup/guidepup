@@ -73,9 +73,12 @@ const VoiceOverCaptionStub = {
   itemText: jest.fn(),
   spokenPhraseLog: jest.fn(),
   itemTextLog: jest.fn(),
+  copyLastSpokenPhrase: jest.fn(),
+  saveLastSpokenPhrase: jest.fn(),
 };
 
 const VoiceOverCommanderStub = {
+  commands: Symbol("test-commander-commands"),
   perform: jest.fn(),
 };
 
@@ -85,9 +88,11 @@ const VoiceOverCursorStub = {
   act: jest.fn(),
   interact: jest.fn(),
   stopInteracting: jest.fn(),
+  takeScreenshot: jest.fn(),
 };
 
 const VoiceOverKeyboardStub = {
+  commands: Symbol("test-keyboard-commands"),
   press: jest.fn(),
   type: jest.fn(),
   perform: jest.fn(),
@@ -130,27 +135,30 @@ describe("VoiceOver", () => {
 
   it("should construct a caption instance", () => {
     expect(VoiceOverCaption).toHaveBeenCalledWith(expect.any(LogStore));
-    expect(vo.caption).toEqual(VoiceOverCaptionStub);
   });
 
   it("should construct a commander instance", () => {
     expect(VoiceOverCommander).toHaveBeenCalledWith(expect.any(LogStore));
-    expect(vo.commander).toEqual(VoiceOverCommanderStub);
   });
 
   it("should construct a cursor instance", () => {
     expect(VoiceOverCursor).toHaveBeenCalledWith(expect.any(LogStore));
-    expect(vo.cursor).toEqual(VoiceOverCursorStub);
   });
 
   it("should construct a keyboard instance", () => {
     expect(VoiceOverKeyboard).toHaveBeenCalledWith(expect.any(LogStore));
-    expect(vo.keyboard).toEqual(VoiceOverKeyboardStub);
   });
 
   it("should construct a mouse instance", () => {
     expect(VoiceOverMouse).toHaveBeenCalledWith(expect.any(LogStore));
-    expect(vo.mouse).toEqual(VoiceOverMouseStub);
+  });
+
+  it("should expose a getter for keyboard commands", () => {
+    expect(vo.keyboardCommands).toBe(VoiceOverKeyboardStub.commands);
+  });
+
+  it("should expose a getter for commander commands", () => {
+    expect(vo.commanderCommands).toBe(VoiceOverCommanderStub.commands);
   });
 
   describe("detect", () => {
@@ -309,7 +317,7 @@ describe("VoiceOver", () => {
       });
 
       it("should move the cursor to the previous item", () => {
-        expect(vo.cursor.previous).toHaveBeenCalledWith(options);
+        expect(VoiceOverCursorStub.previous).toHaveBeenCalledWith(options);
       });
     });
   });
@@ -325,7 +333,7 @@ describe("VoiceOver", () => {
       });
 
       it("should move the cursor to the next item", () => {
-        expect(vo.cursor.next).toHaveBeenCalledWith(options);
+        expect(VoiceOverCursorStub.next).toHaveBeenCalledWith(options);
       });
     });
   });
@@ -341,7 +349,7 @@ describe("VoiceOver", () => {
       });
 
       it("should perform the default action for the item", () => {
-        expect(vo.cursor.act).toHaveBeenCalledWith(options);
+        expect(VoiceOverCursorStub.act).toHaveBeenCalledWith(options);
       });
     });
   });
@@ -357,7 +365,7 @@ describe("VoiceOver", () => {
       });
 
       it("should interact with the item", () => {
-        expect(vo.cursor.interact).toHaveBeenCalledWith(options);
+        expect(VoiceOverCursorStub.interact).toHaveBeenCalledWith(options);
       });
     });
   });
@@ -373,7 +381,27 @@ describe("VoiceOver", () => {
       });
 
       it("should stop interacting with the item", () => {
-        expect(vo.cursor.stopInteracting).toHaveBeenCalledWith(options);
+        expect(VoiceOverCursorStub.stopInteracting).toHaveBeenCalledWith(
+          options
+        );
+      });
+    });
+  });
+
+  describe("takeCursorScreenshot", () => {
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.takeCursorScreenshot(options);
+      });
+
+      it("should take a cursor screenshot", () => {
+        expect(VoiceOverCursorStub.takeScreenshot).toHaveBeenCalledWith(
+          options
+        );
       });
     });
   });
@@ -391,7 +419,7 @@ describe("VoiceOver", () => {
       });
 
       it("should press the key", () => {
-        expect(vo.keyboard.press).toHaveBeenCalledWith(key, options);
+        expect(VoiceOverKeyboardStub.press).toHaveBeenCalledWith(key, options);
       });
     });
   });
@@ -409,7 +437,7 @@ describe("VoiceOver", () => {
       });
 
       it("should type the text", () => {
-        expect(vo.keyboard.type).toHaveBeenCalledWith(text, options);
+        expect(VoiceOverKeyboardStub.type).toHaveBeenCalledWith(text, options);
       });
     });
   });
@@ -427,7 +455,10 @@ describe("VoiceOver", () => {
       });
 
       it("should perform the keyboard command", () => {
-        expect(vo.keyboard.perform).toHaveBeenCalledWith(command, options);
+        expect(VoiceOverKeyboardStub.perform).toHaveBeenCalledWith(
+          command,
+          options
+        );
       });
     });
 
@@ -443,7 +474,10 @@ describe("VoiceOver", () => {
       });
 
       it("should perform the commander command", () => {
-        expect(vo.commander.perform).toHaveBeenCalledWith(command, options);
+        expect(VoiceOverCommanderStub.perform).toHaveBeenCalledWith(
+          command,
+          options
+        );
       });
     });
   });
@@ -459,7 +493,43 @@ describe("VoiceOver", () => {
       });
 
       it("should click the mouse", () => {
-        expect(vo.mouse.click).toHaveBeenCalledWith(options);
+        expect(VoiceOverMouseStub.click).toHaveBeenCalledWith(options);
+      });
+    });
+  });
+
+  describe("copyLastSpokenPhrase", () => {
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.copyLastSpokenPhrase(options);
+      });
+
+      it("should copy the last spoken phrase", () => {
+        expect(VoiceOverCaptionStub.copyLastSpokenPhrase).toHaveBeenCalledWith(
+          options
+        );
+      });
+    });
+  });
+
+  describe("saveLastSpokenPhrase", () => {
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.saveLastSpokenPhrase(options);
+      });
+
+      it("should save the last spoken phrase", () => {
+        expect(VoiceOverCaptionStub.saveLastSpokenPhrase).toHaveBeenCalledWith(
+          options
+        );
       });
     });
   });
@@ -470,7 +540,7 @@ describe("VoiceOver", () => {
     });
 
     it("should get the last spoken phrase", () => {
-      expect(vo.caption.lastSpokenPhrase).toHaveBeenCalled();
+      expect(VoiceOverCaptionStub.lastSpokenPhrase).toHaveBeenCalled();
     });
   });
 
@@ -480,7 +550,7 @@ describe("VoiceOver", () => {
     });
 
     it("should get the item text", () => {
-      expect(vo.caption.itemText).toHaveBeenCalled();
+      expect(VoiceOverCaptionStub.itemText).toHaveBeenCalled();
     });
   });
 
@@ -490,7 +560,7 @@ describe("VoiceOver", () => {
     });
 
     it("should get the spoken phrase log", () => {
-      expect(vo.caption.spokenPhraseLog).toHaveBeenCalled();
+      expect(VoiceOverCaptionStub.spokenPhraseLog).toHaveBeenCalled();
     });
   });
 
@@ -500,7 +570,7 @@ describe("VoiceOver", () => {
     });
 
     it("should get the item text log", () => {
-      expect(vo.caption.itemTextLog).toHaveBeenCalled();
+      expect(VoiceOverCaptionStub.itemTextLog).toHaveBeenCalled();
     });
   });
 });

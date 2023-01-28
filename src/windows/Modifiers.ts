@@ -1,17 +1,19 @@
+import { KeyCodes } from "./KeyCodes";
+
 /**
  * Windows modifier keys.
  */
-export enum Modifiers {
+export const Modifiers = {
   /**
    * Hold down the Control (alias ctrl, ⌃) key.
    */
-  CONTROL = "^",
+  CONTROL: KeyCodes.Control,
   /**
    * Hold down the Alt (alias ⎇) key.
    */
-  ALT = "%",
+  ALT: KeyCodes.Alt,
   /**
    * Hold down the Shift (alias ⇧) key.
    */
-  SHIFT = "+",
-}
+  SHIFT: KeyCodes.Shift,
+};

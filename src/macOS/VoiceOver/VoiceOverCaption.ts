@@ -2,9 +2,8 @@ import type { CommandOptions } from "../../CommandOptions";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
 import { LogStore } from "./LogStore";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
-import type { ScreenReaderCaption } from "../../ScreenReaderCaption";
 
-export class VoiceOverCaption implements ScreenReaderCaption {
+export class VoiceOverCaption {
   /**
    * @ignore
    */
@@ -27,7 +26,7 @@ export class VoiceOverCaption implements ScreenReaderCaption {
    * Copy the last spoken phrase to the Clipboard (also called the
    * "Pasteboard").
    *
-   * Command specific to the VoiceOver ScreenReader.
+   * Command specific to the VoiceOver screen reader.
    *
    * @param {object} [options] Additional options.
    */
@@ -39,7 +38,7 @@ export class VoiceOverCaption implements ScreenReaderCaption {
    * Save the last spoken phrase and the crash log to a file on the desktop for
    * troubleshooting.
    *
-   * Command specific to the VoiceOver ScreenReader.
+   * Command specific to the VoiceOver screen reader.
    *
    * @param {object} [options] Additional options.
    */

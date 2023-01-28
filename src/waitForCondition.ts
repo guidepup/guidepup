@@ -23,7 +23,7 @@ async function resolveWhenTrue(
 
   await new Promise((resolve) => setTimeout(resolve, pollInterval));
 
-  resolveWhenTrue(condition, pollInterval, signal);
+  await resolveWhenTrue(condition, pollInterval, signal);
 }
 
 export async function waitForCondition(

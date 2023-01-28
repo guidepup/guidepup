@@ -1,9 +1,8 @@
 import { click } from "./click";
 import type { ClickOptions } from "../../ClickOptions";
 import { LogStore } from "./LogStore";
-import type { ScreenReaderMouse } from "../../ScreenReaderMouse";
 
-export class VoiceOverMouse implements ScreenReaderMouse {
+export class VoiceOverMouse {
   /**
    * @ignore
    */
@@ -19,6 +18,6 @@ export class VoiceOverMouse implements ScreenReaderMouse {
    * @param {object} [options] Click options.
    */
   async click(options?: ClickOptions): Promise<void> {
-    return await this.#logStore.tap(click(options));
+    return await this.#logStore.tap(() => click(options));
   }
 }

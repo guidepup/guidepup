@@ -3,11 +3,12 @@ import { devices, PlaywrightTestConfig } from "@playwright/test";
 const config: PlaywrightTestConfig = {
   reportSlowTests: null,
   workers: 1,
-  timeout: 10 * 60 * 1000,
+  timeout: 1 * 60 * 1000,
+  retries: 0,
   projects: [
     {
-      name: "chrome",
-      use: { ...devices["Desktop Chrome"], headless: false, video: "on" },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"], headless: false, video: "on" },
     },
   ],
 };

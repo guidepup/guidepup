@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 18
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.8.1
+        uses: guidepup/setup-action@0.10.0
         with:
           record: true
       - run: yarn install --frozen-lockfile
@@ -32,5 +32,5 @@ jobs:
         with:
           name: artifacts
           path: |
-            examples/playwright-voiceover/test-results/**/*
+            **/test-results/**/*
             **/recordings/**/*
