@@ -14,7 +14,7 @@
   <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a>
 </p>
 <p align="center">
-  <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>NVDA on Windows</b></a>
+  <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>
 </p>
 
 ## Intro
