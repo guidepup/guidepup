@@ -14,7 +14,7 @@
   <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a>
 </p>
 <p align="center">
-  <b>NVDA on Windows</b> - <a href="https://github.com/guidepup/guidepup/pull/33">Coming Soon!</a>
+  <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>NVDA on Windows</b></a>
 </p>
 
 ## Intro
@@ -92,8 +92,10 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ## Support
 
-- VoiceOver on MacOS - Full Support 🎉
-- NVDA on Windows - [Coming Soon](https://github.com/guidepup/guidepup/pull/33)
+Full support is available for:
+
+- VoiceOver on MacOS
+- NVDA on Windows
 
 ## Related
 
