@@ -5,7 +5,7 @@ import { maxSatisfying } from "semver";
 
 let installationPath: string;
 
-export async function getNVDAInstallationPath(): Promise<string | null>{
+export async function getNVDAInstallationPath(): Promise<string | null> {
   if (installationPath) {
     return installationPath;
   }
@@ -16,11 +16,20 @@ export async function getNVDAInstallationPath(): Promise<string | null>{
     value.replace("guidepup_nvda_", "")
   );
 
+  const versionsWithoutSubVersion = versions.map(
+    (version) => version.split("-")[0]
+  );
+
   if (!exists || !versions.length) {
     return null;
   }
 
-  const latestVersion = `guidepup_nvda_${maxSatisfying(versions, ">=0")}`;
+  const maxSatisfyingVersion = maxSatisfying(versionsWithoutSubVersion, ">=0");
+  const maxSatisfyingVersionWithSubVersion = versions.find((version) =>
+    version.startsWith(maxSatisfyingVersion)
+  );
+
+  const latestVersion = `guidepup_nvda_${maxSatisfyingVersionWithSubVersion}`;
   const guidepupNVDADirectory = values[latestVersion]?.value;
 
   if (!guidepupNVDADirectory) {

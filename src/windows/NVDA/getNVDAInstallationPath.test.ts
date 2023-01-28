@@ -29,12 +29,10 @@ describe("getNVDAInstallationPath", () => {
     let resultPromise;
 
     beforeEach(() => {
-      const getNVDARegistryDataPromise = new Promise(
-        (resolve, reject) => {
-          getNVDARegistryDataResolver = resolve;
-          getNVDARegistryDataRejecter = reject;
-        }
-      );
+      const getNVDARegistryDataPromise = new Promise((resolve, reject) => {
+        getNVDARegistryDataResolver = resolve;
+        getNVDARegistryDataRejecter = reject;
+      });
 
       getNVDARegistryData.mockReturnValue(getNVDARegistryDataPromise);
 
@@ -137,7 +135,11 @@ describe("getNVDAInstallationPath", () => {
 
         getNVDARegistryDataResolver({
           exists: true,
-          values: { "guidepup_nvda_1.0.0": { value: directoryValueStub } },
+          values: {
+            "guidepup_nvda_1.0.0-1.2.3": { value: directoryValueStub },
+            "guidepup_nvda_0.9.0-1.2.3": { value: "test-value" },
+            "guidepup_nvda_0.8.0": { value: "test-value" },
+          },
         });
       });
 
