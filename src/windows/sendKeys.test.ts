@@ -66,7 +66,7 @@ describe("sendKeys", () => {
   describe("when a key code command with modifiers is provided", () => {
     const mockCommand = {
       keyCode: new Key({ symbol: "test-symbol" }),
-      modifiers: [Modifiers.CONTROL],
+      modifiers: [Modifiers.Control],
     };
 
     beforeEach(async () => {
@@ -92,7 +92,7 @@ describe("sendKeys", () => {
         new Key({ symbol: "test-symbol-1" }),
         new Key({ symbol: "test-symbol-2" }),
       ],
-      modifiers: [Modifiers.CONTROL],
+      modifiers: [Modifiers.Control],
     };
 
     beforeEach(async () => {
@@ -135,7 +135,7 @@ describe("sendKeys", () => {
   describe("when a keystroke command with modifiers is provided", () => {
     const mockCommand = {
       characters: "test-characters",
-      modifiers: [Modifiers.ALT],
+      modifiers: [Modifiers.Alt],
     };
 
     beforeEach(async () => {

@@ -303,7 +303,7 @@ describe("NVDAClient", () => {
 
         await client.sendKeyCode({
           keyCode: new Key({ keyCode: 1, scanCode: 2, extended: false }),
-          modifiers: [Modifiers.ALT],
+          modifiers: [Modifiers.Alt],
         });
 
         await serverDataPromise;
@@ -312,7 +312,7 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.ALT.toString(true) + "\n"
+          Modifiers.Alt.toString(true) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -336,7 +336,7 @@ describe("NVDAClient", () => {
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
-          Modifiers.ALT.toString(false) + "\n"
+          Modifiers.Alt.toString(false) + "\n"
         );
       });
     });
@@ -352,7 +352,7 @@ describe("NVDAClient", () => {
             new Key({ keyCode: 1, scanCode: 2, extended: false }),
             new Key({ keyCode: 3, scanCode: 4, extended: true }),
           ],
-          modifiers: [Modifiers.ALT, Modifiers.CONTROL],
+          modifiers: [Modifiers.Alt, Modifiers.Control],
         });
 
         await serverDataPromise;
@@ -361,11 +361,11 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.ALT.toString(true) + "\n"
+          Modifiers.Alt.toString(true) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
-          Modifiers.CONTROL.toString(true) + "\n"
+          Modifiers.Control.toString(true) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -409,11 +409,11 @@ describe("NVDAClient", () => {
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           7,
-          Modifiers.CONTROL.toString(false) + "\n"
+          Modifiers.Control.toString(false) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           8,
-          Modifiers.ALT.toString(false) + "\n"
+          Modifiers.Alt.toString(false) + "\n"
         );
       });
     });

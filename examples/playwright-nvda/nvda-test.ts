@@ -86,7 +86,7 @@ const voTest = test.extend<{ nvda: typeof nvda }>({
       while (true) {
         await nvda.perform({
           keyCode: [WindowsKeyCodes.Tab],
-          modifiers: [WindowsModifiers.ALT],
+          modifiers: [WindowsModifiers.Alt],
         });
 
         const lastSpokenPhrase = await nvda.lastSpokenPhrase();
