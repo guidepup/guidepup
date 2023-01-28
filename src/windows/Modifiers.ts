@@ -7,13 +7,13 @@ export const Modifiers = {
   /**
    * Hold down the Control (alias ctrl, ⌃) key.
    */
-  CONTROL: KeyCodes.Control,
+  Control: KeyCodes.Control,
   /**
    * Hold down the Alt (alias ⎇) key.
    */
-  ALT: KeyCodes.Alt,
+  Alt: KeyCodes.Alt,
   /**
    * Hold down the Shift (alias ⇧) key.
    */
-  SHIFT: KeyCodes.Shift,
+  Shift: KeyCodes.Shift,
 };

@@ -131,7 +131,7 @@ export class NVDA implements ScreenReader {
    * `F1` - `F20`, `Digit0` - `Digit9`, `KeyA` - `KeyZ`, `Backquote`, `Minus`, `Equal`, `Backslash`, `Backspace`, `Tab`,
    * `Delete`, `Escape`, `ArrowDown`, `End`, `Enter`, `Home`, `Insert`, `PageDown`, `PageUp`, `ArrowRight`, `ArrowUp`, etc.
    *
-   * Following modification shortcuts are also supported: `Shift`, `Control`, `Alt`, `Meta`, `Command`.
+   * Following modification shortcuts are also supported: `Shift`, `Control`, `Alt`.
    *
    * Holding down `Shift` will type the text that corresponds to the `key` in the upper case.
    *

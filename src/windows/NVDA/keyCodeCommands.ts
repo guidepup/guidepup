@@ -15,7 +15,7 @@ export const keyCodeCommands = {
   // Basic NVDA Commands
   start: {
     keyCode: KeyCodes.N,
-    modifiers: [Modifiers.CONTROL, Modifiers.ALT],
+    modifiers: [Modifiers.Control, Modifiers.Alt],
     description: "Turn NVDA on",
     representation: "Control-Alt-N",
   },
@@ -67,9 +67,9 @@ export const keyCodeCommands = {
   },
   toggleSleepMode: {
     keyCode: [...NVDA, KeyCodes.S],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
-      "Tells NVDA to pass the next key press straight through to the active application - even if it is normally treated as an NVDA key command",
+      "sleep mode disables all NVDA commands and speech/braille output for the current application. This is most useful in applications that provide their own speech or screen reading features. Press this command again to disable sleep mode - note that NVDA will only retain the Sleep Mode setting until it is restarted.",
     representation: "NVDA-Shift-S",
   },
 
@@ -84,7 +84,7 @@ export const keyCodeCommands = {
   },
   reportBatteryStatus: {
     keyCode: [...NVDA, KeyCodes.B],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Reports the battery status i.e. whether AC power is in use or the current charge percentage.",
     representation: "NVDA-Shift-B",
@@ -145,7 +145,7 @@ export const keyCodeCommands = {
   },
   readCurrentSelection: {
     keyCode: [...NVDA, KeyCodes.ArrowUp],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Reads any currently selected text",
     representation: "NVDA-Shift-Up Arrow",
   },
@@ -158,42 +158,42 @@ export const keyCodeCommands = {
   },
   readNextSentence: {
     keyCode: [KeyCodes.ArrowDown],
-    modifiers: [Modifiers.ALT],
+    modifiers: [Modifiers.Alt],
     description:
       "Moves the caret to the next sentence and announces it. (only supported in Microsoft Word and Outlook)",
     representation: "Alt-Down Arrow",
   },
   readPreviousSentence: {
     keyCode: [KeyCodes.ArrowUp],
-    modifiers: [Modifiers.ALT],
+    modifiers: [Modifiers.Alt],
     description:
       "Moves the caret to the previous sentence and announces it. (only supported in Microsoft Word and Outlook)",
     representation: "Alt-Up Arrow",
   },
   moveToPreviousColumn: {
     keyCode: [KeyCodes.ArrowLeft],
-    modifiers: [Modifiers.CONTROL, Modifiers.ALT],
+    modifiers: [Modifiers.Control, Modifiers.Alt],
     description:
       "When within a table, moves the system caret to the previous column (staying in the same row)",
     representation: "Control-Alt-Left Arrow",
   },
   moveToNextColumn: {
     keyCode: [KeyCodes.ArrowRight],
-    modifiers: [Modifiers.CONTROL, Modifiers.ALT],
+    modifiers: [Modifiers.Control, Modifiers.Alt],
     description:
       "When within a table, moves the system caret to the next column (staying in the same row)",
     representation: "Control-Alt-Right Arrow",
   },
   moveToPreviousRow: {
     keyCode: [KeyCodes.ArrowUp],
-    modifiers: [Modifiers.CONTROL, Modifiers.ALT],
+    modifiers: [Modifiers.Control, Modifiers.Alt],
     description:
       "When within a table, moves the system caret to the previous row (staying in the same column)",
     representation: "Control-Alt-Up Arrow",
   },
   moveToNextRow: {
     keyCode: [KeyCodes.ArrowDown],
-    modifiers: [Modifiers.CONTROL, Modifiers.ALT],
+    modifiers: [Modifiers.Control, Modifiers.Alt],
     description:
       "When within a table, moves the system caret to the next row (staying in the same column)",
     representation: "Control-Alt-Down Arrow",
@@ -249,7 +249,7 @@ export const keyCodeCommands = {
   },
   moveToReviewPosition: {
     keyCode: [...NVDA, KeyCodes.NumPadMinus],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "pressed once Moves the System focus to the current navigator object, pressed twice moves the system caret to the position of the review cursor",
     representation: "NVDA-Shift-NumPadMinus",
@@ -266,7 +266,7 @@ export const keyCodeCommands = {
 
   moveToTopLineInReview: {
     keyCode: [KeyCodes.NumPad7],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Moves the review cursor to the top line of the text",
     representation: "Shift-NumPad7",
   },
@@ -291,7 +291,7 @@ export const keyCodeCommands = {
   },
   moveToBottomLineInReview: {
     keyCode: [KeyCodes.NumPad9],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Moves the review cursor to the bottom line of text",
     representation: "Shift-NumPad9",
   },
@@ -316,7 +316,7 @@ export const keyCodeCommands = {
   },
   moveToStartOfLineInReview: {
     keyCode: [KeyCodes.NumPad1],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Moves the review cursor to the start of the current line in the text",
     representation: "Shift-NumPad1",
@@ -344,7 +344,7 @@ export const keyCodeCommands = {
   },
   moveToEndOfLineInReview: {
     keyCode: [KeyCodes.NumPad3],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Moves the review cursor to the end of the current line of text",
     representation: "Shift-NumPad3",
@@ -372,14 +372,14 @@ export const keyCodeCommands = {
   },
   moveToMarkedStartForCopyInReview: {
     keyCode: [...NVDA, KeyCodes.F9],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Moves the review cursor to the position previously set start marker for copy",
     representation: "NVDA-Shift-F9",
   },
   reportTextFormattingInReview: {
     keyCode: [...NVDA, KeyCodes.F],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Reports the formatting of the text where the review cursor is currently situated. Pressing twice shows the information in browse mode",
     representation: "NVDA-Shift-F",
@@ -411,7 +411,7 @@ export const keyCodeCommands = {
   },
   leftMouseButtonLock: {
     keyCode: [KeyCodes.NumPadDivide],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Locks the left mouse button down. Press again to release it. To drag the mouse, press this key to lock the left button down and then move the mouse either physically or use one of the other mouse routing commands",
     representation: "Shift-NumPadDivide",
@@ -425,7 +425,7 @@ export const keyCodeCommands = {
   },
   rightMouseButtonLock: {
     keyCode: [KeyCodes.NumPadMultiply],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Locks the right mouse button down. Press again to release it. To drag the mouse, press this key to lock the right button down and then move the mouse either physically or use one of the other mouse routing commands",
     representation: "Shift-NumPadMultiply",
@@ -469,7 +469,7 @@ export const keyCodeCommands = {
   },
   find: {
     keyCode: [...NVDA, KeyCodes.F],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "Pops up a dialog in which you can type some text to find in the current document. See searching for text for more information.",
     representation: "NVDA-Control-F",
@@ -483,7 +483,7 @@ export const keyCodeCommands = {
   },
   findPrevious: {
     keyCode: [...NVDA, KeyCodes.F3],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Finds the previous occurrence of the text in the document you previously searched for",
     representation: "NVDA-Shift-F3",
@@ -506,7 +506,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousHeading: {
     keyCode: [KeyCodes.H],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous heading",
     representation: "Shift-H",
   },
@@ -518,7 +518,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousList: {
     keyCode: [KeyCodes.L],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous list",
     representation: "Shift-L",
   },
@@ -530,7 +530,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousListItem: {
     keyCode: [KeyCodes.I],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous list item",
     representation: "Shift-I",
   },
@@ -542,7 +542,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousTable: {
     keyCode: [KeyCodes.T],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous table",
     representation: "Shift-T",
   },
@@ -554,7 +554,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousLink: {
     keyCode: [KeyCodes.K],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous link",
     representation: "Shift-K",
   },
@@ -566,7 +566,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousNonLinkedText: {
     keyCode: [KeyCodes.N],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous non linked text",
     representation: "Shift-N",
   },
@@ -578,7 +578,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousFormField: {
     keyCode: [KeyCodes.F],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous form field",
     representation: "Shift-F",
   },
@@ -590,7 +590,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousUnvisitedLink: {
     keyCode: [KeyCodes.U],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous unvisited link",
     representation: "Shift-U",
   },
@@ -602,7 +602,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousVisitedLink: {
     keyCode: [KeyCodes.V],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous visited link",
     representation: "Shift-V",
   },
@@ -614,7 +614,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousEditField: {
     keyCode: [KeyCodes.E],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous edit field",
     representation: "Shift-E",
   },
@@ -626,7 +626,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousButton: {
     keyCode: [KeyCodes.B],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous button",
     representation: "Shift-B",
   },
@@ -638,7 +638,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousCheckbox: {
     keyCode: [KeyCodes.X],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous checkbox",
     representation: "Shift-X",
   },
@@ -650,7 +650,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousComboBox: {
     keyCode: [KeyCodes.C],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous combo box",
     representation: "Shift-C",
   },
@@ -662,7 +662,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousRadioButton: {
     keyCode: [KeyCodes.R],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous radio button",
     representation: "Shift-R",
   },
@@ -674,7 +674,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousBlockQuote: {
     keyCode: [KeyCodes.Q],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous block quote",
     representation: "Shift-Q",
   },
@@ -686,7 +686,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousSeparator: {
     keyCode: [KeyCodes.S],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous separator",
     representation: "Shift-S",
   },
@@ -698,7 +698,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousFrame: {
     keyCode: [KeyCodes.M],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous frame",
     representation: "Shift-M",
   },
@@ -710,7 +710,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousGraphic: {
     keyCode: [KeyCodes.G],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous graphic",
     representation: "Shift-G",
   },
@@ -722,7 +722,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousLandmark: {
     keyCode: [KeyCodes.D],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous landmark",
     representation: "Shift-D",
   },
@@ -734,7 +734,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousEmbeddedObject: {
     keyCode: [KeyCodes.O],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous embedded object",
     representation: "Shift-O",
   },
@@ -746,7 +746,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousHeadingLevel1: {
     keyCode: [KeyCodes.Digit1],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous heading level 1",
     representation: "Shift-1",
   },
@@ -758,7 +758,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousHeadingLevel2: {
     keyCode: [KeyCodes.Digit2],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous heading level 2",
     representation: "Shift-2",
   },
@@ -770,7 +770,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousHeadingLevel3: {
     keyCode: [KeyCodes.Digit3],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous heading level 3",
     representation: "Shift-3",
   },
@@ -782,7 +782,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousHeadingLevel4: {
     keyCode: [KeyCodes.Digit4],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous heading level 4",
     representation: "Shift-4",
   },
@@ -794,7 +794,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousHeadingLevel5: {
     keyCode: [KeyCodes.Digit5],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous heading level 5",
     representation: "Shift-5",
   },
@@ -806,7 +806,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousHeadingLevel6: {
     keyCode: [KeyCodes.Digit6],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous heading level 6",
     representation: "Shift-6",
   },
@@ -818,7 +818,7 @@ export const keyCodeCommands = {
   },
   moveToPreviousAnnotation: {
     keyCode: [KeyCodes.A],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous annotation",
     representation: "Shift-A",
   },
@@ -830,13 +830,13 @@ export const keyCodeCommands = {
   },
   moveToPreviousSpellingError: {
     keyCode: [KeyCodes.W],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description: "Move to previous spelling error",
     representation: "Shift-W",
   },
   moveToStartOfContainer: {
     keyCode: [KeyCodes.Comma],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Moves to the start of the container (list, table, etc.) where the caret is positioned",
     representation: "Shift-,",
@@ -850,7 +850,7 @@ export const keyCodeCommands = {
   },
   toggleSingleLetterNavigation: {
     keyCode: [...NVDA, KeyCodes.Spacebar],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "Toggles single letter navigation on and off for the current document.",
     representation: "NVDA-Shift-Space bar",
@@ -869,7 +869,7 @@ export const keyCodeCommands = {
 
   moveToContainingBrowseModeDocument: {
     keyCode: [...NVDA, KeyCodes.Spacebar],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "Moves the focus out of the current embedded object and into the document that contains it",
     representation: "NVDA-Control-Space bar",
@@ -879,7 +879,7 @@ export const keyCodeCommands = {
 
   interactWithMathContent: {
     keyCode: [...NVDA, KeyCodes.M],
-    modifiers: [Modifiers.ALT],
+    modifiers: [Modifiers.Alt],
     description: "Begins interaction with math content.",
     representation: "NVDA-Alt-M",
   },
@@ -888,7 +888,7 @@ export const keyCodeCommands = {
 
   openSpeechSettings: {
     keyCode: [...NVDA, KeyCodes.V],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description: "Open speech settings.",
     representation: "NVDA-Control-V",
   },
@@ -901,55 +901,55 @@ export const keyCodeCommands = {
   },
   selectSynthesizer: {
     keyCode: [...NVDA, KeyCodes.S],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description: "Select Synthesizer.",
     representation: "NVDA-Control-S",
   },
   audioDuckingMode: {
     keyCode: [...NVDA, KeyCodes.D],
-    modifiers: [Modifiers.SHIFT],
+    modifiers: [Modifiers.Shift],
     description:
       "On Windows 8 and above, this option allows you to choose if NVDA should lower the volume of other applications while NVDA is speaking, or all the time while NVDA is running.",
     representation: "NVDA-Shift-D",
   },
   moveToNextSynthSetting: {
     keyCode: [...NVDA, KeyCodes.ArrowRight],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "Moves to the next available speech setting after the current, wrapping around to the first setting again after the last",
     representation: "NVDA-Control-Right Arrow",
   },
   moveToPreviousSynthSetting: {
     keyCode: [...NVDA, KeyCodes.ArrowLeft],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "Moves to the next available speech setting before the current, wrapping around to the last setting after the first",
     representation: "NVDA-Control-Left Arrow",
   },
   incrementCurrentSynthSetting: {
     keyCode: [...NVDA, KeyCodes.ArrowUp],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "increases the current speech setting you are on. E.g. increases the rate, chooses the next voice, increases the volume",
     representation: "NVDA-Control-Up Arrow",
   },
   decrementCurrentSynthSetting: {
     keyCode: [...NVDA, KeyCodes.ArrowDown],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "decreases the current speech setting you are on. E.g. decreases the rate, chooses the previous voice, decreases the volume",
     representation: "NVDA-Control-Down Arrow",
   },
   tetherBraille: {
     keyCode: [...NVDA, KeyCodes.T],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "This option allows you to choose whether the braille display will follow the system focus / caret, the navigator object / review cursor, or both.",
     representation: "NVDA-Control-T",
   },
   openKeyboardSettings: {
     keyCode: [...NVDA, KeyCodes.K],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description: "Open keyboard settings.",
     representation: "NVDA-Control-K",
   },
@@ -976,7 +976,7 @@ export const keyCodeCommands = {
   },
   openMouseSettings: {
     keyCode: [...NVDA, KeyCodes.M],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description: "Open mouse settings.",
     representation: "NVDA-Control-M",
   },
@@ -1003,7 +1003,7 @@ export const keyCodeCommands = {
   },
   openObjectPresentationSettings: {
     keyCode: [...NVDA, KeyCodes.O],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description: "Open Object Presentation Settings.",
     representation: "NVDA-Control-O",
   },
@@ -1023,7 +1023,7 @@ export const keyCodeCommands = {
   },
   openBrowseModeSettings: {
     keyCode: [...NVDA, KeyCodes.B],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description: "Open Browse Mode Settings.",
     representation: "NVDA-Control-B",
   },
@@ -1036,21 +1036,21 @@ export const keyCodeCommands = {
   },
   saveConfiguration: {
     keyCode: [...NVDA, KeyCodes.C],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "Saves your current configuration so that it is not lost when you exit NVDA",
     representation: "NVDA-Control-C",
   },
   revertConfiguration: {
     keyCode: [...NVDA, KeyCodes.R],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description:
       "Pressing once resets your configuration to when you last saved it. Pressing three times will reset it back to factory defaults.",
     representation: "NVDA-Control-R",
   },
   openConfigurationProfilesDialog: {
     keyCode: [...NVDA, KeyCodes.P],
-    modifiers: [Modifiers.CONTROL],
+    modifiers: [Modifiers.Control],
     description: "Show the Configuration Profiles dialog.",
     representation: "NVDA-Control-P",
   },
