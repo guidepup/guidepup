@@ -192,7 +192,7 @@ export class NVDA implements ScreenReader {
 
     await this.#client.waitForSpokenPhrase(() =>
       Promise.all(
-        [...new Array(options.clickCount)].map(() =>
+        [...new Array(options.clickCount ?? 1)].map(() =>
           this.#client.sendKeyCode(command)
         )
       )
