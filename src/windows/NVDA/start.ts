@@ -16,7 +16,7 @@ export async function start(): Promise<void> {
     let nvdaProcess: ChildProcess;
 
     try {
-      nvdaProcess = spawn(`"${executablePath}"`, ["--minimal"], {
+      nvdaProcess = spawn(`"${executablePath}"`, [], {
         shell: true,
         stdio: "ignore",
       });

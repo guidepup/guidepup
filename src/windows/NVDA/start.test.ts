@@ -61,7 +61,7 @@ describe("start", () => {
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenCalledWith(
           `"${mockInstallationPath}"`,
-          ["--minimal"],
+          [],
           {
             shell: true,
             stdio: "ignore",
@@ -92,7 +92,7 @@ describe("start", () => {
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenCalledWith(
           `"${mockInstallationPath}"`,
-          ["--minimal"],
+          [],
           {
             shell: true,
             stdio: "ignore",
@@ -122,7 +122,7 @@ describe("start", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           1,
           `"${mockInstallationPath}"`,
-          ["--minimal"],
+          [],
           {
             shell: true,
             stdio: "ignore",
@@ -142,7 +142,7 @@ describe("start", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           2,
           `"${mockInstallationPath}"`,
-          ["--minimal"],
+          [],
           {
             shell: true,
             stdio: "ignore",
@@ -175,7 +175,7 @@ describe("start", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           1,
           `"${mockInstallationPath}"`,
-          ["--minimal"],
+          [],
           {
             shell: true,
             stdio: "ignore",
@@ -195,7 +195,7 @@ describe("start", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           2,
           `"${mockInstallationPath}"`,
-          ["--minimal"],
+          [],
           {
             shell: true,
             stdio: "ignore",
