@@ -7,7 +7,3 @@ export type { KeyboardOptions } from "./KeyboardOptions";
 export type { KeyCodeCommand } from "./KeyCodeCommand";
 export type { KeystrokeCommand } from "./KeystrokeCommand";
 export type { ScreenReader } from "./ScreenReader";
-export type { ScreenReaderCaption } from "./ScreenReaderCaption";
-export type { ScreenReaderCursor } from "./ScreenReaderCursor";
-export type { ScreenReaderKeyboard } from "./ScreenReaderKeyboard";
-export type { ScreenReaderMouse } from "./ScreenReaderMouse";

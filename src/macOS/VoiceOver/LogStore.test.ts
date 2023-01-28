@@ -53,16 +53,17 @@ describe("LogStore", () => {
     expect(await logStore.lastSpokenPhrase()).toEqual("");
   });
 
-  describe("when tap is called on an action's promise", () => {
+  describe("when tap is called on an action", () => {
     const expectedResult = Symbol("test-expected-result");
     let resultPromise, resolver;
 
     beforeEach(() => {
-      const promise = new Promise((resolve) => {
-        resolver = resolve;
-      });
+      const action = () =>
+        new Promise((resolve) => {
+          resolver = resolve;
+        });
 
-      resultPromise = logStore.tap(promise);
+      resultPromise = logStore.tap(action);
     });
 
     afterEach(async () => {

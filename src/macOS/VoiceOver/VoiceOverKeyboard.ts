@@ -8,10 +8,9 @@ import { KeyCodes } from "../KeyCodes";
 import { LogStore } from "./LogStore";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
-import type { ScreenReaderKeyboard } from "../../ScreenReaderKeyboard";
 import { sendKeys } from "../sendKeys";
 
-export class VoiceOverKeyboard implements ScreenReaderKeyboard {
+export class VoiceOverKeyboard {
   /**
    * @ignore
    */
@@ -49,7 +48,7 @@ export class VoiceOverKeyboard implements ScreenReaderKeyboard {
    * @param {object} [options] Additional options.
    */
   async press(key: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#logStore.tap(() =>
       sendKeys(
         parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes),
         options?.application,
@@ -72,7 +71,7 @@ export class VoiceOverKeyboard implements ScreenReaderKeyboard {
    * @param {object} [options] Additional options.
    */
   async type(text: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#logStore.tap(() =>
       sendKeys({ characters: text }, options?.application, options)
     );
   }
@@ -94,7 +93,7 @@ export class VoiceOverKeyboard implements ScreenReaderKeyboard {
     command: KeyboardCommand,
     options?: CommandOptions
   ): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#logStore.tap(() =>
       sendKeys(command, Applications.VoiceOver, options)
     );
   }

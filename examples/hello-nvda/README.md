@@ -4,9 +4,9 @@ A basic example demonstrating control of NVDA.
 
 Run this example with:
 
-```console
+```bash
 cd ./examples/hello-nvda
 npx ts-node ./index.ts
 ```
 
-> Note: please ensure you have setup the [NVDA prerequisites](../../guides/nvda-prerequisites/README.md) before running this example.
+> Note: please ensure you have setup the [NVDA prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.

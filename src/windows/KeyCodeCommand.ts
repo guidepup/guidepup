@@ -1,5 +1,6 @@
+import type { Key } from "./Key";
 import type { KeyCodeCommand as KeyCodeCommandBase } from "../KeyCodeCommand";
-import type { Modifiers } from "./Modifiers";
+import { Modifiers } from "./Modifiers";
 
 /**
  * A Windows key code command.
@@ -8,11 +9,11 @@ export interface KeyCodeCommand extends KeyCodeCommandBase {
   /**
    * The key code to send.
    */
-  keyCode: string;
+  keyCode: Key | Key[];
   /**
    * List of modifier keys to press while sending the key code(s).
    */
-  modifiers?: Modifiers[];
+  modifiers?: (typeof Modifiers[keyof typeof Modifiers])[];
   /**
    * Description of the action the key code performs.
    */

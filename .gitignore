@@ -3,3 +3,4 @@ lib
 node_modules
 recordings
 .DS_Store
+.eslintcache

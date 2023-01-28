@@ -1,24 +1,11 @@
-import { accessSync } from "fs";
-import { join } from "path";
+import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 
-const DEFAULT_NVDA_PATH = join(
-  "C:/",
-  "Program Files (x86)",
-  "NVDA",
-  "nvda.exe"
-);
+export async function isNVDAInstalled() {
+  try {
+    const path = await getNVDAInstallationPath();
 
-let installed: boolean;
-
-export function isNVDAInstalled(): boolean {
-  if (typeof installed === "undefined") {
-    try {
-      accessSync(DEFAULT_NVDA_PATH);
-      installed = true;
-    } catch (_) {
-      installed = false;
-    }
+    return !!path;
+  } catch {
+    return false;
   }
-
-  return installed;
 }

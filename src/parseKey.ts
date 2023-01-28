@@ -2,11 +2,11 @@ import { KeyCodeCommand } from "./KeyCodeCommand";
 
 export function parseKey<T extends KeyCodeCommand>(
   keyOrKeys: string,
-  Modifiers: Record<string, string>,
+  Modifiers: Record<string, unknown>,
   KeyCodes: Record<string, unknown>
 ): T {
   const keyCode: unknown[] = [];
-  const modifiers: string[] = [];
+  const modifiers: unknown[] = [];
 
   keyOrKeys = /^[A-Z]$/.test(keyOrKeys) ? `Shift+${keyOrKeys}` : keyOrKeys;
 

@@ -17,9 +17,11 @@ async function run(): Promise<void> {
 
   try {
     // Start the screen recording.
-    stopRecording = macOSRecord("./recordings/hello-voiceover.mov");
+    stopRecording = macOSRecord(
+      `./recordings/hello-voiceover-${+new Date()}.mov`
+    );
 
-    // Start the VoiceOver screenreader.
+    // Start the VoiceOver screen reader.
     await voiceOver.start();
 
     // Open Safari and wait for it to be ready.

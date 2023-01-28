@@ -281,6 +281,7 @@ export enum KeyCodes {
    */
   "`" = 50,
   Backtick = 50,
+  Tilde = 50,
   /**
    * Backspace ← / ⌫
    *
@@ -347,19 +348,20 @@ export enum KeyCodes {
    */
   F17 = 64,
   /**
-   * Numpad .
+   * NumPad .
    */
   Decimal = 65,
   /**
-   * Numpad *
+   * NumPad *
    */
   Multiply = 67,
   /**
-   * Numpad +
+   * NumPad +
    */
   Add = 69,
+  Plus = 69,
   /**
-   * Numpad Clear ⌧
+   * NumPad Clear ⌧
    */
   Clear = 71,
   /**
@@ -375,7 +377,7 @@ export enum KeyCodes {
    */
   Mute = 74,
   /**
-   * Numpad /
+   * NumPad /
    */
   Divide = 75,
   /**
@@ -385,7 +387,7 @@ export enum KeyCodes {
    */
   // Enter = 76,
   /**
-   * Numpad -
+   * NumPad -
    */
   Subtract = 78,
   /**
@@ -397,55 +399,55 @@ export enum KeyCodes {
    */
   F19 = 80,
   /**
-   * Numpad =
+   * NumPad =
    *
    * Not used.
    */
   // Equals = 81,
   /**
-   * Numpad 0
+   * NumPad 0
    *
    * Not used.
    */
   // Digit0 = 82,
   /**
-   * Numpad 1
+   * NumPad 1
    *
    * Not used.
    */
   // Digit1 = 83,
   /**
-   * Numpad 2
+   * NumPad 2
    *
    * Not used.
    */
   // Digit2 = 84,
   /**
-   * Numpad 3
+   * NumPad 3
    *
    * Not used.
    */
   // Digit3 = 85,
   /**
-   * Numpad 4
+   * NumPad 4
    *
    * Not used.
    */
   // Digit4 = 86,
   /**
-   * Numpad 5
+   * NumPad 5
    *
    * Not used.
    */
   // Digit5 = 87,
   /**
-   * Numpad 6
+   * NumPad 6
    *
    * Not used.
    */
   // Digit6 = 88,
   /**
-   * Numpad 7
+   * NumPad 7
    *
    * Not used.
    */
@@ -455,13 +457,13 @@ export enum KeyCodes {
    */
   F20 = 90,
   /**
-   * Numpad 8
+   * NumPad 8
    *
    * Not used.
    */
   // Digit8 = 91,
   /**
-   * Numpad 9
+   * NumPad 9
    *
    * Not used.
    */

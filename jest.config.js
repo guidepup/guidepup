@@ -34,7 +34,9 @@ module.exports = {
     // TODO: flesh out LogStore tests
     "<rootDir>/src/macOS/VoiceOver/LogStore.ts",
     "<rootDir>/src/macOS/VoiceOver/Places.ts",
-    "<rootDir>/src/windows",
+    "<rootDir>/src/windows/NVDA/keyCodeCommands.ts",
+    "<rootDir>/src/windows/NVDA/NVDA.ts",
+    "<rootDir>/src/windows/NVDA/NVDAClient.ts",
   ],
   coverageThreshold: {
     global: {

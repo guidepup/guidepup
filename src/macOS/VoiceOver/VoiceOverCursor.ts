@@ -5,11 +5,10 @@ import { keyCodeCommands } from "./keyCodeCommands";
 import { LogStore } from "./LogStore";
 import { move } from "./move";
 import { performAction } from "./performAction";
-import type { ScreenReaderCursor } from "../../ScreenReaderCursor";
 import { sendKeys } from "../sendKeys";
 import { takeScreenshot } from "./takeScreenshot";
 
-export class VoiceOverCursor implements ScreenReaderCursor {
+export class VoiceOverCursor {
   /**
    * @ignore
    */
@@ -27,7 +26,9 @@ export class VoiceOverCursor implements ScreenReaderCursor {
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(move(Directions.Left, undefined, options));
+    return await this.#logStore.tap(() =>
+      move(Directions.Left, undefined, options)
+    );
   }
 
   /**
@@ -38,7 +39,9 @@ export class VoiceOverCursor implements ScreenReaderCursor {
    * @param {object} [options] Additional options.
    */
   async next(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(move(Directions.Right, undefined, options));
+    return await this.#logStore.tap(() =>
+      move(Directions.Right, undefined, options)
+    );
   }
 
   /**
@@ -47,18 +50,18 @@ export class VoiceOverCursor implements ScreenReaderCursor {
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(performAction(options));
+    return await this.#logStore.tap(() => performAction(options));
   }
 
   /**
-   * Interact with the item under the ScreenReader cursor.
+   * Interact with the item under the VoiceOver cursor.
    *
    * Equivalent of executing VO-Shift-Down Arrow.
    *
    * @param {object} [options] Additional options.
    */
   async interact(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#logStore.tap(() =>
       sendKeys(
         keyCodeCommands.interactWithItem,
         Applications.VoiceOver,
@@ -75,7 +78,7 @@ export class VoiceOverCursor implements ScreenReaderCursor {
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#logStore.tap(() =>
       sendKeys(
         keyCodeCommands.stopInteractingWithItem,
         Applications.VoiceOver,

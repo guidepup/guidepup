@@ -33,13 +33,13 @@ With [Guidepup](https://www.guidepup.dev/) you can automate your screen reader t
 
 Set up your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
-```console
+```bash
 npx @guidepup/setup
 ```
 
 Install Guidepup to your project:
 
-```console
+```bash
 npm install @guidepup/guidepup
 ```
 
@@ -87,7 +87,7 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ```yaml
 - name: Setup Environment
-  uses: guidepup/setup-action@0.8.1
+  uses: guidepup/setup-action@0.10.0
 ```
 
 ## Support

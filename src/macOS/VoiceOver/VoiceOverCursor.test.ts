@@ -37,6 +37,9 @@ describe("VoiceOverCursor", () => {
     jest.clearAllMocks();
 
     mockType(takeScreenshot).mockResolvedValue(screenshotPathDummy);
+    mockType(logStoreStub.tap).mockImplementation(
+      async (action) => await action()
+    );
 
     cursor = new VoiceOverCursor(logStoreStub);
   });

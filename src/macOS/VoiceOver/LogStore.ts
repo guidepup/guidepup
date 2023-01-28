@@ -77,13 +77,17 @@ export class LogStore {
    * @param {Promise<unknown>} promise Underlying action to capture logs for.
    * @returns {Promise<unknown>}
    */
-  async tap<T, S extends Promise<T>>(promise: S): Promise<T> {
+  async tap<T, S extends Promise<T>>(action: () => S): Promise<T> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
     let activePromiseResolver: () => void;
     this.#activePromise = new Promise<void>(
       (resolve) => (activePromiseResolver = resolve)
     );
 
-    const result = await promise;
+    const result = await action();
 
     const [itemText, lastSpokenPhrase] = await Promise.all([
       this.#pollForItemText(),
