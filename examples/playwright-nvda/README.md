@@ -10,7 +10,7 @@ yarn install --frozen-lockfile
 yarn test
 ```
 
-> Note: please ensure you have setup the [NVDA prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.
+> Note: please ensure you have set up the [NVDA prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.
 
 ## Test flow
 

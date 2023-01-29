@@ -8,4 +8,4 @@ Run this example with:
 npx ts-node ./examples/hello-voiceover/index.ts
 ```
 
-> Note: please ensure you have setup the [VoiceOver prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.
+> Note: please ensure you have set up the [VoiceOver prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.
