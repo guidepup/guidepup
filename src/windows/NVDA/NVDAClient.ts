@@ -42,6 +42,7 @@ const protocolMessage = JSON.stringify({
   version: 2,
 });
 
+const MAX_CONSECUTIVE_CONNECTION_FAILURES = 3;
 const CANCEL_DEBOUNCE_TIMEOUT = 250;
 const CANCEL_NOT_FIRE_TIMEOUT = 1000;
 const SPEAK_DEBOUNCE_TIMEOUT = 1000;
@@ -69,9 +70,9 @@ const delay = async (ms: number) =>
 
 export class NVDAClient extends EventEmitter {
   #activePromise = null;
-
   #socket: TLSSocket;
   #spokenPhrases = [];
+  #consecutiveConnectionFailures = 0;
 
   /**
    * Get the log of all spoken phrases for this NVDA connection.
@@ -106,76 +107,103 @@ export class NVDAClient extends EventEmitter {
       "server.pem"
     );
 
-    return await new Promise<void>((resolve, reject) => {
-      this.#socket = connect(
-        NVDA_PORT,
-        NVDA_HOST,
-        {
-          ca: [readFileSync(caPath)],
-          checkServerIdentity: () => null,
-        },
-        async () => {
-          this.once(CHANNEL_JOINED, () => {
-            resolve();
-          });
+    const ca = readFileSync(caPath);
 
-          await this.#send(connectionMessage);
-          await this.#send(protocolMessage);
-        }
-      );
+    return await new Promise<void>((resolve, reject) =>
+      this.#connect(ca, resolve, reject)
+    );
+  }
 
-      this.#socket.setEncoding("utf8");
+  async #connect(
+    ca: Buffer,
+    onSuccess?: () => void,
+    onError?: (error: Error) => void
+  ): Promise<void> {
+    let onSuccessCalled = false;
 
-      this.#socket.on("error", (e) => {
+    this.#socket = connect(
+      NVDA_PORT,
+      NVDA_HOST,
+      {
+        ca: [ca],
+        checkServerIdentity: () => null,
+      },
+      async () => {
+        this.once(CHANNEL_JOINED, () => {
+          this.#consecutiveConnectionFailures = 0;
+          onSuccessCalled = true;
+          onSuccess?.();
+        });
+
+        await this.#send(connectionMessage);
+        await this.#send(protocolMessage);
+      }
+    );
+
+    this.#socket.setEncoding("utf8");
+
+    this.#socket.on("error", (e) => {
+      this.#consecutiveConnectionFailures++;
+
+      if (
+        this.#consecutiveConnectionFailures <
+        MAX_CONSECUTIVE_CONNECTION_FAILURES
+      ) {
         this.disconnect();
-        reject(new Error(`${ERR_NVDA_CANNOT_CONNECT}\n${e.message}`));
-      });
+        this.#connect(ca, onSuccess, onError);
 
-      this.#socket.on("data", (data: string) => {
-        if (!data.trim().length) {
-          return;
+        return;
+      }
+
+      if (!onSuccessCalled) {
+        onError(new Error(`${ERR_NVDA_CANNOT_CONNECT}\n${e.message}`));
+      }
+    });
+
+    this.#socket.on("data", (data: string) => {
+      if (!data.trim().length) {
+        return;
+      }
+
+      let parsedData: NVDABaseMessage;
+
+      try {
+        parsedData = JSON.parse(data);
+      } catch {
+        return;
+      }
+
+      if (isChannelJoinedMessage(parsedData)) {
+        this.emit(CHANNEL_JOINED);
+
+        return;
+      }
+
+      if (isCancelMessage(parsedData)) {
+        this.emit(CANCEL);
+
+        return;
+      }
+
+      if (!isSpeakMessage(parsedData)) {
+        return;
+      }
+
+      const spokenPhraseParts: string[] = [];
+
+      for (const spokenPhrasePart of parsedData.sequence) {
+        if (typeof spokenPhrasePart !== "string") {
+          continue;
         }
 
-        let parsedData: NVDABaseMessage;
+        spokenPhraseParts.push(
+          spokenPhrasePart.trim().replaceAll(/\s\s+/g, " ")
+        );
+      }
 
-        try {
-          parsedData = JSON.parse(data);
-        } catch {
-          return;
-        }
+      const spokenPhrase = spokenPhraseParts.join(", ");
 
-        if (isChannelJoinedMessage(parsedData)) {
-          this.emit(CHANNEL_JOINED);
-
-          return;
-        }
-
-        if (isCancelMessage(parsedData)) {
-          this.emit(CANCEL);
-
-          return;
-        }
-
-        if (!isSpeakMessage(parsedData)) {
-          return;
-        }
-
-        const spokenPhraseParts: string[] = [];
-
-        for (const spokenPhrasePart of parsedData.sequence) {
-          if (typeof spokenPhrasePart !== "string") {
-            continue;
-          }
-
-          spokenPhraseParts.push(
-            spokenPhrasePart.trim().replaceAll(/\s\s+/g, " ")
-          );
-        }
-
-        const spokenPhrase = spokenPhraseParts.join(", ");
-
-        this.emit(SPEAK, spokenPhrase);
-      });
+      this.emit(SPEAK, spokenPhrase);
     });
   }
 
@@ -314,6 +342,10 @@ export class NVDAClient extends EventEmitter {
   async #send(message: string): Promise<void> {
     if (!message.endsWith("\n")) {
       message += "\n";
+    }
+
+    if (this.#socket.destroyed) {
+      await this.connect();
     }
 
     return new Promise<void>((resolve, reject) => {
