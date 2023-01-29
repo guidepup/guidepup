@@ -43,11 +43,12 @@ const protocolMessage = JSON.stringify({
 });
 
 const CANCEL_DEBOUNCE_TIMEOUT = 250;
+const CANCEL_NOT_FIRE_TIMEOUT = 1000;
 const SPEAK_DEBOUNCE_TIMEOUT = 1000;
 
 const log = (...args) => {
-  console.info((new Date()).toISOString(), ...args);
-}
+  console.info(new Date().toISOString(), ...args);
+};
 
 const isChannelJoinedMessage = (
   message: NVDABaseMessage
@@ -266,9 +267,7 @@ export class NVDAClient extends EventEmitter {
     };
 
     const timeoutHandler = () => {
-      log(
-        "[waitForSpokenPhrase]: timed out waiting for spoken phrases"
-      );
+      log("[waitForSpokenPhrase]: timed out waiting for spoken phrases");
       this.removeListener(SPEAK, speakHandler);
       speakPromiseResolver();
     };
@@ -317,7 +316,7 @@ export class NVDAClient extends EventEmitter {
       log("[stopReading]: trying to send speech cancel");
       this.sendKeyCode(keyCodeCommands.stopSpeech);
 
-      await cancelPromise;
+      await Promise.race([cancelPromise, delay(CANCEL_NOT_FIRE_TIMEOUT)]);
       await delay(CANCEL_DEBOUNCE_TIMEOUT);
     }
 
