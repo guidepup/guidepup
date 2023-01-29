@@ -29,8 +29,6 @@ export async function headerNavigation({
   if (browserName === "chromium") {
     // Get to the main page - sometimes focus can land on the address bar
     while (!(await nvda.lastSpokenPhrase()).includes("document")) {
-      console.log(await nvda.lastSpokenPhrase());
-
       await nvda.press("F6");
     }
   } else if (browserName === "firefox") {
@@ -45,8 +43,6 @@ export async function headerNavigation({
   while (
     !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
   ) {
-    console.log(await nvda.lastSpokenPhrase());
-
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
   }
 }
