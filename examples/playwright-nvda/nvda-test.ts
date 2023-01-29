@@ -84,14 +84,12 @@ const voTest = test.extend<{ nvda: typeof nvda }>({
 
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        console.info((new Date()).toISOString(), "[test]: Performing Alt-Tab");
         await nvda.perform({
           keyCode: [WindowsKeyCodes.Tab],
           modifiers: [WindowsModifiers.Alt],
         });
 
         const lastSpokenPhrase = await nvda.lastSpokenPhrase();
-        console.info((new Date()).toISOString(), "[test]: Got Last Spoken Phrase", { lastSpokenPhrase });
 
         if (lastSpokenPhrase.includes(application.name)) {
           break;
