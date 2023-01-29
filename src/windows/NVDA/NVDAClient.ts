@@ -294,7 +294,7 @@ export class NVDAClient extends EventEmitter {
 
   async #stopReading(): Promise<void> {
     let spoken = true;
-    let cancelPromiseResolver: () => void;
+    let cancelPromiseResolver = () => null;
 
     const speakHandler = () => {
       spoken = true;
@@ -317,9 +317,14 @@ export class NVDAClient extends EventEmitter {
       this.sendKeyCode(keyCodeCommands.stopSpeech);
 
       await Promise.race([cancelPromise, delay(CANCEL_NOT_FIRE_TIMEOUT)]);
+
+      cancelPromiseResolver();
+      cancelPromiseResolver = () => null;
+
       await delay(CANCEL_DEBOUNCE_TIMEOUT);
     }
 
+    this.removeListener(CANCEL, cancelHandler);
     this.removeListener(SPEAK, speakHandler);
   }
 
