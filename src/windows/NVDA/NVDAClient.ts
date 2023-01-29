@@ -42,7 +42,7 @@ const protocolMessage = JSON.stringify({
   version: 2,
 });
 
-const CANCEL_DEBOUNCE_TIMEOUT = 500;
+const CANCEL_DEBOUNCE_TIMEOUT = 250;
 const SPEAK_DEBOUNCE_TIMEOUT = 500;
 
 const isChannelJoinedMessage = (
@@ -281,7 +281,7 @@ export class NVDAClient extends EventEmitter {
   }
 
   async #stopReading(): Promise<void> {
-    let spoken: boolean;
+    let spoken = true;
     let cancelPromiseResolver: () => void;
 
     const speakHandler = () => {
