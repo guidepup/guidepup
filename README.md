@@ -45,10 +45,10 @@ npm install @guidepup/guidepup
 
 And get cracking with your first screen reader automation code!
 
-```ts
+```js
 import { voiceOver } from "@guidepup/guidepup";
 
-async function run(): Promise<void> {
+(async () => {
   // Start your screen reader instance
   await voiceOver.start();
 
@@ -58,23 +58,22 @@ async function run(): Promise<void> {
   // Assert on what your users really see and hear when using screen readers
   console.log(await voiceOver.lastSpokenPhrase());
 
+  // Stop your screen reader instance
   await voiceOver.stop();
-}
-
-run();
+})();
 ```
 
 ## Documentation
 
 Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real world examples, environment setup, and complete API documentation with examples.
 
-Alternatively, you can also check out the [typedoc API documentation](https://guidepup.github.io/guidepup/) for all the information you need to write fantastic screen reader driven workflows.
+Alternatively, you can also check out the [typedoc API documentation](https://guidepup.github.io/guidepup/).
 
 ## Examples
 
 Check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects.
 
-Alternatively checkout [this project](https://github.com/guidepup/aria-at-tests) to check out the Guidepup compatibility against <https://github.com/w3c/aria-at> test suite.
+Alternatively check out [this project](https://github.com/guidepup/aria-at-tests) to check out the Guidepup compatibility against <https://github.com/w3c/aria-at> test suite.
 
 ## See Also
 
@@ -86,8 +85,8 @@ Check out some of the other Guidepup modules:
 If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to set up your CI ready for screen reader automation.
 
 ```yaml
-- name: Setup Environment
-  uses: guidepup/setup-action@0.11.2
+- name: Set Up Environment
+  uses: guidepup/setup-action
 ```
 
 ## Support
@@ -97,9 +96,9 @@ Full support is available for:
 - VoiceOver on MacOS
 - NVDA on Windows
 
-## Related
+## Similar
 
-Here are some related projects:
+Here are some similar unaffiliated projects:
 
 - [`auto-vo`](https://github.com/AccessLint/auto-vo)
 - [`screen-reader-reader`](https://github.com/phenomnomnominal/screen-reader-reader)
