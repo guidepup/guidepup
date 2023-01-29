@@ -42,7 +42,7 @@ const protocolMessage = JSON.stringify({
   version: 2,
 });
 
-const CANCEL_DEBOUNCE_TIMEOUT = 250;
+const CANCEL_DEBOUNCE_TIMEOUT = 500;
 const SPEAK_DEBOUNCE_TIMEOUT = 500;
 
 const isChannelJoinedMessage = (
@@ -150,6 +150,7 @@ export class NVDAClient extends EventEmitter {
         }
 
         if (isCancelMessage(parsedData)) {
+          console.info("emitting cancel");
           this.emit(CANCEL);
 
           return;
@@ -173,6 +174,7 @@ export class NVDAClient extends EventEmitter {
 
         const spokenPhrase = spokenPhraseParts.join(", ");
 
+        console.info("emitting speak", { spokenPhrase });
         this.emit(SPEAK, spokenPhrase);
       });
     });
@@ -244,6 +246,7 @@ export class NVDAClient extends EventEmitter {
     const spokenPhrases = [];
 
     const speakHandler = (spokenPhrase) => {
+      console.info("got action phrase", { spokenPhrase });
       spokenPhrases.push(spokenPhrase);
 
       if (timeoutId !== null) {
@@ -259,7 +262,9 @@ export class NVDAClient extends EventEmitter {
 
     this.addListener(SPEAK, speakHandler);
 
+    console.info("performing action");
     const result = await action();
+    console.info("action complete");
 
     timeoutId = setTimeout(timeoutHandler, SPEAK_DEBOUNCE_TIMEOUT);
 
@@ -296,6 +301,7 @@ export class NVDAClient extends EventEmitter {
       });
 
       this.once(CANCEL, cancelHandler);
+      console.info("trying to send speech cancel");
       this.sendKeyCode(keyCodeCommands.stopSpeech);
 
       await cancelPromise;
