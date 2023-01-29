@@ -270,6 +270,12 @@ const Space = new Key({
   extended: false,
   symbol: " ",
 });
+const Insert = new Key({
+  keyCode: 45,
+  scanCode: 82,
+  extended: true,
+  symbol: "{INSERT}",
+});
 
 export const KeyCodes = {
   /**
@@ -681,11 +687,7 @@ export const KeyCodes = {
   /**
    * NVDA
    */
-  Nvda: new Key({
-    keyCode: 45,
-    scanCode: 82,
-    extended: true,
-  }),
+  Nvda: Insert,
   /**
    * Home
    */
@@ -1038,7 +1040,7 @@ export const KeyCodes = {
   /**
    * Insert
    */
-  Insert: new Key({ symbol: "{INSERT}" }),
+  Insert,
   /**
    * Enter ↵
    */
