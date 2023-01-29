@@ -1,5 +1,5 @@
-import { expect, Page } from "@playwright/test";
 import { nvda as _nvda } from "../../../lib";
+import { Page } from "@playwright/test";
 
 type NVDA = typeof _nvda;
 
@@ -22,9 +22,9 @@ export async function headerNavigation({
   });
 
   // Wait for page to be ready and interact 🙌
-  await expect(page.locator('header[role="banner"]')).toBeVisible();
-
-  await delay(1000);
+  const header = page.locator('header[role="banner"]');
+  await header.waitFor();
+  await delay(500);
 
   if (browserName === "chromium") {
     // Get to the main page - sometimes focus can land on the address bar

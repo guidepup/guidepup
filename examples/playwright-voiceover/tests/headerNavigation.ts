@@ -1,5 +1,5 @@
-import { expect, Page } from "@playwright/test";
 import { voiceOver as _voiceOver } from "../../../lib";
+import { Page } from "@playwright/test";
 
 type VoiceOver = typeof _voiceOver;
 
@@ -20,7 +20,8 @@ export async function headerNavigation({
   });
 
   // Wait for page to be ready and interact 🙌
-  await expect(page.locator('header[role="banner"]')).toBeVisible();
+  const header = page.locator('header[role="banner"]');
+  await header.waitFor();
   await delay(500);
 
   // Make sure interacting with the web content
