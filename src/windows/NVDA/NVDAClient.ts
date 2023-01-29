@@ -45,6 +45,10 @@ const protocolMessage = JSON.stringify({
 const CANCEL_DEBOUNCE_TIMEOUT = 250;
 const SPEAK_DEBOUNCE_TIMEOUT = 1000;
 
+const log = (...args) => {
+  console.info((new Date()).toISOString(), ...args);
+}
+
 const isChannelJoinedMessage = (
   message: NVDABaseMessage
 ): message is NVDAChannelJoinedMessage => {
@@ -79,7 +83,7 @@ export class NVDAClient extends EventEmitter {
    */
   async spokenPhraseLog(): Promise<string[]> {
     if (this.#activePromise) {
-      console.info(
+      log(
         "[spokenPhraseLog]: waiting for previous active promise to resolve..."
       );
       await this.#activePromise;
@@ -153,7 +157,7 @@ export class NVDAClient extends EventEmitter {
         }
 
         if (isCancelMessage(parsedData)) {
-          console.info("[on(data)]: emitting cancel");
+          log("[on(data)]: emitting cancel");
           this.emit(CANCEL);
 
           return;
@@ -177,7 +181,7 @@ export class NVDAClient extends EventEmitter {
 
         const spokenPhrase = spokenPhraseParts.join(", ");
 
-        console.info("[on(data)]: emitting speak", { spokenPhrase });
+        log("[on(data)]: emitting speak", { spokenPhrase });
         this.emit(SPEAK, spokenPhrase);
       });
     });
@@ -228,7 +232,7 @@ export class NVDAClient extends EventEmitter {
    */
   async waitForSpokenPhrase<T>(action: () => Promise<T>): Promise<T> {
     if (this.#activePromise) {
-      console.info(
+      log(
         "[waitForSpokenPhrase]: waiting for previous active promise to resolve..."
       );
       await this.#activePromise;
@@ -252,7 +256,7 @@ export class NVDAClient extends EventEmitter {
     const spokenPhrases = [];
 
     const speakHandler = (spokenPhrase) => {
-      console.info("[waitForSpokenPhrase]: got action phrase", { spokenPhrase });
+      log("[waitForSpokenPhrase]: got action phrase", { spokenPhrase });
       spokenPhrases.push(spokenPhrase);
 
       if (timeoutId !== null) {
@@ -262,7 +266,7 @@ export class NVDAClient extends EventEmitter {
     };
 
     const timeoutHandler = () => {
-      console.info(
+      log(
         "[waitForSpokenPhrase]: timed out waiting for spoken phrases"
       );
       this.removeListener(SPEAK, speakHandler);
@@ -271,9 +275,9 @@ export class NVDAClient extends EventEmitter {
 
     this.addListener(SPEAK, speakHandler);
 
-    console.info("[waitForSpokenPhrase]: performing action");
+    log("[waitForSpokenPhrase]: performing action");
     const result = await action();
-    console.info("[waitForSpokenPhrase]: action complete");
+    log("[waitForSpokenPhrase]: action complete");
 
     timeoutId = setTimeout(timeoutHandler, SPEAK_DEBOUNCE_TIMEOUT);
 
@@ -310,7 +314,7 @@ export class NVDAClient extends EventEmitter {
       });
 
       this.once(CANCEL, cancelHandler);
-      console.info("[stopReading]: trying to send speech cancel");
+      log("[stopReading]: trying to send speech cancel");
       this.sendKeyCode(keyCodeCommands.stopSpeech);
 
       await cancelPromise;
