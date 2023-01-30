@@ -105,6 +105,7 @@ Here are some similar unaffiliated projects:
 - [`web-test-runner-voiceover`](https://github.com/coryrylan/web-test-runner-voiceover)
 - [`nvda-testing-driver`](https://github.com/kastwey/nvda-testing-driver)
 - [`assistive-webdriver`](https://github.com/AmadeusITGroup/Assistive-Webdriver)
+- [`screen-reader-testing-library`](https://github.com/eps1lon/screen-reader-testing-library)
 
 ## License
 
