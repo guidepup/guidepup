@@ -59,14 +59,10 @@ describe("start", () => {
       });
 
       it("should spawn a NVDA command", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          `"${mockInstallationPath}"`,
-          ["--minimal"],
-          {
-            shell: true,
-            stdio: "ignore",
-          }
-        );
+        expect(spawn).toHaveBeenCalledWith(`"${mockInstallationPath}"`, [], {
+          shell: true,
+          stdio: "ignore",
+        });
       });
 
       it("should wait for NVDA to be running", () => {
