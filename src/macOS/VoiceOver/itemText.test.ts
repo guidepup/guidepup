@@ -1,7 +1,6 @@
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_GET_ITEM_TEXT } from "../errors";
 import { itemText } from "./itemText";
-import { mockType } from "../../../test/mockType";
 import { retry } from "../../retry";
 import { runAppleScript } from "../runAppleScript";
 import { withTransaction } from "../withTransaction";
@@ -22,7 +21,7 @@ describe("itemText", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -46,7 +45,7 @@ describe("itemText", () => {
 
     describe("when the retry runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retry).mock.calls[0][0];
+        const delegate = jest.mocked(retry).mock.calls[0][0];
 
         delegate();
       });
@@ -64,7 +63,7 @@ describe("itemText", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retry).mockRejectedValue(stubError);
+      jest.mocked(retry).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the itemText prefix, application name, and underlying error message", async () => {

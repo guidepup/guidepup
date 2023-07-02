@@ -1,7 +1,6 @@
 import { connect, Socket } from "net";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { isRunning } from "./isRunning";
-import { mockType } from "../../../test/mockType";
 
 jest.mock("net", () => ({
   connect: jest.fn(),
@@ -18,7 +17,7 @@ describe("isRunning", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(connect).mockReturnValue(clientStub as unknown as Socket);
+    jest.mocked(connect).mockReturnValue(clientStub as unknown as Socket);
 
     resultPromise = isRunning();
   });
@@ -34,7 +33,7 @@ describe("isRunning", () => {
   });
 
   it("should attempt to connect to NVDA", () => {
-    expect(mockType(connect)).toHaveBeenCalledWith(NVDA_PORT, NVDA_HOST);
+    expect(jest.mocked(connect)).toHaveBeenCalledWith(NVDA_PORT, NVDA_HOST);
   });
 
   describe("when creating a connection to NVDA is successful", () => {

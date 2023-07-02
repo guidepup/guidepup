@@ -1,6 +1,5 @@
 import { access, constants } from "fs";
 import { enabledDbFile } from "./enabledDbFile";
-import { mockType } from "../../../../test/mockType";
 
 jest.mock("fs", () => ({
   access: jest.fn(),
@@ -28,7 +27,8 @@ describe("enabledDbFile", () => {
 
   describe("when the '.VoiceOverAppleScriptEnabled' database file exists", () => {
     beforeEach(async () => {
-      mockType(access).mockImplementation((_path, _mode, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (access as any).mockImplementation((_path, _mode, callback) => {
         callback(null);
       });
 
@@ -44,7 +44,8 @@ describe("enabledDbFile", () => {
 
   describe("when the '.VoiceOverAppleScriptEnabled' database file doesn't exist", () => {
     beforeEach(async () => {
-      mockType(access).mockImplementation((_path, _mode, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (access as any).mockImplementation((_path, _mode, callback) => {
         callback(new Error("test-error"));
       });
 

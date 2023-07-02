@@ -1,4 +1,3 @@
-import { mockType } from "../../test/mockType";
 import { quit } from "./quit";
 import { runVbsScript } from "./runVbsScript";
 
@@ -25,7 +24,7 @@ describe("quit", () => {
     const mockError = new Error("test-error");
 
     beforeEach(() => {
-      mockType(runVbsScript).mockRejectedValue(mockError);
+      jest.mocked(runVbsScript).mockRejectedValue(mockError);
     });
 
     it("should throw a wrapped error", async () => {

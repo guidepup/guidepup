@@ -1,4 +1,6 @@
 export const ERR_VOICE_OVER_NOT_SUPPORTED = "VoiceOver not supported";
+export const ERR_VOICE_OVER_ALREADY_RUNNING = "VoiceOver already running";
+export const ERR_VOICE_OVER_NOT_RUNNING = "VoiceOver not running";
 export const ERR_VOICE_OVER_UNABLE_TO_CONFIGURE_VOICEOVER_SETTING =
   "Unable to configure a VoiceOver setting";
 export const ERR_VOICE_OVER_CANNOT_BE_STARTED = "VoiceOver cannot be started";

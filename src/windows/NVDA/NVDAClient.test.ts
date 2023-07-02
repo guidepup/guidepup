@@ -4,7 +4,6 @@ import { ERR_NVDA_CANNOT_CONNECT, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { Key } from "../Key";
-import { mockType } from "../../../test/mockType";
 import { Modifiers } from "../Modifiers";
 import { NVDAClient } from "./NVDAClient";
 import { readFileSync } from "fs";
@@ -26,9 +25,11 @@ describe("NVDAClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(getNVDAInstallationPath).mockResolvedValue(installationPathDummy);
+    jest
+      .mocked(getNVDAInstallationPath)
+      .mockResolvedValue(installationPathDummy);
 
-    mockType(readFileSync).mockImplementation((path, ...args) => {
+    jest.mocked(readFileSync).mockImplementation((path, ...args) => {
       if (
         path ===
         join(
@@ -62,7 +63,7 @@ describe("NVDAClient", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
     });
 
     it("should reject with a 'not installed' error", async () => {

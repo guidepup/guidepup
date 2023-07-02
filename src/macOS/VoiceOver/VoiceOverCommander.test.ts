@@ -1,6 +1,5 @@
 import { CommanderCommands } from "./CommanderCommands";
 import { LogStore } from "./LogStore";
-import { mockType } from "../../../test/mockType";
 import { performCommand } from "./performCommand";
 import { VoiceOverCommander } from "./VoiceOverCommander";
 
@@ -20,9 +19,9 @@ describe("VoiceOverCommander", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    mockType(logStoreStub.tap).mockImplementation(
-      async (action) => await action()
-    );
+    jest
+      .mocked(logStoreStub.tap)
+      .mockImplementation(async (action) => await action());
 
     commander = new VoiceOverCommander(logStoreStub);
   });
@@ -35,9 +34,10 @@ describe("VoiceOverCommander", () => {
 
   describe("perform", () => {
     describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
+      description                  | options
+      ${"without options"}         | ${undefined}
+      ${"with options"}            | ${{}}
+      ${"with options to capture"} | ${{ capture: true }}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
         await commander.perform(CommanderCommands.ACTIONS, options);
@@ -51,7 +51,10 @@ describe("VoiceOverCommander", () => {
       });
 
       it("should tap the performCommand", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });

@@ -26,8 +26,9 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(() =>
-      move(Directions.Left, undefined, options)
+    return await this.#logStore.tap(
+      () => move(Directions.Left, undefined, options),
+      options
     );
   }
 
@@ -39,8 +40,9 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async next(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(() =>
-      move(Directions.Right, undefined, options)
+    return await this.#logStore.tap(
+      () => move(Directions.Right, undefined, options),
+      options
     );
   }
 
@@ -50,7 +52,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(() => performAction(options));
+    return await this.#logStore.tap(() => performAction(options), options);
   }
 
   /**
@@ -61,12 +63,14 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async interact(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(() =>
-      sendKeys(
-        keyCodeCommands.interactWithItem,
-        Applications.VoiceOver,
-        options
-      )
+    return await this.#logStore.tap(
+      () =>
+        sendKeys(
+          keyCodeCommands.interactWithItem,
+          Applications.VoiceOver,
+          options
+        ),
+      options
     );
   }
 
@@ -78,12 +82,14 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(() =>
-      sendKeys(
-        keyCodeCommands.stopInteractingWithItem,
-        Applications.VoiceOver,
-        options
-      )
+    return await this.#logStore.tap(
+      () =>
+        sendKeys(
+          keyCodeCommands.stopInteractingWithItem,
+          Applications.VoiceOver,
+          options
+        ),
+      options
     );
   }
 

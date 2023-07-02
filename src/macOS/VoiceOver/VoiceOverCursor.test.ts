@@ -2,7 +2,6 @@ import { Applications } from "../Applications";
 import { Directions } from "./Directions";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { LogStore } from "./LogStore";
-import { mockType } from "../../../test/mockType";
 import { move } from "./move";
 import { performAction } from "./performAction";
 import { sendKeys } from "../sendKeys";
@@ -36,19 +35,20 @@ describe("VoiceOverCursor", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    mockType(takeScreenshot).mockResolvedValue(screenshotPathDummy);
-    mockType(logStoreStub.tap).mockImplementation(
-      async (action) => await action()
-    );
+    jest.mocked(takeScreenshot).mockResolvedValue(screenshotPathDummy);
+    jest
+      .mocked(logStoreStub.tap)
+      .mockImplementation(async (action) => await action());
 
     cursor = new VoiceOverCursor(logStoreStub);
   });
 
   describe("previous", () => {
     describe.each`
-      description          | options
-      ${"without options"} | ${undefined}
-      ${"with options"}    | ${{}}
+      description                  | options
+      ${"without options"}         | ${undefined}
+      ${"with options"}            | ${{}}
+      ${"with options to capture"} | ${{ capture: true }}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
         await cursor.previous(options);
@@ -59,7 +59,10 @@ describe("VoiceOverCursor", () => {
       });
 
       it("should tap the move", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });
@@ -79,7 +82,10 @@ describe("VoiceOverCursor", () => {
       });
 
       it("should tap the move", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });
@@ -99,7 +105,10 @@ describe("VoiceOverCursor", () => {
       });
 
       it("should tap the action", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });
@@ -123,7 +132,10 @@ describe("VoiceOverCursor", () => {
       });
 
       it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });
@@ -147,7 +159,10 @@ describe("VoiceOverCursor", () => {
       });
 
       it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });

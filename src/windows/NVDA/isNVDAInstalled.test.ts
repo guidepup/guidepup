@@ -1,6 +1,5 @@
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { isNVDAInstalled } from "./isNVDAInstalled";
-import { mockType } from "../../../test/mockType";
 
 jest.mock("./getNVDAInstallationPath", () => ({
   getNVDAInstallationPath: jest.fn(),
@@ -13,7 +12,7 @@ describe("isNVDAInstalled", () => {
 
   describe("when getting the installation path throws an error", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockImplementation(() => {
+      jest.mocked(getNVDAInstallationPath).mockImplementation(() => {
         throw new Error("test-error");
       });
     });
@@ -25,9 +24,9 @@ describe("isNVDAInstalled", () => {
 
   describe("when NVDA is installed", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockResolvedValue(
-        "test-installation-path"
-      );
+      jest
+        .mocked(getNVDAInstallationPath)
+        .mockResolvedValue("test-installation-path");
     });
 
     it("should return true", async () => {
@@ -37,7 +36,7 @@ describe("isNVDAInstalled", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
     });
 
     it("should return false", async () => {
