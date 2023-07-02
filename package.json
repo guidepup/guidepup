@@ -18,7 +18,8 @@
     "screen-reader",
     "accessibility",
     "a11y",
-    "voiceover"
+    "voiceover",
+    "nvda"
   ],
   "scripts": {
     "build": "yarn clean && yarn compile && yarn docs",
@@ -48,9 +49,9 @@
     "typedoc": "^0.23.24",
     "typescript": "^4.9.4"
   },
-    "dependencies": {
+  "dependencies": {
     "regedit": "5.0.1",
     "semver": "^7.3.8",
     "shelljs": "^0.8.5"
-    }
+  }
 }
