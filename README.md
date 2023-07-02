@@ -102,7 +102,7 @@ Full support is available for:
 
 Here are some similar unaffiliated projects:
 
-- [`auto-vo`](https://github.com/AccessLint/auto-vo)
+- [`@accesslint/voiceover`](https://github.com/AccessLint/screenreaders)
 - [`screen-reader-reader`](https://github.com/phenomnomnominal/screen-reader-reader)
 - [`web-test-runner-voiceover`](https://github.com/coryrylan/web-test-runner-voiceover)
 - [`nvda-testing-driver`](https://github.com/kastwey/nvda-testing-driver)
