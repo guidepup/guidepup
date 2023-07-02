@@ -1,7 +1,6 @@
 import { Applications } from "../Applications";
 import { CommanderCommands } from "./CommanderCommands";
 import { ERR_VOICE_OVER_PERFORM_COMMAND } from "../errors";
-import { mockType } from "../../../test/mockType";
 import { performCommand } from "./performCommand";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
@@ -25,7 +24,7 @@ describe("performCommand", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -52,7 +51,7 @@ describe("performCommand", () => {
 
     describe("when the retryIfAppleEventTimeout runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retryIfAppleEventTimeout).mock.calls[0][0];
+        const delegate = jest.mocked(retryIfAppleEventTimeout).mock.calls[0][0];
 
         delegate();
       });
@@ -70,7 +69,7 @@ describe("performCommand", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retryIfAppleEventTimeout).mockRejectedValue(stubError);
+      jest.mocked(retryIfAppleEventTimeout).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the performCommand prefix, application name, and underlying error message", async () => {

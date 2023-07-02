@@ -1,6 +1,5 @@
-import { ChildProcess, execFile } from "child_process";
+import { ChildProcess, ExecException, execFile } from "child_process";
 import { DEFAULT_MAX_BUFFER, DEFAULT_TIMEOUT } from "../constants";
-import { mockType } from "../../test/mockType";
 import { runAppleScript } from "./runAppleScript";
 
 jest.mock("child_process", () => ({
@@ -17,7 +16,7 @@ const childStub = {
   },
 };
 
-const mockExecFile = mockType(execFile);
+const mockExecFile = jest.mocked(execFile);
 
 describe("runAppleScript", () => {
   let resultPromise: Promise<string | void>;
@@ -39,7 +38,14 @@ describe("runAppleScript", () => {
     });
 
     afterEach(async () => {
-      mockExecFile.mock.calls[0][3]();
+      (
+        mockExecFile.mock.calls[0][3] as (
+          error: ExecException | null,
+          stdout: string,
+          stderr: string
+        ) => void
+      )(null, "", "");
+
       try {
         await resultPromise;
       } catch {
@@ -73,7 +79,13 @@ describe("runAppleScript", () => {
         const error = new Error("test-error");
 
         beforeEach(() => {
-          mockExecFile.mock.calls[0][3](error);
+          (
+            mockExecFile.mock.calls[0][3] as (
+              error: ExecException | null,
+              stdout: string,
+              stderr: string
+            ) => void
+          )(error, "", "");
         });
 
         it("should reject with the error", async () => {
@@ -86,7 +98,13 @@ describe("runAppleScript", () => {
       const stdout = "test-stdout";
 
       beforeEach(() => {
-        mockExecFile.mock.calls[0][3](null, `\n ${stdout} \t\n  `);
+        (
+          mockExecFile.mock.calls[0][3] as (
+            error: ExecException | null,
+            stdout: string,
+            stderr: string
+          ) => void
+        )(null, `\n ${stdout} \t\n  `, "");
       });
 
       it("should resolve with the whitespace trimmed output", async () => {
@@ -96,7 +114,13 @@ describe("runAppleScript", () => {
 
     describe("and it didn't output a value", () => {
       beforeEach(() => {
-        mockExecFile.mock.calls[0][3](null, "");
+        (
+          mockExecFile.mock.calls[0][3] as (
+            error: ExecException | null,
+            stdout: string,
+            stderr: string
+          ) => void
+        )(null, "", "");
       });
 
       it("should resolve with no value", async () => {

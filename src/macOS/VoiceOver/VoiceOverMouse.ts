@@ -18,6 +18,6 @@ export class VoiceOverMouse {
    * @param {object} [options] Click options.
    */
   async click(options?: ClickOptions): Promise<void> {
-    return await this.#logStore.tap(() => click(options));
+    return await this.#logStore.tap(() => click(options), options);
   }
 }

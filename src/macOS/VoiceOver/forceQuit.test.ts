@@ -1,6 +1,5 @@
 import { ChildProcess, exec } from "child_process";
 import { forceQuit } from "./forceQuit";
-import { mockType } from "../../../test/mockType";
 
 jest.mock("child_process", () => ({
   exec: jest.fn(),
@@ -8,7 +7,8 @@ jest.mock("child_process", () => ({
 
 describe("forceQuit", () => {
   beforeEach(async () => {
-    mockType(exec).mockImplementation((_command, callback) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (exec as any).mockImplementation((_command, callback) => {
       callback();
 
       return {} as unknown as ChildProcess;

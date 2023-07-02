@@ -1,7 +1,6 @@
 import { isKeyboard } from "./isKeyboard";
 import { isKeyCode } from "./isKeyCode";
 import { isKeystroke } from "./isKeystroke";
-import { mockType } from "../test/mockType";
 
 jest.mock("./isKeyCode", () => ({
   isKeyCode: jest.fn(),
@@ -13,18 +12,18 @@ jest.mock("./isKeystroke", () => ({
 const commandDummy = Symbol("test-command");
 
 describe("isKeyboard", () => {
-  let result: boolean;
+  let result: boolean | undefined;
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
 
     result = undefined;
-  })
+  });
 
   describe("when the command is a key code command", () => {
     beforeEach(() => {
-      mockType(isKeyCode).mockReturnValue(true);
+      jest.mocked(isKeyCode).mockReturnValue(true);
 
       result = isKeyboard(commandDummy);
     });
@@ -40,8 +39,8 @@ describe("isKeyboard", () => {
 
   describe("when the command is a keystroke command", () => {
     beforeEach(() => {
-      mockType(isKeyCode).mockReturnValue(false);
-      mockType(isKeystroke).mockReturnValue(true);
+      jest.mocked(isKeyCode).mockReturnValue(false);
+      jest.mocked(isKeystroke).mockReturnValue(true);
 
       result = isKeyboard(commandDummy);
     });
@@ -61,8 +60,8 @@ describe("isKeyboard", () => {
 
   describe("when the command is not a keyboard command", () => {
     beforeEach(() => {
-      mockType(isKeyCode).mockReturnValue(false);
-      mockType(isKeystroke).mockReturnValue(false);
+      jest.mocked(isKeyCode).mockReturnValue(false);
+      jest.mocked(isKeystroke).mockReturnValue(false);
 
       result = isKeyboard(commandDummy);
     });

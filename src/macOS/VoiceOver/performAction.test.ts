@@ -1,6 +1,5 @@
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_PERFORM_ACTION } from "../errors";
-import { mockType } from "../../../test/mockType";
 import { performAction } from "./performAction";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
@@ -22,7 +21,7 @@ describe("performAction", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -49,7 +48,7 @@ describe("performAction", () => {
 
     describe("when the retry runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retryIfAppleEventTimeout).mock.calls[0][0];
+        const delegate = jest.mocked(retryIfAppleEventTimeout).mock.calls[0][0];
 
         delegate();
       });
@@ -67,7 +66,7 @@ describe("performAction", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retryIfAppleEventTimeout).mockRejectedValue(stubError);
+      jest.mocked(retryIfAppleEventTimeout).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the performAction prefix, application name, and underlying error message", async () => {

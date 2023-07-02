@@ -4,7 +4,6 @@ import { isKeyCode } from "../../isKeyCode";
 import { keyCode } from "../keyCode";
 import { KeyCodes } from "../KeyCodes";
 import { keystroke } from "./keystroke";
-import { mockType } from "../../../test/mockType";
 import { sendKeys } from "./sendKeys";
 
 jest.mock("../activate", () => ({
@@ -69,7 +68,7 @@ describe("sendKeys", () => {
         };
 
         beforeEach(async () => {
-          mockType(isKeyCode).mockReturnValue(true);
+          jest.mocked(isKeyCode).mockReturnValue(true);
 
           await sendKeys(keyCommand, applicationName, options);
         });
@@ -88,8 +87,8 @@ describe("sendKeys", () => {
         const errorStub = new Error("test-error-message");
 
         beforeEach(async () => {
-          mockType(isKeyCode).mockReturnValue(true);
-          mockType(keyCode).mockRejectedValue(errorStub);
+          jest.mocked(isKeyCode).mockReturnValue(true);
+          jest.mocked(keyCode).mockRejectedValue(errorStub);
 
           try {
             await sendKeys(keyCommand, applicationName, options);
@@ -114,7 +113,7 @@ describe("sendKeys", () => {
         };
 
         beforeEach(async () => {
-          mockType(isKeyCode).mockReturnValue(false);
+          jest.mocked(isKeyCode).mockReturnValue(false);
 
           await sendKeys(keyCommand, applicationName, options);
         });
@@ -133,8 +132,8 @@ describe("sendKeys", () => {
         const errorStub = new Error("test-error-message");
 
         beforeEach(async () => {
-          mockType(isKeyCode).mockReturnValue(false);
-          mockType(keystroke).mockRejectedValue(errorStub);
+          jest.mocked(isKeyCode).mockReturnValue(false);
+          jest.mocked(keystroke).mockRejectedValue(errorStub);
 
           try {
             await sendKeys(keyCommand, applicationName, options);

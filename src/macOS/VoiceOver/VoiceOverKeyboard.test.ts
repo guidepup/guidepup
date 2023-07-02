@@ -2,7 +2,6 @@ import { Applications } from "../Applications";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
 import { LogStore } from "./LogStore";
-import { mockType } from "../../../test/mockType";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
 import { sendKeys } from "../sendKeys";
@@ -30,10 +29,10 @@ describe("VoiceOverKeyboard", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    mockType(parseKey).mockReturnValue(parsedKeyDummy);
-    mockType(logStoreStub.tap).mockImplementation(
-      async (action) => await action()
-    );
+    jest.mocked(parseKey).mockReturnValue(parsedKeyDummy);
+    jest
+      .mocked(logStoreStub.tap)
+      .mockImplementation(async (action) => await action());
 
     keyboard = new VoiceOverKeyboard(logStoreStub);
   });
@@ -64,7 +63,10 @@ describe("VoiceOverKeyboard", () => {
       });
 
       it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });
@@ -91,7 +93,10 @@ describe("VoiceOverKeyboard", () => {
       });
 
       it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });
@@ -121,7 +126,10 @@ describe("VoiceOverKeyboard", () => {
       });
 
       it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });

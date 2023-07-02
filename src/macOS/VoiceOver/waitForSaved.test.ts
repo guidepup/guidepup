@@ -1,6 +1,5 @@
 import { ERR_VOICE_OVER_SAVED_TIMEOUT } from "../errors";
 import { isSaved } from "./isSaved";
-import { mockType } from "../../../test/mockType";
 import { waitForCondition } from "../../waitForCondition";
 import { waitForSaved } from "./waitForSaved";
 
@@ -35,7 +34,7 @@ describe("waitForSaved", () => {
 
     describe("when the condition delegate is executed", () => {
       beforeEach(async () => {
-        await mockType(waitForCondition).mock.calls[0][0]();
+        await jest.mocked(waitForCondition).mock.calls[0][0]();
       });
 
       it("should check whether VoiceOver is running", () => {

@@ -2,7 +2,6 @@ import { ChildProcess, exec } from "child_process";
 import { activate } from "../activate";
 import { Applications } from "../Applications";
 import { isRunning } from "./isRunning";
-import { mockType } from "../../../test/mockType";
 import { runAppleScript } from "../runAppleScript";
 
 jest.mock("child_process", () => ({
@@ -18,7 +17,7 @@ jest.mock("../runAppleScript", () => ({
 describe("isRunning", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   describe.each`
     description          | options
@@ -54,8 +53,9 @@ describe("isRunning", () => {
       const errorStub = new Error("test-error");
 
       beforeEach(async () => {
-        mockType(exec).mockImplementation((_command, callback) => {
-          callback(errorStub, "");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (exec as any).mockImplementation((_command, callback) => {
+          callback(errorStub, "", "");
 
           return {} as unknown as ChildProcess;
         });
@@ -72,8 +72,9 @@ describe("isRunning", () => {
 
     describe("when the process is not running", () => {
       beforeEach(async () => {
-        mockType(exec).mockImplementation((_command, callback) => {
-          callback(null, "");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (exec as any).mockImplementation((_command, callback) => {
+          callback(null, "", "");
 
           return {} as unknown as ChildProcess;
         });
@@ -90,7 +91,8 @@ describe("isRunning", () => {
 
     describe("when the process is running", () => {
       beforeEach(() => {
-        mockType(exec).mockImplementation((_command, callback) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (exec as any).mockImplementation((_command, callback) => {
           callback(null, "test-ps-aux-response-containing-VoiceOver");
 
           return {} as unknown as ChildProcess;
@@ -99,7 +101,7 @@ describe("isRunning", () => {
 
       describe("when AppleScript says VoiceOver isn't running", () => {
         beforeEach(async () => {
-          mockType(runAppleScript).mockResolvedValue("false");
+          jest.mocked(runAppleScript).mockResolvedValue("false");
 
           result = await isRunning(options);
         });
@@ -115,14 +117,14 @@ describe("isRunning", () => {
       describe("when called without a skipActivate argument", () => {
         describe("when AppleScript says VoiceOver is running", () => {
           beforeEach(() => {
-            mockType(runAppleScript).mockResolvedValue("true");
+            jest.mocked(runAppleScript).mockResolvedValue("true");
           });
 
           describe("when attempting to activate VoiceOver throws an error", () => {
             const errorStub = new Error("test-error");
 
             beforeEach(async () => {
-              mockType(activate).mockRejectedValue(errorStub);
+              jest.mocked(activate).mockRejectedValue(errorStub);
 
               result = await isRunning(options);
             });
@@ -138,7 +140,7 @@ describe("isRunning", () => {
 
           describe("when attempting to activate VoiceOver is successful", () => {
             beforeEach(async () => {
-              mockType(activate).mockResolvedValue();
+              jest.mocked(activate).mockResolvedValue();
 
               result = await isRunning(options);
             });
@@ -157,14 +159,14 @@ describe("isRunning", () => {
       describe("when called with skipActivate set to false", () => {
         describe("when AppleScript says VoiceOver is running", () => {
           beforeEach(() => {
-            mockType(runAppleScript).mockResolvedValue("true");
+            jest.mocked(runAppleScript).mockResolvedValue("true");
           });
 
           describe("when attempting to activate VoiceOver throws an error", () => {
             const errorStub = new Error("test-error");
 
             beforeEach(async () => {
-              mockType(activate).mockRejectedValue(errorStub);
+              jest.mocked(activate).mockRejectedValue(errorStub);
 
               result = await isRunning(options, false);
             });
@@ -180,7 +182,7 @@ describe("isRunning", () => {
 
           describe("when attempting to activate VoiceOver is successful", () => {
             beforeEach(async () => {
-              mockType(activate).mockResolvedValue();
+              jest.mocked(activate).mockResolvedValue();
 
               result = await isRunning(options, false);
             });
@@ -199,7 +201,7 @@ describe("isRunning", () => {
       describe("when called with skipActivate set to true", () => {
         describe("when AppleScript says VoiceOver is running", () => {
           beforeEach(async () => {
-            mockType(runAppleScript).mockResolvedValue("true");
+            jest.mocked(runAppleScript).mockResolvedValue("true");
 
             result = await isRunning(options, true);
           });

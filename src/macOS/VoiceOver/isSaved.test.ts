@@ -1,6 +1,5 @@
 import { isSaved } from "./isSaved";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
-import { mockType } from "../../../test/mockType";
 
 jest.mock("./lastSpokenPhrase", () => ({
   lastSpokenPhrase: jest.fn(),
@@ -19,7 +18,7 @@ describe("isSaved", () => {
         lastPhraseResolver = resolve;
       });
 
-      mockType(lastSpokenPhrase).mockReturnValue(lastPhrasePromise);
+      jest.mocked(lastSpokenPhrase).mockReturnValue(lastPhrasePromise);
 
       resultPromise = isSaved(options);
     });

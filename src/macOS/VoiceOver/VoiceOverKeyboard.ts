@@ -48,12 +48,14 @@ export class VoiceOverKeyboard {
    * @param {object} [options] Additional options.
    */
   async press(key: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#logStore.tap(() =>
-      sendKeys(
-        parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes),
-        options?.application,
-        options
-      )
+    return await this.#logStore.tap(
+      () =>
+        sendKeys(
+          parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes),
+          options?.application,
+          options
+        ),
+      options
     );
   }
 
@@ -71,8 +73,9 @@ export class VoiceOverKeyboard {
    * @param {object} [options] Additional options.
    */
   async type(text: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#logStore.tap(() =>
-      sendKeys({ characters: text }, options?.application, options)
+    return await this.#logStore.tap(
+      () => sendKeys({ characters: text }, options?.application, options),
+      options
     );
   }
 
@@ -93,8 +96,9 @@ export class VoiceOverKeyboard {
     command: KeyboardCommand,
     options?: CommandOptions
   ): Promise<void> {
-    return await this.#logStore.tap(() =>
-      sendKeys(command, Applications.VoiceOver, options)
+    return await this.#logStore.tap(
+      () => sendKeys(command, Applications.VoiceOver, options),
+      options
     );
   }
 }

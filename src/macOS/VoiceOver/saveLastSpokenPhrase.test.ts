@@ -1,6 +1,5 @@
 import { Applications } from "../Applications";
 import { ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE } from "../errors";
-import { mockType } from "../../../test/mockType";
 import { retry } from "../../retry";
 import { runAppleScript } from "../runAppleScript";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
@@ -26,7 +25,7 @@ describe("saveLastSpokenPhrase", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -48,7 +47,7 @@ describe("saveLastSpokenPhrase", () => {
 
     describe("when the retry runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retry).mock.calls[0][0];
+        const delegate = jest.mocked(retry).mock.calls[0][0];
 
         delegate();
       });
@@ -63,14 +62,14 @@ describe("saveLastSpokenPhrase", () => {
 
     it("should wait for the phrase to have been saved", () => {
       expect(waitForSaved).toHaveBeenCalledWith(options);
-    })
+    });
   });
 
   describe("when the script execution throws", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retry).mockRejectedValue(stubError);
+      jest.mocked(retry).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the saveLastSpokenPhrase prefix, application name, and underlying error message", async () => {

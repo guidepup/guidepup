@@ -1,6 +1,5 @@
 import { ERR_NVDA_NOT_INSTALLED, ERR_NVDA_QUIT } from "../errors";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
-import { mockType } from "../../../test/mockType";
 import { quit } from "./quit";
 import { spawnSync } from "child_process";
 
@@ -20,7 +19,7 @@ describe("quit", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
     });
 
     it("should attempt to get the installation path", async () => {
@@ -40,7 +39,9 @@ describe("quit", () => {
 
   describe("when NVDA is installed", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockResolvedValue(mockInstallationPath);
+      jest
+        .mocked(getNVDAInstallationPath)
+        .mockResolvedValue(mockInstallationPath);
     });
 
     describe("when no error is thrown", () => {
@@ -67,7 +68,7 @@ describe("quit", () => {
       let error;
 
       beforeEach(async () => {
-        mockType(spawnSync).mockImplementation(() => {
+        jest.mocked(spawnSync).mockImplementation(() => {
           throw mockError;
         });
 

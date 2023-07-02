@@ -8,8 +8,10 @@ const delay = async (ms: number) =>
  */
 async function run(): Promise<void> {
   try {
-    // Start the NVDA screen reader
-    await nvda.start();
+    // Start the NVDA screen reader.
+    // Set the default to only capture the first page of spoken text per action
+    // for speed improvement.
+    await nvda.start({ capture: "initial" });
 
     // Open Edge and wait for it to be ready.
     //

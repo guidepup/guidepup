@@ -1,7 +1,6 @@
 import { ChildProcess, spawn } from "child_process";
 import { ERR_NVDA_CANNOT_BE_STARTED, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
-import { mockType } from "../../../test/mockType";
 import { start } from "./start";
 import { waitForRunning } from "./waitForRunning";
 
@@ -28,7 +27,7 @@ describe("start", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
     });
 
     it("should attempt to get the installation path", async () => {
@@ -48,25 +47,23 @@ describe("start", () => {
 
   describe("when NVDA is installed", () => {
     beforeEach(() => {
-      mockType(getNVDAInstallationPath).mockResolvedValue(mockInstallationPath);
+      jest
+        .mocked(getNVDAInstallationPath)
+        .mockResolvedValue(mockInstallationPath);
     });
 
     describe("when starting NVDA is successful first attempt", () => {
       beforeEach(async () => {
-        mockType(waitForRunning).mockResolvedValue();
+        jest.mocked(waitForRunning).mockResolvedValue();
 
         await start();
       });
 
       it("should spawn a NVDA command", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          `"${mockInstallationPath}"`,
-          [],
-          {
-            shell: true,
-            stdio: "ignore",
-          }
-        );
+        expect(spawn).toHaveBeenCalledWith(`"${mockInstallationPath}"`, [], {
+          shell: true,
+          stdio: "ignore",
+        });
       });
 
       it("should wait for NVDA to be running", () => {
@@ -78,7 +75,7 @@ describe("start", () => {
       let error;
 
       beforeEach(async () => {
-        mockType(spawn).mockImplementation(() => {
+        jest.mocked(spawn).mockImplementation(() => {
           throw mockError;
         });
 
@@ -90,14 +87,10 @@ describe("start", () => {
       });
 
       it("should spawn a NVDA command", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          `"${mockInstallationPath}"`,
-          [],
-          {
-            shell: true,
-            stdio: "ignore",
-          }
-        );
+        expect(spawn).toHaveBeenCalledWith(`"${mockInstallationPath}"`, [], {
+          shell: true,
+          stdio: "ignore",
+        });
       });
 
       it("should throw a wrapped error", () => {
@@ -109,11 +102,11 @@ describe("start", () => {
 
     describe("when starting NVDA times out first attempt but succeeds second attempt", () => {
       beforeEach(async () => {
-        mockType(spawn).mockReturnValue(
-          mockChildProcess as unknown as ChildProcess
-        );
-        mockType(waitForRunning).mockRejectedValueOnce(mockError);
-        mockType(waitForRunning).mockResolvedValueOnce();
+        jest
+          .mocked(spawn)
+          .mockReturnValue(mockChildProcess as unknown as ChildProcess);
+        jest.mocked(waitForRunning).mockRejectedValueOnce(mockError);
+        jest.mocked(waitForRunning).mockResolvedValueOnce();
 
         await start();
       });
@@ -159,10 +152,10 @@ describe("start", () => {
       let error;
 
       beforeEach(async () => {
-        mockType(spawn).mockReturnValue(
-          mockChildProcess as unknown as ChildProcess
-        );
-        mockType(waitForRunning).mockRejectedValue(mockError);
+        jest
+          .mocked(spawn)
+          .mockReturnValue(mockChildProcess as unknown as ChildProcess);
+        jest.mocked(waitForRunning).mockRejectedValue(mockError);
 
         try {
           await start();

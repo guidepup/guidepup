@@ -1,5 +1,4 @@
 import { keyCode } from "./keyCode";
-import { mockType } from "../../test/mockType";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
 import { withModifiers } from "./withModifiers";
@@ -20,7 +19,7 @@ describe("keyCode", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withModifiers).mockReturnValue(mockScriptWithModifiers);
+    jest.mocked(withModifiers).mockReturnValue(mockScriptWithModifiers);
   });
 
   describe.each`
@@ -54,7 +53,7 @@ describe("keyCode", () => {
 
     describe("when the retry runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retryIfAppleEventTimeout).mock.calls[0][0];
+        const delegate = jest.mocked(retryIfAppleEventTimeout).mock.calls[0][0];
 
         delegate();
       });

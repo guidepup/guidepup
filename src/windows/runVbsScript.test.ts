@@ -1,7 +1,6 @@
-import { ChildProcess, execFile } from "child_process";
+import { ChildProcess, ExecException, execFile } from "child_process";
 import { mkdtemp, realpath, rm, writeFile } from "fs/promises";
 import { DEFAULT_MAX_BUFFER } from "../constants";
-import { mockType } from "../../test/mockType";
 import { runVbsScript } from "./runVbsScript";
 import { sep } from "path";
 import { tmpdir } from "os";
@@ -28,11 +27,11 @@ const childStub = {
 const dirStub = "test-dir";
 const tmpdirStub = "test-tmpdir";
 
-const mockExecFile = mockType(execFile);
-const mockMkdtemp = mockType(mkdtemp);
-const mockRealpath = mockType(realpath);
-const mockRm = mockType(rm);
-const mockWriteFile = mockType(writeFile);
+const mockExecFile = jest.mocked(execFile);
+const mockMkdtemp = jest.mocked(mkdtemp);
+const mockRealpath = jest.mocked(realpath);
+const mockRm = jest.mocked(rm);
+const mockWriteFile = jest.mocked(writeFile);
 
 describe("runVbsScript", () => {
   let resultPromise: Promise<string | void>;
@@ -51,7 +50,13 @@ describe("runVbsScript", () => {
     });
 
     afterEach(async () => {
-      mockExecFile.mock.calls[0][3]();
+      (
+        mockExecFile.mock.calls[0][3] as (
+          error: ExecException | null,
+          stdout: string,
+          stderr: string
+        ) => void
+      )(null, "", "");
 
       try {
         await resultPromise;
@@ -95,7 +100,13 @@ describe("runVbsScript", () => {
         const error = new Error("test-error");
 
         beforeEach(() => {
-          mockExecFile.mock.calls[0][3](error);
+          (
+            mockExecFile.mock.calls[0][3] as (
+              error: ExecException | null,
+              stdout: string,
+              stderr: string
+            ) => void
+          )(error, "", "");
         });
 
         it("should reject with the error", async () => {
@@ -118,7 +129,13 @@ describe("runVbsScript", () => {
       const stdout = "test-stdout";
 
       beforeEach(() => {
-        mockExecFile.mock.calls[0][3](null, `\n ${stdout} \t\n  `);
+        (
+          mockExecFile.mock.calls[0][3] as (
+            error: ExecException | null,
+            stdout: string,
+            stderr: string
+          ) => void
+        )(null, `\n ${stdout} \t\n  `, "");
       });
 
       it("should resolve with the whitespace trimmed output", async () => {
@@ -134,7 +151,13 @@ describe("runVbsScript", () => {
 
     describe("and it didn't output a value", () => {
       beforeEach(() => {
-        mockExecFile.mock.calls[0][3](null, "");
+        (
+          mockExecFile.mock.calls[0][3] as (
+            error: ExecException | null,
+            stdout: string,
+            stderr: string
+          ) => void
+        )(null, "", "");
       });
 
       it("should resolve with no value", async () => {

@@ -1,6 +1,5 @@
+import { exec, ExecException } from "child_process";
 import { ERR_VOICE_OVER_CANNOT_BE_STARTED } from "../errors";
-import { exec } from "child_process";
-import { mockType } from "../../../test/mockType";
 import { start } from "./start";
 
 jest.mock("child_process", () => ({
@@ -17,7 +16,13 @@ describe("start", () => {
   });
 
   afterEach(async () => {
-    mockType(exec).mock.calls[0][1]();
+    (
+      jest.mocked(exec).mock.calls[0][1] as (
+        error: ExecException | null,
+        stdout: string,
+        stderr: string
+      ) => void
+    )(null, "", "");
 
     try {
       await resultPromise;
@@ -35,7 +40,13 @@ describe("start", () => {
 
   describe("when the command succeeds", () => {
     beforeEach(() => {
-      mockType(exec).mock.calls[0][1]();
+      (
+        jest.mocked(exec).mock.calls[0][1] as (
+          error: ExecException | null,
+          stdout: string,
+          stderr: string
+        ) => void
+      )(null, "", "");
     });
 
     it("should resolve", async () => {
@@ -47,14 +58,18 @@ describe("start", () => {
     const errorStub = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(exec).mock.calls[0][1](errorStub);
+      (
+        jest.mocked(exec).mock.calls[0][1] as (
+          error: ExecException | null,
+          stdout: string,
+          stderr: string
+        ) => void
+      )(errorStub, "", "");
     });
 
     it("should reject with an error", async () => {
       await expect(resultPromise).rejects.toEqual(
-        new Error(
-          `${ERR_VOICE_OVER_CANNOT_BE_STARTED}\n${errorStub.message}`
-        )
+        new Error(`${ERR_VOICE_OVER_CANNOT_BE_STARTED}\n${errorStub.message}`)
       );
     });
   });

@@ -1,6 +1,5 @@
 import { click } from "./click";
 import { LogStore } from "./LogStore";
-import { mockType } from "../../../test/mockType";
 import { VoiceOverMouse } from "./VoiceOverMouse";
 
 jest.mock("./click", () => ({
@@ -19,9 +18,9 @@ describe("VoiceOverMouse", () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    mockType(logStoreStub.tap).mockImplementation(
-      async (action) => await action()
-    );
+    jest
+      .mocked(logStoreStub.tap)
+      .mockImplementation(async (action) => await action());
 
     mouse = new VoiceOverMouse(logStoreStub);
   });
@@ -41,7 +40,10 @@ describe("VoiceOverMouse", () => {
       });
 
       it("should tap the click", () => {
-        expect(logStoreStub.tap).toHaveBeenCalled();
+        expect(logStoreStub.tap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options
+        );
       });
     });
   });

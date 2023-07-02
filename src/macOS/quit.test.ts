@@ -1,4 +1,3 @@
-import { mockType } from "../../test/mockType";
 import { quit } from "./quit";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
@@ -22,7 +21,7 @@ describe("quit", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -47,7 +46,7 @@ describe("quit", () => {
 
     describe("when the retry runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retryIfAppleEventTimeout).mock.calls[0][0];
+        const delegate = jest.mocked(retryIfAppleEventTimeout).mock.calls[0][0];
 
         delegate();
       });
@@ -65,7 +64,7 @@ describe("quit", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retryIfAppleEventTimeout).mockRejectedValue(stubError);
+      jest.mocked(retryIfAppleEventTimeout).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the quit prefix, application name, and underlying error message", async () => {

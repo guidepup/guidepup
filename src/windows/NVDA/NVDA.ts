@@ -1,5 +1,10 @@
+import {
+  ERR_NVDA_ALREADY_RUNNING,
+  ERR_NVDA_NOT_RUNNING,
+  ERR_NVDA_NOT_SUPPORTED,
+} from "../errors";
 import type { ClickOptions } from "../../ClickOptions";
-import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
+import { CommandOptions } from "../../CommandOptions";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
 import type { KeyCodeCommand } from "../KeyCodeCommand";
@@ -18,6 +23,7 @@ import { start } from "./start";
  */
 export class NVDA implements ScreenReader {
   #client: NVDAClient;
+  #started = false;
 
   constructor() {
     this.#client = new NVDAClient();
@@ -51,21 +57,32 @@ export class NVDA implements ScreenReader {
   /**
    * Turn NVDA on.
    */
-  async start(): Promise<void> {
+  async start(options?: Pick<CommandOptions, "capture">): Promise<void> {
     if (!(await this.detect())) {
       throw new Error(ERR_NVDA_NOT_SUPPORTED);
     }
 
+    if (this.#started) {
+      throw new Error(ERR_NVDA_ALREADY_RUNNING);
+    }
+
     await start();
-    await this.#client.connect();
+    await this.#client.connect(options);
+
+    this.#started = true;
   }
 
   /**
    * Turn NVDA off.
    */
   async stop(): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     this.#client.disconnect();
     await quit();
+    this.#started = false;
   }
 
   /**
@@ -73,9 +90,14 @@ export class NVDA implements ScreenReader {
    *
    * Equivalent of executing Up Arrow.
    */
-  async previous(): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(keyCodeCommands.moveToPrevious)
+  async previous(options?: Pick<CommandOptions, "capture">): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(keyCodeCommands.moveToPrevious),
+      options
     );
   }
 
@@ -84,9 +106,14 @@ export class NVDA implements ScreenReader {
    *
    * Equivalent of executing Down Arrow.
    */
-  async next(): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(keyCodeCommands.moveToNext)
+  async next(options?: Pick<CommandOptions, "capture">): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(keyCodeCommands.moveToNext),
+      options
     );
   }
 
@@ -95,9 +122,14 @@ export class NVDA implements ScreenReader {
    *
    * Equivalent of executing Enter.
    */
-  async act(): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(keyCodeCommands.activate)
+  async act(options?: Pick<CommandOptions, "capture">): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(keyCodeCommands.activate),
+      options
     );
   }
 
@@ -108,6 +140,10 @@ export class NVDA implements ScreenReader {
    * with the item in the NVDA cursor.
    */
   async interact(): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     return Promise.resolve();
   }
 
@@ -118,6 +154,10 @@ export class NVDA implements ScreenReader {
    * with the item in the NVDA cursor.
    */
   async stopInteracting(): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     return await Promise.resolve();
   }
 
@@ -147,9 +187,17 @@ export class NVDA implements ScreenReader {
    *
    * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
    */
-  async press(key: string): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      sendKeys(parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes))
+  async press(
+    key: string,
+    options?: Pick<CommandOptions, "capture">
+  ): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return await this.#client.waitForSpokenPhrase(
+      () => sendKeys(parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes)),
+      options
     );
   }
 
@@ -162,9 +210,17 @@ export class NVDA implements ScreenReader {
    *
    * @param {string} text Text to type into the focused item.
    */
-  async type(text: string): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      sendKeys({ characters: text })
+  async type(
+    text: string,
+    options?: Pick<CommandOptions, "capture">
+  ): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return await this.#client.waitForSpokenPhrase(
+      () => sendKeys({ characters: text }),
+      options
     );
   }
 
@@ -173,9 +229,17 @@ export class NVDA implements ScreenReader {
    *
    * @param {any} command NVDA keyboard command to execute.
    */
-  async perform(command: KeyCodeCommand): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(command)
+  async perform(
+    command: KeyCodeCommand,
+    options?: Pick<CommandOptions, "capture">
+  ): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(command),
+      options
     );
   }
 
@@ -185,17 +249,23 @@ export class NVDA implements ScreenReader {
    * @param {object} [options] Click options.
    */
   async click(options?: ClickOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     const command =
       options.button === "right"
         ? keyCodeCommands.rightMouseClick
         : keyCodeCommands.leftMouseClick;
 
-    await this.#client.waitForSpokenPhrase(() =>
-      Promise.all(
-        [...new Array(options.clickCount ?? 1)].map(() =>
-          this.#client.sendKeyCode(command)
-        )
-      )
+    await this.#client.waitForSpokenPhrase(
+      () =>
+        Promise.all(
+          [...new Array(options.clickCount ?? 1)].map(() =>
+            this.#client.sendKeyCode(command)
+          )
+        ),
+      options
     );
   }
 
@@ -205,6 +275,10 @@ export class NVDA implements ScreenReader {
    * @returns {string} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     return (await this.#client.spokenPhraseLog()).at(-1) ?? "";
   }
 
@@ -218,6 +292,10 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async itemText(): Promise<string> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     return await this.lastSpokenPhrase();
   }
 
@@ -227,6 +305,10 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     return await this.#client.spokenPhraseLog();
   }
 
@@ -240,6 +322,10 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async itemTextLog(): Promise<string[]> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     return await this.spokenPhraseLog();
   }
 }

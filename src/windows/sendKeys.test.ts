@@ -1,7 +1,6 @@
 import { ERR_SEND_KEYS } from "./errors";
 import { isKeyCode } from "../isKeyCode";
 import { Key } from "./Key";
-import { mockType } from "../../test/mockType";
 import { Modifiers } from "./Modifiers";
 import { runVbsScript } from "./runVbsScript";
 import { sendKeys } from "./sendKeys";
@@ -22,7 +21,7 @@ describe("sendKeys", () => {
     const mockCommand = { keyCode: new Key({ symbol: "test-symbol" }) };
 
     beforeEach(async () => {
-      mockType(isKeyCode).mockReturnValue(true);
+      jest.mocked(isKeyCode).mockReturnValue(true);
 
       await sendKeys(mockCommand);
     });
@@ -47,7 +46,7 @@ describe("sendKeys", () => {
     };
 
     beforeEach(async () => {
-      mockType(isKeyCode).mockReturnValue(true);
+      jest.mocked(isKeyCode).mockReturnValue(true);
 
       await sendKeys(mockCommand);
     });
@@ -70,7 +69,7 @@ describe("sendKeys", () => {
     };
 
     beforeEach(async () => {
-      mockType(isKeyCode).mockReturnValue(true);
+      jest.mocked(isKeyCode).mockReturnValue(true);
 
       await sendKeys(mockCommand);
     });
@@ -96,7 +95,7 @@ describe("sendKeys", () => {
     };
 
     beforeEach(async () => {
-      mockType(isKeyCode).mockReturnValue(true);
+      jest.mocked(isKeyCode).mockReturnValue(true);
 
       await sendKeys(mockCommand);
     });
@@ -116,7 +115,7 @@ describe("sendKeys", () => {
     const mockCommand = { characters: "test-characters" };
 
     beforeEach(async () => {
-      mockType(isKeyCode).mockReturnValue(false);
+      jest.mocked(isKeyCode).mockReturnValue(false);
 
       await sendKeys(mockCommand);
     });
@@ -139,7 +138,7 @@ describe("sendKeys", () => {
     };
 
     beforeEach(async () => {
-      mockType(isKeyCode).mockReturnValue(false);
+      jest.mocked(isKeyCode).mockReturnValue(false);
 
       await sendKeys(mockCommand);
     });
@@ -160,8 +159,8 @@ describe("sendKeys", () => {
     const mockError = new Error("test-error");
 
     beforeEach(() => {
-      mockType(isKeyCode).mockReturnValue(true);
-      mockType(runVbsScript).mockRejectedValue(mockError);
+      jest.mocked(isKeyCode).mockReturnValue(true);
+      jest.mocked(runVbsScript).mockRejectedValue(mockError);
     });
 
     it("should throw a wrapped error", async () => {

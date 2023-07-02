@@ -1,6 +1,5 @@
 import { ERR_NVDA_RUNNING_TIMEOUT } from "../errors";
 import { isRunning } from "./isRunning";
-import { mockType } from "../../../test/mockType";
 import { waitForCondition } from "../../waitForCondition";
 import { waitForRunning } from "./waitForRunning";
 
@@ -22,7 +21,7 @@ describe("waitForRunning", () => {
       timeoutErrorMessage: ERR_NVDA_RUNNING_TIMEOUT,
     });
 
-    const condition = mockType(waitForCondition).mock.calls[0][0];
+    const condition = jest.mocked(waitForCondition).mock.calls[0][0];
 
     condition();
 

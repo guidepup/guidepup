@@ -1,16 +1,14 @@
+import {
+  APPROX_WORDS_PER_SECOND,
+  ITEM_TEXT_POLL_INTERVAL,
+  ITEM_TEXT_RETRY_COUNT,
+  SPOKEN_PHRASES_POLL_INTERVAL,
+  SPOKEN_PHRASES_RETRY_COUNT,
+} from "./constants";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
-import { DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS } from "./configureSettings";
+import { CommandOptions } from "../../CommandOptions";
 import { itemText as getItemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
-
-const SPOKEN_PHRASES_POLL_INTERVAL = 50;
-const SPOKEN_PHRASES_RETRY_COUNT = 20;
-
-const ITEM_TEXT_POLL_INTERVAL = 50;
-const ITEM_TEXT_RETRY_COUNT = 10;
-
-const APPROX_WORDS_PER_SECOND =
-  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS.rateAsPercent / 12;
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -22,9 +20,13 @@ function countApproxWords(str) {
 
 export class LogStore {
   #activePromise = null;
-
+  #capture: CommandOptions["capture"];
   #itemTextLogStore = [];
   #spokenPhraseLogStore = [];
+
+  constructor(options?: Pick<CommandOptions, "capture">) {
+    this.#capture = options?.capture ?? true;
+  }
 
   /**
    * Get the text of the item in the VoiceOver cursor.
@@ -75,9 +77,13 @@ export class LogStore {
    * the performed action until they stabilize.
    *
    * @param {Promise<unknown>} promise Underlying action to capture logs for.
+   * @param {object} options Additional options.
    * @returns {Promise<unknown>}
    */
-  async tap<T, S extends Promise<T>>(action: () => S): Promise<T> {
+  async tap<T, S extends Promise<T>>(
+    action: () => S,
+    options?: Pick<CommandOptions, "capture">
+  ): Promise<T> {
     if (this.#activePromise) {
       await this.#activePromise;
     }
@@ -89,13 +95,15 @@ export class LogStore {
 
     const result = await action();
 
-    const [itemText, lastSpokenPhrase] = await Promise.all([
-      this.#pollForItemText(),
-      this.#pollForSpokenPhrases(),
-    ]);
+    if (options?.capture ?? this.#capture) {
+      const [itemText, lastSpokenPhrase] = await Promise.all([
+        this.#pollForItemText(),
+        this.#pollForSpokenPhrases(options),
+      ]);
 
-    this.#itemTextLogStore.push(itemText);
-    this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+      this.#itemTextLogStore.push(itemText);
+      this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+    }
 
     activePromiseResolver();
     this.#activePromise = null;
@@ -117,7 +125,7 @@ export class LogStore {
     return "";
   }
 
-  async #pollForSpokenPhrases() {
+  async #pollForSpokenPhrases(options?: Pick<CommandOptions, "capture">) {
     const phrases = [];
     let stableCount = 0;
 
@@ -143,11 +151,14 @@ export class LogStore {
         phrases.push(phrase);
       }
 
-      if (stableCount < SPOKEN_PHRASES_RETRY_COUNT) {
-        await delay(pollTimeout);
-      } else {
+      if (
+        stableCount >= SPOKEN_PHRASES_RETRY_COUNT ||
+        (options?.capture ?? this.#capture) === "initial"
+      ) {
         break;
       }
+
+      await delay(pollTimeout);
     }
 
     return phrases.filter(Boolean).join(". ");
