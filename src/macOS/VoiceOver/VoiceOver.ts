@@ -3,10 +3,14 @@ import {
   DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
   storeOriginalSettings,
 } from "./configureSettings";
+import {
+  ERR_VOICE_OVER_ALREADY_RUNNING,
+  ERR_VOICE_OVER_NOT_RUNNING,
+  ERR_VOICE_OVER_NOT_SUPPORTED,
+} from "../errors";
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
-import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
 import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
@@ -29,6 +33,7 @@ import { waitForRunning } from "./waitForRunning";
  */
 export class VoiceOver implements ScreenReader {
   #resetSettings: () => Promise<void>;
+  #started = false;
 
   /**
    * VoiceOver caption APIs.
@@ -54,15 +59,6 @@ export class VoiceOver implements ScreenReader {
    * VoiceOver mouse APIs.
    */
   #mouse!: VoiceOverMouse;
-
-  constructor() {
-    const logStore = new LogStore();
-    this.#caption = new VoiceOverCaption(logStore);
-    this.#commander = new VoiceOverCommander(logStore);
-    this.#cursor = new VoiceOverCursor(logStore);
-    this.#keyboard = new VoiceOverKeyboard(logStore);
-    this.#mouse = new VoiceOverMouse(logStore);
-  }
 
   /**
    * VoiceOver keyboard commands.
@@ -108,11 +104,24 @@ export class VoiceOver implements ScreenReader {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
+    if (this.#started) {
+      throw new Error(ERR_VOICE_OVER_ALREADY_RUNNING);
+    }
+
+    const logStore = new LogStore(options);
+    this.#caption = new VoiceOverCaption(logStore);
+    this.#commander = new VoiceOverCommander(logStore);
+    this.#cursor = new VoiceOverCursor(logStore);
+    this.#keyboard = new VoiceOverKeyboard(logStore);
+    this.#mouse = new VoiceOverMouse(logStore);
+
     this.#resetSettings = await storeOriginalSettings();
 
     await configureSettings(DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS);
     await start();
     await waitForRunning(options);
+
+    this.#started = true;
   }
 
   /**
@@ -120,14 +129,26 @@ export class VoiceOver implements ScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async stop(options?: CommandOptions): Promise<void> {
+  async stop(options?: Omit<CommandOptions, "capture">): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     await forceQuit();
     await waitForNotRunning(options);
+
+    this.#caption = null;
+    this.#commander = null;
+    this.#cursor = null;
+    this.#keyboard = null;
+    this.#mouse = null;
 
     if (this.#resetSettings) {
       await this.#resetSettings();
       this.#resetSettings = null;
     }
+
+    this.#started = false;
   }
 
   /**
@@ -138,6 +159,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#cursor.previous(options);
   }
 
@@ -149,6 +174,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async next(options?: CommandOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#cursor.next(options);
   }
 
@@ -158,6 +187,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#cursor.act(options);
   }
 
@@ -169,6 +202,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async interact(options?: CommandOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#cursor.interact(options);
   }
 
@@ -180,6 +217,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#cursor.stopInteracting(options);
   }
 
@@ -192,6 +233,10 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string>} The path to the screenshot file.
    */
   async takeCursorScreenshot(options?: CommandOptions): Promise<string> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#cursor.takeScreenshot(options);
   }
 
@@ -223,6 +268,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async press(key: string, options?: KeyboardOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#keyboard.press(key, options);
   }
 
@@ -240,6 +289,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async type(text: string, options?: KeyboardOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#keyboard.type(text, options);
   }
 
@@ -253,6 +306,10 @@ export class VoiceOver implements ScreenReader {
     command: KeyboardCommand | CommanderCommands,
     options?: CommandOptions
   ): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     if (isKeyboard(command)) {
       return await this.#keyboard.perform(command, options);
     }
@@ -266,6 +323,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Click options.
    */
   async click(options?: ClickOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#mouse.click(options);
   }
 
@@ -278,6 +339,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async copyLastSpokenPhrase(options?: CommandOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#caption.copyLastSpokenPhrase(options);
   }
 
@@ -290,6 +355,10 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async saveLastSpokenPhrase(options?: CommandOptions): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#caption.saveLastSpokenPhrase(options);
   }
 
@@ -299,6 +368,10 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#caption.lastSpokenPhrase();
   }
 
@@ -310,6 +383,10 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string>} The item's text.
    */
   async itemText(): Promise<string> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#caption.itemText();
   }
 
@@ -319,6 +396,10 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#caption.spokenPhraseLog();
   }
 
@@ -330,6 +411,10 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string[]>} The item text log.
    */
   async itemTextLog(): Promise<string[]> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return await this.#caption.itemTextLog();
   }
 }

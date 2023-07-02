@@ -1,4 +1,5 @@
 import type { ClickOptions } from "../../ClickOptions";
+import { CommandOptions } from "../../CommandOptions";
 import { ERR_NVDA_NOT_SUPPORTED } from "../errors";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
@@ -51,13 +52,13 @@ export class NVDA implements ScreenReader {
   /**
    * Turn NVDA on.
    */
-  async start(): Promise<void> {
+  async start(options?: Pick<CommandOptions, "capture">): Promise<void> {
     if (!(await this.detect())) {
       throw new Error(ERR_NVDA_NOT_SUPPORTED);
     }
 
     await start();
-    await this.#client.connect();
+    await this.#client.connect(options);
   }
 
   /**
@@ -73,9 +74,10 @@ export class NVDA implements ScreenReader {
    *
    * Equivalent of executing Up Arrow.
    */
-  async previous(): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(keyCodeCommands.moveToPrevious)
+  async previous(options?: Pick<CommandOptions, "capture">): Promise<void> {
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(keyCodeCommands.moveToPrevious),
+      options
     );
   }
 
@@ -84,9 +86,10 @@ export class NVDA implements ScreenReader {
    *
    * Equivalent of executing Down Arrow.
    */
-  async next(): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(keyCodeCommands.moveToNext)
+  async next(options?: Pick<CommandOptions, "capture">): Promise<void> {
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(keyCodeCommands.moveToNext),
+      options
     );
   }
 
@@ -95,9 +98,10 @@ export class NVDA implements ScreenReader {
    *
    * Equivalent of executing Enter.
    */
-  async act(): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(keyCodeCommands.activate)
+  async act(options?: Pick<CommandOptions, "capture">): Promise<void> {
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(keyCodeCommands.activate),
+      options
     );
   }
 
@@ -147,9 +151,13 @@ export class NVDA implements ScreenReader {
    *
    * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
    */
-  async press(key: string): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      sendKeys(parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes))
+  async press(
+    key: string,
+    options?: Pick<CommandOptions, "capture">
+  ): Promise<void> {
+    return await this.#client.waitForSpokenPhrase(
+      () => sendKeys(parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes)),
+      options
     );
   }
 
@@ -162,9 +170,13 @@ export class NVDA implements ScreenReader {
    *
    * @param {string} text Text to type into the focused item.
    */
-  async type(text: string): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      sendKeys({ characters: text })
+  async type(
+    text: string,
+    options?: Pick<CommandOptions, "capture">
+  ): Promise<void> {
+    return await this.#client.waitForSpokenPhrase(
+      () => sendKeys({ characters: text }),
+      options
     );
   }
 
@@ -173,9 +185,13 @@ export class NVDA implements ScreenReader {
    *
    * @param {any} command NVDA keyboard command to execute.
    */
-  async perform(command: KeyCodeCommand): Promise<void> {
-    return await this.#client.waitForSpokenPhrase(() =>
-      this.#client.sendKeyCode(command)
+  async perform(
+    command: KeyCodeCommand,
+    options?: Pick<CommandOptions, "capture">
+  ): Promise<void> {
+    return await this.#client.waitForSpokenPhrase(
+      () => this.#client.sendKeyCode(command),
+      options
     );
   }
 
@@ -190,12 +206,14 @@ export class NVDA implements ScreenReader {
         ? keyCodeCommands.rightMouseClick
         : keyCodeCommands.leftMouseClick;
 
-    await this.#client.waitForSpokenPhrase(() =>
-      Promise.all(
-        [...new Array(options.clickCount ?? 1)].map(() =>
-          this.#client.sendKeyCode(command)
-        )
-      )
+    await this.#client.waitForSpokenPhrase(
+      () =>
+        Promise.all(
+          [...new Array(options.clickCount ?? 1)].map(() =>
+            this.#client.sendKeyCode(command)
+          )
+        ),
+      options
     );
   }
 

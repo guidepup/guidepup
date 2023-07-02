@@ -30,6 +30,9 @@ export class VoiceOverCommander {
     command: CommanderCommands,
     options?: CommandOptions
   ): Promise<void> {
-    return await this.#logStore.tap(() => performCommand(command, options));
+    return await this.#logStore.tap(
+      () => performCommand(command, options),
+      options
+    );
   }
 }

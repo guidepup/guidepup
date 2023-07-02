@@ -29,6 +29,7 @@ module.exports = {
     "<rootDir>/src/macOS/VoiceOver/CommanderCommands.ts",
     // TODO: add tests for setting configuration
     "<rootDir>/src/macOS/VoiceOver/configureSettings.ts",
+    "<rootDir>/src/macOS/VoiceOver/constants.ts",
     "<rootDir>/src/macOS/VoiceOver/Containments.ts",
     "<rootDir>/src/macOS/VoiceOver/Directions.ts",
     // TODO: flesh out LogStore tests

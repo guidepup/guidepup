@@ -1,7 +1,6 @@
 import { Applications } from "../Applications";
 import { click } from "./click";
 import { ERR_VOICE_OVER_CLICK } from "../errors";
-import { mockType } from "../../../test/mockType";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
 import { withTransaction } from "../withTransaction";
@@ -22,7 +21,7 @@ describe("click", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -64,7 +63,7 @@ describe("click", () => {
 
     describe("when the retry runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retryIfAppleEventTimeout).mock.calls[0][0];
+        const delegate = jest.mocked(retryIfAppleEventTimeout).mock.calls[0][0];
 
         delegate();
       });
@@ -82,7 +81,7 @@ describe("click", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retryIfAppleEventTimeout).mockRejectedValue(stubError);
+      jest.mocked(retryIfAppleEventTimeout).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the click prefix, application name, and underlying error message", async () => {

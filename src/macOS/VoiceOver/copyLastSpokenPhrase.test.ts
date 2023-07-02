@@ -1,7 +1,6 @@
 import { Applications } from "../Applications";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
 import { ERR_VOICE_OVER_COPY_LAST_SPOKEN_PHRASE } from "../errors";
-import { mockType } from "../../../test/mockType";
 import { retry } from "../../retry";
 import { runAppleScript } from "../runAppleScript";
 import { withTransaction } from "../withTransaction";
@@ -22,7 +21,7 @@ describe("copyLastSpokenPhrase", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -41,15 +40,12 @@ describe("copyLastSpokenPhrase", () => {
     });
 
     it("should pass the copyLastSpokenPhrase script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
-      expect(retry).toHaveBeenCalledWith(
-        expect.any(Function),
-        options
-      );
+      expect(retry).toHaveBeenCalledWith(expect.any(Function), options);
     });
 
     describe("when the retry runner invokes the delegate", () => {
       beforeEach(() => {
-        const delegate = mockType(retry).mock.calls[0][0];
+        const delegate = jest.mocked(retry).mock.calls[0][0];
 
         delegate();
       });
@@ -67,7 +63,7 @@ describe("copyLastSpokenPhrase", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retry).mockRejectedValue(stubError);
+      jest.mocked(retry).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the copyLastSpokenPhrase prefix, application name, and underlying error message", async () => {

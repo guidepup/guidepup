@@ -22,7 +22,9 @@ async function run(): Promise<void> {
     );
 
     // Start the VoiceOver screen reader.
-    await voiceOver.start();
+    // Set the default to only capture the first page of spoken text per action
+    // for speed improvement.
+    await voiceOver.start({ capture: "initial" });
 
     // Open Safari and wait for it to be ready.
     //

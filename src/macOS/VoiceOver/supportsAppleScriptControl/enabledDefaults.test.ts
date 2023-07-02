@@ -1,6 +1,5 @@
 import { ChildProcess, exec } from "child_process";
 import { enabledDefaults } from "./enabledDefaults";
-import { mockType } from "../../../../test/mockType";
 
 jest.mock("child_process", () => ({
   exec: jest.fn(),
@@ -24,7 +23,8 @@ describe("enabledDefaults", () => {
 
   describe("when the system defaults have AppleScript support enabled", () => {
     beforeEach(async () => {
-      mockType(exec).mockImplementation((_command, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (exec as any).mockImplementation((_command, callback) => {
         callback(null, "\n\t1  \n");
 
         return {} as unknown as ChildProcess;
@@ -42,7 +42,8 @@ describe("enabledDefaults", () => {
 
   describe("when the system defaults have AppleScript support disabled", () => {
     beforeEach(async () => {
-      mockType(exec).mockImplementation((_command, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (exec as any).mockImplementation((_command, callback) => {
         callback(null, "\n\t0  \n");
 
         return {} as unknown as ChildProcess;
@@ -60,7 +61,8 @@ describe("enabledDefaults", () => {
 
   describe("when an error is thrown trying to access the system defaults", () => {
     beforeEach(async () => {
-      mockType(exec).mockImplementation((_command, callback) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (exec as any).mockImplementation((_command, callback) => {
         callback(new Error("test-error"), "");
 
         return {} as unknown as ChildProcess;

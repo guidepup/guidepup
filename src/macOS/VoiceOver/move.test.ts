@@ -2,7 +2,6 @@ import { Applications } from "../Applications";
 import { Containments } from "./Containments";
 import { Directions } from "./Directions";
 import { ERR_VOICE_OVER_MOVE } from "../errors";
-import { mockType } from "../../../test/mockType";
 import { move } from "./move";
 import { Places } from "./Places";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
@@ -25,7 +24,7 @@ describe("move", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
   });
 
   describe.each`
@@ -58,7 +57,8 @@ describe("move", () => {
 
       describe("when the retry runner invokes the delegate", () => {
         beforeEach(() => {
-          const delegate = mockType(retryIfAppleEventTimeout).mock.calls[0][0];
+          const delegate = jest.mocked(retryIfAppleEventTimeout).mock
+            .calls[0][0];
 
           delegate();
         });
@@ -77,7 +77,7 @@ describe("move", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      mockType(retryIfAppleEventTimeout).mockRejectedValue(stubError);
+      jest.mocked(retryIfAppleEventTimeout).mockRejectedValue(stubError);
     });
 
     it("should throw an error with the move prefix, application name, and underlying error message", async () => {

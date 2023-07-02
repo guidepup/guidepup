@@ -1,6 +1,5 @@
 import { ERR_VOICE_OVER_NOT_RUNNING_TIMEOUT } from "../errors";
 import { isRunning } from "./isRunning";
-import { mockType } from "../../../test/mockType";
 import { waitForCondition } from "../../waitForCondition";
 import { waitForNotRunning } from "./waitForNotRunning";
 
@@ -33,7 +32,7 @@ describe("waitForNotRunning", () => {
 
     describe("when the condition delegate is executed", () => {
       beforeEach(async () => {
-        await mockType(waitForCondition).mock.calls[0][0]();
+        await jest.mocked(waitForCondition).mock.calls[0][0]();
       });
 
       it("should check whether VoiceOver is not running, making sure to skip the activation check (which would restart VoiceOver!)", () => {

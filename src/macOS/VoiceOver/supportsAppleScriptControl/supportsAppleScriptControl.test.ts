@@ -1,6 +1,5 @@
 import { enabledDbFile } from "./enabledDbFile";
 import { enabledDefaults } from "./enabledDefaults";
-import { mockType } from "../../../../test/mockType";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
 
 jest.mock("./enabledDefaults", () => ({
@@ -25,8 +24,8 @@ describe("supportsAppleScriptControl", () => {
       beforeEach(async () => {
         jest.clearAllMocks();
 
-        mockType(enabledDefaults).mockResolvedValue(defaults);
-        mockType(enabledDbFile).mockResolvedValue(db);
+        jest.mocked(enabledDefaults).mockResolvedValue(defaults);
+        jest.mocked(enabledDbFile).mockResolvedValue(db);
 
         result = await supportsAppleScriptControl();
       });

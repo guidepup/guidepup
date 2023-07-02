@@ -3,13 +3,16 @@ import {
   DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
   storeOriginalSettings,
 } from "./configureSettings";
+import {
+  ERR_VOICE_OVER_ALREADY_RUNNING,
+  ERR_VOICE_OVER_NOT_RUNNING,
+  ERR_VOICE_OVER_NOT_SUPPORTED,
+} from "../errors";
 import { CommanderCommands } from "./CommanderCommands";
-import { ERR_VOICE_OVER_NOT_SUPPORTED } from "../errors";
 import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { LogStore } from "./LogStore";
-import { mockType } from "../../../test/mockType";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
 import { VoiceOver } from "./VoiceOver";
@@ -125,40 +128,11 @@ describe("VoiceOver", () => {
       () => VoiceOverMouseStub as unknown as VoiceOverMouse
     );
 
+    jest.mocked(isMacOS).mockReturnValue(true);
+    jest.mocked(supportsAppleScriptControl).mockResolvedValue(true);
+
     vo = new VoiceOver();
     result = undefined;
-  });
-
-  it("should construct a log store instance", () => {
-    expect(LogStore).toHaveBeenCalled();
-  });
-
-  it("should construct a caption instance", () => {
-    expect(VoiceOverCaption).toHaveBeenCalledWith(expect.any(LogStore));
-  });
-
-  it("should construct a commander instance", () => {
-    expect(VoiceOverCommander).toHaveBeenCalledWith(expect.any(LogStore));
-  });
-
-  it("should construct a cursor instance", () => {
-    expect(VoiceOverCursor).toHaveBeenCalledWith(expect.any(LogStore));
-  });
-
-  it("should construct a keyboard instance", () => {
-    expect(VoiceOverKeyboard).toHaveBeenCalledWith(expect.any(LogStore));
-  });
-
-  it("should construct a mouse instance", () => {
-    expect(VoiceOverMouse).toHaveBeenCalledWith(expect.any(LogStore));
-  });
-
-  it("should expose a getter for keyboard commands", () => {
-    expect(vo.keyboardCommands).toBe(VoiceOverKeyboardStub.commands);
-  });
-
-  it("should expose a getter for commander commands", () => {
-    expect(vo.commanderCommands).toBe(VoiceOverCommanderStub.commands);
   });
 
   describe("detect", () => {
@@ -172,10 +146,10 @@ describe("VoiceOver", () => {
       "when is macOS is $macOS and supports AppleScript control is $supportsControl",
       ({ macOS, supportsControl, expected }) => {
         beforeEach(async () => {
-          mockType(isMacOS).mockReturnValue(macOS);
-          mockType(supportsAppleScriptControl).mockResolvedValue(
-            supportsControl
-          );
+          jest.mocked(isMacOS).mockReturnValue(macOS);
+          jest
+            .mocked(supportsAppleScriptControl)
+            .mockResolvedValue(supportsControl);
 
           result = await vo.detect();
         });
@@ -194,7 +168,7 @@ describe("VoiceOver", () => {
       ${true}  | ${true}
     `("when is macOS is $macOS", ({ macOS, expected }) => {
       beforeEach(async () => {
-        mockType(isMacOS).mockReturnValue(macOS);
+        jest.mocked(isMacOS).mockReturnValue(macOS);
 
         result = await vo.default();
       });
@@ -208,7 +182,7 @@ describe("VoiceOver", () => {
   describe("start", () => {
     describe("when VoiceOver is not supported", () => {
       beforeEach(() => {
-        mockType(isMacOS).mockReturnValue(false);
+        jest.mocked(isMacOS).mockReturnValue(false);
       });
 
       it("should throw", async () => {
@@ -219,16 +193,58 @@ describe("VoiceOver", () => {
     });
 
     describe("when VoiceOver is supported", () => {
+      describe("when VoiceOver is already running", () => {
+        beforeEach(async () => {
+          await vo.start();
+        });
+
+        it("should throw an error when trying to start again", async () => {
+          await expect(async () => await vo.start()).rejects.toThrowError(
+            ERR_VOICE_OVER_ALREADY_RUNNING
+          );
+        });
+      });
+
       describe.each`
-        description          | options
-        ${"without options"} | ${undefined}
-        ${"with options"}    | ${{}}
+        description               | options
+        ${"without options"}      | ${undefined}
+        ${"with options"}         | ${{}}
+        ${"with capture options"} | ${{ capture: true }}
       `("when called $description", ({ options }) => {
         beforeEach(async () => {
-          mockType(isMacOS).mockReturnValue(true);
-          mockType(supportsAppleScriptControl).mockResolvedValue(true);
-
           await vo.start(options);
+        });
+
+        it("should construct a log store instance", () => {
+          expect(LogStore).toHaveBeenCalledWith(options);
+        });
+
+        it("should construct a caption instance", () => {
+          expect(VoiceOverCaption).toHaveBeenCalledWith(expect.any(LogStore));
+        });
+
+        it("should construct a commander instance", () => {
+          expect(VoiceOverCommander).toHaveBeenCalledWith(expect.any(LogStore));
+        });
+
+        it("should construct a cursor instance", () => {
+          expect(VoiceOverCursor).toHaveBeenCalledWith(expect.any(LogStore));
+        });
+
+        it("should construct a keyboard instance", () => {
+          expect(VoiceOverKeyboard).toHaveBeenCalledWith(expect.any(LogStore));
+        });
+
+        it("should construct a mouse instance", () => {
+          expect(VoiceOverMouse).toHaveBeenCalledWith(expect.any(LogStore));
+        });
+
+        it("should expose a getter for keyboard commands", () => {
+          expect(vo.keyboardCommands).toBe(VoiceOverKeyboardStub.commands);
+        });
+
+        it("should expose a getter for commander commands", () => {
+          expect(vo.commanderCommands).toBe(VoiceOverCommanderStub.commands);
         });
 
         it("should store original settings (so they can be reset back when done)", () => {
@@ -253,6 +269,14 @@ describe("VoiceOver", () => {
   });
 
   describe("stop", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.stop()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
@@ -261,9 +285,9 @@ describe("VoiceOver", () => {
       const resetSettingsSpy = jest.fn();
 
       beforeEach(async () => {
-        mockType(isMacOS).mockReturnValue(true);
-        mockType(supportsAppleScriptControl).mockResolvedValue(true);
-        mockType(storeOriginalSettings).mockResolvedValue(resetSettingsSpy);
+        jest.mocked(isMacOS).mockReturnValue(true);
+        jest.mocked(supportsAppleScriptControl).mockResolvedValue(true);
+        jest.mocked(storeOriginalSettings).mockResolvedValue(resetSettingsSpy);
 
         await vo.start();
 
@@ -285,35 +309,33 @@ describe("VoiceOver", () => {
       });
 
       describe("when called again and start hasn't been called this time", () => {
-        beforeEach(async () => {
-          jest.clearAllMocks();
-
-          await vo.stop(options);
-        });
-
-        it("should quit VoiceOver", () => {
-          expect(forceQuit).toHaveBeenCalled();
-        });
-
-        it("should wait for VoiceOver to not be running", () => {
-          expect(waitForNotRunning).toHaveBeenCalledWith(options);
-        });
-
-        it("should not reset settings again", () => {
-          expect(resetSettingsSpy).not.toHaveBeenCalled();
+        it("should throw an error", async () => {
+          await expect(async () => await vo.stop(options)).rejects.toThrowError(
+            ERR_VOICE_OVER_NOT_RUNNING
+          );
         });
       });
     });
   });
 
   describe("previous", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.previous()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.previous(options);
+        await vo.stop();
       });
 
       it("should move the cursor to the previous item", () => {
@@ -323,13 +345,23 @@ describe("VoiceOver", () => {
   });
 
   describe("next", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.next()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.next(options);
+        await vo.stop();
       });
 
       it("should move the cursor to the next item", () => {
@@ -339,13 +371,23 @@ describe("VoiceOver", () => {
   });
 
   describe("act", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.act()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.act(options);
+        await vo.stop();
       });
 
       it("should perform the default action for the item", () => {
@@ -355,13 +397,23 @@ describe("VoiceOver", () => {
   });
 
   describe("interact", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.interact()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.interact(options);
+        await vo.stop();
       });
 
       it("should interact with the item", () => {
@@ -371,13 +423,23 @@ describe("VoiceOver", () => {
   });
 
   describe("stopInteracting", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await vo.stopInteracting()
+        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.stopInteracting(options);
+        await vo.stop();
       });
 
       it("should stop interacting with the item", () => {
@@ -389,13 +451,23 @@ describe("VoiceOver", () => {
   });
 
   describe("takeCursorScreenshot", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await vo.takeCursorScreenshot()
+        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.takeCursorScreenshot(options);
+        await vo.stop();
       });
 
       it("should take a cursor screenshot", () => {
@@ -407,6 +479,14 @@ describe("VoiceOver", () => {
   });
 
   describe("press", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.press()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
@@ -415,7 +495,9 @@ describe("VoiceOver", () => {
       const key = "test-key";
 
       beforeEach(async () => {
+        await vo.start();
         await vo.press(key, options);
+        await vo.stop();
       });
 
       it("should press the key", () => {
@@ -425,6 +507,14 @@ describe("VoiceOver", () => {
   });
 
   describe("type", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.type()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
@@ -433,7 +523,9 @@ describe("VoiceOver", () => {
       const text = "test-text";
 
       beforeEach(async () => {
+        await vo.start();
         await vo.type(text, options);
+        await vo.stop();
       });
 
       it("should type the text", () => {
@@ -443,15 +535,25 @@ describe("VoiceOver", () => {
   });
 
   describe("perform", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.perform()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description                                    | command           | options
       ${"with keyboard command and without options"} | ${{ keyCode: 0 }} | ${undefined}
       ${"with keyboard command and with options"}    | ${{ keyCode: 0 }} | ${{}}
     `("when called $description", ({ command, options }) => {
       beforeEach(async () => {
-        mockType(isKeyboard).mockReturnValue(true);
+        jest.mocked(isKeyboard).mockReturnValue(true);
 
+        await vo.start();
         await vo.perform(command, options);
+        await vo.stop();
       });
 
       it("should perform the keyboard command", () => {
@@ -468,9 +570,11 @@ describe("VoiceOver", () => {
       ${"with commander command and with options"}    | ${CommanderCommands.ACTIONS} | ${{}}
     `("when called $description", ({ command, options }) => {
       beforeEach(async () => {
-        mockType(isKeyboard).mockReturnValue(false);
+        jest.mocked(isKeyboard).mockReturnValue(false);
 
+        await vo.start();
         await vo.perform(command, options);
+        await vo.stop();
       });
 
       it("should perform the commander command", () => {
@@ -483,13 +587,23 @@ describe("VoiceOver", () => {
   });
 
   describe("click", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.click()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.click(options);
+        await vo.stop();
       });
 
       it("should click the mouse", () => {
@@ -499,13 +613,23 @@ describe("VoiceOver", () => {
   });
 
   describe("copyLastSpokenPhrase", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await vo.copyLastSpokenPhrase()
+        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.copyLastSpokenPhrase(options);
+        await vo.stop();
       });
 
       it("should copy the last spoken phrase", () => {
@@ -517,13 +641,23 @@ describe("VoiceOver", () => {
   });
 
   describe("saveLastSpokenPhrase", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await vo.saveLastSpokenPhrase()
+        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+    });
+
     describe.each`
       description          | options
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
       beforeEach(async () => {
+        await vo.start();
         await vo.saveLastSpokenPhrase(options);
+        await vo.stop();
       });
 
       it("should save the last spoken phrase", () => {
@@ -535,8 +669,18 @@ describe("VoiceOver", () => {
   });
 
   describe("lastSpokenPhrase", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await vo.lastSpokenPhrase()
+        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+    });
+
     beforeEach(async () => {
+      await vo.start();
       await vo.lastSpokenPhrase();
+      await vo.stop();
     });
 
     it("should get the last spoken phrase", () => {
@@ -545,8 +689,18 @@ describe("VoiceOver", () => {
   });
 
   describe("itemText", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.itemText()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     beforeEach(async () => {
+      await vo.start();
       await vo.itemText();
+      await vo.stop();
     });
 
     it("should get the item text", () => {
@@ -555,8 +709,18 @@ describe("VoiceOver", () => {
   });
 
   describe("spokenPhraseLog", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await vo.spokenPhraseLog()
+        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+    });
+
     beforeEach(async () => {
+      await vo.start();
       await vo.spokenPhraseLog();
+      await vo.stop();
     });
 
     it("should get the spoken phrase log", () => {
@@ -565,8 +729,18 @@ describe("VoiceOver", () => {
   });
 
   describe("itemTextLog", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.itemTextLog()).rejects.toThrowError(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
     beforeEach(async () => {
+      await vo.start();
       await vo.itemTextLog();
+      await vo.stop();
     });
 
     it("should get the item text log", () => {

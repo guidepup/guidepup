@@ -1,7 +1,6 @@
 import { ChildProcess, spawn } from "child_process";
 import { mkdirSync, unlinkSync } from "fs";
 import { join } from "path";
-import { mockType } from "../../test/mockType";
 import { record } from "./record";
 
 jest.mock("child_process", () => ({
@@ -27,7 +26,7 @@ describe("record", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockType(spawn).mockReturnValue(mockProcess as unknown as ChildProcess);
+    jest.mocked(spawn).mockReturnValue(mockProcess as unknown as ChildProcess);
 
     stopRecording = record(mockFilepath);
   });
