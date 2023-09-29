@@ -1,6 +1,6 @@
-import { expect } from "@playwright/test";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./firefox.itemText.snapshot.json";
+import { logIncludesExpectedPhrases } from "../../logIncludesExpectedPhrases";
 import { macOSRecord } from "../../../../lib";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { voTest as test } from "../../voiceover-test";
@@ -25,17 +25,8 @@ test.describe("Firefox Playwright VoiceOver", () => {
     console.log(JSON.stringify(itemTextLog, undefined, 2));
     console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
-    for (const expectedItem of itemTextSnapshot) {
-      expect(!!itemTextLog.find((log) => log.includes(expectedItem))).toBe(
-        true
-      );
-    }
-
-    for (const expectedPhrase of spokenPhraseSnapshot) {
-      expect(
-        !!spokenPhraseLog.find((log) => log.includes(expectedPhrase))
-      ).toBe(true);
-    }
+    logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
+    logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
 
     stopRecording();
   });
