@@ -358,6 +358,10 @@ export class NVDAClient extends EventEmitter {
   }
 
   async #send(message: string): Promise<void> {
+    if (!this.#socket) {
+      return;
+    }
+
     if (!message.endsWith("\n")) {
       message += "\n";
     }
@@ -367,7 +371,7 @@ export class NVDAClient extends EventEmitter {
     }
 
     return new Promise<void>((resolve, reject) => {
-      this.#socket?.write(message, (err) => {
+      this.#socket.write(message, (err) => {
         if (err) {
           reject(err);
 

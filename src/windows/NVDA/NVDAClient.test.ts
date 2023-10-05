@@ -418,6 +418,33 @@ describe("NVDAClient", () => {
         );
       });
     });
+
+    describe("when disconnect is called while sendKeyCode calls are in flight", () => {
+      let sendKeyCodePromise;
+
+      beforeEach(() => {
+        jest.clearAllMocks();
+      });
+
+      afterEach(async () => {
+        await sendKeyCodePromise;
+        sendKeyCodePromise = undefined;
+      });
+
+      it("should disconnect gracefully", async () => {
+        sendKeyCodePromise = client.sendKeyCode({
+          keyCode: [
+            new Key({ keyCode: 1, scanCode: 2, extended: false }),
+            new Key({ keyCode: 3, scanCode: 4, extended: true }),
+            new Key({ keyCode: 5, scanCode: 6, extended: false }),
+            new Key({ keyCode: 7, scanCode: 8, extended: true }),
+          ],
+          modifiers: [Modifiers.Alt, Modifiers.Control],
+        });
+
+        expect(() => client.disconnect()).not.toThrow();
+      });
+    });
   });
 
   describe("when no phrases have been spoken", () => {

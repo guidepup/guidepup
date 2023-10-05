@@ -38,7 +38,7 @@ export async function waitForCondition(
     timeoutErrorMessage: ERR_WAITING_TIMEOUT,
   }
 ): Promise<void> {
-  let timeoutTimerId: NodeJS.Timer | undefined;
+  let timeoutTimerId: NodeJS.Timeout | undefined;
 
   const controller = new AbortController();
 
