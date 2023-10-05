@@ -66,11 +66,11 @@ const applicationNameMap = {
 
 /**
  * These tests extend the default Playwright environment that launches the
- * browser with a running instance of the VoiceOver screen reader for MacOS.
+ * browser with a running instance of the NVDA screen reader for Windows.
  *
- * A fresh started VoiceOver instance `vo` is provided to each test.
+ * A fresh started NVDA instance `nvda` is provided to each test.
  */
-const voTest = test.extend<{ nvda: typeof nvda }>({
+const nvdaTest = test.extend<{ nvda: typeof nvda }>({
   nvda: async ({ browserName }, use) => {
     try {
       const application = applicationNameMap[browserName];
@@ -98,9 +98,13 @@ const voTest = test.extend<{ nvda: typeof nvda }>({
 
       await use(nvda);
     } finally {
-      await nvda.stop();
+      try {
+        await nvda.stop();
+      } catch {
+        // swallow stop failure
+      }
     }
   },
 });
 
-export { voTest };
+export { nvdaTest };
