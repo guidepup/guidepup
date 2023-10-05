@@ -1,6 +1,6 @@
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./chromium.itemText.snapshot.json";
-import { logIncludesExpectedPhrases } from "../../logIncludesExpectedPhrases";
+import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import { macOSRecord } from "../../../../lib";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
 import { voTest as test } from "../../voiceover-test";
