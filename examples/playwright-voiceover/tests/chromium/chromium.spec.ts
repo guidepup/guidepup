@@ -10,24 +10,28 @@ test.describe("Chromium Playwright VoiceOver", () => {
     page,
     voiceOver,
   }) => {
-    const stopRecording = macOSRecord(
-      `./recordings/playwright-voiceover-chromium-${+new Date()}.mov`
-    );
+    let stopRecording;
 
-    await headerNavigation({ page, voiceOver });
+    try {
+      stopRecording = macOSRecord(
+        `./recordings/playwright-voiceover-chromium-${+new Date()}.mov`
+      );
 
-    // Assert that we've ended up where we expected and what we were told on
-    // the way there is as expected.
+      await headerNavigation({ page, voiceOver });
 
-    const itemTextLog = await voiceOver.itemTextLog();
-    const spokenPhraseLog = await voiceOver.spokenPhraseLog();
+      // Assert that we've ended up where we expected and what we were told on
+      // the way there is as expected.
 
-    console.log(JSON.stringify(itemTextLog, undefined, 2));
-    console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+      const itemTextLog = await voiceOver.itemTextLog();
+      const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
-    logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
-    logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      console.log(JSON.stringify(itemTextLog, undefined, 2));
+      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
-    stopRecording();
+      logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+    } finally {
+      stopRecording();
+    }
   });
 });

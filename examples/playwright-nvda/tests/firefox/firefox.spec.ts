@@ -2,6 +2,7 @@ import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { nvdaTest as test } from "../../nvda-test";
+import { windowsRecord } from "../../../../lib";
 
 test.describe("Firefox Playwright NVDA", () => {
   test("I can navigate the Guidepup Github page", async ({
@@ -9,15 +10,24 @@ test.describe("Firefox Playwright NVDA", () => {
     page,
     nvda,
   }) => {
-    await headerNavigation({ browserName, page, nvda });
+    let stopRecording;
 
-    // Assert that we've ended up where we expected and what we were told on
-    // the way there is as expected.
+    try {
+      stopRecording = windowsRecord(
+        `./recordings/playwright-nvda-firefox-${+new Date()}.mp4`
+      );
+      await headerNavigation({ browserName, page, nvda });
 
-    const spokenPhraseLog = await nvda.spokenPhraseLog();
+      // Assert that we've ended up where we expected and what we were told on
+      // the way there is as expected.
 
-    console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+      const spokenPhraseLog = await nvda.spokenPhraseLog();
 
-    logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+    } finally {
+      stopRecording();
+    }
   });
 });
