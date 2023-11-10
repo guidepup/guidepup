@@ -83,6 +83,7 @@ Check out some of the other Guidepup modules:
 - [`@guidepup/setup`](https://github.com/guidepup/setup/) - set up your local or CI environment for screen reader test automation.
 - [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/) - seemless integration of Guidepup with Playwright.
 - [`@guidepup/virtual-screen-reader`](https://github.com/guidepup/virtual-screen-reader/) - reliable unit testing for your screen reader a11y workflows.
+- [`@guidepup/jest`](https://github.com/guidepup/jest/) - jest matchers for reliable unit testing of your screen reader a11y workflows. 
 
 If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup) to set up your CI ready for screen reader automation.
 
