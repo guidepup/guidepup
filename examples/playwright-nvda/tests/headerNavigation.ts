@@ -45,8 +45,8 @@ export async function headerNavigation({
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
   while (
-    !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1") ||
-    headingCount === MAX_NAVIGATION_LOOP
+    !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1") &&
+    headingCount <= MAX_NAVIGATION_LOOP
   ) {
     headingCount++;
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
@@ -56,10 +56,13 @@ export async function headerNavigation({
 
   // Move through the README using standard keyboard commands
   while (
-    (await nvda.itemText()) !== "NVDA on Windows" ||
-    tabCount === MAX_NAVIGATION_LOOP
+    !(await nvda.lastSpokenPhrase()).includes("NVDA on Windows") &&
+    tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;
     await nvda.press("Tab");
   }
+
+  await nvda.press("Shift+Tab");
+  await nvda.act();
 }
