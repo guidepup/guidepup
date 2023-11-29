@@ -47,6 +47,17 @@ async function run(): Promise<void> {
     // Navigate to guidepup repo.
     await voiceOver.type("https://github.com/guidepup/guidepup");
     await voiceOver.act();
+    await delay(4000);
+
+    // Navigate across the page using VoiceOver.
+    for (let i = 0; i < 10; i++) {
+      await voiceOver.next();
+    }
+
+    // Navigate backwards through the page using keyboard commands.
+    for (let i = 0; i < 10; i++) {
+      await voiceOver.press("Shift+Tab");
+    }
 
     console.log("Item Text Log:");
     console.log(await voiceOver.itemTextLog());
