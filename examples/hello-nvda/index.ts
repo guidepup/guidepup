@@ -18,12 +18,12 @@ async function run(): Promise<void> {
     // for speed improvement.
     await nvda.start({ capture: "initial" });
 
-    // Open Edge and wait for it to be ready.
+    // Open Chrome and wait for it to be ready.
     //
     // Not best practice, but expectation is that consumer will perform proper
-    // checks to ensure that Edge is ready, most likely using something like
+    // checks to ensure that Chrome is ready, most likely using something like
     // playwright to launch and control the browser.
-    await windowsActivate("msedge.exe", "Edge");
+    await windowsActivate("chrome.exe", "Chrome");
     await delay(4000);
 
     // Navigate to guidepup repo.
@@ -49,8 +49,8 @@ async function run(): Promise<void> {
     // Ensure we stop NVDA.
     await nvda.stop();
 
-    // Ensure we quit Edge.
-    await windowsQuit("msedge.exe");
+    // Ensure we quit Chrome.
+    await windowsQuit("chrome.exe");
 
     // Ensure we stop the recording.
     stopRecording();
