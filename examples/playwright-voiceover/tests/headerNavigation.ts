@@ -31,4 +31,9 @@ export async function headerNavigation({
   while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
     await voiceOver.perform(voiceOver.keyboardCommands.findNextHeading);
   }
+
+  // Move through the README using standard keyboard commands
+  while ((await voiceOver.itemText()) !== "NVDA on Windows") {
+    await voiceOver.press("Tab");
+  }
 }
