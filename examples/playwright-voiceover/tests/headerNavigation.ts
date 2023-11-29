@@ -48,9 +48,9 @@ export async function headerNavigation({
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;
-    await voiceOver.press("Tab");
+    await voiceOver.press("Alt+Tab");
   }
 
-  await voiceOver.press("Shift+Tab");
+  await voiceOver.press("Shift+Alt+Tab");
   await voiceOver.act();
 }
