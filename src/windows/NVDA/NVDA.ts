@@ -195,8 +195,8 @@ export class NVDA implements ScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return await this.#client.waitForSpokenPhrase(
-      () => sendKeys(parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes)),
+    return await this.perform(
+      parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes),
       options
     );
   }

@@ -31,9 +31,14 @@ async function run(): Promise<void> {
     await nvda.act();
     await delay(4000);
 
-    // Navigate across the page.
+    // Navigate across the page using NVDA.
     for (let i = 0; i < 10; i++) {
       await nvda.next();
+    }
+
+    // Navigate backwards through the page using keyboard commands.
+    for (let i = 0; i < 10; i++) {
+      await nvda.press("Shift+Tab");
     }
 
     console.log("Spoken Phrase Log:");
