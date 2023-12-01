@@ -31,6 +31,9 @@ export async function headerNavigation({
   // Make sure interacting with the web content
   await voiceOver.interact();
 
+  // Prevent auto-navigation of group
+  await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
+
   let headingCount = 0;
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
@@ -63,5 +66,10 @@ export async function headerNavigation({
   } else {
     await voiceOver.press("Shift+Tab");
   }
+
+  // Navigate to the VoiceOver Guidepup docs
   await voiceOver.act();
+
+  // Prevent auto-navigation of group
+  await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
 }
