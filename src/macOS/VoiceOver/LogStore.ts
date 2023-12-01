@@ -144,11 +144,9 @@ export class LogStore {
         const approxWords = countApproxWords(phrase);
 
         stableCount = 0;
-        pollTimeout = Math.max(
-          (approxWords / APPROX_WORDS_PER_SECOND) * 1000 -
-            SPOKEN_PHRASES_POLL_INTERVAL,
-          SPOKEN_PHRASES_POLL_INTERVAL
-        );
+        pollTimeout =
+          (approxWords / APPROX_WORDS_PER_SECOND) * 1000 +
+          SPOKEN_PHRASES_POLL_INTERVAL;
 
         phrases.push(phrase);
       }
