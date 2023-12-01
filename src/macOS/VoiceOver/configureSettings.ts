@@ -66,7 +66,10 @@ export const DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS: VoiceOverSettings = {
   disableSound: true,
   displayTextEnabled: true,
   rateAsPercent: 100,
-  hintDelay: "0.0",
+  // See also `src/macOS/VoiceOver/constants.ts` for poll times and retries
+  // Need the delay to be longer than a poll so we don't miss text, but shorter
+  // than the max poll * retries so that hints aren't missed
+  hintDelay: "0.1",
   loginGreeting: "",
 };
 
