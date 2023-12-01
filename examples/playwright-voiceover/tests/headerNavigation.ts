@@ -46,7 +46,7 @@ export async function headerNavigation({
 
   // Move through the README using standard keyboard commands
   while (
-    !(await voiceOver.lastSpokenPhrase()).includes("NVDA on Windows") &&
+    !(await voiceOver.itemText()).includes("NVDA on Windows") &&
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;

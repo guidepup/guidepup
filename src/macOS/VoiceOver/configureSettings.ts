@@ -62,7 +62,7 @@ export type VoiceOverSettings = {
 export const DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS: VoiceOverSettings = {
   doNotShowSplashScreen: true,
   voiceOverCursorEnabled: true,
-  disableSpeech: false,
+  disableSpeech: true,
   disableSound: true,
   displayTextEnabled: true,
   rateAsPercent: 100,
