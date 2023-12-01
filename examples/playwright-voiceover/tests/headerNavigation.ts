@@ -1,5 +1,5 @@
+import { Page, PlaywrightWorkerOptions } from "@playwright/test";
 import { voiceOver as _voiceOver } from "../../../lib";
-import { Page } from "@playwright/test";
 
 type VoiceOver = typeof _voiceOver;
 
@@ -10,9 +10,11 @@ async function delay(ms: number) {
 const MAX_NAVIGATION_LOOP = 10;
 
 export async function headerNavigation({
+  browserName,
   page,
   voiceOver,
 }: {
+  browserName: PlaywrightWorkerOptions["browserName"];
   page: Page;
   voiceOver: VoiceOver;
 }) {
@@ -48,9 +50,18 @@ export async function headerNavigation({
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;
-    await voiceOver.press("Alt+Tab");
+
+    if (browserName === "webkit") {
+      await voiceOver.press("Alt+Tab");
+    } else {
+      await voiceOver.press("Tab");
+    }
   }
 
-  await voiceOver.press("Shift+Alt+Tab");
+  if (browserName === "webkit") {
+    await voiceOver.press("Shift+Alt+Tab");
+  } else {
+    await voiceOver.press("Shift+Tab");
+  }
   await voiceOver.act();
 }

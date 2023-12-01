@@ -7,6 +7,7 @@ import { voTest as test } from "../../voiceover-test";
 
 test.describe("Chromium Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({
+    browserName,
     page,
     voiceOver,
   }) => {
@@ -17,7 +18,7 @@ test.describe("Chromium Playwright VoiceOver", () => {
         `./recordings/playwright-voiceover-chromium-${+new Date()}.mov`
       );
 
-      await headerNavigation({ page, voiceOver });
+      await headerNavigation({ browserName, page, voiceOver });
 
       // Assert that we've ended up where we expected and what we were told on
       // the way there is as expected.
