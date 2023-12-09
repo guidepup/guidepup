@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 20
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.12.1
+        uses: guidepup/setup-action@0.13.0
         with:
           record: true
       - run: yarn install --frozen-lockfile
@@ -29,6 +29,7 @@ jobs:
       - run: yarn --cwd ./examples/playwright-voiceover pretest
       - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
       - run: pwd
+      - run: ps aux
       - run: ls -la /Users/runner/work/guidepup/guidepup/examples/playwright-voiceover/recordings/
       - uses: actions/upload-artifact@v3
         if: always()

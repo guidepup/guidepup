@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 20
       - name: Enable VoiceOver Automation
-        uses: guidepup/setup-action@0.12.1
+        uses: guidepup/setup-action@0.13.0
 
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
