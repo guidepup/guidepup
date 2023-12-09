@@ -11,8 +11,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-11, macos-12, macos-13, macos-13-xlarge]
-        browser: [chromium, firefox, webkit]
+        # os: [macos-11, macos-12, macos-13, macos-13-xlarge]
+        os: [macos-13, macos-13-xlarge]
+        # browser: [chromium, firefox, webkit]
+        browser: [webkit]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -26,11 +28,12 @@ jobs:
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover pretest
       - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
+      - run: pwd
+      - run: ls -la ./recordings/
       - uses: actions/upload-artifact@v3
         if: always()
         continue-on-error: true
         with:
           name: artifacts
           path: |
-            **/test-results/**/*
             **/recordings/**/*

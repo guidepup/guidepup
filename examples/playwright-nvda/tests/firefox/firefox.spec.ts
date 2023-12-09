@@ -16,7 +16,10 @@ test.describe("Firefox Playwright NVDA", () => {
     const osVersion = release();
     const browserVersion = browser.version();
     const { retry } = test.info();
-    const recordingFilePath = `./recordings/playwright-nvda-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+    const recordingFilePath = `./recordings/playwright-nvda-${osName}-${osVersion}-${browserName}-${browserVersion.replace(
+      /\./g,
+      "_"
+    )}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,
