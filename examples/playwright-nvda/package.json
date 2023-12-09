@@ -13,9 +13,9 @@
     "test:firefox": "playwright test --config firefox.config.ts ./firefox/"
   },
   "devDependencies": {
-    "@playwright/test": "^1.17.1",
-    "@types/node": "^17.0.0",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.4"
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.10.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

@@ -9,12 +9,12 @@ import {
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
 import { CommanderCommands } from "./CommanderCommands";
-import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { LogStore } from "./LogStore";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
+import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOver } from "./VoiceOver";
 import { VoiceOverCaption } from "./VoiceOverCaption";
 import { VoiceOverCommander } from "./VoiceOverCommander";
@@ -40,8 +40,8 @@ jest.mock("../isMacOS", () => ({
 jest.mock("./LogStore", () => ({
   LogStore: jest.fn(),
 }));
-jest.mock("./forceQuit", () => ({
-  forceQuit: jest.fn(),
+jest.mock("./terminateVoiceOverProcess", () => ({
+  terminateVoiceOverProcess: jest.fn(),
 }));
 jest.mock("./start", () => ({
   start: jest.fn(),
@@ -297,7 +297,7 @@ describe("VoiceOver", () => {
       });
 
       it("should quit VoiceOver", () => {
-        expect(forceQuit).toHaveBeenCalled();
+        expect(terminateVoiceOverProcess).toHaveBeenCalled();
       });
 
       it("should wait for VoiceOver to not be running", () => {

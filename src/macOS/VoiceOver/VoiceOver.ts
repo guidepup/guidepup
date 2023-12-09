@@ -11,7 +11,6 @@ import {
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
-import { forceQuit } from "./forceQuit";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
@@ -20,6 +19,7 @@ import { LogStore } from "./LogStore";
 import type { ScreenReader } from "../../ScreenReader";
 import { start } from "./start";
 import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
+import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";
 import { VoiceOverCommander } from "./VoiceOverCommander";
 import { VoiceOverCursor } from "./VoiceOverCursor";
@@ -134,7 +134,7 @@ export class VoiceOver implements ScreenReader {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
-    await forceQuit();
+    await terminateVoiceOverProcess();
     await waitForNotRunning(options);
 
     this.#caption = null;
