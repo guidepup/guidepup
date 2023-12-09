@@ -1,3 +1,4 @@
+import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./webkit.itemText.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
@@ -14,8 +15,10 @@ test.describe("Webkit Playwright VoiceOver", () => {
     let stopRecording;
 
     try {
+      const { retry } = test.info();
+
       stopRecording = macOSRecord(
-        `./recordings/playwright-voiceover-webkit-${+new Date()}.mov`
+        `./recordings/playwright-voiceover-webkit-${platform()}-${release()}-attempt-${retry}-${+new Date()}.mov`
       );
 
       await headerNavigation({ browserName, page, voiceOver });

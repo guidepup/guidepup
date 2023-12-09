@@ -1,3 +1,4 @@
+import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
@@ -13,9 +14,12 @@ test.describe("Firefox Playwright NVDA", () => {
     let stopRecording;
 
     try {
+      const { retry } = test.info();
+
       stopRecording = windowsRecord(
-        `./recordings/playwright-nvda-firefox-${+new Date()}.mp4`
+        `./recordings/playwright-nvda-chromium-${platform()}-${release()}-attempt-${retry}-${+new Date()}.mov`
       );
+
       await headerNavigation({ browserName, page, nvda });
 
       // Assert that we've ended up where we expected and what we were told on

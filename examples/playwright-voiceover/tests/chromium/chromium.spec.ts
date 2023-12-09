@@ -1,3 +1,4 @@
+import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./chromium.itemText.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
@@ -14,8 +15,10 @@ test.describe("Chromium Playwright VoiceOver", () => {
     let stopRecording;
 
     try {
+      const { retry } = test.info();
+
       stopRecording = macOSRecord(
-        `./recordings/playwright-voiceover-chromium-${+new Date()}.mov`
+        `./recordings/playwright-voiceover-firefox-${platform()}-${release()}-attempt-${retry}-${+new Date()}.mov`
       );
 
       await headerNavigation({ browserName, page, voiceOver });

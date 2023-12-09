@@ -1,3 +1,4 @@
+import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
@@ -13,8 +14,10 @@ test.describe("Chromium Playwright NVDA", () => {
     let stopRecording;
 
     try {
+      const { retry } = test.info();
+
       stopRecording = windowsRecord(
-        `./recordings/playwright-nvda-chromium-${+new Date()}.mp4`
+        `./recordings/playwright-nvda-chromium-${platform()}-${release()}-attempt-${retry}-${+new Date()}.mov`
       );
 
       await headerNavigation({ browserName, page, nvda });
