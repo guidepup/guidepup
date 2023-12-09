@@ -47,7 +47,7 @@ export class LogStore {
   }
 
   /**
-   * Get the item text logs.
+   * Get the item text log.
    *
    * @returns {Promise<string[]>} The item text log.
    */
@@ -60,7 +60,18 @@ export class LogStore {
   }
 
   /**
-   * Get the last spoken phrase logs.
+   * Clear the item text log.
+   */
+  async clearItemTextLog(): Promise<void> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
+    this.#itemTextLogStore = [];
+  }
+
+  /**
+   * Get the spoken phrase log.
    *
    * @returns {Promise<string[]>} The spoken phrase log.
    */
@@ -70,6 +81,17 @@ export class LogStore {
     }
 
     return this.#spokenPhraseLogStore;
+  }
+
+  /**
+   * Clear the spoken phrase log.
+   */
+  async clearSpokenPhraseLog(): Promise<void> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
+    this.#spokenPhraseLogStore = [];
   }
 
   /**

@@ -23,6 +23,11 @@ const voTest = test.extend<{ voiceOver: typeof voiceOver }>({
     try {
       await voiceOver.start();
       await macOSActivate(applicationNameMap[browserName]);
+
+      // Clear the log so clean for the actual test!
+      await voiceOver.clearSpokenPhraseLog();
+      await voiceOver.clearItemTextLog();
+
       await use(voiceOver);
     } finally {
       try {

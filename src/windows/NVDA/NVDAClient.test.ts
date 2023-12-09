@@ -67,17 +67,13 @@ describe("NVDAClient", () => {
     });
 
     it("should reject with a 'not installed' error", async () => {
-      await expect(client.connect()).rejects.toThrowError(
-        ERR_NVDA_NOT_INSTALLED
-      );
+      await expect(client.connect()).rejects.toThrow(ERR_NVDA_NOT_INSTALLED);
     });
   });
 
   describe("when NVDA is not running", () => {
     it("should reject with a 'cannot connect' error", async () => {
-      await expect(client.connect()).rejects.toThrowError(
-        ERR_NVDA_CANNOT_CONNECT
-      );
+      await expect(client.connect()).rejects.toThrow(ERR_NVDA_CANNOT_CONNECT);
     });
   });
 

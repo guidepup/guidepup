@@ -68,6 +68,9 @@ const nvdaTest = test.extend<{ nvda: typeof nvda }>({
       // Make sure not in focus mode
       await nvda.perform(nvda.keyboardCommands.exitFocusMode);
 
+      // Clear the log so clean for the actual test!
+      await nvda.clearSpokenPhraseLog();
+
       await use(nvda);
     } finally {
       try {

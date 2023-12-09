@@ -20,10 +20,15 @@ describe("VoiceOverCaption", () => {
   let caption: VoiceOverCaption;
   let result;
   let logStoreDummy: LogStore;
+  let spokenPhraseLogCleared: boolean;
+  let itemTextLogCleared: boolean;
 
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
+
+    itemTextLogCleared = false;
+    spokenPhraseLogCleared = false;
 
     logStoreDummy = {
       async itemText() {
@@ -37,6 +42,12 @@ describe("VoiceOverCaption", () => {
       },
       async spokenPhraseLog() {
         return [spokenPhraseDummy];
+      },
+      async clearItemTextLog() {
+        itemTextLogCleared = true;
+      },
+      async clearSpokenPhraseLog() {
+        spokenPhraseLogCleared = true;
       },
     } as LogStore;
 
@@ -88,7 +99,17 @@ describe("VoiceOverCaption", () => {
 
   describe("spokenPhraseLog", () => {
     it("should get a log of the spoken phrases", () => {
-      expect(caption.spokenPhraseLog()).toEqual(logStoreDummy.spokenPhraseLog());
+      expect(caption.spokenPhraseLog()).toEqual(
+        logStoreDummy.spokenPhraseLog()
+      );
+    });
+  });
+
+  describe("clearSpokenPhraseLog", () => {
+    it("should clear the log of the spoken phrases", () => {
+      caption.clearSpokenPhraseLog();
+
+      expect(spokenPhraseLogCleared).toBe(true);
     });
   });
 
@@ -102,9 +123,17 @@ describe("VoiceOverCaption", () => {
     });
   });
 
-  describe("getItemTextLog", () => {
+  describe("itemTextLog", () => {
     it("should get a log of the item text", () => {
       expect(caption.itemTextLog()).toEqual(logStoreDummy.itemTextLog());
+    });
+  });
+
+  describe("clearItemTextLog", () => {
+    it("should clear the log of the item text", () => {
+      caption.clearItemTextLog();
+
+      expect(itemTextLogCleared).toBe(true);
     });
   });
 });
