@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         # os: [macos-11, macos-12, macos-13, macos-13-xl]
-        os: [macos-13, macos-13-xl]
+        os: [macos-13]
         # browser: [chromium, firefox, webkit]
         browser: [webkit]
     steps:
