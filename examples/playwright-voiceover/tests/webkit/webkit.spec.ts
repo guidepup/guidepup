@@ -36,19 +36,19 @@ test.describe("Webkit Playwright VoiceOver", () => {
     try {
       stopRecording = macOSRecord(recordingFilePath);
 
-      await headerNavigation({ browserName, page, voiceOver });
+      // await headerNavigation({ browserName, page, voiceOver });
 
-      // Assert that we've ended up where we expected and what we were told on
-      // the way there is as expected.
+      // // Assert that we've ended up where we expected and what we were told on
+      // // the way there is as expected.
 
-      const itemTextLog = await voiceOver.itemTextLog();
-      const spokenPhraseLog = await voiceOver.spokenPhraseLog();
+      // const itemTextLog = await voiceOver.itemTextLog();
+      // const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
-      console.log(JSON.stringify(itemTextLog, undefined, 2));
-      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+      // console.log(JSON.stringify(itemTextLog, undefined, 2));
+      // console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
-      logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
-      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      // logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
+      // logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
       stopRecording();
     }

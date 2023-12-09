@@ -28,6 +28,14 @@ jobs:
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover pretest
       - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
+      - continue-on-error: true
+        run: |
+        mkdir -p ./recordings
+        screencapture ./recordings/capture.png
+      - continue-on-error: true
+        run: |
+        mkdir -p ./recordings
+        /bin/bash -c "screencapture ./recordings/capture.png"
       - run: pwd
       - run: ps aux
       - run: ls -la /Users/runner/work/guidepup/guidepup/examples/playwright-voiceover/recordings/
