@@ -16,9 +16,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Enable VoiceOver Automation
-        uses: guidepup/setup-action@0.12.0
+        uses: guidepup/setup-action@0.12.1
 
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
