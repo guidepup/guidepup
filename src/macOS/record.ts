@@ -10,7 +10,7 @@ import { spawn } from "child_process";
  */
 export function record(filepath: string): () => void {
   mkdirSync(dirname(filepath), { recursive: true });
-  
+
   try {
     unlinkSync(filepath);
   } catch (_) {
@@ -25,6 +25,18 @@ export function record(filepath: string): () => void {
     "-g",
     filepath,
   ]);
+
+  screencapture.stdout.on("data", (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  screencapture.stderr.on("data", (data) => {
+    console.error(`stderr: ${data}`);
+  });
+
+  screencapture.on("close", (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
 
   return () => {
     screencapture.stdin.write("q");
