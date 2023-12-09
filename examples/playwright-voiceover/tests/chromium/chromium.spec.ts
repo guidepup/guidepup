@@ -8,18 +8,30 @@ import { voTest as test } from "../../voiceover-test";
 
 test.describe("Chromium Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({
+    browser,
     browserName,
     page,
     voiceOver,
   }) => {
+    const osName = platform();
+    const osVersion = release();
+    const browserVersion = browser.version();
+    const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-voiceover-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+
+    console.table({
+      osName,
+      osVersion,
+      browserName,
+      browserVersion,
+      retry,
+      recordingFilePath,
+    });
+
     let stopRecording;
 
     try {
-      const { retry } = test.info();
-
-      stopRecording = macOSRecord(
-        `./recordings/playwright-voiceover-firefox-${platform()}-${release()}-attempt-${retry}-${+new Date()}.mov`
-      );
+      stopRecording = macOSRecord(recordingFilePath);
 
       await headerNavigation({ browserName, page, voiceOver });
 

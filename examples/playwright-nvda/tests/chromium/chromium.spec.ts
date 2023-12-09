@@ -7,18 +7,30 @@ import { windowsRecord } from "../../../../lib";
 
 test.describe("Chromium Playwright NVDA", () => {
   test("I can navigate the Guidepup Github page", async ({
+    browser,
     browserName,
     page,
     nvda,
   }) => {
+    const osName = platform();
+    const osVersion = release();
+    const browserVersion = browser.version();
+    const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-nvda-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+
+    console.table({
+      osName,
+      osVersion,
+      browserName,
+      browserVersion,
+      retry,
+      recordingFilePath,
+    });
+
     let stopRecording;
 
     try {
-      const { retry } = test.info();
-
-      stopRecording = windowsRecord(
-        `./recordings/playwright-nvda-chromium-${platform()}-${release()}-attempt-${retry}-${+new Date()}.mov`
-      );
+      stopRecording = windowsRecord(recordingFilePath);
 
       await headerNavigation({ browserName, page, nvda });
 
