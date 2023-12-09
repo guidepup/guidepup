@@ -29,7 +29,7 @@ jobs:
       - run: yarn --cwd ./examples/playwright-voiceover pretest
       - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
       - run: pwd
-      - run: ls -la ./recordings/
+      - run: ls -la /Users/runner/work/guidepup/guidepup/examples/playwright-voiceover/recordings/
       - uses: actions/upload-artifact@v3
         if: always()
         continue-on-error: true
