@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-11, macos-12, macos-13]
+        os: [macos-11, macos-12, macos-13, macos-13-arm64]
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v3
