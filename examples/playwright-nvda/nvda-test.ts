@@ -30,7 +30,6 @@ const nvdaTest = test.extend<{ nvda: typeof nvda }>({
       await nvda.start();
       await page.goto("about:blank", { waitUntil: "load" });
 
-      // eslint-disable-next-line no-constant-condition
       let applicationSwitchRetryCount = 0;
 
       while (applicationSwitchRetryCount < 10) {
