@@ -11,15 +11,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-11, macos-12]
+        os: [macos-11, macos-12, macos-13]
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.11.3
+        uses: guidepup/setup-action@0.13.0
         with:
           record: true
       - run: yarn install --frozen-lockfile

@@ -64,6 +64,10 @@ export class VoiceOver implements ScreenReader {
    * VoiceOver keyboard commands.
    */
   get keyboardCommands() {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return this.#keyboard.commands;
   }
 
@@ -73,6 +77,10 @@ export class VoiceOver implements ScreenReader {
    * Getter specific to the VoiceOver screen reader.
    */
   get commanderCommands() {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return this.#commander.commands;
   }
 
@@ -404,6 +412,17 @@ export class VoiceOver implements ScreenReader {
   }
 
   /**
+   * Clear the log of all spoken phrases for this VoiceOver instance.
+   */
+  async clearSpokenPhraseLog(): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    await this.#caption.clearSpokenPhraseLog();
+  }
+
+  /**
    * Get the log of all visited item text for this VoiceOver instance.
    *
    * For VoiceOver this is distinct from `spokenPhraseLog`.
@@ -416,5 +435,18 @@ export class VoiceOver implements ScreenReader {
     }
 
     return await this.#caption.itemTextLog();
+  }
+
+  /**
+   * Clear the log of all visited item text for this VoiceOver instance.
+   *
+   * For VoiceOver this is distinct from `spokenPhraseLog`.
+   */
+  async clearItemTextLog(): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    await this.#caption.clearItemTextLog();
   }
 }

@@ -33,7 +33,7 @@ describe("quit", () => {
     });
 
     it("should throw an error", async () => {
-      expect(quit).rejects.toThrowError(new Error(ERR_NVDA_NOT_INSTALLED));
+      expect(quit).rejects.toThrow(new Error(ERR_NVDA_NOT_INSTALLED));
     });
   });
 

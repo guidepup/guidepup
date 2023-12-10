@@ -4,7 +4,7 @@ const config: PlaywrightTestConfig = {
   reportSlowTests: null,
   fullyParallel: false,
   workers: 1,
-  timeout: 3 * 60 * 1000,
+  timeout: 5 * 60 * 1000,
   retries: 5,
   projects: [
     {

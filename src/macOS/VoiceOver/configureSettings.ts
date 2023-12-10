@@ -1,7 +1,7 @@
 import { ERR_VOICE_OVER_UNABLE_TO_CONFIGURE_VOICEOVER_SETTING } from "../errors";
 import { exec } from "child_process";
 
-const VOICEOVER_TRAINING_DOMAIN = "com.apple.VoiceOverTraining"
+const VOICEOVER_TRAINING_DOMAIN = "com.apple.VoiceOverTraining";
 const VOICEOVER_DEFAULTS_DOMAIN = "com.apple.VoiceOver4/default";
 
 const VOICEOVER_SETTINGS = {
@@ -41,6 +41,12 @@ const VOICEOVER_SETTINGS = {
     defaultValue: 45,
     type: "int",
   },
+  hintDelay: {
+    domain: VOICEOVER_DEFAULTS_DOMAIN,
+    key: "SCRContextualHelpDelayInSeconds",
+    defaultValue: "0.4",
+    type: "int",
+  },
   loginGreeting: {
     domain: VOICEOVER_DEFAULTS_DOMAIN,
     key: "loginGreeting",
@@ -50,7 +56,7 @@ const VOICEOVER_SETTINGS = {
 };
 
 export type VoiceOverSettings = {
-  [Property in keyof typeof VOICEOVER_SETTINGS]: typeof VOICEOVER_SETTINGS[Property]["defaultValue"];
+  [Property in keyof typeof VOICEOVER_SETTINGS]: (typeof VOICEOVER_SETTINGS)[Property]["defaultValue"];
 };
 
 export const DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS: VoiceOverSettings = {
@@ -60,6 +66,10 @@ export const DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS: VoiceOverSettings = {
   disableSound: true,
   displayTextEnabled: true,
   rateAsPercent: 100,
+  // See also `src/macOS/VoiceOver/constants.ts` for poll times and retries
+  // Need the delay to be longer than a poll so we don't miss text, but shorter
+  // than the max poll * retries so that hints aren't missed
+  hintDelay: "0.4",
   loginGreeting: "",
 };
 
@@ -81,6 +91,7 @@ export async function storeOriginalSettings() {
     disableSound,
     displayTextEnabled,
     rateAsPercent,
+    hintDelay,
     loginGreeting,
   ] = await Promise.all(
     Object.values(VOICEOVER_SETTINGS).map(
@@ -104,6 +115,7 @@ export async function storeOriginalSettings() {
     disableSound: convertToBool(disableSound),
     displayTextEnabled: convertToBool(displayTextEnabled),
     rateAsPercent: parseInt(rateAsPercent),
+    hintDelay,
     loginGreeting,
   };
 

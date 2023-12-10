@@ -41,7 +41,7 @@ describe("start", () => {
     });
 
     it("should throw an error", async () => {
-      expect(start).rejects.toThrowError(new Error(ERR_NVDA_NOT_INSTALLED));
+      expect(start).rejects.toThrow(new Error(ERR_NVDA_NOT_INSTALLED));
     });
   });
 

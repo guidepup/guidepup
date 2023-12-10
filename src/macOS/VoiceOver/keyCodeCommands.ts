@@ -838,7 +838,7 @@ export const keyCodeCommands = {
   openWindowChooser: {
     keyCode: [KeyCodes.F2, KeyCodes.F2],
     modifiers: VO,
-    description: "Open the Window Chooser ",
+    description: "Open the Window Chooser",
     representation: "VO-F2-F2",
   },
   describeItem: {

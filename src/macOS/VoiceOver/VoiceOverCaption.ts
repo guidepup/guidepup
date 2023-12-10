@@ -65,11 +65,25 @@ export class VoiceOverCaption {
   }
 
   /**
+   * Clear the log of all spoken phrases for this VoiceOver instance.
+   */
+  async clearSpokenPhraseLog(): Promise<void> {
+    await this.#logStore.clearSpokenPhraseLog();
+  }
+
+  /**
    * Get the log of all visited item text for this VoiceOver instance.
    *
    * @returns {Promise<string[]>} The item text log.
    */
   async itemTextLog(): Promise<string[]> {
     return await this.#logStore.itemTextLog();
+  }
+
+  /**
+   * Clear the log of all visited item text for this VoiceOver instance.
+   */
+  async clearItemTextLog(): Promise<void> {
+    await this.#logStore.clearItemTextLog();
   }
 }

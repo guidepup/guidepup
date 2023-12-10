@@ -90,6 +90,17 @@ export class NVDAClient extends EventEmitter {
   }
 
   /**
+   * Clear the log of all spoken phrases for this NVDA connection.
+   */
+  async clearSpokenPhraseLog(): Promise<void> {
+    if (this.#activePromise) {
+      await this.#activePromise;
+    }
+
+    this.#spokenPhrases = [];
+  }
+
+  /**
    * Connect to a NVDA instance.
    */
   async connect(options?: Pick<CommandOptions, "capture">): Promise<void> {

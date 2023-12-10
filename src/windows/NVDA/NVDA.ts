@@ -313,6 +313,17 @@ export class NVDA implements ScreenReader {
   }
 
   /**
+   * Clear the log of all spoken phrases for this NVDA instance.
+   */
+  async clearSpokenPhraseLog(): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    await this.#client.clearSpokenPhraseLog();
+  }
+
+  /**
    * Get the log of all spoken phrases for this NVDA instance.
    *
    * For NVDA this is the same as `spokenPhraseLog`.
@@ -327,5 +338,18 @@ export class NVDA implements ScreenReader {
     }
 
     return await this.spokenPhraseLog();
+  }
+
+  /**
+   * Clear the log of all spoken phrases for this NVDA instance.
+   *
+   * For NVDA this is the same as `clearSpokenPhraseLog`.
+   */
+  async clearItemTextLog(): Promise<void> {
+    if (!this.#started) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    await this.#client.clearSpokenPhraseLog();
   }
 }

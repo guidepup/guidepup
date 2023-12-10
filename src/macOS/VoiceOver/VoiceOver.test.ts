@@ -75,7 +75,9 @@ const VoiceOverCaptionStub = {
   lastSpokenPhrase: jest.fn(),
   itemText: jest.fn(),
   spokenPhraseLog: jest.fn(),
+  clearSpokenPhraseLog: jest.fn(),
   itemTextLog: jest.fn(),
+  clearItemTextLog: jest.fn(),
   copyLastSpokenPhrase: jest.fn(),
   saveLastSpokenPhrase: jest.fn(),
 };
@@ -186,20 +188,40 @@ describe("VoiceOver", () => {
       });
 
       it("should throw", async () => {
-        await expect(vo.start.bind(vo)).rejects.toThrowError(
+        await expect(vo.start.bind(vo)).rejects.toThrow(
           ERR_VOICE_OVER_NOT_SUPPORTED
         );
       });
     });
 
     describe("when VoiceOver is supported", () => {
+      describe("when VoiceOver is not running", () => {
+        beforeEach(async () => {
+          try {
+            await vo.stop();
+          } catch {
+            // swallow
+          }
+        });
+
+        test("should throw an error trying to access the keyboard commands getter", () => {
+          expect(() => vo.keyboardCommands).toThrow(ERR_VOICE_OVER_NOT_RUNNING);
+        });
+
+        test("should throw an error trying to access the commander commands getter", () => {
+          expect(() => vo.commanderCommands).toThrow(
+            ERR_VOICE_OVER_NOT_RUNNING
+          );
+        });
+      });
+
       describe("when VoiceOver is already running", () => {
         beforeEach(async () => {
           await vo.start();
         });
 
         it("should throw an error when trying to start again", async () => {
-          await expect(async () => await vo.start()).rejects.toThrowError(
+          await expect(async () => await vo.start()).rejects.toThrow(
             ERR_VOICE_OVER_ALREADY_RUNNING
           );
         });
@@ -271,7 +293,7 @@ describe("VoiceOver", () => {
   describe("stop", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.stop()).rejects.toThrowError(
+        await expect(async () => await vo.stop()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -310,7 +332,7 @@ describe("VoiceOver", () => {
 
       describe("when called again and start hasn't been called this time", () => {
         it("should throw an error", async () => {
-          await expect(async () => await vo.stop(options)).rejects.toThrowError(
+          await expect(async () => await vo.stop(options)).rejects.toThrow(
             ERR_VOICE_OVER_NOT_RUNNING
           );
         });
@@ -321,7 +343,7 @@ describe("VoiceOver", () => {
   describe("previous", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.previous()).rejects.toThrowError(
+        await expect(async () => await vo.previous()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -347,7 +369,7 @@ describe("VoiceOver", () => {
   describe("next", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.next()).rejects.toThrowError(
+        await expect(async () => await vo.next()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -373,7 +395,7 @@ describe("VoiceOver", () => {
   describe("act", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.act()).rejects.toThrowError(
+        await expect(async () => await vo.act()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -399,7 +421,7 @@ describe("VoiceOver", () => {
   describe("interact", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.interact()).rejects.toThrowError(
+        await expect(async () => await vo.interact()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -425,9 +447,9 @@ describe("VoiceOver", () => {
   describe("stopInteracting", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(
-          async () => await vo.stopInteracting()
-        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+        await expect(async () => await vo.stopInteracting()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
       });
     });
 
@@ -455,7 +477,7 @@ describe("VoiceOver", () => {
       it("should throw an error", async () => {
         await expect(
           async () => await vo.takeCursorScreenshot()
-        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+        ).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
       });
     });
 
@@ -481,7 +503,7 @@ describe("VoiceOver", () => {
   describe("press", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.press()).rejects.toThrowError(
+        await expect(async () => await vo.press()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -509,7 +531,7 @@ describe("VoiceOver", () => {
   describe("type", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.type()).rejects.toThrowError(
+        await expect(async () => await vo.type()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -537,7 +559,7 @@ describe("VoiceOver", () => {
   describe("perform", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.perform()).rejects.toThrowError(
+        await expect(async () => await vo.perform()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -589,7 +611,7 @@ describe("VoiceOver", () => {
   describe("click", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.click()).rejects.toThrowError(
+        await expect(async () => await vo.click()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -617,7 +639,7 @@ describe("VoiceOver", () => {
       it("should throw an error", async () => {
         await expect(
           async () => await vo.copyLastSpokenPhrase()
-        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+        ).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
       });
     });
 
@@ -645,7 +667,7 @@ describe("VoiceOver", () => {
       it("should throw an error", async () => {
         await expect(
           async () => await vo.saveLastSpokenPhrase()
-        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+        ).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
       });
     });
 
@@ -671,9 +693,9 @@ describe("VoiceOver", () => {
   describe("lastSpokenPhrase", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(
-          async () => await vo.lastSpokenPhrase()
-        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+        await expect(async () => await vo.lastSpokenPhrase()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
       });
     });
 
@@ -691,7 +713,7 @@ describe("VoiceOver", () => {
   describe("itemText", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.itemText()).rejects.toThrowError(
+        await expect(async () => await vo.itemText()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -711,9 +733,9 @@ describe("VoiceOver", () => {
   describe("spokenPhraseLog", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(
-          async () => await vo.spokenPhraseLog()
-        ).rejects.toThrowError(ERR_VOICE_OVER_NOT_RUNNING);
+        await expect(async () => await vo.spokenPhraseLog()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
       });
     });
 
@@ -728,10 +750,30 @@ describe("VoiceOver", () => {
     });
   });
 
+  describe("clearSpokenPhraseLog", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await vo.clearSpokenPhraseLog()
+        ).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+    });
+
+    beforeEach(async () => {
+      await vo.start();
+      await vo.clearSpokenPhraseLog();
+      await vo.stop();
+    });
+
+    it("should clear the spoken phrase log", () => {
+      expect(VoiceOverCaptionStub.clearSpokenPhraseLog).toHaveBeenCalled();
+    });
+  });
+
   describe("itemTextLog", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.itemTextLog()).rejects.toThrowError(
+        await expect(async () => await vo.itemTextLog()).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING
         );
       });
@@ -745,6 +787,26 @@ describe("VoiceOver", () => {
 
     it("should get the item text log", () => {
       expect(VoiceOverCaptionStub.itemTextLog).toHaveBeenCalled();
+    });
+  });
+
+  describe("clearItemTextLog", () => {
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.clearItemTextLog()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING
+        );
+      });
+    });
+
+    beforeEach(async () => {
+      await vo.start();
+      await vo.clearItemTextLog();
+      await vo.stop();
+    });
+
+    it("should clear the item text log", () => {
+      expect(VoiceOverCaptionStub.clearItemTextLog).toHaveBeenCalled();
     });
   });
 });

@@ -13,7 +13,7 @@ const delay = async (ms: number) =>
  * Opens Safari and navigates to the guidepup GitHub repo.
  */
 async function run(): Promise<void> {
-  let stopRecording;
+  let stopRecording: (() => void) | undefined;
 
   try {
     // Start the screen recording.
@@ -73,7 +73,7 @@ async function run(): Promise<void> {
     await macOSQuit(MacOSApplications.Safari);
 
     // Ensure we stop the recording.
-    stopRecording();
+    stopRecording?.();
   }
 }
 

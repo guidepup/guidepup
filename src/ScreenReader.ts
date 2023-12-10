@@ -147,9 +147,19 @@ export interface ScreenReader {
   spokenPhraseLog(): Promise<string[]>;
 
   /**
+   * Clear the log of all spoken phrases for this screen reader instance.
+   */
+  clearSpokenPhraseLog(): Promise<void>;
+
+  /**
    * Get the log of all visited item text for this screen reader instance.
    *
    * @returns {Promise<string[]>} The item text log.
    */
   itemTextLog(): Promise<string[]>;
+
+  /**
+   * Clear the log of all visited item text for this screen reader instance.
+   */
+  clearItemTextLog(): Promise<void>;
 }
