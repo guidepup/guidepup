@@ -50,10 +50,6 @@ describe("LogStore", () => {
       expect(await logStore.spokenPhraseLog()).toEqual([]);
     });
 
-    it("should initialize with an empty spoken phrase log store", async () => {
-      expect(await logStore.spokenPhraseLog()).toEqual([]);
-    });
-
     it("should return with an empty string as the item text if not yet acted", async () => {
       expect(await logStore.itemText()).toEqual("");
     });
@@ -353,6 +349,34 @@ describe("LogStore", () => {
           expect(await logStore.lastSpokenPhrase()).toEqual(
             `cleaned_${lastSpokenPhraseDummy}`
           );
+        });
+
+        describe("when the item text log is cleared", () => {
+          beforeEach(async () => {
+            await logStore.clearItemTextLog();
+          });
+
+          it("should return with an empty item text log store", async () => {
+            expect(await logStore.itemTextLog()).toEqual([]);
+          });
+
+          it("should return with an empty string as the item text", async () => {
+            expect(await logStore.itemText()).toEqual("");
+          });
+        });
+
+        describe("when the spoken phrase log is cleared", () => {
+          beforeEach(async () => {
+            await logStore.clearSpokenPhraseLog();
+          });
+
+          it("should return with an empty spoken phrase log store", async () => {
+            expect(await logStore.spokenPhraseLog()).toEqual([]);
+          });
+
+          it("should return with an empty string as the last spoken phrase", async () => {
+            expect(await logStore.lastSpokenPhrase()).toEqual("");
+          });
         });
       });
     });

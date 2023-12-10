@@ -2,6 +2,9 @@ import { mkdirSync, unlinkSync } from "fs";
 import { dirname } from "path";
 import { spawn } from "child_process";
 
+// TODO: add better handling for when permissions for screen recording haven't
+// been provided so that the system permissions popup is avoided.
+
 /**
  * Start a screen recording.
  *
@@ -10,7 +13,7 @@ import { spawn } from "child_process";
  */
 export function record(filepath: string): () => void {
   mkdirSync(dirname(filepath), { recursive: true });
-  
+
   try {
     unlinkSync(filepath);
   } catch (_) {

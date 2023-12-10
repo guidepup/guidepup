@@ -1,5 +1,5 @@
+import { Page, PlaywrightWorkerOptions } from "@playwright/test";
 import { voiceOver as _voiceOver } from "../../../lib";
-import { Page } from "@playwright/test";
 
 type VoiceOver = typeof _voiceOver;
 
@@ -10,9 +10,11 @@ async function delay(ms: number) {
 const MAX_NAVIGATION_LOOP = 10;
 
 export async function headerNavigation({
+  browserName,
   page,
   voiceOver,
 }: {
+  browserName: PlaywrightWorkerOptions["browserName"];
   page: Page;
   voiceOver: VoiceOver;
 }) {
@@ -29,6 +31,9 @@ export async function headerNavigation({
   // Make sure interacting with the web content
   await voiceOver.interact();
 
+  // Prevent auto-navigation of group
+  await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
+
   let headingCount = 0;
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎
@@ -44,13 +49,27 @@ export async function headerNavigation({
 
   // Move through the README using standard keyboard commands
   while (
-    !(await voiceOver.lastSpokenPhrase()).includes("NVDA on Windows") &&
+    !(await voiceOver.itemText()).includes("NVDA on Windows") &&
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;
-    await voiceOver.press("Alt+Tab");
+
+    if (browserName === "webkit") {
+      await voiceOver.press("Alt+Tab");
+    } else {
+      await voiceOver.press("Tab");
+    }
   }
 
-  await voiceOver.press("Shift+Alt+Tab");
+  if (browserName === "webkit") {
+    await voiceOver.press("Shift+Alt+Tab");
+  } else {
+    await voiceOver.press("Shift+Tab");
+  }
+
+  // Navigate to the VoiceOver Guidepup docs
   await voiceOver.act();
+
+  // Prevent auto-navigation of group
+  await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
 }
