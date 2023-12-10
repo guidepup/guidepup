@@ -11,10 +11,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # os: [macos-11, macos-12, macos-13, macos-13-xl]
-        os: [macos-13]
-        # browser: [chromium, firefox, webkit]
-        browser: [webkit]
+        os: [macos-11, macos-12, macos-13]
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -28,21 +26,11 @@ jobs:
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover pretest
       - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
-      - continue-on-error: true
-        run: |
-          mkdir -p ./recordings
-          screencapture ./recordings/capture.png
-      - continue-on-error: true
-        run: |
-          mkdir -p ./recordings
-          /bin/bash -c "screencapture ./recordings/capture.png"
-      - run: pwd
-      - run: ps aux
-      - run: ls -la /Users/runner/work/guidepup/guidepup/examples/playwright-voiceover/recordings/
       - uses: actions/upload-artifact@v3
         if: always()
         continue-on-error: true
         with:
           name: artifacts
           path: |
+            **/test-results/**/*
             **/recordings/**/*

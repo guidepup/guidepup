@@ -7,7 +7,7 @@ const delay = async (ms: number) =>
  * Starts and stops NVDA.
  */
 async function run(): Promise<void> {
-  let stopRecording;
+  let stopRecording: (() => void) | undefined;
 
   try {
     // Start the screen recording.
@@ -53,7 +53,7 @@ async function run(): Promise<void> {
     await windowsQuit("chrome.exe");
 
     // Ensure we stop the recording.
-    stopRecording();
+    stopRecording?.();
   }
 }
 

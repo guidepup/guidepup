@@ -17,10 +17,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
     const osVersion = release();
     const browserVersion = browser.version();
     const { retry } = test.info();
-    const recordingFilePath = `./recordings/playwright-voiceover-${osName}-${osVersion}-${browserName}-${browserVersion.replace(
-      /\./g,
-      "_"
-    )}-attempt-${retry}-${+new Date()}.mov`;
+    const recordingFilePath = `./recordings/playwright-voiceover-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,
@@ -28,29 +25,33 @@ test.describe("Webkit Playwright VoiceOver", () => {
       browserName,
       browserVersion,
       retry,
-      recordingFilePath,
     });
 
-    let stopRecording;
+    let stopRecording: (() => void) | undefined;
 
     try {
-      stopRecording = macOSRecord(recordingFilePath);
+      const isMacOSVentura =
+        osName === "darwin" && osVersion.split(".")[0] === "22";
 
-      // await headerNavigation({ browserName, page, voiceOver });
+      if (!isMacOSVentura) {
+        stopRecording = macOSRecord(recordingFilePath);
+      }
 
-      // // Assert that we've ended up where we expected and what we were told on
-      // // the way there is as expected.
+      await headerNavigation({ browserName, page, voiceOver });
 
-      // const itemTextLog = await voiceOver.itemTextLog();
-      // const spokenPhraseLog = await voiceOver.spokenPhraseLog();
+      // Assert that we've ended up where we expected and what we were told on
+      // the way there is as expected.
 
-      // console.log(JSON.stringify(itemTextLog, undefined, 2));
-      // console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+      const itemTextLog = await voiceOver.itemTextLog();
+      const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
-      // logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
-      // logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      console.log(JSON.stringify(itemTextLog, undefined, 2));
+      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+
+      logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
-      stopRecording();
+      stopRecording?.();
     }
   });
 });

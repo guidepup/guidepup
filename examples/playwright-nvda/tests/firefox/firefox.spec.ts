@@ -16,10 +16,7 @@ test.describe("Firefox Playwright NVDA", () => {
     const osVersion = release();
     const browserVersion = browser.version();
     const { retry } = test.info();
-    const recordingFilePath = `./recordings/playwright-nvda-${osName}-${osVersion}-${browserName}-${browserVersion.replace(
-      /\./g,
-      "_"
-    )}-attempt-${retry}-${+new Date()}.mov`;
+    const recordingFilePath = `./recordings/playwright-nvda-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,
@@ -27,10 +24,9 @@ test.describe("Firefox Playwright NVDA", () => {
       browserName,
       browserVersion,
       retry,
-      recordingFilePath,
     });
 
-    let stopRecording;
+    let stopRecording: (() => void) | undefined;
 
     try {
       stopRecording = windowsRecord(recordingFilePath);
@@ -46,7 +42,7 @@ test.describe("Firefox Playwright NVDA", () => {
 
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
-      stopRecording();
+      stopRecording?.();
     }
   });
 });
