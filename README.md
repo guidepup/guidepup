@@ -104,6 +104,7 @@ Full support is available for:
 Here are some similar unaffiliated projects:
 
 - [`at-driver`](https://github.com/w3c/at-driver)
+- [`nvda-at-automation`](https://github.com/Prime-Access-Consulting/nvda-at-automation)
 - [`@accesslint/voiceover`](https://github.com/AccessLint/screenreaders)
 - [`screen-reader-reader`](https://github.com/phenomnomnominal/screen-reader-reader)
 - [`web-test-runner-voiceover`](https://github.com/coryrylan/web-test-runner-voiceover)
