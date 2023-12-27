@@ -48,6 +48,8 @@ describe("record", () => {
       "60",
       "-i",
       "desktop",
+      "-pix_fmt",
+      "yuv420p",
       "-vcodec",
       "mpeg4",
       mockFilepath,
