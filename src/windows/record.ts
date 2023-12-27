@@ -27,6 +27,8 @@ export function record(filepath: string): () => void {
     "60",
     "-i",
     "desktop",
+    "-pix_fmt",
+    "yuv420p",
     "-vcodec",
     "mpeg4",
     filepath,
