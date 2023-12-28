@@ -21,8 +21,8 @@ function countApproxWords(str) {
 export class LogStore {
   #activePromise = null;
   #capture: CommandOptions["capture"];
-  #itemTextLogStore = [];
-  #spokenPhraseLogStore = [];
+  #itemTextLogStore: string[] = [];
+  #spokenPhraseLogStore: string[] = [];
 
   constructor(options?: Pick<CommandOptions, "capture">) {
     this.#capture = options?.capture ?? true;
@@ -160,8 +160,15 @@ export class LogStore {
   }
 
   async #pollForSpokenPhrases(options?: Pick<CommandOptions, "capture">) {
+    // Attempt to combat VO picking up previous spoken phrase even though we
+    // should be confident the action has completed.
+    await delay(SPOKEN_PHRASES_POLL_INTERVAL);
+
+    const previousSpokenPhrase = this.#spokenPhraseLogStore.at(-1) ?? "";
+
     const phrases = [];
     let stableCount = 0;
+    let firstPoll = true;
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -178,6 +185,10 @@ export class LogStore {
       let pollTimeout;
 
       if (!phrase) {
+        // Error retrieving phrase
+        pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
+      } else if (firstPoll && phrase === previousSpokenPhrase) {
+        // Cater for VO not picking up the new phrase immediately
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else if (phrase === phrases.at(-1)) {
         stableCount++;
@@ -186,11 +197,9 @@ export class LogStore {
         const approxWords = countApproxWords(phrase);
 
         stableCount = 0;
-        pollTimeout = Math.max(
-          (approxWords / APPROX_WORDS_PER_SECOND) * 1000 -
-            SPOKEN_PHRASES_POLL_INTERVAL,
-          0
-        );
+        pollTimeout =
+          (approxWords / APPROX_WORDS_PER_SECOND) * 1000 +
+          SPOKEN_PHRASES_POLL_INTERVAL;
 
         phrases.push(phrase);
       }
@@ -203,6 +212,8 @@ export class LogStore {
       }
 
       await delay(pollTimeout);
+
+      firstPoll = false;
     }
 
     return phrases.filter(Boolean).join(". ");
