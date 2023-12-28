@@ -29,6 +29,12 @@ export async function headerNavigation({
   const header = page.locator('header[role="banner"]');
   await header.waitFor();
   await delay(500);
+
+  // Make sure interacting with the web content
+  log(`Performing command: "VO+Shift+Down Arrow"`);
+  await voiceOver.interact();
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
   await page.locator("a").first().focus();
 
   log(`Performing command: "VO+Shift+F4"`);

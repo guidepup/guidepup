@@ -11,9 +11,11 @@ async function delay(ms: number) {
 const MAX_NAVIGATION_LOOP = 10;
 
 export async function headerNavigation({
+  browserName,
   page,
   nvda,
 }: {
+  browserName: string;
   page: Page;
   nvda: NVDA;
 }) {
@@ -27,7 +29,18 @@ export async function headerNavigation({
   const header = page.locator('header[role="banner"]');
   await header.waitFor();
   await delay(500);
-  await page.locator("a").first().focus();
+
+  if (browserName === "chromium") {
+    // Get to the main page - sometimes focus can land on the address bar
+    while (!(await nvda.lastSpokenPhrase()).includes("document")) {
+      log(`Performing command: "F6"`);
+      await nvda.press("F6");
+      log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+    }
+  } else if (browserName === "firefox") {
+    // Force focus to somewhere in the web content
+    await page.locator("a").first().focus();
+  }
 
   // Make sure not in focus mode
   log(`Performing command: "Escape"`);
