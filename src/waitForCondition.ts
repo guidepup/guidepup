@@ -13,7 +13,7 @@ async function resolveWhenTrue(
 
   try {
     result = await condition();
-  } catch (_) {
+  } catch {
     result = false;
   }
 

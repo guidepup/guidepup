@@ -6,13 +6,11 @@ export async function isRunning(): Promise<boolean> {
     const client = connect(NVDA_PORT, NVDA_HOST);
 
     client.on("connect", () => {
-      client.end();
-      resolve(true);
+      client.end(() => resolve(true));
     });
 
     client.on("error", () => {
-      client.end();
-      resolve(false);
+      client.end(() => resolve(false));
     });
   });
 }

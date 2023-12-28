@@ -18,6 +18,7 @@ describe("isRunning", () => {
     jest.clearAllMocks();
 
     jest.mocked(connect).mockReturnValue(clientStub as unknown as Socket);
+    clientStub.end.mockImplementation((callback) => callback());
 
     resultPromise = isRunning();
   });
