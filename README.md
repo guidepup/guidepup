@@ -43,7 +43,7 @@ Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real 
 
 You can also check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects.
 
-Alternatively check out [this project](https://github.com/guidepup/aria-at-tests) to check out the Guidepup compatibility against [W3C ARIA-AT](https://github.com/w3c/aria-at) test suite.
+Alternatively check out [this project](https://github.com/guidepup/aria-at-tests) which runs several thousand tests to assert screen reader compatibility against [W3C ARIA-AT](https://github.com/w3c/aria-at) test suite.
 
 ### Basic Navigation
 
