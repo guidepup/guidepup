@@ -168,7 +168,7 @@ export class LogStore {
 
     const phrases = [];
     let stableCount = 0;
-    let firstPoll = true;
+    let pollCount = 0;
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -187,7 +187,10 @@ export class LogStore {
       if (!phrase) {
         // Error retrieving phrase
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
-      } else if (firstPoll && phrase === previousSpokenPhrase) {
+      } else if (
+        pollCount < SPOKEN_PHRASES_RETRY_COUNT / 2 &&
+        phrase === previousSpokenPhrase
+      ) {
         // Cater for VO not picking up the new phrase immediately
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else if (phrase === phrases.at(-1)) {
@@ -213,7 +216,7 @@ export class LogStore {
 
       await delay(pollTimeout);
 
-      firstPoll = false;
+      pollCount++;
     }
 
     return phrases.filter(Boolean).join(". ");
