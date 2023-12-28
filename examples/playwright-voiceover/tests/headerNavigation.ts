@@ -22,17 +22,17 @@ export async function headerNavigation({
   // Navigate to Guidepup GitHub page 🎉
   log("Navigating to URL: https://github.com/guidepup/guidepup.");
   await page.goto("https://github.com/guidepup/guidepup", {
-    waitUntil: "domcontentloaded",
+    waitUntil: "load",
   });
 
   // Wait for page to be ready and interact 🙌
   const header = page.locator('header[role="banner"]');
   await header.waitFor();
   await delay(500);
+  await page.locator("a").first().focus();
 
-  // Make sure interacting with the web content
-  log(`Performing command: "VO+Shift+Down Arrow"`);
-  await voiceOver.interact();
+  log(`Performing command: "VO+Shift+F4"`);
+  await voiceOver.perform(voiceOver.keyboardCommands.moveCursorToKeyboardFocus);
   log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   // Prevent auto-navigation of group

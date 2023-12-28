@@ -31,7 +31,7 @@ test.describe("Firefox Playwright NVDA", () => {
     try {
       stopRecording = windowsRecord(recordingFilePath);
 
-      await headerNavigation({ browserName, page, nvda });
+      await headerNavigation({ page, nvda });
 
       // Assert that we've ended up where we expected and what we were told on
       // the way there is as expected.
