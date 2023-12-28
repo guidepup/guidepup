@@ -1,5 +1,6 @@
 import { Page, PlaywrightWorkerOptions } from "@playwright/test";
 import { voiceOver as _voiceOver } from "../../../lib";
+import { log } from "../../log";
 
 type VoiceOver = typeof _voiceOver;
 
@@ -19,8 +20,9 @@ export async function headerNavigation({
   voiceOver: VoiceOver;
 }) {
   // Navigate to Guidepup GitHub page 🎉
+  log("Navigating to URL: https://github.com/guidepup/guidepup.");
   await page.goto("https://github.com/guidepup/guidepup", {
-    waitUntil: "domcontentloaded",
+    waitUntil: "load",
   });
 
   // Wait for page to be ready and interact 🙌
@@ -29,10 +31,14 @@ export async function headerNavigation({
   await delay(500);
 
   // Make sure interacting with the web content
+  log(`Performing command: "VO+Shift+Down Arrow"`);
   await voiceOver.interact();
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   // Prevent auto-navigation of group
+  log(`Performing command: "VO+Shift+Left Arrow"`);
   await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   let headingCount = 0;
 
@@ -42,7 +48,10 @@ export async function headerNavigation({
     headingCount <= MAX_NAVIGATION_LOOP
   ) {
     headingCount++;
+
+    log(`Performing command: "VO+Command+H"`);
     await voiceOver.perform(voiceOver.keyboardCommands.findNextHeading);
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
   }
 
   let tabCount = 0;
@@ -55,21 +64,33 @@ export async function headerNavigation({
     tabCount++;
 
     if (browserName === "webkit") {
+      log(`Performing command: "Alt+Tab"`);
       await voiceOver.press("Alt+Tab");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
     } else {
+      log(`Performing command: "Tab"`);
       await voiceOver.press("Tab");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
     }
   }
 
   if (browserName === "webkit") {
+    log(`Performing command: "Shift+Alt+Tab"`);
     await voiceOver.press("Shift+Alt+Tab");
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
   } else {
+    log(`Performing command: "Shift+Tab"`);
     await voiceOver.press("Shift+Tab");
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
   }
 
   // Navigate to the VoiceOver Guidepup docs
+  log(`Performing command: "VO+Space bar"`);
   await voiceOver.act();
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   // Prevent auto-navigation of group
+  log(`Performing command: "VO+Shift+Left Arrow"`);
   await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 }

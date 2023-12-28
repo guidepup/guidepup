@@ -38,7 +38,7 @@ export async function isRunning(
     await activate(Applications.VoiceOver, options);
 
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 }

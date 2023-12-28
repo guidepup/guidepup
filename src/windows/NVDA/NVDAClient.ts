@@ -43,7 +43,7 @@ const protocolMessage = JSON.stringify({
   version: 2,
 });
 
-const MAX_CONSECUTIVE_CONNECTION_FAILURES = 10;
+const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const CANCEL_DEBOUNCE_TIMEOUT = 250;
 const CANCEL_NOT_FIRE_TIMEOUT = 1000;
 const SPEAK_DEBOUNCE_TIMEOUT = 1000;
@@ -120,9 +120,15 @@ export class NVDAClient extends EventEmitter {
       "server.pem"
     );
 
-    const ca = readFileSync(caPath);
+    let ca;
 
-    return await new Promise<void>((resolve, reject) =>
+    try {
+      ca = readFileSync(caPath);
+    } catch {
+      throw new Error(ERR_NVDA_NOT_INSTALLED);
+    }
+
+    return new Promise<void>((resolve, reject) =>
       this.#connect(ca, options?.capture, resolve, reject)
     );
   }
@@ -159,12 +165,12 @@ export class NVDAClient extends EventEmitter {
 
     this.#socket.on("error", (e) => {
       this.#consecutiveConnectionFailures++;
+      this.disconnect();
 
       if (
         this.#consecutiveConnectionFailures <
         MAX_CONSECUTIVE_CONNECTION_FAILURES
       ) {
-        this.disconnect();
         this.#connect(ca, capture, onSuccess, onError);
 
         return;
@@ -226,7 +232,12 @@ export class NVDAClient extends EventEmitter {
    * disconnect the NVDA connection.
    */
   disconnect(): void {
-    this.#socket?.destroy();
+    try {
+      this.#socket?.destroy();
+    } catch {
+      // swallow
+    }
+
     this.#socket = null;
     this.#capture = null;
   }

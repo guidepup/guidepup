@@ -29,7 +29,11 @@ export async function start(): Promise<void> {
 
       break;
     } catch (e) {
-      nvdaProcess.kill("SIGKILL");
+      try {
+        nvdaProcess.kill("SIGKILL");
+      } catch {
+        // swallow
+      }
 
       if (attempt === MAX_START_ATTEMPTS - 1) {
         throw e;

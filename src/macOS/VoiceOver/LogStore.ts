@@ -21,8 +21,8 @@ function countApproxWords(str) {
 export class LogStore {
   #activePromise = null;
   #capture: CommandOptions["capture"];
-  #itemTextLogStore = [];
-  #spokenPhraseLogStore = [];
+  #itemTextLogStore: string[] = [];
+  #spokenPhraseLogStore: string[] = [];
 
   constructor(options?: Pick<CommandOptions, "capture">) {
     this.#capture = options?.capture ?? true;
@@ -115,27 +115,39 @@ export class LogStore {
       (resolve) => (activePromiseResolver = resolve)
     );
 
-    const result = await action();
+    let result: T;
 
-    if (options?.capture ?? this.#capture) {
-      const [itemText, lastSpokenPhrase] = await Promise.all([
-        this.#pollForItemText(),
-        this.#pollForSpokenPhrases(options),
-      ]);
+    try {
+      result = await action();
 
-      this.#itemTextLogStore.push(itemText);
-      this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+      if (options?.capture ?? this.#capture) {
+        const [itemText, lastSpokenPhrase] = await Promise.all([
+          this.#pollForItemText(),
+          this.#pollForSpokenPhrases(options),
+        ]);
+
+        this.#itemTextLogStore.push(itemText);
+        this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+      }
+    } finally {
+      activePromiseResolver();
+      this.#activePromise = null;
     }
-
-    activePromiseResolver();
-    this.#activePromise = null;
 
     return result;
   }
 
   async #pollForItemText() {
     for (let i = 0; i < ITEM_TEXT_RETRY_COUNT; i++) {
-      const itemText = cleanSpokenPhrase(await getItemText());
+      let rawItemText = "";
+
+      try {
+        rawItemText = await getItemText();
+      } catch {
+        // swallow
+      }
+
+      const itemText = cleanSpokenPhrase(rawItemText);
 
       if (itemText) {
         return itemText;
@@ -148,16 +160,38 @@ export class LogStore {
   }
 
   async #pollForSpokenPhrases(options?: Pick<CommandOptions, "capture">) {
+    // Attempt to combat VO picking up previous spoken phrase even though we
+    // should be confident the action has completed.
+    await delay(SPOKEN_PHRASES_POLL_INTERVAL);
+
+    const previousSpokenPhrase = this.#spokenPhraseLogStore.at(-1) ?? "";
+
     const phrases = [];
     let stableCount = 0;
+    let pollCount = 0;
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const phrase = cleanSpokenPhrase(await lastSpokenPhrase());
+      let rawLastSpokenPhrase = "";
+
+      try {
+        rawLastSpokenPhrase = await lastSpokenPhrase();
+      } catch {
+        // swallow
+      }
+
+      const phrase = cleanSpokenPhrase(rawLastSpokenPhrase);
 
       let pollTimeout;
 
       if (!phrase) {
+        // Error retrieving phrase
+        pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
+      } else if (
+        pollCount < SPOKEN_PHRASES_RETRY_COUNT / 2 &&
+        phrase === previousSpokenPhrase
+      ) {
+        // Cater for VO not picking up the new phrase immediately
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else if (phrase === phrases.at(-1)) {
         stableCount++;
@@ -166,11 +200,9 @@ export class LogStore {
         const approxWords = countApproxWords(phrase);
 
         stableCount = 0;
-        pollTimeout = Math.max(
-          (approxWords / APPROX_WORDS_PER_SECOND) * 1000 -
-            SPOKEN_PHRASES_POLL_INTERVAL,
-          0
-        );
+        pollTimeout =
+          (approxWords / APPROX_WORDS_PER_SECOND) * 1000 +
+          SPOKEN_PHRASES_POLL_INTERVAL;
 
         phrases.push(phrase);
       }
@@ -183,6 +215,8 @@ export class LogStore {
       }
 
       await delay(pollTimeout);
+
+      pollCount++;
     }
 
     return phrases.filter(Boolean).join(". ");

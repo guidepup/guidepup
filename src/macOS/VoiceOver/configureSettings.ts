@@ -53,6 +53,12 @@ const VOICEOVER_SETTINGS = {
     defaultValue: "Welcome to macOS. VoiceOver is on.",
     type: "string",
   },
+  automaticallySpeakWebPage: {
+    domain: VOICEOVER_DEFAULTS_DOMAIN,
+    key: "SCRCUserDefaultsAutomaticallySpeakWebPage",
+    defaultValue: true,
+    type: "bool",
+  },
 };
 
 export type VoiceOverSettings = {
@@ -65,12 +71,13 @@ export const DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS: VoiceOverSettings = {
   disableSpeech: false,
   disableSound: true,
   displayTextEnabled: true,
-  rateAsPercent: 100,
+  rateAsPercent: 90,
   // See also `src/macOS/VoiceOver/constants.ts` for poll times and retries
   // Need the delay to be longer than a poll so we don't miss text, but shorter
   // than the max poll * retries so that hints aren't missed
-  hintDelay: "0.4",
+  hintDelay: "1.0",
   loginGreeting: "",
+  automaticallySpeakWebPage: false,
 };
 
 function convertToBool(value: string): boolean {
@@ -93,6 +100,7 @@ export async function storeOriginalSettings() {
     rateAsPercent,
     hintDelay,
     loginGreeting,
+    automaticallySpeakWebPage,
   ] = await Promise.all(
     Object.values(VOICEOVER_SETTINGS).map(
       ({ domain, key, defaultValue }) =>
@@ -117,6 +125,7 @@ export async function storeOriginalSettings() {
     rateAsPercent: parseInt(rateAsPercent),
     hintDelay,
     loginGreeting,
+    automaticallySpeakWebPage: convertToBool(automaticallySpeakWebPage),
   };
 
   resetSettings = async () => {
