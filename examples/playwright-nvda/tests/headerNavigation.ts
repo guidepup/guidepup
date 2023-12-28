@@ -47,10 +47,6 @@ export async function headerNavigation({
   await nvda.perform(nvda.keyboardCommands.exitFocusMode);
   log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
 
-  log(`Performing command: "NVDA+NumPadMinus"`);
-  await nvda.perform(nvda.keyboardCommands.moveToFocusObject);
-  log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
-
   let headingCount = 0;
 
   // Move across the page menu to the Guidepup heading using VoiceOver 🔎

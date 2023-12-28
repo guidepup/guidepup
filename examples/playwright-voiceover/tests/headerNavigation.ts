@@ -35,12 +35,6 @@ export async function headerNavigation({
   await voiceOver.interact();
   log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
-  await page.locator("a").first().focus();
-
-  log(`Performing command: "VO+Shift+F4"`);
-  await voiceOver.perform(voiceOver.keyboardCommands.moveCursorToKeyboardFocus);
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
-
   // Prevent auto-navigation of group
   log(`Performing command: "VO+Shift+Left Arrow"`);
   await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
