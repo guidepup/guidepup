@@ -115,27 +115,39 @@ export class LogStore {
       (resolve) => (activePromiseResolver = resolve)
     );
 
-    const result = await action();
+    let result: T;
 
-    if (options?.capture ?? this.#capture) {
-      const [itemText, lastSpokenPhrase] = await Promise.all([
-        this.#pollForItemText(),
-        this.#pollForSpokenPhrases(options),
-      ]);
+    try {
+      result = await action();
 
-      this.#itemTextLogStore.push(itemText);
-      this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+      if (options?.capture ?? this.#capture) {
+        const [itemText, lastSpokenPhrase] = await Promise.all([
+          this.#pollForItemText(),
+          this.#pollForSpokenPhrases(options),
+        ]);
+
+        this.#itemTextLogStore.push(itemText);
+        this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+      }
+    } finally {
+      activePromiseResolver();
+      this.#activePromise = null;
     }
-
-    activePromiseResolver();
-    this.#activePromise = null;
 
     return result;
   }
 
   async #pollForItemText() {
     for (let i = 0; i < ITEM_TEXT_RETRY_COUNT; i++) {
-      const itemText = cleanSpokenPhrase(await getItemText());
+      let rawItemText = "";
+
+      try {
+        rawItemText = await getItemText();
+      } catch {
+        // swallow
+      }
+
+      const itemText = cleanSpokenPhrase(rawItemText);
 
       if (itemText) {
         return itemText;
@@ -153,7 +165,15 @@ export class LogStore {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const phrase = cleanSpokenPhrase(await lastSpokenPhrase());
+      let rawLastSpokenPhrase = "";
+
+      try {
+        rawLastSpokenPhrase = await lastSpokenPhrase();
+      } catch {
+        // swallow
+      }
+
+      const phrase = cleanSpokenPhrase(rawLastSpokenPhrase);
 
       let pollTimeout;
 
