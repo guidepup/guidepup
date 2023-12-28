@@ -16,7 +16,7 @@ export function record(filepath: string): () => void {
 
   try {
     unlinkSync(filepath);
-  } catch (_) {
+  } catch {
     // file doesn't exist.
   }
 
