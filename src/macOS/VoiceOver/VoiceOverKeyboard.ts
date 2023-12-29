@@ -8,6 +8,7 @@ import { KeyCodes } from "../KeyCodes";
 import { LogStore } from "./LogStore";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
+import type { Prettify } from "../../typeHelpers";
 import { sendKeys } from "../sendKeys";
 
 export class VoiceOverKeyboard {
@@ -82,7 +83,9 @@ export class VoiceOverKeyboard {
   /**
    * VoiceOver keyboard commands.
    */
-  get commands(): Record<keyof typeof keyCodeCommands, KeyCodeCommand> {
+  get commands(): Prettify<
+    Record<keyof typeof keyCodeCommands, KeyCodeCommand>
+  > {
     return keyCodeCommands;
   }
 

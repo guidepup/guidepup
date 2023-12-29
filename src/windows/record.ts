@@ -6,7 +6,23 @@ import { spawn } from "child_process";
 const ffmpegPath = require("ffmpeg-static");
 
 /**
- * Start a screen recording.
+ * [API Reference](https://www.guidepup.dev/docs/api/class-windows-record)
+ *
+ * Start a screen recording on Windows.
+ *
+ * ```ts
+ * import { windowsRecord } from "@guidepup/guidepup";
+ *
+ * (async () => {
+ *   // Start the screen recording.
+ *   const stopRecording = windowsRecord("./recordings/screenRecording.mp4");
+ *
+ *   // ... perform some commands.
+ *
+ *   // Stop the screen recording.
+ *   stopRecording();
+ * })();
+ * ```
  *
  * @param {string} filepath The file path to save the screen recording to.
  * @returns {Function} A function to stop the screen recording.

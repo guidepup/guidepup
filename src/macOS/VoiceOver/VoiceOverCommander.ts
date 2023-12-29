@@ -2,6 +2,7 @@ import { CommanderCommands } from "./CommanderCommands";
 import { CommandOptions } from "../../CommandOptions";
 import { LogStore } from "./LogStore";
 import { performCommand } from "./performCommand";
+import { Prettify } from "../../typeHelpers";
 
 export class VoiceOverCommander {
   /**
@@ -16,7 +17,7 @@ export class VoiceOverCommander {
   /**
    * VoiceOver commander commands.
    */
-  get commands(): typeof CommanderCommands {
+  get commands(): Prettify<typeof CommanderCommands> {
     return CommanderCommands;
   }
 

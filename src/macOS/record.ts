@@ -6,7 +6,23 @@ import { spawn } from "child_process";
 // been provided so that the system permissions popup is avoided.
 
 /**
- * Start a screen recording.
+ * [API Reference](https://www.guidepup.dev/docs/api/class-macos-record)
+ *
+ * Start a screen recording on MacOS.
+ *
+ * ```ts
+ * import { macOSRecord } from "@guidepup/guidepup";
+ *
+ * (async () => {
+ *   // Start the screen recording.
+ *   const stopRecording = macOSRecord("./recordings/screenRecording.mov");
+ *
+ *   // ... perform some commands.
+ *
+ *   // Stop the screen recording.
+ *   stopRecording();
+ * })();
+ * ```
  *
  * @param {string} filepath The file path to save the screen recording to.
  * @returns {Function} A function to stop the screen recording.
