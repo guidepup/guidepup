@@ -5,6 +5,6 @@
   "Mirrors Real User Experience, heading, level 3",
   "Framework Agnostic, heading, level 3",
   "Run with Jest, with Playwright, as an independent script, no vendor lock-in.",
-  "Get Started, link",
-  "GitHub, link"
+  "link, Get Started",
+  "link, Git Hub"
 ]
