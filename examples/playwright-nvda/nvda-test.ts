@@ -1,7 +1,7 @@
 import { nvda, WindowsKeyCodes, WindowsModifiers } from "../../lib";
 import { test } from "@playwright/test";
 
-const applicationNameMap = {
+export const applicationNameMap = {
   chromium: "Chromium",
   chrome: "Google Chrome",
   "chrome-beta": "Google Chrome Beta",

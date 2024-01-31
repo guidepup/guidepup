@@ -1,8 +1,10 @@
 [
-  "guidepup slash guidepup, heading, level 1",
-  "Latest commit, heading, level 2",
-  "Git stats, heading, level 2",
-  "Files, heading, level 2",
-  "README dot md, link, heading, level 2",
-  "Guidepup, heading, level 1"
+  "Guidepup, heading, level 1",
+  "Reliable Automation For Your Screen Reader A11y Workflows Through JavaScript, heading, level 2",
+  "Full Control, heading, level 3",
+  "Mirrors Real User Experience",
+  "Framework Agnostic, heading, level 3",
+  "Run with Jest, with Playwright, as an independent script, no vendor lock-in.",
+  "Get Started, link",
+  "GitHub, link"
 ]
