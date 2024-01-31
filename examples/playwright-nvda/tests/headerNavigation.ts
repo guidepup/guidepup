@@ -1,6 +1,7 @@
-import { nvda as _nvda } from "../../../lib";
+import { nvda as _nvda, WindowsKeyCodes, WindowsModifiers } from "../../../lib";
+import { Page, PlaywrightWorkerOptions } from "@playwright/test";
+import { applicationNameMap } from "../nvda-test";
 import { log } from "../../log";
-import { Page } from "@playwright/test";
 
 type NVDA = typeof _nvda;
 
@@ -8,7 +9,81 @@ async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
 const MAX_NAVIGATION_LOOP = 10;
+
+const SWITCH_APPLICATION = {
+  keyCode: [WindowsKeyCodes.Escape],
+  modifiers: [WindowsModifiers.Alt],
+};
+
+const MOVE_TO_TOP = {
+  keyCode: [WindowsKeyCodes.Home],
+  modifiers: [WindowsModifiers.Control],
+};
+
+const focusBrowser = async ({
+  applicationName,
+  nvda,
+}: {
+  applicationName: PlaywrightWorkerOptions["browserName"];
+  nvda: NVDA;
+}) => {
+  await nvda.perform(nvda.keyboardCommands.reportTitle);
+  let windowTitle = await nvda.lastSpokenPhrase();
+
+  if (windowTitle.includes(applicationName)) {
+    return;
+  }
+
+  let applicationSwitchRetryCount = 0;
+
+  while (applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
+    applicationSwitchRetryCount++;
+
+    await nvda.perform(SWITCH_APPLICATION);
+    await nvda.perform(nvda.keyboardCommands.reportTitle);
+    windowTitle = await nvda.lastSpokenPhrase();
+
+    if (windowTitle.includes(applicationName)) {
+      break;
+    }
+  }
+};
+
+const navigateToWebContent = async ({
+  applicationName,
+  nvda,
+}: {
+  applicationName: PlaywrightWorkerOptions["browserName"];
+  nvda: NVDA;
+}) => {
+  // Make sure NVDA is not in focus mode.
+  await nvda.perform(nvda.keyboardCommands.exitFocusMode);
+
+  // Ensure application is brought to front and focused.
+  await focusBrowser({ applicationName, nvda });
+
+  // NVDA appears to not work well with Firefox when switching between
+  // applications resulting in the entire browser window having NVDA focus
+  // with focus mode.
+  //
+  // One workaround is to tab to the next focusable item. From there we can
+  // toggle into (yes although we are already in it...) focus mode and back
+  // out. In case this ever transpires to not happen as expect, we then ensure
+  // we exit focus mode and move NVDA to the top of the page.
+  //
+  // REF: https://github.com/nvaccess/nvda/issues/5758
+  await nvda.perform(nvda.keyboardCommands.readNextFocusableItem);
+  await nvda.perform(nvda.keyboardCommands.toggleBetweenBrowseAndFocusMode);
+  await nvda.perform(nvda.keyboardCommands.toggleBetweenBrowseAndFocusMode);
+  await nvda.perform(nvda.keyboardCommands.exitFocusMode);
+  await nvda.perform(MOVE_TO_TOP);
+
+  // Clear out logs.
+  await nvda.clearItemTextLog();
+  await nvda.clearSpokenPhraseLog();
+};
 
 export async function headerNavigation({
   browserName,
@@ -19,39 +94,26 @@ export async function headerNavigation({
   page: Page;
   nvda: NVDA;
 }) {
-  // Navigate to Guidepup GitHub page 🎉
-  log("Navigating to URL: https://github.com/guidepup/guidepup.");
-  await page.goto("https://github.com/guidepup/guidepup", {
+  // Navigate to Guidepup Website 🎉
+  log("Navigating to URL: https://www.guidepup.dev.");
+  await page.goto("https://www.guidepup.dev", {
     waitUntil: "load",
   });
 
   // Wait for page to be ready and interact 🙌
-  const header = page.locator('header[role="banner"]');
+  const header = page.locator("h1");
   await header.waitFor();
   await delay(500);
 
-  if (browserName === "chromium") {
-    // Get to the main page - sometimes focus can land on the address bar
-    while (!(await nvda.lastSpokenPhrase()).includes("document")) {
-      log(`Performing command: "F6"`);
-      await nvda.press("F6");
-      log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
-    }
-  } else if (browserName === "firefox") {
-    // Force focus to somewhere in the web content
-    await page.locator("a").first().focus();
-  }
-
-  // Make sure not in focus mode
-  log(`Performing command: "Escape"`);
-  await nvda.perform(nvda.keyboardCommands.exitFocusMode);
-  log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+  // Focus the browser and navigate to the web content
+  const applicationName = applicationNameMap[browserName];
+  await navigateToWebContent({ applicationName, nvda });
 
   let headingCount = 0;
 
-  // Move across the page menu to the Guidepup heading using VoiceOver 🔎
+  // Move across the headings using VoiceOver 🔎
   while (
-    !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1") &&
+    !(await nvda.lastSpokenPhrase()).includes("Framework Agnostic") &&
     headingCount <= MAX_NAVIGATION_LOOP
   ) {
     headingCount++;
@@ -63,20 +125,20 @@ export async function headerNavigation({
 
   let tabCount = 0;
 
-  // Move through the README using standard keyboard commands
+  // Move across text and buttons using NVDA
   while (
-    !(await nvda.lastSpokenPhrase()).includes("NVDA on Windows") &&
+    !(await nvda.lastSpokenPhrase()).includes("GitHub") &&
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;
 
-    log(`Performing command: "Tab"`);
-    await nvda.press("Tab");
+    log(`Performing command: "Right"`);
+    await nvda.next();
     log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
   }
 
-  log(`Performing command: "Shift+Tab"`);
-  await nvda.press("Shift+Tab");
+  log(`Performing command: "Left"`);
+  await nvda.previous();
   log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
 
   log(`Performing command: "Enter"`);

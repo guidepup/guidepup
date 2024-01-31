@@ -1,8 +1,10 @@
 [
-  "heading level 1 guidepup/guidepup",
-  "heading level 2 Latest commit",
-  "heading level 2 Git stats",
-  "heading level 2 Files",
-  "heading level 2 link README.md",
-  "heading level 1 Guidepup"
+  "heading level 1 Guidepup",
+  "Screen Reader A11y Workflows",
+  "heading level 3 Full Control",
+  "heading level 3 Mirrors Real User Experience",
+  "heading level 3 Framework Agnostic",
+  "Run with Jest, with Playwright, as an independent script, no vendor lock-in.",
+  "link Get Started",
+  "link GitHub"
 ]
