@@ -19,9 +19,38 @@ jobs:
         with:
           node-version: 20
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.13.0
+        uses: guidepup/setup-action@0.15.0
         with:
           record: true
+      - run: yarn install --frozen-lockfile
+      - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
+      - run: yarn --cwd ./examples/playwright-voiceover pretest
+      - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        continue-on-error: true
+        with:
+          name: artifacts
+          path: |
+            **/test-results/**/*
+            **/recordings/**/*
+
+  macos-14-playwright-voiceover:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-14]
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Guidepup Setup
+        uses: guidepup/setup-action@0.15.0
+        with:
+          record: true
+          ignoreTccDb: true
       - run: yarn install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-voiceover pretest
