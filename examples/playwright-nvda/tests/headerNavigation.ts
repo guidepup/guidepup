@@ -107,7 +107,7 @@ export async function headerNavigation({
 
   // Focus the browser and navigate to the web content
   const applicationName = applicationNameMap[browserName];
-  navigateToWebContent({ applicationName, nvda });
+  await navigateToWebContent({ applicationName, nvda });
 
   let headingCount = 0;
 
