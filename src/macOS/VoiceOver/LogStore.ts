@@ -23,6 +23,7 @@ export class LogStore {
   #capture: CommandOptions["capture"];
   #itemTextLogStore: string[] = [];
   #spokenPhraseLogStore: string[] = [];
+  #clearedLastSpokenPhrase: string | null = null;
 
   constructor(options?: Pick<CommandOptions, "capture">) {
     this.#capture = options?.capture ?? true;
@@ -91,6 +92,9 @@ export class LogStore {
       await this.#activePromise;
     }
 
+    // Keep a reference to the last spoken phrase so we can continue to use the
+    // same change detection technique.
+    this.#clearedLastSpokenPhrase = this.#spokenPhraseLogStore.at(-1) ?? null;
     this.#spokenPhraseLogStore = [];
   }
 
@@ -164,7 +168,8 @@ export class LogStore {
     // should be confident the action has completed.
     await delay(SPOKEN_PHRASES_POLL_INTERVAL);
 
-    const previousSpokenPhrase = this.#spokenPhraseLogStore.at(-1) ?? "";
+    const previousSpokenPhrase =
+      this.#spokenPhraseLogStore.at(-1) ?? this.#clearedLastSpokenPhrase ?? "";
 
     const phrases = [];
     let stableCount = 0;
