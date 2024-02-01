@@ -30,14 +30,9 @@ test.describe("Firefox Playwright VoiceOver", () => {
     let stopRecording: (() => void) | undefined;
 
     try {
-      const isMacOSVentura =
-        osName === "darwin" && osVersion.split(".")[0] === "22";
+      stopRecording = macOSRecord(recordingFilePath);
 
-      if (!isMacOSVentura) {
-        stopRecording = macOSRecord(recordingFilePath);
-      }
-
-      await headerNavigation({ browserName, page, voiceOver });
+      await headerNavigation({ page, voiceOver });
 
       // Assert that we've ended up where we expected and what we were told on
       // the way there is as expected.
