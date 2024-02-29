@@ -1,7 +1,9 @@
 import { join, sep } from "path";
-import { mkdtemp, realpath, rm, writeFile } from "fs/promises";
 import { execFile } from "child_process";
+import { promises } from "fs";
 import { tmpdir } from "os";
+
+const { mkdtemp, realpath, rm, writeFile } = promises;
 
 const DEFAULT_MAX_BUFFER = 1000 * 1000 * 100;
 const CSCRIPT = "cscript";

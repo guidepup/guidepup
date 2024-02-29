@@ -1,6 +1,6 @@
 import { ChildProcess, ExecException, execFile } from "child_process";
-import { mkdtemp, realpath, rm, writeFile } from "fs/promises";
 import { DEFAULT_MAX_BUFFER } from "../constants";
+import { promises } from "fs";
 import { runVbsScript } from "./runVbsScript";
 import { sep } from "path";
 import { tmpdir } from "os";
@@ -9,11 +9,13 @@ jest.mock("child_process", () => ({
   execFile: jest.fn(),
 }));
 
-jest.mock("fs/promises", () => ({
-  mkdtemp: jest.fn(),
-  realpath: jest.fn(),
-  rm: jest.fn(),
-  writeFile: jest.fn(),
+jest.mock("fs", () => ({
+  promises: {
+    mkdtemp: jest.fn(),
+    realpath: jest.fn(),
+    rm: jest.fn(),
+    writeFile: jest.fn(),
+  },
 }));
 
 const script = "test-script";
@@ -28,10 +30,10 @@ const dirStub = "test-dir";
 const tmpdirStub = "test-tmpdir";
 
 const mockExecFile = jest.mocked(execFile);
-const mockMkdtemp = jest.mocked(mkdtemp);
-const mockRealpath = jest.mocked(realpath);
-const mockRm = jest.mocked(rm);
-const mockWriteFile = jest.mocked(writeFile);
+const mockMkdtemp = jest.mocked(promises.mkdtemp);
+const mockRealpath = jest.mocked(promises.realpath);
+const mockRm = jest.mocked(promises.rm);
+const mockWriteFile = jest.mocked(promises.writeFile);
 
 describe("runVbsScript", () => {
   let resultPromise: Promise<string | void>;
