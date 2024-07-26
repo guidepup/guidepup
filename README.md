@@ -6,7 +6,6 @@
 
 ## [Documentation](https://guidepup.dev) | [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
 
-[![MacOS Big Sur Support](https://img.shields.io/badge/macos-Big_Sur-blue.svg?logo=apple)](https://apps.apple.com/id/app/macos-big-sur/id1526878132)
 [![MacOS Monetary Support](https://img.shields.io/badge/macos-Monetary-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-monterey/id1576738294)
 [![MacOS Ventura Support](https://img.shields.io/badge/macos-Ventura-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-ventura/id1638787999)
 [![MacOS Sonoma Support](https://img.shields.io/badge/macos-Somona-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-sonoma/id6450717509)
