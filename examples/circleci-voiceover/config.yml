@@ -1,17 +1,18 @@
 version: 2.1
 
 orbs:
-  macos: circleci/macos@2.0.1
+  macos: circleci/macos@2.5.2
 
 jobs:
   voiceover:
     macos:
-      xcode: 12.5.1
-    resource_class: medium
+      xcode: 15.4.0
+    resource_class: macos.m1.medium.gen1
     steps:
       - checkout
       - macos/add-uitest-permissions
       - macos/add-safari-permissions
+      - macos/add-voiceover-permissions
       - run:
           name: Enable VoiceOver Automation
           command: npx @guidepup/setup --ci
