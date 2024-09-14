@@ -1,4 +1,5 @@
-import { nvda, windowsActivate, windowsQuit, windowsRecord } from "../../src";
+import { nvda, windowsActivate, windowsQuit } from "../../src";
+import { windowsRecord } from "@guidepup/record";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
