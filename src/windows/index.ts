@@ -5,4 +5,3 @@ export type { KeystrokeCommand as WindowsKeystrokeCommand } from "./KeystrokeCom
 export { Modifiers as WindowsModifiers } from "./Modifiers";
 export { activate as windowsActivate } from "./activate";
 export { quit as windowsQuit } from "./quit";
-export { record as windowsRecord } from "./record";

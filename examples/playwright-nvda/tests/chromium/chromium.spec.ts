@@ -3,7 +3,7 @@ import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
 import { nvdaTest as test } from "../../nvda-test";
-import { windowsRecord } from "../../../../lib";
+import { windowsRecord } from "@guidepup/record";
 
 test.describe("Chromium Playwright NVDA", () => {
   test("I can navigate the Guidepup Github page", async ({

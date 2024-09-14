@@ -24,7 +24,6 @@ module.exports = {
     "<rootDir>/src/macOS/KeyCodes.ts",
     "<rootDir>/src/macOS/KeystrokeCommand.ts",
     "<rootDir>/src/macOS/Modifiers.ts",
-    "<rootDir>/src/macOS/record.ts",
     "<rootDir>/src/macOS/VoiceOver/ClickButton.ts",
     "<rootDir>/src/macOS/VoiceOver/ClickCount.ts",
     "<rootDir>/src/macOS/VoiceOver/CommanderCommands.ts",

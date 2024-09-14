@@ -2,9 +2,9 @@ import {
   macOSActivate,
   MacOSApplications,
   macOSQuit,
-  macOSRecord,
   voiceOver,
 } from "../../src/";
+import { macOSRecord } from "@guidepup/record";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));

@@ -37,6 +37,7 @@
     "prepublish": "yarn build"
   },
   "devDependencies": {
+    "@guidepup/record": "^0.1.0",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.14.12",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
@@ -52,7 +53,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "ffmpeg-static": "^5.2.0",
     "regedit": "5.1.2",
     "semver": "^7.3.8",
     "shelljs": "^0.8.5"
