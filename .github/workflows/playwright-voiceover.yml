@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 20
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.17.1
+        uses: guidepup/setup-action@0.17.2
         with:
           record: true
       - run: yarn install --frozen-lockfile
