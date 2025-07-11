@@ -14,10 +14,10 @@ jobs:
         os: [macos-12, macos-13, macos-14]
         browser: [chromium, firefox, webkit]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
       - name: Guidepup Setup
         uses: guidepup/setup-action@0.17.2
         with:
