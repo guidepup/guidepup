@@ -26,7 +26,7 @@ jobs:
       - run: yarn --cwd ./examples/playwright-nvda install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-nvda pretest
       - run: yarn --cwd ./examples/playwright-nvda test:${{ matrix.browser }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
         with:
