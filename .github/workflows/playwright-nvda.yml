@@ -11,26 +11,26 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2019, windows-2022]
+        os: [windows-2022, windows-2025]
         browser: [chromium, firefox]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.17.2
+        uses: guidepup/setup-action@0.17.3
         with:
           record: true
       - run: yarn install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-nvda install --frozen-lockfile
       - run: yarn --cwd ./examples/playwright-nvda pretest
       - run: yarn --cwd ./examples/playwright-nvda test:${{ matrix.browser }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
         with:
-          name: artifacts
+          name: artifacts-${{ matrix.os }}-${{ matrix.browser }}
           path: |
             **/test-results/**/*
             **/recordings/**/*

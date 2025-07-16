@@ -13,12 +13,12 @@ jobs:
       matrix:
         os: [macos-12, macos-13, macos-14]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
       - name: Enable VoiceOver Automation
-        uses: guidepup/setup-action@0.17.2
+        uses: guidepup/setup-action@0.17.3
 
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
