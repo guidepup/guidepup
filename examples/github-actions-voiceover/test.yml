@@ -18,7 +18,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Enable VoiceOver Automation
-        uses: guidepup/setup-action@0.17.2
+        uses: guidepup/setup-action@0.17.3
 
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
