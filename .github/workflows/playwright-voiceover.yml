@@ -19,7 +19,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.17.2
+        uses: guidepup/setup-action@0.17.3
         with:
           record: true
       - run: yarn install --frozen-lockfile
@@ -30,7 +30,7 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          name: artifacts
+          name: artifacts-${{ matrix.os }}-${{ matrix.browser }}
           path: |
             **/test-results/**/*
             **/recordings/**/*
