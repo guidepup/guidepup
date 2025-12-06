@@ -1,5 +1,8 @@
 name: Playwright VoiceOver
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
