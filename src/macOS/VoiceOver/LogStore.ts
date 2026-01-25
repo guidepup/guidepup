@@ -2,6 +2,7 @@ import {
   APPROX_WORDS_PER_SECOND,
   ITEM_TEXT_POLL_INTERVAL,
   ITEM_TEXT_RETRY_COUNT,
+  MAX_SPOKEN_PHRASES_POLL_COUNT,
   SPOKEN_PHRASES_POLL_INTERVAL,
   SPOKEN_PHRASES_RETRY_COUNT,
 } from "./constants";
@@ -175,8 +176,7 @@ export class LogStore {
     let stableCount = 0;
     let pollCount = 0;
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    while (pollCount < MAX_SPOKEN_PHRASES_POLL_COUNT) {
       let rawLastSpokenPhrase = "";
 
       try {
