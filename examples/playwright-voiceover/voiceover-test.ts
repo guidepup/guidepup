@@ -3,7 +3,7 @@ import { test } from "@playwright/test";
 import type { VoiceOver } from "../../lib";
 
 const applicationNameMap = {
-  chromium: "Chromium",
+  chromium: "Google Chrome For Testing",
   chrome: "Google Chrome",
   "chrome-beta": "Google Chrome Beta",
   msedge: "Microsoft Edge",

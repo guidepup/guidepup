@@ -22,7 +22,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.18.0
+        uses: guidepup/setup-action@0.19.0
         with:
           record: true
       - run: yarn install --frozen-lockfile
