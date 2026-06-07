@@ -1,8 +1,5 @@
 name: Playwright NVDA
 
-permissions:
-  contents: read
-
 on:
   push:
     branches: [main]
@@ -14,15 +11,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2022, windows-2025]
+        os: [windows-2022, windows-2025, windows-11-arm]
         browser: [chromium, firefox]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.19.0
+        uses: guidepup/setup-action@0.20.0
         with:
           record: true
       - run: yarn install --frozen-lockfile
