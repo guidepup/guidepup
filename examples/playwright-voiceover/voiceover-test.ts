@@ -48,19 +48,21 @@ const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
 
         await page.bringToFront();
         await page.locator("body").waitFor();
+
+        await voiceOverPlaywright.interact();
+
         await page.locator("body").focus();
         await page.locator("body").click();
 
-        await voiceOverPlaywright.interact();
         await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.jumpToLeftEdge,
+          voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
         );
 
         await voiceOverPlaywright.clearItemTextLog();
         await voiceOverPlaywright.clearSpokenPhraseLog();
       };
 
-      await voiceOverPlaywright.start();
+      await voiceOverPlaywright.start({ capture: "initial" });
       await macOSActivate(applicationNameMap[browserName]);
       await use(voiceOverPlaywright);
     } finally {
