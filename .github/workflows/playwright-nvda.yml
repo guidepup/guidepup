@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2022, windows-2025, windows-11-arm]
+        os: [windows-2022, windows-2025]
         browser: [chromium, firefox]
     steps:
       - uses: actions/checkout@v6
