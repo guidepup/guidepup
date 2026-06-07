@@ -48,11 +48,18 @@ const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
 
         await page.bringToFront();
         await page.locator("body").waitFor();
+        await page.locator("body").focus();
+        await page.locator("body").click();
 
         await voiceOverPlaywright.interact();
 
-        await page.locator("body").focus();
-        await page.locator("body").click();
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.findPreviousHeading,
+        );
+
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.findPreviousPlainText,
+        );
 
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
