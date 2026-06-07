@@ -3,7 +3,19 @@ import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
 import { nvdaTest as test } from "../../nvda-test";
-import { windowsRecord } from "@guidepup/record";
+
+const record = async (filepath: string) => {
+  try {
+    const { windowsRecord } = await import("@guidepup/record");
+
+    return windowsRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available",
+      "Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
 
 test.describe("Chromium Playwright NVDA", () => {
   test("I can navigate the Guidepup Github page", async ({
@@ -29,7 +41,7 @@ test.describe("Chromium Playwright NVDA", () => {
     let stopRecording: (() => void) | undefined;
 
     try {
-      stopRecording = windowsRecord(recordingFilePath);
+      stopRecording = await record(recordingFilePath);
 
       await headerNavigation({ browserName, page, nvda });
 

@@ -4,10 +4,22 @@ import {
   macOSQuit,
   voiceOver,
 } from "../../src/";
-import { macOSRecord } from "@guidepup/record";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
+
+const record = async (filepath: string) => {
+  try {
+    const { macOSRecord } = await import("@guidepup/record");
+
+    return macOSRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available",
+      "Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
 
 /**
  * Opens Safari and navigates to the guidepup GitHub repo.
@@ -17,8 +29,8 @@ async function run(): Promise<void> {
 
   try {
     // Start the screen recording.
-    stopRecording = macOSRecord(
-      `./recordings/hello-voiceover-${+new Date()}.mov`
+    stopRecording = await record(
+      `./recordings/hello-voiceover-${+new Date()}.mov`,
     );
 
     // Start the VoiceOver screen reader.

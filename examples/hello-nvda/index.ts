@@ -1,8 +1,20 @@
 import { nvda, windowsActivate, windowsQuit } from "../../src";
-import { windowsRecord } from "@guidepup/record";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
+
+const record = async (filepath: string) => {
+  try {
+    const { windowsRecord } = await import("@guidepup/record");
+
+    return windowsRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available",
+      "Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
 
 /**
  * Starts and stops NVDA.
@@ -12,7 +24,7 @@ async function run(): Promise<void> {
 
   try {
     // Start the screen recording.
-    stopRecording = windowsRecord(`./recordings/hello-nvda-${+new Date()}.mp4`);
+    stopRecording = await record(`./recordings/hello-nvda-${+new Date()}.mp4`);
 
     // Start the NVDA screen reader.
     // Set the default to only capture the first page of spoken text per action

@@ -2,9 +2,21 @@ import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./firefox.itemText.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import { macOSRecord } from "@guidepup/record";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { voTest as test } from "../../voiceover-test";
+
+const record = async (filepath: string) => {
+  try {
+    const { macOSRecord } = await import("@guidepup/record");
+
+    return macOSRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available",
+      "Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
 
 test.describe("Firefox Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({
@@ -30,7 +42,7 @@ test.describe("Firefox Playwright VoiceOver", () => {
     let stopRecording: (() => void) | undefined;
 
     try {
-      stopRecording = macOSRecord(recordingFilePath);
+      stopRecording = await record(recordingFilePath);
 
       await headerNavigation({ page, voiceOver });
 
