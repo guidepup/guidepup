@@ -12,8 +12,7 @@ const record = async (filepath: string) => {
     return macOSRecord(filepath);
   } catch {
     console.warn(
-      "@guidepup/record not available",
-      "Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
     );
   }
 };

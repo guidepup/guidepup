@@ -1,1 +1,0 @@
-export { supportsAppleScriptControl } from "./supportsAppleScriptControl";
