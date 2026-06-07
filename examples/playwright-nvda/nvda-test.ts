@@ -1,4 +1,4 @@
-import { nvda, WindowsKeyCodes, WindowsModifiers } from "../../lib";
+import { NVDA, nvda, WindowsKeyCodes, WindowsModifiers } from "../../lib";
 import { test } from "@playwright/test";
 
 export const applicationNameMap = {
@@ -12,13 +12,76 @@ export const applicationNameMap = {
   webkit: "Playwright",
 };
 
+export interface NVDAPlaywright extends NVDA {
+  navigateToWebContent(): Promise<void>;
+}
+
+const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
+
+const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
+
+const SWITCH_APPLICATION = {
+  keyCode: [WindowsKeyCodes.Escape],
+  modifiers: [WindowsModifiers.Alt],
+};
+
+const MOVE_TO_TOP = {
+  keyCode: [WindowsKeyCodes.Home],
+  modifiers: [WindowsModifiers.Control],
+};
+
+type FocusBrowserParams = {
+  applicationName: string;
+  pageTitle: string;
+};
+
+const hasFocus = ({
+  applicationName,
+  pageTitle,
+  windowTitle,
+}: FocusBrowserParams & { windowTitle: string }) => {
+  return (
+    (pageTitle.length && windowTitle.startsWith(pageTitle)) ||
+    windowTitle.includes(applicationName)
+  );
+};
+
+const focusBrowser = async ({
+  applicationName,
+  pageTitle,
+}: {
+  applicationName: string;
+  pageTitle: string;
+}) => {
+  await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
+  let windowTitle = await nvdaPlaywright.lastSpokenPhrase();
+
+  if (hasFocus({ applicationName, pageTitle, windowTitle })) {
+    return;
+  }
+
+  let applicationSwitchRetryCount = 0;
+
+  while (applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
+    applicationSwitchRetryCount++;
+
+    await nvdaPlaywright.perform(SWITCH_APPLICATION);
+    await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
+    windowTitle = await nvdaPlaywright.lastSpokenPhrase();
+
+    if (hasFocus({ applicationName, pageTitle, windowTitle })) {
+      break;
+    }
+  }
+};
+
 /**
  * These tests extend the default Playwright environment that launches the
  * browser with a running instance of the NVDA screen reader for Windows.
  *
  * A fresh started NVDA instance `nvda` is provided to each test.
  */
-const nvdaTest = test.extend<{ nvda: typeof nvda }>({
+const nvdaTest = test.extend<{ nvda: NVDAPlaywright }>({
   nvda: async ({ browserName, page }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
@@ -27,50 +90,43 @@ const nvdaTest = test.extend<{ nvda: typeof nvda }>({
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      await nvda.start();
       await page.goto("about:blank", { waitUntil: "load" });
+      await page.bringToFront();
 
-      let applicationSwitchRetryCount = 0;
+      nvdaPlaywright.navigateToWebContent = async () => {
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.exitFocusMode,
+        );
 
-      while (applicationSwitchRetryCount < 10) {
-        applicationSwitchRetryCount++;
+        const pageTitle = await page.title();
+        await focusBrowser({ applicationName, pageTitle });
 
-        await nvda.perform({
-          keyCode: [WindowsKeyCodes.Tab],
-          modifiers: [WindowsModifiers.Alt],
-        });
+        await page.bringToFront();
+        await page.locator("body").waitFor();
+        await page.locator("body").focus();
+        await page.locator("body").click();
 
-        const lastSpokenPhrase = await nvda.lastSpokenPhrase();
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.readNextFocusableItem,
+        );
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
+        );
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
+        );
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.exitFocusMode,
+        );
+        await nvdaPlaywright.perform(MOVE_TO_TOP);
 
-        if (lastSpokenPhrase.includes(applicationName)) {
-          break;
-        }
-      }
+        await nvdaPlaywright.clearItemTextLog();
+        await nvdaPlaywright.clearSpokenPhraseLog();
+      };
 
-      if (browserName === "chromium") {
-        let mainPageFocusRetryCount = 0;
+      await nvdaPlaywright.start();
 
-        // Get to the main page - sometimes focus can land on the address bar
-        while (
-          !(await nvda.lastSpokenPhrase()).includes("document") &&
-          mainPageFocusRetryCount < 10
-        ) {
-          mainPageFocusRetryCount++;
-
-          await nvda.press("F6");
-        }
-      } else if (browserName === "firefox") {
-        // Force focus to somewhere in the web content
-        await page.locator("body").first().focus();
-      }
-
-      // Make sure not in focus mode
-      await nvda.perform(nvda.keyboardCommands.exitFocusMode);
-
-      // Clear the log so clean for the actual test!
-      await nvda.clearSpokenPhraseLog();
-
-      await use(nvda);
+      await use(nvdaPlaywright);
     } finally {
       try {
         await nvda.stop();
