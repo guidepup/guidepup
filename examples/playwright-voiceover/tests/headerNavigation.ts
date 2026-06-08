@@ -1,8 +1,6 @@
-import { voiceOver as _voiceOver } from "../../../lib";
 import { log } from "../../log";
 import { Page } from "@playwright/test";
-
-type VoiceOver = typeof _voiceOver;
+import { VoiceOverPlaywright } from "../voiceover-test";
 
 async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -15,7 +13,7 @@ export async function headerNavigation({
   voiceOver,
 }: {
   page: Page;
-  voiceOver: VoiceOver;
+  voiceOver: VoiceOverPlaywright;
 }) {
   // Navigate to Guidepup Website 🎉
   log("Navigating to URL: https://www.guidepup.dev.");
@@ -29,14 +27,8 @@ export async function headerNavigation({
   await delay(500);
 
   // Make sure interacting with the web content
-  log(`Performing command: "VO+Shift+Down Arrow"`);
-  await voiceOver.interact();
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
-
-  // Prevent auto-navigation of group
-  log(`Performing command: "VO+Shift+Left Arrow"`);
-  await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+  await voiceOver.navigateToWebContent();
+  await delay(500);
 
   let headingCount = 0;
 

@@ -4,7 +4,6 @@ import {
   macOSQuit,
   voiceOver,
 } from "../../src/";
-import { macOSRecord } from "@guidepup/record";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
@@ -13,14 +12,7 @@ const delay = async (ms: number) =>
  * Opens Safari and navigates to the guidepup GitHub repo.
  */
 async function run(): Promise<void> {
-  let stopRecording: (() => void) | undefined;
-
   try {
-    // Start the screen recording.
-    stopRecording = macOSRecord(
-      `./recordings/hello-voiceover-${+new Date()}.mov`
-    );
-
     // Start the VoiceOver screen reader.
     // Set the default to only capture the first page of spoken text per action
     // for speed improvement.
@@ -71,9 +63,6 @@ async function run(): Promise<void> {
 
     // Ensure we quit Safari.
     await macOSQuit(MacOSApplications.Safari);
-
-    // Ensure we stop the recording.
-    stopRecording?.();
   }
 }
 

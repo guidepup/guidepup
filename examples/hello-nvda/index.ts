@@ -1,5 +1,4 @@
 import { nvda, windowsActivate, windowsQuit } from "../../src";
-import { windowsRecord } from "@guidepup/record";
 
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
@@ -8,12 +7,7 @@ const delay = async (ms: number) =>
  * Starts and stops NVDA.
  */
 async function run(): Promise<void> {
-  let stopRecording: (() => void) | undefined;
-
   try {
-    // Start the screen recording.
-    stopRecording = windowsRecord(`./recordings/hello-nvda-${+new Date()}.mp4`);
-
     // Start the NVDA screen reader.
     // Set the default to only capture the first page of spoken text per action
     // for speed improvement.
@@ -52,9 +46,6 @@ async function run(): Promise<void> {
 
     // Ensure we quit Chrome.
     await windowsQuit("chrome.exe");
-
-    // Ensure we stop the recording.
-    stopRecording?.();
   }
 }
 

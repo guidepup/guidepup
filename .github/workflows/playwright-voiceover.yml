@@ -1,8 +1,5 @@
 name: Playwright VoiceOver
 
-permissions:
-  contents: read
-
 on:
   push:
     branches: [main]
@@ -14,15 +11,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-14]
+        os: [macos-14, macos-15, macos-15-intel, macos-26, macos-26-intel]
         browser: [chromium, firefox, webkit]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
       - name: Guidepup Setup
-        uses: guidepup/setup-action@0.19.0
+        uses: guidepup/setup-action@0.20.0
         with:
           record: true
       - run: yarn install --frozen-lockfile
