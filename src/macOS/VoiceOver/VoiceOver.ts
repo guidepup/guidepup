@@ -19,7 +19,6 @@ import { LogStore } from "./LogStore";
 import type { Prettify } from "../../typeHelpers";
 import type { ScreenReader } from "../../ScreenReader";
 import { start } from "./start";
-import { supportsAppleScriptControl } from "./supportsAppleScriptControl";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";
 import { VoiceOverCommander } from "./VoiceOverCommander";
@@ -154,7 +153,7 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<boolean>}
    */
   async detect(): Promise<boolean> {
-    return isMacOS() && (await supportsAppleScriptControl());
+    return isMacOS();
   }
 
   /**
@@ -604,7 +603,7 @@ export class VoiceOver implements ScreenReader {
    */
   async perform(
     command: KeyboardCommand | CommanderCommands,
-    options?: CommandOptions
+    options?: CommandOptions,
   ): Promise<void> {
     if (!this.#started) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);

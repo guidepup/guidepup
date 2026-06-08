@@ -13,21 +13,68 @@ const applicationNameMap = {
   webkit: "Playwright",
 };
 
+export interface VoiceOverPlaywright extends VoiceOver {
+  /**
+   * Guidepup Playwright specific command that navigates VoiceOver to the beginning
+   * of the browser's web content.
+   *
+   * This command should be used after page navigation.
+   *
+   * Note: this command clears all logs.
+   */
+  navigateToWebContent(): Promise<void>;
+}
+
+const voiceOverPlaywright: VoiceOverPlaywright =
+  voiceOver as VoiceOverPlaywright;
+
 /**
  * These tests extend the default Playwright environment that launches the
  * browser with a running instance of the VoiceOver screen reader for MacOS.
  *
  * A fresh started VoiceOver instance `vo` is provided to each test.
  */
-const voTest = test.extend<{ voiceOver: VoiceOver }>({
-  voiceOver: async ({ browserName }, use) => {
+const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
+  voiceOver: async ({ browserName, page }, use) => {
     try {
-      await voiceOver.start();
+      const applicationName = applicationNameMap[browserName];
+
+      if (!applicationName) {
+        throw new Error(`Browser ${browserName} is not installed.`);
+      }
+
+      voiceOverPlaywright.navigateToWebContent = async () => {
+        await macOSActivate(applicationName);
+
+        await page.bringToFront();
+        await page.locator("body").waitFor();
+        await page.locator("body").focus();
+        await page.locator("body").click();
+
+        await voiceOverPlaywright.interact();
+
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.findPreviousHeading,
+        );
+
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.findPreviousPlainText,
+        );
+
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+        );
+
+        await voiceOverPlaywright.clearItemTextLog();
+        await voiceOverPlaywright.clearSpokenPhraseLog();
+      };
+
+      await voiceOverPlaywright.start({ capture: "initial" });
       await macOSActivate(applicationNameMap[browserName]);
-      await use(voiceOver);
+      await use(voiceOverPlaywright);
     } finally {
       try {
-        await voiceOver.stop();
+        await voiceOverPlaywright.stop();
       } catch {
         // swallow stop failure
       }
