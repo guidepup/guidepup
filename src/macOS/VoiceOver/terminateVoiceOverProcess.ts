@@ -1,15 +1,15 @@
+import { CommandOptions } from "../../CommandOptions";
 import { exec } from "child_process";
+import { keyCodeCommands } from "./keyCodeCommands";
 import { MacOSApplications } from "..";
 import { quit } from "../quit";
 import { sendKeys } from "../sendKeys";
-import { CommandOptions } from "../../CommandOptions";
-import { keyCodeCommands } from "./keyCodeCommands";
 
 export async function terminateVoiceOverProcess(
   options?: CommandOptions,
 ): Promise<void> {
-  // Most reliable way (weirdly) is generally via the keyboard command to quit
-  // VoiceOver.
+  // Most reliable way (counter-intuitively) is via the keyboard command to
+  // quit VoiceOver.
   await sendKeys(keyCodeCommands.quit, MacOSApplications.VoiceOver, options);
 
   // Failing that we attempt to stop VoiceOver via it's AppleScript API.
