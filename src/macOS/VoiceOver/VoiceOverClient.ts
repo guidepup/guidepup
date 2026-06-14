@@ -8,6 +8,7 @@ import {
 } from "./constants";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import { CommandOptions } from "../../CommandOptions";
+import { ERR_VOICE_OVER_NOT_RUNNING } from "../errors";
 import { itemText as getItemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
 
@@ -19,8 +20,18 @@ function countApproxWords(str) {
   return str.trim().split(/\s+/).length;
 }
 
-export class LogStore {
-  #activePromise = null;
+interface QueueAction {
+  action: () => Promise<unknown>;
+  options?: Pick<CommandOptions, "capture">;
+  promise: Promise<unknown>;
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
+}
+
+export class VoiceOverClient {
+  #inFlight = false;
+  #queue: QueueAction[] = [];
+  #stopped = false;
   #capture: CommandOptions["capture"];
   #itemTextLogStore: string[] = [];
   #spokenPhraseLogStore: string[] = [];
@@ -28,6 +39,15 @@ export class LogStore {
 
   constructor(options?: Pick<CommandOptions, "capture">) {
     this.#capture = options?.capture ?? true;
+  }
+
+  /**
+   * Stop VoiceOver action execution.
+   */
+  async stop(): Promise<void> {
+    this.#stopped = true;
+
+    await Promise.allSettled(this.#queue.map(({ promise }) => promise));
   }
 
   /**
@@ -54,8 +74,8 @@ export class LogStore {
    * @returns {Promise<string[]>} The item text log.
    */
   async itemTextLog(): Promise<string[]> {
-    if (this.#activePromise) {
-      await this.#activePromise;
+    while (this.#inFlight) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
 
     return this.#itemTextLogStore;
@@ -65,8 +85,8 @@ export class LogStore {
    * Clear the item text log.
    */
   async clearItemTextLog(): Promise<void> {
-    if (this.#activePromise) {
-      await this.#activePromise;
+    while (this.#inFlight) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
 
     this.#itemTextLogStore = [];
@@ -78,8 +98,8 @@ export class LogStore {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
-    if (this.#activePromise) {
-      await this.#activePromise;
+    while (this.#inFlight) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
 
     return this.#spokenPhraseLogStore;
@@ -89,8 +109,8 @@ export class LogStore {
    * Clear the spoken phrase log.
    */
   async clearSpokenPhraseLog(): Promise<void> {
-    if (this.#activePromise) {
-      await this.#activePromise;
+    while (this.#inFlight) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
 
     // Keep a reference to the last spoken phrase so we can continue to use the
@@ -100,30 +120,49 @@ export class LogStore {
   }
 
   /**
-   * Waits for the provided promise to resolve and then captures the logs for
-   * the performed action until they stabilize.
+   * Enqueues an action and captures the logs for the performed action until
+   * they stabilize. Actions are executed serially in the order they are
+   * enqueued. Returns a promise that resolves with the action's result.
    *
-   * @param {Promise<unknown>} promise Underlying action to capture logs for.
+   * @param {() => Promise<T>} action The action to enqueue and execute.
    * @param {object} options Additional options.
-   * @returns {Promise<unknown>}
+   * @returns {Promise<T>} Promise that resolves with the action's result.
    */
-  async tap<T, S extends Promise<T>>(
+  async enqueueAndTap<T, S extends Promise<T>>(
     action: () => S,
-    options?: Pick<CommandOptions, "capture">
+    options?: Pick<CommandOptions, "capture">,
   ): Promise<T> {
-    if (this.#activePromise) {
-      await this.#activePromise;
+    if (this.#stopped) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
-    let activePromiseResolver: () => void;
-    this.#activePromise = new Promise<void>(
-      (resolve) => (activePromiseResolver = resolve)
-    );
+    let resolve, reject;
 
-    let result: T;
+    const promise = new Promise<T>((_resolve, _reject) => {
+      resolve = _resolve;
+      reject = _reject;
+    });
+
+    this.#queue.push({ action, options, promise, resolve, reject });
+    this.#processQueue();
+
+    return promise;
+  }
+
+  async #processQueue() {
+    if (this.#inFlight || this.#queue.length === 0) {
+      return;
+    }
+
+    this.#inFlight = true;
+    const { action, options, resolve, reject } = this.#queue.shift()!;
 
     try {
-      result = await action();
+      if (this.#stopped) {
+        throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+      }
+
+      const result = await action();
 
       if (options?.capture ?? this.#capture) {
         const [itemText, lastSpokenPhrase] = await Promise.all([
@@ -134,12 +173,14 @@ export class LogStore {
         this.#itemTextLogStore.push(itemText);
         this.#spokenPhraseLogStore.push(lastSpokenPhrase);
       }
-    } finally {
-      activePromiseResolver();
-      this.#activePromise = null;
-    }
 
-    return result;
+      resolve(result);
+    } catch (error) {
+      reject(error);
+    } finally {
+      this.#inFlight = false;
+      this.#processQueue();
+    }
   }
 
   async #pollForItemText() {

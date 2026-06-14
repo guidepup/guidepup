@@ -1,13 +1,13 @@
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
-import { LogStore } from "./LogStore";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
 import { VoiceOverCaption } from "./VoiceOverCaption";
+import { VoiceOverClient } from "./VoiceOverClient";
 
 jest.mock("./copyLastSpokenPhrase", () => ({
   copyLastSpokenPhrase: jest.fn(),
 }));
-jest.mock("./LogStore", () => ({
-  LogStore: jest.fn(),
+jest.mock("./VoiceOverClient", () => ({
+  VoiceOverClient: jest.fn(),
 }));
 jest.mock("./saveLastSpokenPhrase", () => ({
   saveLastSpokenPhrase: jest.fn(),
@@ -18,8 +18,8 @@ const itemTextDummy = "test-item-text";
 
 describe("VoiceOverCaption", () => {
   let caption: VoiceOverCaption;
-  let result;
-  let logStoreDummy: LogStore;
+  let result: unknown;
+  let voiceOverClientDummy: VoiceOverClient;
   let spokenPhraseLogCleared: boolean;
   let itemTextLogCleared: boolean;
 
@@ -30,7 +30,7 @@ describe("VoiceOverCaption", () => {
     itemTextLogCleared = false;
     spokenPhraseLogCleared = false;
 
-    logStoreDummy = {
+    voiceOverClientDummy = {
       async itemText() {
         return itemTextDummy;
       },
@@ -49,9 +49,9 @@ describe("VoiceOverCaption", () => {
       async clearSpokenPhraseLog() {
         spokenPhraseLogCleared = true;
       },
-    } as LogStore;
+    } as VoiceOverClient;
 
-    caption = new VoiceOverCaption(logStoreDummy);
+    caption = new VoiceOverCaption(voiceOverClientDummy);
     result = undefined;
   });
 
@@ -100,7 +100,7 @@ describe("VoiceOverCaption", () => {
   describe("spokenPhraseLog", () => {
     it("should get a log of the spoken phrases", () => {
       expect(caption.spokenPhraseLog()).toEqual(
-        logStoreDummy.spokenPhraseLog()
+        voiceOverClientDummy.spokenPhraseLog(),
       );
     });
   });
@@ -125,7 +125,7 @@ describe("VoiceOverCaption", () => {
 
   describe("itemTextLog", () => {
     it("should get a log of the item text", () => {
-      expect(caption.itemTextLog()).toEqual(logStoreDummy.itemTextLog());
+      expect(caption.itemTextLog()).toEqual(voiceOverClientDummy.itemTextLog());
     });
   });
 

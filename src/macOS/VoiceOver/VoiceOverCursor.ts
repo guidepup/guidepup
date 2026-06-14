@@ -2,20 +2,20 @@ import { Applications } from "../Applications";
 import type { CommandOptions } from "../../CommandOptions";
 import { Directions } from "./Directions";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { LogStore } from "./LogStore";
 import { move } from "./move";
 import { performAction } from "./performAction";
 import { sendKeys } from "../sendKeys";
 import { takeScreenshot } from "./takeScreenshot";
+import { VoiceOverClient } from "./VoiceOverClient";
 
 export class VoiceOverCursor {
   /**
    * @ignore
    */
-  #logStore: LogStore;
+  #voiceOverClient: VoiceOverClient;
 
-  constructor(logStore: LogStore) {
-    this.#logStore = logStore;
+  constructor(voiceOverClient: VoiceOverClient) {
+    this.#voiceOverClient = voiceOverClient;
   }
 
   /**
@@ -26,9 +26,9 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () => move(Directions.Left, undefined, options),
-      options
+      options,
     );
   }
 
@@ -40,9 +40,9 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async next(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () => move(Directions.Right, undefined, options),
-      options
+      options,
     );
   }
 
@@ -52,7 +52,10 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(() => performAction(options), options);
+    return await this.#voiceOverClient.enqueueAndTap(
+      () => performAction(options),
+      options,
+    );
   }
 
   /**
@@ -63,14 +66,14 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async interact(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () =>
         sendKeys(
           keyCodeCommands.interactWithItem,
           Applications.VoiceOver,
-          options
+          options,
         ),
-      options
+      options,
     );
   }
 
@@ -82,14 +85,14 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () =>
         sendKeys(
           keyCodeCommands.stopInteractingWithItem,
           Applications.VoiceOver,
-          options
+          options,
         ),
-      options
+      options,
     );
   }
 

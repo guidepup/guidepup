@@ -1,8 +1,8 @@
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import { itemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
-import { LogStore } from "./LogStore";
 import { MAX_SPOKEN_PHRASES_POLL_COUNT } from "./constants";
+import { VoiceOverClient } from "./VoiceOverClient";
 
 jest.mock("./cleanSpokenPhrase", () => ({
   cleanSpokenPhrase: jest.fn(),
@@ -25,8 +25,8 @@ jest.mock("./lastSpokenPhrase", () => ({
 const itemTextDummy = "test-item-text";
 const lastSpokenPhraseDummy = "test-last-spoken-phrase";
 
-describe("LogStore", () => {
-  let logStore: LogStore;
+describe("VoiceOverClient", () => {
+  let voiceOverClient: VoiceOverClient;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -41,26 +41,26 @@ describe("LogStore", () => {
 
   describe("when capture options are not provided", () => {
     beforeEach(() => {
-      logStore = new LogStore();
+      voiceOverClient = new VoiceOverClient();
     });
 
     it("should initialize with an empty item text log store", async () => {
-      expect(await logStore.itemTextLog()).toEqual([]);
+      expect(await voiceOverClient.itemTextLog()).toEqual([]);
     });
 
     it("should initialize with an empty spoken phrase log store", async () => {
-      expect(await logStore.spokenPhraseLog()).toEqual([]);
+      expect(await voiceOverClient.spokenPhraseLog()).toEqual([]);
     });
 
     it("should return with an empty string as the item text if not yet acted", async () => {
-      expect(await logStore.itemText()).toEqual("");
+      expect(await voiceOverClient.itemText()).toEqual("");
     });
 
     it("should return with an empty string as the last spoken phrase if not yet acted", async () => {
-      expect(await logStore.lastSpokenPhrase()).toEqual("");
+      expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
     });
 
-    describe("when tap is called on an action with no capture options", () => {
+    describe("when enqueueAndTap is called on an action with no capture options", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -71,7 +71,7 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action);
+        resultPromise = voiceOverClient.enqueueAndTap(action);
       });
 
       afterEach(async () => {
@@ -87,7 +87,7 @@ describe("LogStore", () => {
         it("should log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toEqual([
+          expect(await voiceOverClient.itemTextLog()).toEqual([
             `cleaned_${itemTextDummy}`,
           ]);
         });
@@ -95,7 +95,7 @@ describe("LogStore", () => {
         it("should log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toEqual([
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([
             `cleaned_${lastSpokenPhraseDummy}`,
           ]);
         });
@@ -105,18 +105,20 @@ describe("LogStore", () => {
         });
 
         it("should return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual(`cleaned_${itemTextDummy}`);
+          expect(await voiceOverClient.itemText()).toEqual(
+            `cleaned_${itemTextDummy}`,
+          );
         });
 
         it("should return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual(
-            `cleaned_${lastSpokenPhraseDummy}`
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual(
+            `cleaned_${lastSpokenPhraseDummy}`,
           );
         });
       });
     });
 
-    describe("when tap is called on an action with capture enabled", () => {
+    describe("when enqueueAndTap is called on an action with capture enabled", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -127,7 +129,9 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action, { capture: true });
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: true,
+        });
       });
 
       afterEach(async () => {
@@ -143,7 +147,7 @@ describe("LogStore", () => {
         it("should log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toEqual([
+          expect(await voiceOverClient.itemTextLog()).toEqual([
             `cleaned_${itemTextDummy}`,
           ]);
         });
@@ -151,7 +155,7 @@ describe("LogStore", () => {
         it("should log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toEqual([
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([
             `cleaned_${lastSpokenPhraseDummy}`,
           ]);
         });
@@ -161,18 +165,20 @@ describe("LogStore", () => {
         });
 
         it("should return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual(`cleaned_${itemTextDummy}`);
+          expect(await voiceOverClient.itemText()).toEqual(
+            `cleaned_${itemTextDummy}`,
+          );
         });
 
         it("should return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual(
-            `cleaned_${lastSpokenPhraseDummy}`
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual(
+            `cleaned_${lastSpokenPhraseDummy}`,
           );
         });
       });
     });
 
-    describe("when tap is called on an action with capture disabled", () => {
+    describe("when enqueueAndTap is called on an action with capture disabled", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -183,7 +189,9 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action, { capture: false });
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: false,
+        });
       });
 
       afterEach(async () => {
@@ -199,13 +207,13 @@ describe("LogStore", () => {
         it("should not log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toHaveLength(0);
+          expect(await voiceOverClient.itemTextLog()).toHaveLength(0);
         });
 
         it("should not log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toHaveLength(0);
+          expect(await voiceOverClient.spokenPhraseLog()).toHaveLength(0);
         });
 
         it("should return the action's result", async () => {
@@ -213,16 +221,16 @@ describe("LogStore", () => {
         });
 
         it("should not return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual("");
+          expect(await voiceOverClient.itemText()).toEqual("");
         });
 
         it("should not return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual("");
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
         });
       });
     });
 
-    describe("when tap is called with capture enabled (by default or via options) but is unsuccessful in retrieving the last spoken phrase", () => {
+    describe("when enqueueAndTap is called with capture enabled (by default or via options) but is unsuccessful in retrieving the last spoken phrase", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -238,7 +246,7 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action);
+        resultPromise = voiceOverClient.enqueueAndTap(action);
       });
 
       afterEach(async () => {
@@ -255,25 +263,25 @@ describe("LogStore", () => {
           await resultPromise;
 
           expect(lastSpokenPhrase).toHaveBeenCalledTimes(
-            MAX_SPOKEN_PHRASES_POLL_COUNT
+            MAX_SPOKEN_PHRASES_POLL_COUNT,
           );
         });
 
         it("should not log any additional phrases", async () => {
-          expect(await logStore.spokenPhraseLog()).toEqual([""]);
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([""]);
 
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toEqual([""]);
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([""]);
         });
 
         it("should return an empty string", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual("");
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
         });
       });
     });
 
-    describe("when tap is called with capture enabled (by default or via options) but the phrases emitted by VO never stabilize (e.g. live region that announces updates every second)", () => {
+    describe("when enqueueAndTap is called with capture enabled (by default or via options) but the phrases emitted by VO never stabilize (e.g. live region that announces updates every second)", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -289,7 +297,7 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action);
+        resultPromise = voiceOverClient.enqueueAndTap(action);
       });
 
       afterEach(async () => {
@@ -306,21 +314,21 @@ describe("LogStore", () => {
           await resultPromise;
 
           expect(lastSpokenPhrase).toHaveBeenCalledTimes(
-            MAX_SPOKEN_PHRASES_POLL_COUNT
+            MAX_SPOKEN_PHRASES_POLL_COUNT,
           );
         });
 
         it("should log the combined last spoken phrases", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toEqual([
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([
             `cleaned_0. cleaned_1. cleaned_2. cleaned_3`,
           ]);
         });
 
         it("should return the combined last spoken phrases from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual(
-            `cleaned_0. cleaned_1. cleaned_2. cleaned_3`
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual(
+            `cleaned_0. cleaned_1. cleaned_2. cleaned_3`,
           );
         });
       });
@@ -329,30 +337,30 @@ describe("LogStore", () => {
 
   describe("when capture has been enabled by default", () => {
     beforeEach(() => {
-      logStore = new LogStore({ capture: true });
+      voiceOverClient = new VoiceOverClient({ capture: true });
     });
 
     it("should initialize with an empty item text log store", async () => {
-      expect(await logStore.itemTextLog()).toEqual([]);
+      expect(await voiceOverClient.itemTextLog()).toEqual([]);
     });
 
     it("should initialize with an empty spoken phrase log store", async () => {
-      expect(await logStore.spokenPhraseLog()).toEqual([]);
+      expect(await voiceOverClient.spokenPhraseLog()).toEqual([]);
     });
 
     it("should initialize with an empty spoken phrase log store", async () => {
-      expect(await logStore.spokenPhraseLog()).toEqual([]);
+      expect(await voiceOverClient.spokenPhraseLog()).toEqual([]);
     });
 
     it("should return with an empty string as the item text if not yet acted", async () => {
-      expect(await logStore.itemText()).toEqual("");
+      expect(await voiceOverClient.itemText()).toEqual("");
     });
 
     it("should return with an empty string as the last spoken phrase if not yet acted", async () => {
-      expect(await logStore.lastSpokenPhrase()).toEqual("");
+      expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
     });
 
-    describe("when tap is called on an action with no capture options", () => {
+    describe("when enqueueAndTap is called on an action with no capture options", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -363,7 +371,7 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action);
+        resultPromise = voiceOverClient.enqueueAndTap(action);
       });
 
       afterEach(async () => {
@@ -379,7 +387,7 @@ describe("LogStore", () => {
         it("should log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toEqual([
+          expect(await voiceOverClient.itemTextLog()).toEqual([
             `cleaned_${itemTextDummy}`,
           ]);
         });
@@ -387,7 +395,7 @@ describe("LogStore", () => {
         it("should log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toEqual([
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([
             `cleaned_${lastSpokenPhraseDummy}`,
           ]);
         });
@@ -397,18 +405,20 @@ describe("LogStore", () => {
         });
 
         it("should return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual(`cleaned_${itemTextDummy}`);
+          expect(await voiceOverClient.itemText()).toEqual(
+            `cleaned_${itemTextDummy}`,
+          );
         });
 
         it("should return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual(
-            `cleaned_${lastSpokenPhraseDummy}`
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual(
+            `cleaned_${lastSpokenPhraseDummy}`,
           );
         });
       });
     });
 
-    describe("when tap is called on an action with capture enabled", () => {
+    describe("when enqueueAndTap is called on an action with capture enabled", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -419,7 +429,9 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action, { capture: true });
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: true,
+        });
       });
 
       afterEach(async () => {
@@ -435,7 +447,7 @@ describe("LogStore", () => {
         it("should log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toEqual([
+          expect(await voiceOverClient.itemTextLog()).toEqual([
             `cleaned_${itemTextDummy}`,
           ]);
         });
@@ -443,7 +455,7 @@ describe("LogStore", () => {
         it("should log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toEqual([
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([
             `cleaned_${lastSpokenPhraseDummy}`,
           ]);
         });
@@ -453,46 +465,48 @@ describe("LogStore", () => {
         });
 
         it("should return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual(`cleaned_${itemTextDummy}`);
+          expect(await voiceOverClient.itemText()).toEqual(
+            `cleaned_${itemTextDummy}`,
+          );
         });
 
         it("should return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual(
-            `cleaned_${lastSpokenPhraseDummy}`
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual(
+            `cleaned_${lastSpokenPhraseDummy}`,
           );
         });
 
         describe("when the item text log is cleared", () => {
           beforeEach(async () => {
-            await logStore.clearItemTextLog();
+            await voiceOverClient.clearItemTextLog();
           });
 
           it("should return with an empty item text log store", async () => {
-            expect(await logStore.itemTextLog()).toEqual([]);
+            expect(await voiceOverClient.itemTextLog()).toEqual([]);
           });
 
           it("should return with an empty string as the item text", async () => {
-            expect(await logStore.itemText()).toEqual("");
+            expect(await voiceOverClient.itemText()).toEqual("");
           });
         });
 
         describe("when the spoken phrase log is cleared", () => {
           beforeEach(async () => {
-            await logStore.clearSpokenPhraseLog();
+            await voiceOverClient.clearSpokenPhraseLog();
           });
 
           it("should return with an empty spoken phrase log store", async () => {
-            expect(await logStore.spokenPhraseLog()).toEqual([]);
+            expect(await voiceOverClient.spokenPhraseLog()).toEqual([]);
           });
 
           it("should return with an empty string as the last spoken phrase", async () => {
-            expect(await logStore.lastSpokenPhrase()).toEqual("");
+            expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
           });
         });
       });
     });
 
-    describe("when tap is called on an action with capture disabled", () => {
+    describe("when enqueueAndTap is called on an action with capture disabled", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -503,7 +517,9 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action, { capture: false });
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: false,
+        });
       });
 
       afterEach(async () => {
@@ -519,13 +535,13 @@ describe("LogStore", () => {
         it("should not log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toHaveLength(0);
+          expect(await voiceOverClient.itemTextLog()).toHaveLength(0);
         });
 
         it("should not log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toHaveLength(0);
+          expect(await voiceOverClient.spokenPhraseLog()).toHaveLength(0);
         });
 
         it("should return the action's result", async () => {
@@ -533,11 +549,11 @@ describe("LogStore", () => {
         });
 
         it("should not return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual("");
+          expect(await voiceOverClient.itemText()).toEqual("");
         });
 
         it("should not return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual("");
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
         });
       });
     });
@@ -545,30 +561,30 @@ describe("LogStore", () => {
 
   describe("when capture has been disabled by default", () => {
     beforeEach(() => {
-      logStore = new LogStore({ capture: false });
+      voiceOverClient = new VoiceOverClient({ capture: false });
     });
 
     it("should initialize with an empty item text log store", async () => {
-      expect(await logStore.itemTextLog()).toEqual([]);
+      expect(await voiceOverClient.itemTextLog()).toEqual([]);
     });
 
     it("should initialize with an empty spoken phrase log store", async () => {
-      expect(await logStore.spokenPhraseLog()).toEqual([]);
+      expect(await voiceOverClient.spokenPhraseLog()).toEqual([]);
     });
 
     it("should initialize with an empty spoken phrase log store", async () => {
-      expect(await logStore.spokenPhraseLog()).toEqual([]);
+      expect(await voiceOverClient.spokenPhraseLog()).toEqual([]);
     });
 
     it("should return with an empty string as the item text if not yet acted", async () => {
-      expect(await logStore.itemText()).toEqual("");
+      expect(await voiceOverClient.itemText()).toEqual("");
     });
 
     it("should return with an empty string as the last spoken phrase if not yet acted", async () => {
-      expect(await logStore.lastSpokenPhrase()).toEqual("");
+      expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
     });
 
-    describe("when tap is called on an action with no capture options", () => {
+    describe("when enqueueAndTap is called on an action with no capture options", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -579,7 +595,7 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action);
+        resultPromise = voiceOverClient.enqueueAndTap(action);
       });
 
       afterEach(async () => {
@@ -595,13 +611,13 @@ describe("LogStore", () => {
         it("should not log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toHaveLength(0);
+          expect(await voiceOverClient.itemTextLog()).toHaveLength(0);
         });
 
         it("should not log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toHaveLength(0);
+          expect(await voiceOverClient.spokenPhraseLog()).toHaveLength(0);
         });
 
         it("should return the action's result", async () => {
@@ -609,16 +625,16 @@ describe("LogStore", () => {
         });
 
         it("should not return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual("");
+          expect(await voiceOverClient.itemText()).toEqual("");
         });
 
         it("should not return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual("");
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
         });
       });
     });
 
-    describe("when tap is called on an action with capture enabled", () => {
+    describe("when enqueueAndTap is called on an action with capture enabled", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -629,7 +645,9 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action, { capture: true });
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: true,
+        });
       });
 
       afterEach(async () => {
@@ -645,7 +663,7 @@ describe("LogStore", () => {
         it("should log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toEqual([
+          expect(await voiceOverClient.itemTextLog()).toEqual([
             `cleaned_${itemTextDummy}`,
           ]);
         });
@@ -653,7 +671,7 @@ describe("LogStore", () => {
         it("should log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toEqual([
+          expect(await voiceOverClient.spokenPhraseLog()).toEqual([
             `cleaned_${lastSpokenPhraseDummy}`,
           ]);
         });
@@ -663,18 +681,20 @@ describe("LogStore", () => {
         });
 
         it("should return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual(`cleaned_${itemTextDummy}`);
+          expect(await voiceOverClient.itemText()).toEqual(
+            `cleaned_${itemTextDummy}`,
+          );
         });
 
         it("should return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual(
-            `cleaned_${lastSpokenPhraseDummy}`
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual(
+            `cleaned_${lastSpokenPhraseDummy}`,
           );
         });
       });
     });
 
-    describe("when tap is called on an action with capture disabled", () => {
+    describe("when enqueueAndTap is called on an action with capture disabled", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -685,7 +705,9 @@ describe("LogStore", () => {
             resolver = resolve;
           });
 
-        resultPromise = logStore.tap(action, { capture: false });
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: false,
+        });
       });
 
       afterEach(async () => {
@@ -701,13 +723,13 @@ describe("LogStore", () => {
         it("should not log the item text", async () => {
           await resultPromise;
 
-          expect(await logStore.itemTextLog()).toHaveLength(0);
+          expect(await voiceOverClient.itemTextLog()).toHaveLength(0);
         });
 
         it("should not log the last spoken phrase", async () => {
           await resultPromise;
 
-          expect(await logStore.spokenPhraseLog()).toHaveLength(0);
+          expect(await voiceOverClient.spokenPhraseLog()).toHaveLength(0);
         });
 
         it("should return the action's result", async () => {
@@ -715,11 +737,11 @@ describe("LogStore", () => {
         });
 
         it("should not return the item text from the last action", async () => {
-          expect(await logStore.itemText()).toEqual("");
+          expect(await voiceOverClient.itemText()).toEqual("");
         });
 
         it("should not return the last spoken phrase from the last action", async () => {
-          expect(await logStore.lastSpokenPhrase()).toEqual("");
+          expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
         });
       });
     });

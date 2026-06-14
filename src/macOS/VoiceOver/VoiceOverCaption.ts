@@ -1,16 +1,16 @@
 import type { CommandOptions } from "../../CommandOptions";
 import { copyLastSpokenPhrase } from "./copyLastSpokenPhrase";
-import { LogStore } from "./LogStore";
 import { saveLastSpokenPhrase } from "./saveLastSpokenPhrase";
+import { VoiceOverClient } from "./VoiceOverClient";
 
 export class VoiceOverCaption {
   /**
    * @ignore
    */
-  #logStore: LogStore;
+  #voiceOverClient: VoiceOverClient;
 
-  constructor(logStore: LogStore) {
-    this.#logStore = logStore;
+  constructor(voiceOverClient: VoiceOverClient) {
+    this.#voiceOverClient = voiceOverClient;
   }
 
   /**
@@ -19,7 +19,7 @@ export class VoiceOverCaption {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
-    return await this.#logStore.lastSpokenPhrase();
+    return await this.#voiceOverClient.lastSpokenPhrase();
   }
 
   /**
@@ -52,7 +52,7 @@ export class VoiceOverCaption {
    * @returns {Promise<string>} The item's text.
    */
   async itemText(): Promise<string> {
-    return await this.#logStore.itemText();
+    return await this.#voiceOverClient.itemText();
   }
 
   /**
@@ -61,14 +61,14 @@ export class VoiceOverCaption {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
-    return await this.#logStore.spokenPhraseLog();
+    return await this.#voiceOverClient.spokenPhraseLog();
   }
 
   /**
    * Clear the log of all spoken phrases for this VoiceOver instance.
    */
   async clearSpokenPhraseLog(): Promise<void> {
-    await this.#logStore.clearSpokenPhraseLog();
+    await this.#voiceOverClient.clearSpokenPhraseLog();
   }
 
   /**
@@ -77,13 +77,13 @@ export class VoiceOverCaption {
    * @returns {Promise<string[]>} The item text log.
    */
   async itemTextLog(): Promise<string[]> {
-    return await this.#logStore.itemTextLog();
+    return await this.#voiceOverClient.itemTextLog();
   }
 
   /**
    * Clear the log of all visited item text for this VoiceOver instance.
    */
   async clearItemTextLog(): Promise<void> {
-    await this.#logStore.clearItemTextLog();
+    await this.#voiceOverClient.clearItemTextLog();
   }
 }
