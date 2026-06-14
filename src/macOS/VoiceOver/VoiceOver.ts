@@ -5,6 +5,7 @@ import {
 } from "./configureSettings";
 import {
   ERR_VOICE_OVER_ALREADY_RUNNING,
+  ERR_VOICE_OVER_CANNOT_BE_STARTED_AS_STOPPING,
   ERR_VOICE_OVER_NOT_RUNNING,
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
@@ -15,12 +16,12 @@ import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
-import { LogStore } from "./LogStore";
 import type { Prettify } from "../../typeHelpers";
 import type { ScreenReader } from "../../ScreenReader";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";
+import { VoiceOverClient } from "./VoiceOverClient";
 import { VoiceOverCommander } from "./VoiceOverCommander";
 import { VoiceOverCursor } from "./VoiceOverCursor";
 import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
@@ -43,6 +44,16 @@ export class VoiceOver implements ScreenReader {
    * VoiceOver running status.
    */
   #started = false;
+
+  /**
+   * VoiceOver stopping status.
+   */
+  #stopping = false;
+
+  /**
+   * VoiceOver client for queued execution and log tapping.
+   */
+  #client!: VoiceOverClient;
 
   /**
    * VoiceOver caption APIs.
@@ -92,7 +103,7 @@ export class VoiceOver implements ScreenReader {
    * ```
    */
   get keyboardCommands() {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -124,7 +135,7 @@ export class VoiceOver implements ScreenReader {
    * ```
    */
   get commanderCommands() {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -207,16 +218,20 @@ export class VoiceOver implements ScreenReader {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
+    if (this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED_AS_STOPPING);
+    }
+
     if (this.#started) {
       throw new Error(ERR_VOICE_OVER_ALREADY_RUNNING);
     }
 
-    const logStore = new LogStore(options);
-    this.#caption = new VoiceOverCaption(logStore);
-    this.#commander = new VoiceOverCommander(logStore);
-    this.#cursor = new VoiceOverCursor(logStore);
-    this.#keyboard = new VoiceOverKeyboard(logStore);
-    this.#mouse = new VoiceOverMouse(logStore);
+    this.#client = new VoiceOverClient(options);
+    this.#caption = new VoiceOverCaption(this.#client);
+    this.#commander = new VoiceOverCommander(this.#client);
+    this.#cursor = new VoiceOverCursor(this.#client);
+    this.#keyboard = new VoiceOverKeyboard(this.#client);
+    this.#mouse = new VoiceOverMouse(this.#client);
 
     // TODO: handle failures in the following steps more gracefully, we should
     // look to gracefully reset back to default if fail to start rather than
@@ -253,13 +268,17 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async stop(options?: CommandOptionsWithoutCapture): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
+
+    this.#stopping = true;
+    await this.#client.stop();
 
     await terminateVoiceOverProcess();
     await waitForNotRunning(options);
 
+    this.#client = null;
     this.#caption = null;
     this.#commander = null;
     this.#cursor = null;
@@ -272,6 +291,7 @@ export class VoiceOver implements ScreenReader {
     }
 
     this.#started = false;
+    this.#stopping = false;
   }
 
   /**
@@ -299,7 +319,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -331,7 +351,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async next(options?: CommandOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -366,7 +386,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -401,7 +421,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async interact(options?: CommandOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -438,7 +458,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -475,7 +495,7 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string>} The path to the screenshot file.
    */
   async takeCursorScreenshot(options?: CommandOptions): Promise<string> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -527,7 +547,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async press(key: string, options?: KeyboardOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -561,7 +581,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async type(text: string, options?: KeyboardOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -605,7 +625,7 @@ export class VoiceOver implements ScreenReader {
     command: KeyboardCommand | CommanderCommands,
     options?: CommandOptions,
   ): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -645,7 +665,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Click options.
    */
   async click(options?: ClickOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -682,7 +702,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async copyLastSpokenPhrase(options?: CommandOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -719,7 +739,7 @@ export class VoiceOver implements ScreenReader {
    * @param {object} [options] Additional options.
    */
   async saveLastSpokenPhrase(options?: CommandOptions): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -753,7 +773,7 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -790,7 +810,7 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string>} The item's text.
    */
   async itemText(): Promise<string> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -826,7 +846,7 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -856,7 +876,7 @@ export class VoiceOver implements ScreenReader {
    * ```
    */
   async clearSpokenPhraseLog(): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -894,7 +914,7 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<string[]>} The item text log.
    */
   async itemTextLog(): Promise<string[]> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -926,7 +946,7 @@ export class VoiceOver implements ScreenReader {
    * ```
    */
   async clearItemTextLog(): Promise<void> {
-    if (!this.#started) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
