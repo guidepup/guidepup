@@ -1,15 +1,15 @@
 import { click } from "./click";
 import type { ClickOptions } from "../../ClickOptions";
-import { LogStore } from "./LogStore";
+import { VoiceOverClient } from "./VoiceOverClient";
 
 export class VoiceOverMouse {
   /**
    * @ignore
    */
-  #logStore: LogStore;
+  #voiceOverClient: VoiceOverClient;
 
-  constructor(logStore: LogStore) {
-    this.#logStore = logStore;
+  constructor(voiceOverClient: VoiceOverClient) {
+    this.#voiceOverClient = voiceOverClient;
   }
 
   /**
@@ -18,6 +18,9 @@ export class VoiceOverMouse {
    * @param {object} [options] Click options.
    */
   async click(options?: ClickOptions): Promise<void> {
-    return await this.#logStore.tap(() => click(options), options);
+    return await this.#voiceOverClient.enqueueAndTap(
+      () => click(options),
+      options,
+    );
   }
 }

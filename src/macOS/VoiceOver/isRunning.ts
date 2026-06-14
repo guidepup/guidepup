@@ -6,7 +6,7 @@ import { runAppleScript } from "../runAppleScript";
 
 export async function isRunning(
   options?: CommandOptions,
-  skipActivate = false
+  skipAppleScript = false,
 ): Promise<boolean> {
   const processRunning = await new Promise<boolean>((resolve) => {
     exec('ps aux | egrep "[V]oiceOver"', (err, stdout) => {
@@ -22,16 +22,16 @@ export async function isRunning(
     return false;
   }
 
+  if (skipAppleScript) {
+    return true;
+  }
+
   const appleScriptRunning = await runAppleScript<string>(
-    `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`
+    `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`,
   );
 
   if (appleScriptRunning === "false") {
     return false;
-  }
-
-  if (skipActivate) {
-    return true;
   }
 
   try {

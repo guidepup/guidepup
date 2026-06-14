@@ -11,11 +11,11 @@ import {
 import { CommanderCommands } from "./CommanderCommands";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
-import { LogStore } from "./LogStore";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOver } from "./VoiceOver";
 import { VoiceOverCaption } from "./VoiceOverCaption";
+import { VoiceOverClient } from "./VoiceOverClient";
 import { VoiceOverCommander } from "./VoiceOverCommander";
 import { VoiceOverCursor } from "./VoiceOverCursor";
 import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
@@ -36,8 +36,8 @@ jest.mock("../../isKeyboard", () => ({
 jest.mock("../isMacOS", () => ({
   isMacOS: jest.fn(),
 }));
-jest.mock("./LogStore", () => ({
-  LogStore: jest.fn(),
+jest.mock("./VoiceOverClient", () => ({
+  VoiceOverClient: jest.fn(),
 }));
 jest.mock("./terminateVoiceOverProcess", () => ({
   terminateVoiceOverProcess: jest.fn(),
@@ -66,6 +66,10 @@ jest.mock("./waitForNotRunning", () => ({
 jest.mock("./waitForRunning", () => ({
   waitForRunning: jest.fn(),
 }));
+
+const VoiceOverClientStub = {
+  stop: jest.fn(),
+};
 
 const VoiceOverCaptionStub = {
   lastSpokenPhrase: jest.fn(),
@@ -104,12 +108,16 @@ const VoiceOverMouseStub = {
 };
 
 describe("VoiceOver", () => {
-  let vo, result;
+  let vo: VoiceOver;
+  let result: unknown;
 
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
+    (VoiceOverClient as jest.Mock<VoiceOverClient>).mockImplementation(
+      () => VoiceOverClientStub as unknown as VoiceOverClient,
+    );
     (VoiceOverCaption as jest.Mock<VoiceOverCaption>).mockImplementation(
       () => VoiceOverCaptionStub as unknown as VoiceOverCaption,
     );
@@ -224,28 +232,28 @@ describe("VoiceOver", () => {
           await vo.start(options);
         });
 
-        it("should construct a log store instance", () => {
-          expect(LogStore).toHaveBeenCalledWith(options);
+        it("should construct a VoiceOver Client instance", () => {
+          expect(VoiceOverClient).toHaveBeenCalledWith(options);
         });
 
         it("should construct a caption instance", () => {
-          expect(VoiceOverCaption).toHaveBeenCalledWith(expect.any(LogStore));
+          expect(VoiceOverCaption).toHaveBeenCalledWith(VoiceOverClientStub);
         });
 
         it("should construct a commander instance", () => {
-          expect(VoiceOverCommander).toHaveBeenCalledWith(expect.any(LogStore));
+          expect(VoiceOverCommander).toHaveBeenCalledWith(VoiceOverClientStub);
         });
 
         it("should construct a cursor instance", () => {
-          expect(VoiceOverCursor).toHaveBeenCalledWith(expect.any(LogStore));
+          expect(VoiceOverCursor).toHaveBeenCalledWith(VoiceOverClientStub);
         });
 
         it("should construct a keyboard instance", () => {
-          expect(VoiceOverKeyboard).toHaveBeenCalledWith(expect.any(LogStore));
+          expect(VoiceOverKeyboard).toHaveBeenCalledWith(VoiceOverClientStub);
         });
 
         it("should construct a mouse instance", () => {
-          expect(VoiceOverMouse).toHaveBeenCalledWith(expect.any(LogStore));
+          expect(VoiceOverMouse).toHaveBeenCalledWith(VoiceOverClientStub);
         });
 
         it("should expose a getter for keyboard commands", () => {
@@ -489,7 +497,7 @@ describe("VoiceOver", () => {
   describe("press", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.press()).rejects.toThrow(
+        await expect(async () => await vo.press("test-key")).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING,
         );
       });
@@ -517,7 +525,7 @@ describe("VoiceOver", () => {
   describe("type", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.type()).rejects.toThrow(
+        await expect(async () => await vo.type("test-text")).rejects.toThrow(
           ERR_VOICE_OVER_NOT_RUNNING,
         );
       });
@@ -545,9 +553,9 @@ describe("VoiceOver", () => {
   describe("perform", () => {
     describe("when VoiceOver is not running", () => {
       it("should throw an error", async () => {
-        await expect(async () => await vo.perform()).rejects.toThrow(
-          ERR_VOICE_OVER_NOT_RUNNING,
-        );
+        await expect(
+          async () => await vo.perform({ keyCode: 0 }),
+        ).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
       });
     });
 

@@ -1,14 +1,14 @@
 import { Applications } from "../Applications";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
-import { LogStore } from "./LogStore";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
 import { sendKeys } from "../sendKeys";
+import { VoiceOverClient } from "./VoiceOverClient";
 import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 
-jest.mock("./LogStore", () => ({
-  LogStore: jest.fn(),
+jest.mock("./VoiceOverClient", () => ({
+  VoiceOverClient: jest.fn(),
 }));
 jest.mock("../../parseKey", () => ({
   parseKey: jest.fn(),
@@ -17,7 +17,9 @@ jest.mock("../sendKeys", () => ({
   sendKeys: jest.fn(),
 }));
 
-const logStoreStub = { tap: jest.fn() } as unknown as LogStore;
+const voiceOverClientStub = {
+  enqueueAndTap: jest.fn(),
+} as unknown as VoiceOverClient;
 
 const applicationDummy = "test-application";
 const parsedKeyDummy = { keyCode: 123456 };
@@ -31,10 +33,10 @@ describe("VoiceOverKeyboard", () => {
 
     jest.mocked(parseKey).mockReturnValue(parsedKeyDummy);
     jest
-      .mocked(logStoreStub.tap)
+      .mocked(voiceOverClientStub.enqueueAndTap)
       .mockImplementation(async (action) => await action());
 
-    keyboard = new VoiceOverKeyboard(logStoreStub);
+    keyboard = new VoiceOverKeyboard(voiceOverClientStub);
   });
 
   describe("press", () => {
@@ -58,14 +60,14 @@ describe("VoiceOverKeyboard", () => {
         expect(sendKeys).toHaveBeenCalledWith(
           parsedKeyDummy,
           expectedApplication,
-          options
+          options,
         );
       });
 
-      it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the sendKeys", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });
@@ -88,14 +90,14 @@ describe("VoiceOverKeyboard", () => {
         expect(sendKeys).toHaveBeenCalledWith(
           { characters: textDummy },
           expectedApplication,
-          options
+          options,
         );
       });
 
-      it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the sendKeys", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });
@@ -121,14 +123,14 @@ describe("VoiceOverKeyboard", () => {
         expect(sendKeys).toHaveBeenCalledWith(
           keyCodeCommands.interactWithItem,
           Applications.VoiceOver,
-          options
+          options,
         );
       });
 
-      it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the sendKeys", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });

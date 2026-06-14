@@ -24,13 +24,13 @@ describe("isRunning", () => {
     ${"without options"} | ${undefined}
     ${"with options"}    | ${{}}
   `("when called $description", ({ options }) => {
-    let result;
+    let result: unknown;
 
     const commonProcessAssertions = () => {
       it("should check to see if the process is running", () => {
         expect(exec).toHaveBeenCalledWith(
           'ps aux | egrep "[V]oiceOver"',
-          expect.any(Function)
+          expect.any(Function),
         );
       });
     };
@@ -38,7 +38,7 @@ describe("isRunning", () => {
     const commonAppleScriptRunningAssertions = () => {
       it("should check to see if the application is running via AppleScript", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`
+          `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`,
         );
       });
     };
@@ -114,7 +114,7 @@ describe("isRunning", () => {
         });
       });
 
-      describe("when called without a skipActivate argument", () => {
+      describe("when called without a skipAppleScript argument", () => {
         describe("when AppleScript says VoiceOver is running", () => {
           beforeEach(() => {
             jest.mocked(runAppleScript).mockResolvedValue("true");
@@ -156,7 +156,7 @@ describe("isRunning", () => {
         });
       });
 
-      describe("when called with skipActivate set to false", () => {
+      describe("when called with skipAppleScript set to false", () => {
         describe("when AppleScript says VoiceOver is running", () => {
           beforeEach(() => {
             jest.mocked(runAppleScript).mockResolvedValue("true");
@@ -198,7 +198,7 @@ describe("isRunning", () => {
         });
       });
 
-      describe("when called with skipActivate set to true", () => {
+      describe("when called with skipAppleScript set to true", () => {
         describe("when AppleScript says VoiceOver is running", () => {
           beforeEach(async () => {
             jest.mocked(runAppleScript).mockResolvedValue("true");
@@ -207,7 +207,6 @@ describe("isRunning", () => {
           });
 
           commonProcessAssertions();
-          commonAppleScriptRunningAssertions();
 
           it("should not try to activate VoiceOver", () => {
             expect(activate).not.toHaveBeenCalled();

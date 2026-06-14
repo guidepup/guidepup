@@ -1,15 +1,17 @@
 import { click } from "./click";
-import { LogStore } from "./LogStore";
+import { VoiceOverClient } from "./VoiceOverClient";
 import { VoiceOverMouse } from "./VoiceOverMouse";
 
 jest.mock("./click", () => ({
   click: jest.fn(),
 }));
-jest.mock("./LogStore", () => ({
-  LogStore: jest.fn(),
+jest.mock("./VoiceOverClient", () => ({
+  VoiceOverClient: jest.fn(),
 }));
 
-const logStoreStub = { tap: jest.fn() } as unknown as LogStore;
+const voiceOverClientStub = {
+  enqueueAndTap: jest.fn(),
+} as unknown as VoiceOverClient;
 
 describe("VoiceOverMouse", () => {
   let mouse: VoiceOverMouse;
@@ -19,10 +21,10 @@ describe("VoiceOverMouse", () => {
     jest.clearAllMocks();
 
     jest
-      .mocked(logStoreStub.tap)
+      .mocked(voiceOverClientStub.enqueueAndTap)
       .mockImplementation(async (action) => await action());
 
-    mouse = new VoiceOverMouse(logStoreStub);
+    mouse = new VoiceOverMouse(voiceOverClientStub);
   });
 
   describe("click", () => {
@@ -39,10 +41,10 @@ describe("VoiceOverMouse", () => {
         expect(click).toHaveBeenCalledWith(options);
       });
 
-      it("should tap the click", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the click", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });

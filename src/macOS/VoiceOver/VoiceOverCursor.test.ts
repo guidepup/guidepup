@@ -1,15 +1,15 @@
 import { Applications } from "../Applications";
 import { Directions } from "./Directions";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { LogStore } from "./LogStore";
 import { move } from "./move";
 import { performAction } from "./performAction";
 import { sendKeys } from "../sendKeys";
 import { takeScreenshot } from "./takeScreenshot";
+import { VoiceOverClient } from "./VoiceOverClient";
 import { VoiceOverCursor } from "./VoiceOverCursor";
 
-jest.mock("./LogStore", () => ({
-  LogStore: jest.fn(),
+jest.mock("./VoiceOverClient", () => ({
+  VoiceOverClient: jest.fn(),
 }));
 jest.mock("./move", () => ({
   move: jest.fn(),
@@ -24,7 +24,9 @@ jest.mock("./takeScreenshot", () => ({
   takeScreenshot: jest.fn(),
 }));
 
-const logStoreStub = { tap: jest.fn() } as unknown as LogStore;
+const voiceOverClientStub = {
+  enqueueAndTap: jest.fn(),
+} as unknown as VoiceOverClient;
 
 const screenshotPathDummy = "test-screenshot-path";
 
@@ -37,10 +39,10 @@ describe("VoiceOverCursor", () => {
 
     jest.mocked(takeScreenshot).mockResolvedValue(screenshotPathDummy);
     jest
-      .mocked(logStoreStub.tap)
+      .mocked(voiceOverClientStub.enqueueAndTap)
       .mockImplementation(async (action) => await action());
 
-    cursor = new VoiceOverCursor(logStoreStub);
+    cursor = new VoiceOverCursor(voiceOverClientStub);
   });
 
   describe("previous", () => {
@@ -58,10 +60,10 @@ describe("VoiceOverCursor", () => {
         expect(move).toHaveBeenCalledWith(Directions.Left, undefined, options);
       });
 
-      it("should tap the move", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the move", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });
@@ -81,10 +83,10 @@ describe("VoiceOverCursor", () => {
         expect(move).toHaveBeenCalledWith(Directions.Right, undefined, options);
       });
 
-      it("should tap the move", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the move", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });
@@ -104,10 +106,10 @@ describe("VoiceOverCursor", () => {
         expect(performAction).toHaveBeenCalledWith(options);
       });
 
-      it("should tap the action", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the action", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });
@@ -127,14 +129,14 @@ describe("VoiceOverCursor", () => {
         expect(sendKeys).toHaveBeenCalledWith(
           keyCodeCommands.interactWithItem,
           Applications.VoiceOver,
-          options
+          options,
         );
       });
 
-      it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the sendKeys", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });
@@ -154,14 +156,14 @@ describe("VoiceOverCursor", () => {
         expect(sendKeys).toHaveBeenCalledWith(
           keyCodeCommands.stopInteractingWithItem,
           Applications.VoiceOver,
-          options
+          options,
         );
       });
 
-      it("should tap the sendKeys", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the sendKeys", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });

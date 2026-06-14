@@ -1,17 +1,17 @@
 import { CommanderCommands } from "./CommanderCommands";
 import { CommandOptions } from "../../CommandOptions";
-import { LogStore } from "./LogStore";
 import { performCommand } from "./performCommand";
 import { Prettify } from "../../typeHelpers";
+import { VoiceOverClient } from "./VoiceOverClient";
 
 export class VoiceOverCommander {
   /**
    * @ignore
    */
-  #logStore: LogStore;
+  #voiceOverClient: VoiceOverClient;
 
-  constructor(logStore: LogStore) {
-    this.#logStore = logStore;
+  constructor(voiceOverClient: VoiceOverClient) {
+    this.#voiceOverClient = voiceOverClient;
   }
 
   /**
@@ -29,11 +29,11 @@ export class VoiceOverCommander {
    */
   async perform(
     command: CommanderCommands,
-    options?: CommandOptions
+    options?: CommandOptions,
   ): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () => performCommand(command, options),
-      options
+      options,
     );
   }
 }

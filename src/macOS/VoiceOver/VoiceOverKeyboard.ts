@@ -5,20 +5,20 @@ import type { KeyboardOptions } from "../../KeyboardOptions";
 import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
-import { LogStore } from "./LogStore";
 import { Modifiers } from "../Modifiers";
 import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
 import { sendKeys } from "../sendKeys";
+import { VoiceOverClient } from "./VoiceOverClient";
 
 export class VoiceOverKeyboard {
   /**
    * @ignore
    */
-  #logStore: LogStore;
+  #voiceOverClient: VoiceOverClient;
 
-  constructor(vo: LogStore) {
-    this.#logStore = vo;
+  constructor(vo: VoiceOverClient) {
+    this.#voiceOverClient = vo;
   }
 
   /**
@@ -49,14 +49,14 @@ export class VoiceOverKeyboard {
    * @param {object} [options] Additional options.
    */
   async press(key: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () =>
         sendKeys(
           parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes),
           options?.application,
-          options
+          options,
         ),
-      options
+      options,
     );
   }
 
@@ -74,9 +74,9 @@ export class VoiceOverKeyboard {
    * @param {object} [options] Additional options.
    */
   async type(text: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () => sendKeys({ characters: text }, options?.application, options),
-      options
+      options,
     );
   }
 
@@ -97,11 +97,11 @@ export class VoiceOverKeyboard {
    */
   async perform(
     command: KeyboardCommand,
-    options?: CommandOptions
+    options?: CommandOptions,
   ): Promise<void> {
-    return await this.#logStore.tap(
+    return await this.#voiceOverClient.enqueueAndTap(
       () => sendKeys(command, Applications.VoiceOver, options),
-      options
+      options,
     );
   }
 }

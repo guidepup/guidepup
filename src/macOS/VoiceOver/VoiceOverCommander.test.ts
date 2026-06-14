@@ -1,16 +1,18 @@
 import { CommanderCommands } from "./CommanderCommands";
-import { LogStore } from "./LogStore";
 import { performCommand } from "./performCommand";
+import { VoiceOverClient } from "./VoiceOverClient";
 import { VoiceOverCommander } from "./VoiceOverCommander";
 
-jest.mock("./LogStore", () => ({
-  LogStore: jest.fn(),
+jest.mock("./VoiceOverClient", () => ({
+  VoiceOverClient: jest.fn(),
 }));
 jest.mock("./performCommand", () => ({
   performCommand: jest.fn(),
 }));
 
-const logStoreStub = { tap: jest.fn() } as unknown as LogStore;
+const voiceOverClientStub = {
+  enqueueAndTap: jest.fn(),
+} as unknown as VoiceOverClient;
 
 describe("VoiceOverCommander", () => {
   let commander: VoiceOverCommander;
@@ -20,10 +22,10 @@ describe("VoiceOverCommander", () => {
     jest.clearAllMocks();
 
     jest
-      .mocked(logStoreStub.tap)
+      .mocked(voiceOverClientStub.enqueueAndTap)
       .mockImplementation(async (action) => await action());
 
-    commander = new VoiceOverCommander(logStoreStub);
+    commander = new VoiceOverCommander(voiceOverClientStub);
   });
 
   describe("commands", () => {
@@ -46,14 +48,14 @@ describe("VoiceOverCommander", () => {
       it("should perform the provided command", () => {
         expect(performCommand).toHaveBeenCalledWith(
           CommanderCommands.ACTIONS,
-          options
+          options,
         );
       });
 
-      it("should tap the performCommand", () => {
-        expect(logStoreStub.tap).toHaveBeenCalledWith(
+      it("should enqueueAndTap the performCommand", () => {
+        expect(voiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
     });
