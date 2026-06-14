@@ -273,9 +273,9 @@ export class VoiceOver implements ScreenReader {
     }
 
     this.#stopping = true;
-    await this.#client.stop();
 
-    await terminateVoiceOverProcess();
+    await this.#client.stop();
+    await terminateVoiceOverProcess(options);
     await waitForNotRunning(options);
 
     this.#client = null;
