@@ -4,8 +4,6 @@ export const ERR_VOICE_OVER_NOT_RUNNING = "VoiceOver not running";
 export const ERR_VOICE_OVER_UNABLE_TO_CONFIGURE_VOICEOVER_SETTING =
   "Unable to configure a VoiceOver setting";
 export const ERR_VOICE_OVER_CANNOT_BE_STARTED = "VoiceOver cannot be started";
-export const ERR_VOICE_OVER_CANNOT_BE_STARTED_AS_STOPPING =
-  "VoiceOver cannot be started as it is currently stopping";
 
 export const ERR_VOICE_OVER_RUNNING_TIMEOUT =
   "Timed out waiting for VoiceOver to be running";

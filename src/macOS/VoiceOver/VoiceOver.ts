@@ -5,7 +5,6 @@ import {
 } from "./configureSettings";
 import {
   ERR_VOICE_OVER_ALREADY_RUNNING,
-  ERR_VOICE_OVER_CANNOT_BE_STARTED_AS_STOPPING,
   ERR_VOICE_OVER_NOT_RUNNING,
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
@@ -216,10 +215,6 @@ export class VoiceOver implements ScreenReader {
   async start(options?: CommandOptions): Promise<void> {
     if (!(await this.detect())) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
-    }
-
-    if (this.#stopping) {
-      throw new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED_AS_STOPPING);
     }
 
     if (this.#started) {
