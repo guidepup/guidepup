@@ -1,6 +1,6 @@
-import { macOSActivate, voiceOver } from "../../lib";
+import { macOSActivate, MacOSKeyCodes, voiceOver } from "../../src";
 import { test } from "@playwright/test";
-import type { VoiceOver } from "../../lib";
+import type { VoiceOver } from "../../src";
 
 const applicationNameMap = {
   chromium: "Google Chrome For Testing",
@@ -43,34 +43,46 @@ const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      voiceOverPlaywright.navigateToWebContent = async () => {
+      voiceOverPlaywright.navigateToWebContent = async (
+        clearLogs: boolean = true,
+      ) => {
         await macOSActivate(applicationName);
+
+        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
 
         await page.bringToFront();
         await page.locator("body").waitFor();
-        await page.locator("body").focus();
-        await page.locator("body").click();
+
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.openWebItemRotor,
+        );
+
+        await voiceOverPlaywright.type("content");
+
+        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Enter });
 
         await voiceOverPlaywright.interact();
-
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.findPreviousHeading,
-        );
-
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.findPreviousPlainText,
-        );
 
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
         );
 
-        await voiceOverPlaywright.clearItemTextLog();
-        await voiceOverPlaywright.clearSpokenPhraseLog();
+        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
+
+        if (clearLogs) {
+          await voiceOverPlaywright.clearItemTextLog();
+          await voiceOverPlaywright.clearSpokenPhraseLog();
+        }
       };
 
       await voiceOverPlaywright.start({ capture: "initial" });
-      await macOSActivate(applicationNameMap[browserName]);
+      await macOSActivate(applicationName);
+
+      await voiceOverPlaywright.perform(
+        { keyCode: MacOSKeyCodes.Control },
+        { capture: false },
+      );
+
       await use(voiceOverPlaywright);
     } finally {
       try {
