@@ -24,12 +24,10 @@
     "guidepup"
   ],
   "scripts": {
-    "build": "yarn clean && yarn compile && yarn docs",
+    "build": "yarn clean && yarn compile",
     "ci": "yarn clean && yarn lint && yarn test:coverage && yarn build",
-    "clean": "rimraf lib docs",
+    "clean": "rimraf lib",
     "compile": "tsc",
-    "docs": "typedoc --tsconfig ./tsconfig.json --out docs --name Guidepup --includeVersion --readme ./README.md src/index.ts",
-    "postdocs": "echo 'future: true\nencoding: \"UTF-8\"\ninclude:\n  - \"_*_.html\"\n  - \"_*_.*.html\"' > ./docs/_config.yaml",
     "lint": "eslint . --ext .ts --cache",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
