@@ -115,8 +115,8 @@ test.describe("Webkit Playwright VoiceOver", () => {
       await voiceOver.type("Abc");
       log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
-      log(`Pressing: "Control+A"`);
-      await voiceOver.press("Control+A");
+      log(`Pressing: "Cmd+A"`);
+      await voiceOver.press("Cmd+A");
       log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
       log(`Pressing: "Delete"`);
