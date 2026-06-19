@@ -1,10 +1,7 @@
+import { delay } from "./delay";
 import { log } from "../../log";
 import { Page } from "@playwright/test";
 import { VoiceOverPlaywright } from "../voiceover-test";
-
-async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 const MAX_NAVIGATION_LOOP = 10;
 

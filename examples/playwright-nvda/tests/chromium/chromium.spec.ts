@@ -4,7 +4,7 @@ import { expect } from "@playwright/test";
 import { headerNavigation } from "../headerNavigation";
 import { log } from "../../../log";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import spokenPhraseSnapshotGitHub from "./chromium.spokenPhrase.github.snapshot.json";
+import spokenPhraseSnapshotDocs from "./chromium.spokenPhrase.docs.snapshot.json";
 import spokenPhraseSnapshotTextarea from "./chromium.spokenPhrase.textarea.snapshot.json";
 import { nvdaTest as test } from "../../nvda-test";
 
@@ -55,7 +55,7 @@ test.describe("Chromium Playwright NVDA", () => {
 
       console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
-      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotGitHub);
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotDocs);
     } finally {
       stopRecording?.();
     }
