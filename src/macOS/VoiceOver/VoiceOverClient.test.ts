@@ -1,4 +1,5 @@
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
+import { ERR_VOICE_OVER_NOT_RUNNING } from "../errors";
 import { itemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
 import { MAX_SPOKEN_PHRASES_POLL_COUNT } from "./constants";
@@ -358,6 +359,16 @@ describe("VoiceOverClient", () => {
 
     it("should return with an empty string as the last spoken phrase if not yet acted", async () => {
       expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
+    });
+
+    it("should gracefully handle clearing the spoken phrase log when there have been no spoken phrases", async () => {
+      await expect(
+        voiceOverClient.clearSpokenPhraseLog(),
+      ).resolves.not.toThrow();
+    });
+
+    it("should gracefully handle clearing the item text log when there have been no spoken phrases", async () => {
+      await expect(voiceOverClient.clearItemTextLog()).resolves.not.toThrow();
     });
 
     describe("when enqueueAndTap is called on an action with no capture options", () => {
@@ -743,6 +754,296 @@ describe("VoiceOverClient", () => {
         it("should not return the last spoken phrase from the last action", async () => {
           expect(await voiceOverClient.lastSpokenPhrase()).toEqual("");
         });
+      });
+    });
+  });
+
+  describe("when multiple actions are enqueued", () => {
+    let voiceOverClientWithCapture: VoiceOverClient;
+
+    beforeEach(() => {
+      voiceOverClientWithCapture = new VoiceOverClient({ capture: true });
+    });
+
+    it("should execute actions serially and accumulate logs", async () => {
+      const result1 = Symbol("result-1");
+      const result2 = Symbol("result-2");
+      const result3 = Symbol("result-3");
+
+      const promise1 = voiceOverClientWithCapture.enqueueAndTap(async () => {
+        return result1;
+      });
+
+      const promise2 = voiceOverClientWithCapture.enqueueAndTap(async () => {
+        return result2;
+      });
+
+      const promise3 = voiceOverClientWithCapture.enqueueAndTap(async () => {
+        return result3;
+      });
+
+      const [r1, r2, r3] = await Promise.all([promise1, promise2, promise3]);
+
+      expect(r1).toBe(result1);
+      expect(r2).toBe(result2);
+      expect(r3).toBe(result3);
+
+      expect(await voiceOverClientWithCapture.itemTextLog()).toEqual([
+        `cleaned_${itemTextDummy}`,
+        `cleaned_${itemTextDummy}`,
+        `cleaned_${itemTextDummy}`,
+      ]);
+
+      expect(await voiceOverClientWithCapture.spokenPhraseLog()).toEqual([
+        `cleaned_${lastSpokenPhraseDummy}`,
+        `cleaned_${lastSpokenPhraseDummy}`,
+        `cleaned_${lastSpokenPhraseDummy}`,
+      ]);
+    });
+
+    it("should allow accessing logs while actions are in flight", async () => {
+      let actionStarted = false;
+      let resolveAction!: () => void;
+
+      const action = async () => {
+        actionStarted = true;
+
+        await new Promise<void>((resolve) => {
+          resolveAction = resolve;
+        });
+      };
+
+      voiceOverClientWithCapture.enqueueAndTap(action);
+
+      await new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+          if (actionStarted) {
+            clearInterval(checkInterval);
+            resolve(undefined);
+          }
+        }, 10);
+      });
+
+      resolveAction();
+
+      const itemLogs = await voiceOverClientWithCapture.itemTextLog();
+      const spokenLogs = await voiceOverClientWithCapture.spokenPhraseLog();
+
+      expect(itemLogs).toEqual([`cleaned_${itemTextDummy}`]);
+      expect(spokenLogs).toEqual([`cleaned_${lastSpokenPhraseDummy}`]);
+    });
+  });
+
+  describe("when an enqueued action throws an error", () => {
+    let voiceOverClientWithCapture: VoiceOverClient;
+
+    beforeEach(() => {
+      voiceOverClientWithCapture = new VoiceOverClient({ capture: true });
+    });
+
+    it("should reject the action's promise", async () => {
+      const testError = new Error("test-action-error");
+
+      const promise = voiceOverClientWithCapture.enqueueAndTap(async () => {
+        throw testError;
+      });
+
+      await expect(promise).rejects.toBe(testError);
+    });
+
+    it("should not log the failed action and continue processing subsequent actions", async () => {
+      const testError = new Error("test-action-error");
+      const successResult = Symbol("success-result");
+
+      const rejectingPromise = voiceOverClientWithCapture.enqueueAndTap(
+        async () => {
+          throw testError;
+        },
+      );
+
+      const successPromise = voiceOverClientWithCapture.enqueueAndTap(
+        async () => successResult,
+      );
+
+      await expect(rejectingPromise).rejects.toBe(testError);
+      const result = await successPromise;
+
+      expect(result).toBe(successResult);
+
+      // Only the successful action should be logged
+      expect(await voiceOverClientWithCapture.itemTextLog()).toEqual([
+        `cleaned_${itemTextDummy}`,
+      ]);
+
+      expect(await voiceOverClientWithCapture.spokenPhraseLog()).toEqual([
+        `cleaned_${lastSpokenPhraseDummy}`,
+      ]);
+    });
+
+    it("should not log when an action errors and capture is disabled", async () => {
+      const testError = new Error("test-action-error");
+
+      const promise = voiceOverClientWithCapture.enqueueAndTap(
+        async () => {
+          throw testError;
+        },
+        { capture: false },
+      );
+
+      await expect(promise).rejects.toBe(testError);
+
+      expect(await voiceOverClientWithCapture.itemTextLog()).toHaveLength(0);
+      expect(await voiceOverClientWithCapture.spokenPhraseLog()).toHaveLength(
+        0,
+      );
+    });
+  });
+
+  describe("stop", () => {
+    describe("when there is something in flight", () => {
+      let voiceOverClientWithCapture: VoiceOverClient;
+      let actionStarted: boolean;
+      let resolveInFlightAction: () => void;
+
+      beforeEach(async () => {
+        voiceOverClientWithCapture = new VoiceOverClient({ capture: true });
+        actionStarted = false;
+
+        const inFlightAction = async () => {
+          actionStarted = true;
+
+          await new Promise<void>((resolve) => {
+            resolveInFlightAction = resolve;
+          });
+        };
+
+        voiceOverClientWithCapture.enqueueAndTap(inFlightAction);
+
+        await new Promise((resolve) => {
+          const checkInterval = setInterval(() => {
+            if (actionStarted) {
+              clearInterval(checkInterval);
+              resolve(undefined);
+            }
+          }, 10);
+        });
+      });
+
+      it("should wait for the in-flight action to complete before resolving", async () => {
+        const stopPromise = voiceOverClientWithCapture.stop();
+
+        let stopResolved = false;
+        stopPromise.then(() => {
+          stopResolved = true;
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(stopResolved).toBe(false);
+
+        resolveInFlightAction();
+
+        await stopPromise;
+
+        expect(stopResolved).toBe(true);
+      });
+    });
+
+    describe("when there is something in flight and something queued", () => {
+      let voiceOverClientWithCapture: VoiceOverClient;
+      let inFlightActionStarted: boolean;
+      let resolveInFlightAction: () => void;
+      let queuedAction1Error!: Error;
+      let queuedAction2Error!: Error;
+
+      beforeEach(async () => {
+        voiceOverClientWithCapture = new VoiceOverClient({ capture: true });
+        inFlightActionStarted = false;
+
+        const inFlightAction = async () => {
+          inFlightActionStarted = true;
+
+          await new Promise<void>((resolve) => {
+            resolveInFlightAction = resolve;
+          });
+        };
+
+        const queuedAction1 = async () => {};
+        const queuedAction2 = async () => {};
+
+        voiceOverClientWithCapture
+          .enqueueAndTap(inFlightAction)
+          .catch(() => {});
+        voiceOverClientWithCapture.enqueueAndTap(queuedAction1).catch((e) => {
+          queuedAction1Error = e;
+        });
+        voiceOverClientWithCapture.enqueueAndTap(queuedAction2).catch((e) => {
+          queuedAction2Error = e;
+        });
+
+        await new Promise((resolve) => {
+          const checkInterval = setInterval(() => {
+            if (inFlightActionStarted) {
+              clearInterval(checkInterval);
+              resolve(undefined);
+            }
+          }, 10);
+        });
+      });
+
+      it("should wait for the in-flight action and queued actions to resolve and/or reject before resolving", async () => {
+        const stopPromise = voiceOverClientWithCapture.stop();
+
+        let stopResolved = false;
+        stopPromise.then(() => {
+          stopResolved = true;
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(stopResolved).toBe(false);
+
+        resolveInFlightAction();
+
+        await stopPromise;
+
+        expect(stopResolved).toBe(true);
+        expect(queuedAction1Error).toEqual(
+          new Error(ERR_VOICE_OVER_NOT_RUNNING),
+        );
+        expect(queuedAction2Error).toEqual(
+          new Error(ERR_VOICE_OVER_NOT_RUNNING),
+        );
+      });
+    });
+
+    describe("when enqueueAndTap is called after stop", () => {
+      let voiceOverClientWithCapture: VoiceOverClient;
+
+      beforeEach(async () => {
+        voiceOverClientWithCapture = new VoiceOverClient({ capture: true });
+        await voiceOverClientWithCapture.stop();
+      });
+
+      it("should throw ERR_VOICE_OVER_NOT_RUNNING", async () => {
+        const promise = voiceOverClientWithCapture.enqueueAndTap(async () => {
+          return Symbol("action-result");
+        });
+
+        await expect(promise).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
+      });
+
+      it("should throw ERR_VOICE_OVER_NOT_RUNNING for all subsequent calls", async () => {
+        const promise1 = voiceOverClientWithCapture.enqueueAndTap(async () => {
+          return Symbol("action-result-1");
+        });
+
+        const promise2 = voiceOverClientWithCapture.enqueueAndTap(async () => {
+          return Symbol("action-result-2");
+        });
+
+        await expect(promise1).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
+        await expect(promise2).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
       });
     });
   });

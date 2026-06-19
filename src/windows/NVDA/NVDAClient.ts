@@ -1,6 +1,10 @@
 import { connect, TLSSocket } from "tls";
 import { dirname, join } from "path";
-import { ERR_NVDA_CANNOT_CONNECT, ERR_NVDA_NOT_INSTALLED } from "../errors";
+import {
+  ERR_NVDA_CANNOT_CONNECT,
+  ERR_NVDA_NOT_INSTALLED,
+  ERR_NVDA_NOT_RUNNING,
+} from "../errors";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { CommandOptions } from "../../CommandOptions";
 import { EventEmitter } from "events";
@@ -49,19 +53,19 @@ const CANCEL_NOT_FIRE_TIMEOUT = 1000;
 const SPEAK_DEBOUNCE_TIMEOUT = 1000;
 
 const isChannelJoinedMessage = (
-  message: NVDABaseMessage
+  message: NVDABaseMessage,
 ): message is NVDAChannelJoinedMessage => {
   return message.type === CHANNEL_JOINED;
 };
 
 const isCancelMessage = (
-  message: NVDABaseMessage
+  message: NVDABaseMessage,
 ): message is NVDACancelMessage => {
   return message.type === CANCEL;
 };
 
 const isSpeakMessage = (
-  message: NVDABaseMessage
+  message: NVDABaseMessage,
 ): message is NVDASpeakMessage => {
   return message.type === SPEAK;
 };
@@ -69,8 +73,18 @@ const isSpeakMessage = (
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
 
+interface QueueAction {
+  action: () => Promise<unknown>;
+  options: Pick<CommandOptions, "capture">;
+  promise: Promise<unknown>;
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
+}
+
 export class NVDAClient extends EventEmitter {
-  #activePromise = null;
+  #inFlight: Promise<unknown> | null = null;
+  #queue: QueueAction[] = [];
+  #stopped = false;
   #socket: TLSSocket;
   #spokenPhrases = [];
   #consecutiveConnectionFailures = 0;
@@ -82,9 +96,7 @@ export class NVDAClient extends EventEmitter {
    * @returns {Promise<string[]>} All spoken phrases
    */
   async spokenPhraseLog(): Promise<string[]> {
-    if (this.#activePromise) {
-      await this.#activePromise;
-    }
+    await this.#waitForAllActions();
 
     return this.#spokenPhrases;
   }
@@ -93,9 +105,7 @@ export class NVDAClient extends EventEmitter {
    * Clear the log of all spoken phrases for this NVDA connection.
    */
   async clearSpokenPhraseLog(): Promise<void> {
-    if (this.#activePromise) {
-      await this.#activePromise;
-    }
+    await this.#waitForAllActions();
 
     this.#spokenPhrases = [];
   }
@@ -117,7 +127,7 @@ export class NVDAClient extends EventEmitter {
       "remote",
       "globalPlugins",
       "remoteClient",
-      "server.pem"
+      "server.pem",
     );
 
     let ca;
@@ -129,7 +139,7 @@ export class NVDAClient extends EventEmitter {
     }
 
     return new Promise<void>((resolve, reject) =>
-      this.#connect(ca, options?.capture, resolve, reject)
+      this.#connect(ca, options?.capture, resolve, reject),
     );
   }
 
@@ -137,7 +147,7 @@ export class NVDAClient extends EventEmitter {
     ca: Buffer,
     capture: CommandOptions["capture"] = true,
     onSuccess?: () => void,
-    onError?: (error: Error) => void
+    onError?: (error: Error) => void,
   ): Promise<void> {
     let onSuccessCalled = false;
 
@@ -158,7 +168,7 @@ export class NVDAClient extends EventEmitter {
 
         await this.#send(connectionMessage);
         await this.#send(protocolMessage);
-      }
+      },
     );
 
     this.#socket.setEncoding("utf8");
@@ -218,7 +228,7 @@ export class NVDAClient extends EventEmitter {
         }
 
         spokenPhraseParts.push(
-          spokenPhrasePart.trim().replaceAll(/\s\s+/g, " ")
+          spokenPhrasePart.trim().replaceAll(/\s\s+/g, " "),
         );
       }
 
@@ -229,7 +239,7 @@ export class NVDAClient extends EventEmitter {
   }
 
   /**
-   * disconnect the NVDA connection.
+   * Disconnect the NVDA connection.
    */
   disconnect(): void {
     try {
@@ -240,6 +250,17 @@ export class NVDAClient extends EventEmitter {
 
     this.#socket = null;
     this.#capture = null;
+  }
+
+  /**
+   * Stop NVDA action execution.
+   */
+  async stop(): Promise<void> {
+    this.#stopped = true;
+
+    await this.#waitForAllActions();
+
+    this.disconnect();
   }
 
   /**
@@ -269,79 +290,111 @@ export class NVDAClient extends EventEmitter {
 
   /**
    * Stops the current spoken phrase, executes the provided action, and waits
-   * for the associated spoken phrase.
+   * for the associated spoken phrase. Actions are executed serially in the
+   * order they are enqueued.
    *
-   * This is used internally to ensure there isn't a race condition when
-   * calling lastSpokenPhrase() after executing an action.
-   *
-   * @param {Promise<unknown>} promise Underlying action to capture logs for.
+   * @param {() => Promise<T>} action Underlying action to capture logs for.
    * @param {object} options Additional options.
-   * @returns {Promise<unknown>}
+   * @returns {Promise<T>} Promise that resolves with the action's result.
    */
-  async waitForSpokenPhrase<T>(
+  enqueueAndTap<T>(
     action: () => Promise<T>,
-    options: Pick<CommandOptions, "capture">
+    options?: Pick<CommandOptions, "capture">,
   ): Promise<T> {
-    if (this.#activePromise) {
-      await this.#activePromise;
+    if (this.#stopped) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    let activePromiseResolver: () => void;
-    this.#activePromise = new Promise<void>(
-      (resolve) => (activePromiseResolver = resolve)
-    );
+    let resolve, reject;
 
-    const spokenPhrases = [];
-    let result: T;
+    const promise = new Promise<T>((_resolve, _reject) => {
+      resolve = _resolve;
+      reject = _reject;
+    });
 
-    if (options?.capture ?? this.#capture) {
-      await this.#stopReading();
+    this.#queue.push({ action, options, promise, resolve, reject });
+    this.#processQueue();
 
-      let speakPromiseResolver: () => void;
+    return promise;
+  }
 
-      const speakPromise = new Promise<void>((resolve) => {
-        speakPromiseResolver = resolve;
-      });
+  async #waitForAllActions(): Promise<void> {
+    const allPromises = this.#queue.map(({ promise }) => promise);
 
-      let timeoutId: NodeJS.Timeout = null;
+    if (this.#inFlight) {
+      allPromises.push(this.#inFlight);
+    }
 
-      const speakHandler = (spokenPhrase) => {
-        spokenPhrases.push(spokenPhrase);
+    await Promise.allSettled(allPromises);
+  }
 
-        if ((options?.capture ?? this.#capture) === "initial") {
-          clearTimeout(timeoutId);
+  async #processQueue() {
+    if (this.#inFlight || this.#queue.length === 0) {
+      return;
+    }
+
+    const { action, options, resolve, reject, promise } = this.#queue.shift()!;
+    this.#inFlight = promise;
+
+    try {
+      if (this.#stopped) {
+        throw new Error(ERR_NVDA_NOT_RUNNING);
+      }
+
+      const spokenPhrases: string[] = [];
+      let result: unknown;
+
+      if (options?.capture ?? this.#capture) {
+        await this.#stopReading();
+
+        let speakPromiseResolver: () => void;
+
+        const speakPromise = new Promise<void>((resolve) => {
+          speakPromiseResolver = resolve;
+        });
+
+        let timeoutId: NodeJS.Timeout = null;
+
+        const speakHandler = (spokenPhrase: string) => {
+          spokenPhrases.push(spokenPhrase);
+
+          if ((options?.capture ?? this.#capture) === "initial") {
+            clearTimeout(timeoutId);
+            this.removeListener(SPEAK, speakHandler);
+            speakPromiseResolver();
+          } else if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(timeoutHandler, SPEAK_DEBOUNCE_TIMEOUT);
+          }
+        };
+
+        const timeoutHandler = () => {
           this.removeListener(SPEAK, speakHandler);
           speakPromiseResolver();
-        } else if (timeoutId !== null) {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(timeoutHandler, SPEAK_DEBOUNCE_TIMEOUT);
-        }
-      };
+        };
 
-      const timeoutHandler = () => {
-        this.removeListener(SPEAK, speakHandler);
-        speakPromiseResolver();
-      };
+        this.addListener(SPEAK, speakHandler);
 
-      this.addListener(SPEAK, speakHandler);
+        result = await action();
 
-      result = await action();
+        timeoutId = setTimeout(timeoutHandler, SPEAK_DEBOUNCE_TIMEOUT);
 
-      timeoutId = setTimeout(timeoutHandler, SPEAK_DEBOUNCE_TIMEOUT);
+        await speakPromise;
 
-      await speakPromise;
+        timeoutId = null;
+      } else {
+        result = await action();
+      }
 
-      timeoutId = null;
-    } else {
-      result = await action();
+      this.#spokenPhrases.push(spokenPhrases.join(". "));
+
+      resolve(result);
+    } catch (error) {
+      reject(error);
+    } finally {
+      this.#inFlight = null;
+      this.#processQueue();
     }
-
-    this.#spokenPhrases.push(spokenPhrases.join(". "));
-
-    activePromiseResolver();
-    this.#activePromise = null;
-
-    return result;
   }
 
   async #stopReading(): Promise<void> {
