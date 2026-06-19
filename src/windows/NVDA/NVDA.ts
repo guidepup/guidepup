@@ -385,10 +385,10 @@ export class NVDA implements ScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return this.#client.enqueueAndTap(
-      () => sendKeys({ characters: text }),
-      options,
-    );
+    return this.#client.enqueueAndTap(() => sendKeys({ characters: text }), {
+      ...options,
+      initialCaptureCount: text.length,
+    });
   }
 
   /**

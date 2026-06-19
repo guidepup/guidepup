@@ -1,10 +1,7 @@
+import { delay } from "./delay";
 import { log } from "../../log";
 import { NVDAPlaywright } from "../nvda-test";
 import { Page } from "@playwright/test";
-
-async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 const MAX_NAVIGATION_LOOP = 10;
 
