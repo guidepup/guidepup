@@ -74,10 +74,13 @@ export class VoiceOverKeyboard {
    * @param {object} [options] Additional options.
    */
   async type(text: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
-      () => sendKeys({ characters: text }, options?.application, options),
-      options,
-    );
+    for (const character of text) {
+      await this.#voiceOverClient.enqueueAndTap(
+        () =>
+          sendKeys({ characters: character }, options?.application, options),
+        options,
+      );
+    }
   }
 
   /**

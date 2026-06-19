@@ -9,6 +9,7 @@ export enum Modifiers {
   /**
    * The Command (alias cmd, ⌘) key.
    */
+  Cmd = "command",
   Command = "command",
   CommandLeft = "command",
   CommandRight = "command",
