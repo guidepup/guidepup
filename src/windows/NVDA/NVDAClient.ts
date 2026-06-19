@@ -73,9 +73,7 @@ const isSpeakMessage = (
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
 
-type ActionOptions = Pick<CommandOptions, "capture"> & {
-  initialCaptureCount?: number;
-};
+type ActionOptions = Pick<CommandOptions, "capture">;
 
 interface QueueAction {
   action: () => Promise<unknown>;
@@ -362,10 +360,7 @@ export class NVDAClient extends EventEmitter {
         const speakHandler = (spokenPhrase: string) => {
           spokenPhrases.push(spokenPhrase);
 
-          if (
-            (options?.capture ?? this.#capture) === "initial" &&
-            spokenPhrases.length >= (options?.initialCaptureCount ?? 1)
-          ) {
+          if ((options?.capture ?? this.#capture) === "initial") {
             clearTimeout(timeoutId);
             this.removeListener(SPEAK, speakHandler);
             speakPromiseResolver();

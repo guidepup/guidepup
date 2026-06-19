@@ -87,7 +87,7 @@ test.describe("Chromium Playwright NVDA", () => {
       stopRecording = await record(recordingFilePath);
 
       log("Navigating to textarea test page.");
-      await page.goto("https://about:blank", {
+      await page.goto("about:blank", {
         waitUntil: "load",
       });
 
