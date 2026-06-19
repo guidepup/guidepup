@@ -231,7 +231,7 @@ describe("VoiceOverClient", () => {
       });
     });
 
-    describe("when enqueueAndTap is called with capture enabled (by default or via options) but is unsuccessful in retrieving the last spoken phrase", () => {
+    describe("when enqueueAndTap is called with capture enabled but is unsuccessful in retrieving the last spoken phrase", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -247,7 +247,9 @@ describe("VoiceOverClient", () => {
             resolver = resolve;
           });
 
-        resultPromise = voiceOverClient.enqueueAndTap(action);
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: true,
+        });
       });
 
       afterEach(async () => {
@@ -282,7 +284,7 @@ describe("VoiceOverClient", () => {
       });
     });
 
-    describe("when enqueueAndTap is called with capture enabled (by default or via options) but the phrases emitted by VO never stabilize (e.g. live region that announces updates every second)", () => {
+    describe("when enqueueAndTap is called with capture enabled but the phrases emitted by VO never stabilize (e.g. live region that announces updates every second)", () => {
       const expectedResult = Symbol("test-expected-result");
       let resultPromise: Promise<unknown>,
         resolver: (r: typeof expectedResult) => void;
@@ -298,7 +300,9 @@ describe("VoiceOverClient", () => {
             resolver = resolve;
           });
 
-        resultPromise = voiceOverClient.enqueueAndTap(action);
+        resultPromise = voiceOverClient.enqueueAndTap(action, {
+          capture: true,
+        });
       });
 
       afterEach(async () => {
