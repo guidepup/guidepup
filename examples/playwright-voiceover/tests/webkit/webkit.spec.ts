@@ -107,10 +107,25 @@ test.describe("Webkit Playwright VoiceOver", () => {
       await voiceOver.navigateToWebContent();
       await delay(500);
 
+      log(`Performing command: "VO+Right Arrow"`);
+      await voiceOver.next();
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Typing: "Abc"`);
       await voiceOver.type("Abc");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Pressing: "Control+A"`);
       await voiceOver.press("Control+A");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Pressing: "Delete"`);
       await voiceOver.press("Delete");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Pressing: "Delete"`);
       await voiceOver.type("123");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
       await expect(input).toHaveValue("123");
 
