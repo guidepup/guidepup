@@ -87,11 +87,16 @@ describe("VoiceOverKeyboard", () => {
       });
 
       it("should send the parsed keys", () => {
-        expect(sendKeys).toHaveBeenCalledWith(
-          { characters: textDummy },
-          expectedApplication,
-          options,
-        );
+        for (let i = 0; i < textDummy.length; i++) {
+          const character = textDummy[i];
+
+          expect(sendKeys).toHaveBeenNthCalledWith(
+            i + 1,
+            { characters: character },
+            expectedApplication,
+            options,
+          );
+        }
       });
 
       it("should enqueueAndTap the sendKeys", () => {

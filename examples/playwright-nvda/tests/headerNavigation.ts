@@ -45,7 +45,9 @@ export async function headerNavigation({
 
   // Move across text and buttons using NVDA
   while (
-    !(await nvda.lastSpokenPhrase()).replaceAll(/\s*/, "").includes("GitHub") &&
+    !(await nvda.lastSpokenPhrase())
+      .replaceAll(/\s*/g, "")
+      .includes("GitHub") &&
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;
