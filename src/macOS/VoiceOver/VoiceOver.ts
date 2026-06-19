@@ -572,6 +572,12 @@ export class VoiceOver implements ScreenReader {
    * })();
    * ```
    *
+   * Note: Each character is typed separately for this command. This means
+   * calling `await voiceOver.lastSpokenPhrase()` will yield the last spoken
+   * phrase for the last character in the typed string. If you need access to
+   * the spoken phrase(s) for the entire typed string then use
+   * `await voiceOver.spokenPhraseLog()`.
+   *
    * @param {string} text Text to type into the focused item.
    * @param {object} [options] Additional options.
    */
