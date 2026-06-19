@@ -7,7 +7,7 @@ export interface CommandOptions {
    * subsequent content.
    * - `false` will disable capture.
    *
-   * Default is `true`.
+   * Default is `"initial"`.
    */
   capture?: true | false | "initial";
 

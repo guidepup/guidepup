@@ -210,6 +210,11 @@ export class VoiceOver implements ScreenReader {
    * })();
    * ```
    *
+   * Note: By default the `capture` option is set to `"initial"` to capture the
+   * first "page" of output, but not any subsequent content. To enable full
+   * capture set `{ capture: true }`, or to disable capture set
+   * `{ capture: false }`.
+   *
    * @param {object} [options] Additional options.
    */
   async start(options?: CommandOptions): Promise<void> {
