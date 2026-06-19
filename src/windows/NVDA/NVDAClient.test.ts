@@ -39,7 +39,7 @@ describe("NVDAClient", () => {
           "remote",
           "globalPlugins",
           "remoteClient",
-          "server.pem"
+          "server.pem",
         )
       ) {
         return readKey("server.pem");
@@ -89,7 +89,7 @@ describe("NVDAClient", () => {
           if (++counter === expectedMessages) {
             resolve();
           }
-        })
+        }),
       );
     }
 
@@ -117,7 +117,7 @@ describe("NVDAClient", () => {
 
         if (json.type === "join") {
           clientSocket.write(
-            JSON.stringify({ type: "channel_joined", user_id: 1 })
+            JSON.stringify({ type: "channel_joined", user_id: 1 }),
           );
         }
       });
@@ -127,7 +127,7 @@ describe("NVDAClient", () => {
 
     afterEach(() => {
       nvdaServerFake.close();
-      client.disconnect();
+      client.stop();
       (clientSocket as unknown) = undefined;
     });
 
@@ -140,8 +140,8 @@ describe("NVDAClient", () => {
           "remote",
           "globalPlugins",
           "remoteClient",
-          "server.pem"
-        )
+          "server.pem",
+        ),
       );
     });
 
@@ -152,14 +152,14 @@ describe("NVDAClient", () => {
           type: "join",
           connection_type: "master",
           channel: "guidepup",
-        }) + "\n"
+        }) + "\n",
       );
       expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
         2,
         JSON.stringify({
           type: "protocol_version",
           version: 2,
-        }) + "\n"
+        }) + "\n",
       );
     });
 
@@ -186,11 +186,11 @@ describe("NVDAClient", () => {
             type: "speak",
             sequence: [null, 1, {}, "test", "  test  with   extra spaces  "],
             priority: 1,
-          }) + "\n"
+          }) + "\n",
         );
 
         expect(await speakEmittedPromise).toEqual(
-          "test, test with extra spaces"
+          "test, test with extra spaces",
         );
       });
     });
@@ -217,7 +217,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -227,7 +227,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
       });
     });
@@ -257,7 +257,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -267,7 +267,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -277,7 +277,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
@@ -287,7 +287,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
       });
     });
@@ -309,7 +309,7 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.Alt.toString(true) + "\n"
+          Modifiers.Alt.toString(true) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -319,7 +319,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -329,11 +329,11 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
-          Modifiers.Alt.toString(false) + "\n"
+          Modifiers.Alt.toString(false) + "\n",
         );
       });
     });
@@ -358,11 +358,11 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.Alt.toString(true) + "\n"
+          Modifiers.Alt.toString(true) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
-          Modifiers.Control.toString(true) + "\n"
+          Modifiers.Control.toString(true) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -372,7 +372,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
@@ -382,7 +382,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           5,
@@ -392,7 +392,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           6,
@@ -402,21 +402,21 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           7,
-          Modifiers.Control.toString(false) + "\n"
+          Modifiers.Control.toString(false) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           8,
-          Modifiers.Alt.toString(false) + "\n"
+          Modifiers.Alt.toString(false) + "\n",
         );
       });
     });
 
-    describe("when disconnect is called while sendKeyCode calls are in flight", () => {
-      let sendKeyCodePromise;
+    describe("when stop is called while sendKeyCode calls are in flight", () => {
+      let sendKeyCodePromise: Promise<void> | undefined;
 
       beforeEach(() => {
         jest.clearAllMocks();
@@ -427,7 +427,7 @@ describe("NVDAClient", () => {
         sendKeyCodePromise = undefined;
       });
 
-      it("should disconnect gracefully", async () => {
+      it("should stop gracefully", async () => {
         sendKeyCodePromise = client.sendKeyCode({
           keyCode: [
             new Key({ keyCode: 1, scanCode: 2, extended: false }),
@@ -438,7 +438,7 @@ describe("NVDAClient", () => {
           modifiers: [Modifiers.Alt, Modifiers.Control],
         });
 
-        expect(() => client.disconnect()).not.toThrow();
+        expect(() => client.stop()).not.toThrow();
       });
     });
   });
@@ -446,6 +446,133 @@ describe("NVDAClient", () => {
   describe("when no phrases have been spoken", () => {
     it("should return an empty array", async () => {
       expect(await client.spokenPhraseLog()).toEqual([]);
+    });
+  });
+
+  describe("when multiple actions are enqueued", () => {
+    it("should execute actions serially and accumulate spoken phrases", async () => {
+      const result1 = Symbol("result-1");
+      const result2 = Symbol("result-2");
+
+      const promise1 = client.enqueueAndTap(
+        async () => {
+          client.emit("speak", "first phrase");
+
+          return result1;
+        },
+        { capture: true },
+      );
+
+      const promise2 = client.enqueueAndTap(
+        async () => {
+          client.emit("speak", "second phrase");
+
+          return result2;
+        },
+        { capture: true },
+      );
+
+      const [r1, r2] = await Promise.all([promise1, promise2]);
+
+      expect(r1).toBe(result1);
+      expect(r2).toBe(result2);
+
+      expect(await client.spokenPhraseLog()).toEqual([
+        "first phrase",
+        "second phrase",
+      ]);
+    });
+
+    it("should allow accessing spoken phrase log while actions are in flight", async () => {
+      let actionStarted = false;
+      let resolveAction!: () => void;
+
+      const action = async () => {
+        actionStarted = true;
+
+        await new Promise<void>((resolve) => {
+          resolveAction = resolve;
+        });
+
+        client.emit("speak", "test phrase");
+      };
+
+      client.enqueueAndTap(action, { capture: true });
+
+      await new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+          if (actionStarted) {
+            clearInterval(checkInterval);
+            resolve(undefined);
+          }
+        }, 10);
+      });
+
+      resolveAction();
+
+      const logs = await client.spokenPhraseLog();
+
+      expect(logs).toEqual(["test phrase"]);
+    });
+  });
+
+  describe("when an enqueued action throws an error", () => {
+    it("should reject the action's promise", async () => {
+      const testError = new Error("test-action-error");
+
+      const promise = client.enqueueAndTap(
+        async () => {
+          throw testError;
+        },
+        { capture: true },
+      );
+
+      await expect(promise).rejects.toBe(testError);
+    });
+
+    it("should not log the failed action and continue processing subsequent actions", async () => {
+      const testError = new Error("test-action-error");
+      const successResult = Symbol("success-result");
+
+      const failPromise = client.enqueueAndTap(
+        async () => {
+          throw testError;
+        },
+        { capture: true },
+      );
+
+      const successPromise = client.enqueueAndTap(
+        async () => {
+          client.emit("speak", "success phrase");
+
+          return successResult;
+        },
+        { capture: true },
+      );
+
+      await expect(failPromise).rejects.toBe(testError);
+      const result = await successPromise;
+
+      expect(result).toBe(successResult);
+
+      expect(await client.spokenPhraseLog()).toEqual(["success phrase"]);
+    });
+
+    it("should not log when an action errors and capture is disabled", async () => {
+      const testError = new Error("test-action-error");
+
+      const promise = client.enqueueAndTap(
+        async () => {
+          client.emit("speak", "error phrase");
+
+          throw testError;
+        },
+        { capture: false },
+      );
+
+      await expect(promise).rejects.toBe(testError);
+
+      expect(await client.spokenPhraseLog()).toHaveLength(0);
     });
   });
 });

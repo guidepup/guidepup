@@ -32,10 +32,9 @@ module.exports = {
     "<rootDir>/src/macOS/VoiceOver/constants.ts",
     "<rootDir>/src/macOS/VoiceOver/Containments.ts",
     "<rootDir>/src/macOS/VoiceOver/Directions.ts",
-    // TODO: flesh out VoiceOverClient tests
-    "<rootDir>/src/macOS/VoiceOver/VoiceOverClient.ts",
     "<rootDir>/src/macOS/VoiceOver/Places.ts",
     "<rootDir>/src/windows/NVDA/keyCodeCommands.ts",
+    // TODO: coverage needed for NVDA
     "<rootDir>/src/windows/NVDA/NVDA.ts",
     "<rootDir>/src/windows/NVDA/NVDAClient.ts",
   ],

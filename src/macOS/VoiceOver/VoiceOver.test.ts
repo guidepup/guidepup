@@ -803,4 +803,95 @@ describe("VoiceOver", () => {
       expect(VoiceOverCaptionStub.clearItemTextLog).toHaveBeenCalled();
     });
   });
+
+  describe("when stop is in progress", () => {
+    let stopPromise: Promise<void>;
+    let resolveTerminate: () => void;
+
+    beforeEach(async () => {
+      jest.mocked(isMacOS).mockReturnValue(true);
+      const resetSettingsSpy = jest.fn();
+      jest.mocked(storeOriginalSettings).mockResolvedValue(resetSettingsSpy);
+
+      jest.mocked(terminateVoiceOverProcess).mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveTerminate = resolve;
+          }),
+      );
+
+      await vo.start();
+
+      jest.clearAllMocks();
+
+      stopPromise = vo.stop();
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    afterEach(async () => {
+      resolveTerminate();
+      await stopPromise;
+    });
+
+    it("should throw when calling previous", async () => {
+      await expect(async () => await vo.previous()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling next", async () => {
+      await expect(async () => await vo.next()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling act", async () => {
+      await expect(async () => await vo.act()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling interact", async () => {
+      await expect(async () => await vo.interact()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling stopInteracting", async () => {
+      await expect(async () => await vo.stopInteracting()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling perform", async () => {
+      await expect(
+        async () => await vo.perform(CommanderCommands.ACTIONS),
+      ).rejects.toThrow(ERR_VOICE_OVER_NOT_RUNNING);
+    });
+
+    it("should throw when calling press", async () => {
+      await expect(async () => await vo.press("return")).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling lastSpokenPhrase", async () => {
+      await expect(async () => await vo.lastSpokenPhrase()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling spokenPhraseLog", async () => {
+      await expect(async () => await vo.spokenPhraseLog()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+
+    it("should throw when calling itemText", async () => {
+      await expect(async () => await vo.itemText()).rejects.toThrow(
+        ERR_VOICE_OVER_NOT_RUNNING,
+      );
+    });
+  });
 });

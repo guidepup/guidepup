@@ -29,7 +29,7 @@ interface QueueAction {
 }
 
 export class VoiceOverClient {
-  #inFlight = false;
+  #inFlight: Promise<unknown> | null = null;
   #queue: QueueAction[] = [];
   #stopped = false;
   #capture: CommandOptions["capture"];
@@ -47,7 +47,7 @@ export class VoiceOverClient {
   async stop(): Promise<void> {
     this.#stopped = true;
 
-    await Promise.allSettled(this.#queue.map(({ promise }) => promise));
+    await this.#waitForAllActions();
   }
 
   /**
@@ -74,9 +74,7 @@ export class VoiceOverClient {
    * @returns {Promise<string[]>} The item text log.
    */
   async itemTextLog(): Promise<string[]> {
-    while (this.#inFlight) {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    }
+    await this.#waitForAllActions();
 
     return this.#itemTextLogStore;
   }
@@ -85,9 +83,7 @@ export class VoiceOverClient {
    * Clear the item text log.
    */
   async clearItemTextLog(): Promise<void> {
-    while (this.#inFlight) {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    }
+    await this.#waitForAllActions();
 
     this.#itemTextLogStore = [];
   }
@@ -98,9 +94,7 @@ export class VoiceOverClient {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
-    while (this.#inFlight) {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    }
+    await this.#waitForAllActions();
 
     return this.#spokenPhraseLogStore;
   }
@@ -109,9 +103,7 @@ export class VoiceOverClient {
    * Clear the spoken phrase log.
    */
   async clearSpokenPhraseLog(): Promise<void> {
-    while (this.#inFlight) {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    }
+    await this.#waitForAllActions();
 
     // Keep a reference to the last spoken phrase so we can continue to use the
     // same change detection technique.
@@ -128,8 +120,8 @@ export class VoiceOverClient {
    * @param {object} options Additional options.
    * @returns {Promise<T>} Promise that resolves with the action's result.
    */
-  async enqueueAndTap<T, S extends Promise<T>>(
-    action: () => S,
+  async enqueueAndTap<T>(
+    action: () => Promise<T>,
     options?: Pick<CommandOptions, "capture">,
   ): Promise<T> {
     if (this.#stopped) {
@@ -149,13 +141,23 @@ export class VoiceOverClient {
     return promise;
   }
 
+  async #waitForAllActions(): Promise<void> {
+    const allPromises = this.#queue.map(({ promise }) => promise);
+
+    if (this.#inFlight) {
+      allPromises.push(this.#inFlight);
+    }
+
+    await Promise.allSettled(allPromises);
+  }
+
   async #processQueue() {
     if (this.#inFlight || this.#queue.length === 0) {
       return;
     }
 
-    this.#inFlight = true;
-    const { action, options, resolve, reject } = this.#queue.shift()!;
+    const { action, options, resolve, reject, promise } = this.#queue.shift()!;
+    this.#inFlight = promise;
 
     try {
       if (this.#stopped) {
@@ -178,7 +180,7 @@ export class VoiceOverClient {
     } catch (error) {
       reject(error);
     } finally {
-      this.#inFlight = false;
+      this.#inFlight = null;
       this.#processQueue();
     }
   }
