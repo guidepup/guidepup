@@ -7,6 +7,7 @@ import {
 } from "../errors";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { CommandOptions } from "../../CommandOptions";
+import { DEFAULT_CAPTURE } from "../../constants";
 import { EventEmitter } from "events";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { KeyCodeCommand } from "../KeyCodeCommand";
@@ -147,7 +148,7 @@ export class NVDAClient extends EventEmitter {
 
   async #connect(
     ca: Buffer,
-    capture: CommandOptions["capture"] = true,
+    capture: CommandOptions["capture"] = DEFAULT_CAPTURE,
     onSuccess?: () => void,
     onError?: (error: Error) => void,
   ): Promise<void> {

@@ -8,6 +8,7 @@ import {
 } from "./constants";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import { CommandOptions } from "../../CommandOptions";
+import { DEFAULT_CAPTURE } from "../../constants";
 import { ERR_VOICE_OVER_NOT_RUNNING } from "../errors";
 import { itemText as getItemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
@@ -38,7 +39,7 @@ export class VoiceOverClient {
   #clearedLastSpokenPhrase: string | null = null;
 
   constructor(options?: Pick<CommandOptions, "capture">) {
-    this.#capture = options?.capture ?? true;
+    this.#capture = options?.capture ?? DEFAULT_CAPTURE;
   }
 
   /**

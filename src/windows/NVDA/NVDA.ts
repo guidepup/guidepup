@@ -126,6 +126,11 @@ export class NVDA implements ScreenReader {
    *   await nvda.stop();
    * })();
    * ```
+   *
+   * Note: By default the `capture` option is set to `"initial"` to capture the
+   * first "page" of output, but not any subsequent content. To enable full
+   * capture set `{ capture: true }`, or to disable capture set
+   * `{ capture: false }`.
    */
   async start(options?: CaptureCommandOptions): Promise<void> {
     if (!(await this.detect())) {
