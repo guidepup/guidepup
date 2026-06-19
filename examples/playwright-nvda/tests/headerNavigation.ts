@@ -1,10 +1,7 @@
+import { delay } from "./delay";
 import { log } from "../../log";
 import { NVDAPlaywright } from "../nvda-test";
 import { Page } from "@playwright/test";
-
-async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -48,7 +45,9 @@ export async function headerNavigation({
 
   // Move across text and buttons using NVDA
   while (
-    !(await nvda.lastSpokenPhrase()).includes("GitHub") &&
+    !(await nvda.lastSpokenPhrase())
+      .replaceAll(/\s/g, "")
+      .includes("GitHub") &&
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;

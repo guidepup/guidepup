@@ -1,10 +1,7 @@
+import { delay } from "./delay";
 import { log } from "../../log";
 import { Page } from "@playwright/test";
 import { VoiceOverPlaywright } from "../voiceover-test";
-
-async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -39,8 +36,14 @@ export async function headerNavigation({
   ) {
     headingCount++;
 
-    log(`Performing command: "VO+Command+H"`);
+    log(`Performing command: "VO+Command+H" - "Find the next heading"`);
     await voiceOver.perform(voiceOver.keyboardCommands.findNextHeading);
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+    log(
+      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
+    );
+    await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
     log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
   }
 
@@ -56,10 +59,22 @@ export async function headerNavigation({
     log(`Performing command: "VO+Right Arrow"`);
     await voiceOver.next();
     log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+    log(
+      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
+    );
+    await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
   }
 
   log(`Performing command: "VO+Left Arrow"`);
   await voiceOver.previous();
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+  log(
+    `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
+  );
+  await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
   log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   // Navigate to the Guidepup Getting Started docs

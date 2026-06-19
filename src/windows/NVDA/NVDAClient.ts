@@ -73,9 +73,11 @@ const isSpeakMessage = (
 const delay = async (ms: number) =>
   await new Promise((resolve) => setTimeout(resolve, ms));
 
+type ActionOptions = Pick<CommandOptions, "capture">;
+
 interface QueueAction {
   action: () => Promise<unknown>;
-  options: Pick<CommandOptions, "capture">;
+  options: ActionOptions;
   promise: Promise<unknown>;
   resolve: (value: unknown) => void;
   reject: (reason?: unknown) => void;
@@ -299,7 +301,7 @@ export class NVDAClient extends EventEmitter {
    */
   enqueueAndTap<T>(
     action: () => Promise<T>,
-    options?: Pick<CommandOptions, "capture">,
+    options?: ActionOptions,
   ): Promise<T> {
     if (this.#stopped) {
       throw new Error(ERR_NVDA_NOT_RUNNING);
