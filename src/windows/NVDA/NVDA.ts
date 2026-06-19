@@ -378,6 +378,12 @@ export class NVDA implements ScreenReader {
    * })();
    * ```
    *
+   * Note: Each character is typed separately for this command. This means
+   * calling `await nvda.lastSpokenPhrase()` will yield the last spoken phrase
+   * for the last character in the typed string. If you need access to the
+   * spoken phrase(s) for the entire typed string then use
+   * `await nvda.spokenPhraseLog()`.
+   *
    * @param {string} text Text to type into the focused item.
    */
   async type(text: string, options?: CaptureCommandOptions): Promise<void> {
