@@ -123,7 +123,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
       await voiceOver.press("Delete");
       log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
-      log(`Pressing: "Delete"`);
+      log(`Typing: "123"`);
       await voiceOver.type("123");
       log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
