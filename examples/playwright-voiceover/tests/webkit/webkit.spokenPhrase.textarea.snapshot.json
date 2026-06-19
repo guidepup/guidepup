@@ -1,12 +1,1 @@
-[
-  "Test Input",
-  "Test Input, edit text",
-  "A",
-  "b",
-  "c",
-  "Abc, selected",
-  "Abc",
-  "1",
-  "2",
-  "3"
-]
+["Test Input, edit text", "A", "b", "c", "Abc, selected", "Abc", "1", "2", "3"]
