@@ -5,8 +5,14 @@ An example demonstrating using Guidepup for testing VoiceOver automation with [P
 Run this example's test with:
 
 ```bash
+# In the root directory:
+npm ci
+npm build
+
+# Then in the example directory:
 cd ./examples/playwright-voiceover
-npm ci --no-audit --no-fund --no-progress
+npm ci
+node --run browsers
 node --run test
 ```
 

@@ -5,8 +5,14 @@ An example demonstrating using Guidepup for testing NVDA automation with [Playwr
 Run this example's test with:
 
 ```bash
+# In the root directory:
+npm ci
+npm build
+
+# Then in the example directory:
 cd ./examples/playwright-nvda
-npm ci --no-audit --no-fund --no-progress
+npm ci
+node --run browsers
 node --run test
 ```
 

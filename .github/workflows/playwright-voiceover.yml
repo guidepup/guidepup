@@ -27,8 +27,9 @@ jobs:
         with:
           record: true
       - run: npm ci --no-audit --no-fund --no-progress
+      - run: node --run build
       - run: npm ci --prefix ./examples/playwright-voiceover --no-audit --no-fund --no-progress
-      - run: npm --prefix ./examples/playwright-voiceover run pretest
+      - run: npm --prefix ./examples/playwright-voiceover run browsers
       - run: npm --prefix ./examples/playwright-voiceover run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
