@@ -43,6 +43,14 @@ describe("NVDA", () => {
     jest.mocked(NVDAClient).mockImplementation(() => NVDAClientStub);
   });
 
+  describe("name", () => {
+    it("should return NVDA", () => {
+      nvda = new NVDA();
+
+      expect(nvda.name).toBe("NVDA");
+    });
+  });
+
   describe("detect", () => {
     describe("when Windows and NVDA is installed", () => {
       it("should return true", async () => {

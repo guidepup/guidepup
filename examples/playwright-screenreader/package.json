@@ -1,0 +1,19 @@
+{
+  "name": "@guidepup/playwright-screenreader",
+  "version": "0.1.0",
+  "description": "Guidepup screen reader and Playwright example",
+  "author": "Craig Morten <craig.morten@hotmail.co.uk>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "browsers": "npx playwright install chromium",
+    "test": "npm run test:chromium",
+    "test:chromium": "playwright test --config chromium.config.ts ./chromium/"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

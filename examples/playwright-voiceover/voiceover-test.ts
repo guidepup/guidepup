@@ -76,12 +76,6 @@ const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
       };
 
       await voiceOverPlaywright.start({ capture: "initial" });
-      await macOSActivate(applicationName);
-
-      await voiceOverPlaywright.perform(
-        { keyCode: MacOSKeyCodes.Control },
-        { capture: false },
-      );
 
       await use(voiceOverPlaywright);
     } finally {

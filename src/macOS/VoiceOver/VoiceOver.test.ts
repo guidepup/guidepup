@@ -140,6 +140,12 @@ describe("VoiceOver", () => {
     result = undefined;
   });
 
+  describe("name", () => {
+    it("should return VoiceOver", () => {
+      expect(vo.name).toBe("VoiceOver");
+    });
+  });
+
   describe("detect (static)", () => {
     describe.each`
       macOS    | expected
