@@ -12,6 +12,7 @@ npm build
 # Then in the example directory:
 cd ./examples/playwright-voiceover
 npm ci
+npm rebuild ffmpeg-static --ignore-scripts=false
 npm run browsers
 npm run test
 ```
