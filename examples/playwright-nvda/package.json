@@ -7,8 +7,8 @@
   "private": true,
   "scripts": {
     "postinstall": "npx playwright install chromium firefox",
-    "pretest": "yarn --cwd ../../ compile",
-    "test": "yarn test:chromium && yarn test:firefox",
+    "pretest": "npm --prefix ../../ run compile",
+    "test": "node --run test:chromium && node --run test:firefox",
     "test:chromium": "playwright test --config chromium.config.ts ./chromium/",
     "test:firefox": "playwright test --config firefox.config.ts ./firefox/"
   },

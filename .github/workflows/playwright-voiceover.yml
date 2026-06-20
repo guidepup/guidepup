@@ -26,10 +26,10 @@ jobs:
         uses: guidepup/setup-action@0.20.0
         with:
           record: true
-      - run: yarn install --frozen-lockfile
-      - run: yarn --cwd ./examples/playwright-voiceover install --frozen-lockfile
-      - run: yarn --cwd ./examples/playwright-voiceover pretest
-      - run: yarn --cwd ./examples/playwright-voiceover test:${{ matrix.browser }}
+      - run: npm ci --no-audit --no-fund --no-progress
+      - run: npm ci --prefix ./examples/playwright-voiceover --no-audit --no-fund --no-progress
+      - run: npm --prefix ./examples/playwright-voiceover run pretest
+      - run: npm --prefix ./examples/playwright-voiceover run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true

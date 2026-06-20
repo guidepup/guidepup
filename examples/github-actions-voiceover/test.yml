@@ -22,6 +22,6 @@ jobs:
 
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
-      #   run: yarn install --frozen-lockfile
+      #   run: npm ci --no-audit --no-fund --no-progress
       # - name: VoiceOver Test
-      #   run: yarn test
+      #   run: node --run test

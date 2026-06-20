@@ -26,10 +26,10 @@ jobs:
         uses: guidepup/setup-action@0.20.0
         with:
           record: true
-      - run: yarn install --frozen-lockfile
-      - run: yarn --cwd ./examples/playwright-nvda install --frozen-lockfile
-      - run: yarn --cwd ./examples/playwright-nvda pretest
-      - run: yarn --cwd ./examples/playwright-nvda test:${{ matrix.browser }}
+      - run: npm ci --no-audit --no-fund --no-progress
+      - run: npm ci --prefix ./examples/playwright-nvda --no-audit --no-fund --no-progress
+      - run: npm --prefix ./examples/playwright-nvda run pretest
+      - run: npm --prefix ./examples/playwright-nvda run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true

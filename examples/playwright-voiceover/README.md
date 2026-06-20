@@ -6,8 +6,8 @@ Run this example's test with:
 
 ```bash
 cd ./examples/playwright-voiceover
-yarn install --frozen-lockfile
-yarn test
+npm ci --no-audit --no-fund --no-progress
+node --run test
 ```
 
 > Note: please ensure you have set up the [VoiceOver prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.
