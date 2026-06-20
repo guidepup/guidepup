@@ -15,9 +15,11 @@ export async function performAction(options?: CommandOptions): Promise<void> {
   try {
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
-      options
+      options,
     );
   } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_PERFORM_ACTION}\n${e.message}`);
+    throw new Error(`${ERR_VOICE_OVER_PERFORM_ACTION}\n${e.message}`, {
+      cause: e,
+    });
   }
 }

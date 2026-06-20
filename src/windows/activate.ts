@@ -20,7 +20,7 @@ import { runVbsScript } from "./runVbsScript";
  */
 export async function activate(
   applicationPath: string,
-  applicationWindowTitle: string
+  applicationWindowTitle: string,
 ): Promise<void> {
   const escapedApplicationPath = applicationPath.replaceAll("\\", "\\\\");
 
@@ -69,6 +69,8 @@ END FUNCTION
   try {
     await runVbsScript(script);
   } catch (e) {
-    throw new Error(`Unable to activate application\n${e.message}`);
+    throw new Error(`Unable to activate application\n${e.message}`, {
+      cause: e,
+    });
   }
 }

@@ -22,6 +22,8 @@ export async function getNVDARegistryData(): Promise<NVDARegistryItem> {
 
     return data;
   } catch (e) {
-    throw new Error(`${ERR_WINDOWS_UNABLE_TO_ACCESS_REGISTRY}\n${e.message}`);
+    throw new Error(`${ERR_WINDOWS_UNABLE_TO_ACCESS_REGISTRY}\n${e.message}`, {
+      cause: e,
+    });
   }
 }

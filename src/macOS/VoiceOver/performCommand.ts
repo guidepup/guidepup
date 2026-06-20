@@ -8,7 +8,7 @@ import { withTransaction } from "../withTransaction";
 
 export async function performCommand(
   command: CommanderCommands,
-  options?: CommandOptions
+  options?: CommandOptions,
 ): Promise<void> {
   const performCommandScript = `tell commander to perform command "${command}"`;
 
@@ -19,9 +19,11 @@ export async function performCommand(
   try {
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
-      options
+      options,
     );
   } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_PERFORM_COMMAND}\n${e.message}`);
+    throw new Error(`${ERR_VOICE_OVER_PERFORM_COMMAND}\n${e.message}`, {
+      cause: e,
+    });
   }
 }

@@ -15,6 +15,6 @@ export async function quit(): Promise<void> {
       stdio: "ignore",
     });
   } catch (e) {
-    throw new Error(`${ERR_NVDA_QUIT}\n${e.message}`);
+    throw new Error(`${ERR_NVDA_QUIT}\n${e.message}`, { cause: e });
   }
 }

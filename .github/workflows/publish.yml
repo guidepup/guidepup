@@ -18,5 +18,5 @@ jobs:
           node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
-      - run: yarn install --frozen-lockfile
+      - run: npm ci --no-audit --no-fund --no-progress
       - run: npm publish

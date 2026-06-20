@@ -7,7 +7,7 @@ import { waitForSaved } from "./waitForSaved";
 import { withTransaction } from "../withTransaction";
 
 export async function saveLastSpokenPhrase(
-  options?: CommandOptions
+  options?: CommandOptions,
 ): Promise<void> {
   const script = `tell application "${
     Applications.VoiceOver
@@ -16,7 +16,9 @@ export async function saveLastSpokenPhrase(
   try {
     await retry(() => runAppleScript(script, options), options);
   } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE}\n${e.message}`);
+    throw new Error(`${ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE}\n${e.message}`, {
+      cause: e,
+    });
   }
 
   await waitForSaved(options);
