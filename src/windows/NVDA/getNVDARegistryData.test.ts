@@ -46,7 +46,7 @@ describe("getNVDARegistryData", () => {
 
     it("should return the data", async () => {
       await expect(resultPromise).resolves.toBe(
-        nvdaRegistryDataStub[SUB_KEY_GUIDEPUP_NVDA]
+        nvdaRegistryDataStub[SUB_KEY_GUIDEPUP_NVDA],
       );
     });
 
@@ -63,7 +63,7 @@ describe("getNVDARegistryData", () => {
 
       it("should return the same data", async () => {
         await expect(resultPromise).resolves.toBe(
-          nvdaRegistryDataStub[SUB_KEY_GUIDEPUP_NVDA]
+          nvdaRegistryDataStub[SUB_KEY_GUIDEPUP_NVDA],
         );
       });
     });
@@ -78,9 +78,7 @@ describe("getNVDARegistryData", () => {
 
     it("should throw a registry access error", async () => {
       await expect(getNVDARegistryData()).rejects.toThrow(
-        new Error(
-          `${ERR_WINDOWS_UNABLE_TO_ACCESS_REGISTRY}\n${registryErrorStub.message}`
-        )
+        `${ERR_WINDOWS_UNABLE_TO_ACCESS_REGISTRY}\n${registryErrorStub.message}`,
       );
     });
   });

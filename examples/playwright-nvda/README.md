@@ -5,9 +5,16 @@ An example demonstrating using Guidepup for testing NVDA automation with [Playwr
 Run this example's test with:
 
 ```bash
+# In the root directory:
+npm ci
+npm build
+
+# Then in the example directory:
 cd ./examples/playwright-nvda
-yarn install --frozen-lockfile
-yarn test
+npm ci
+npm rebuild ffmpeg-static --ignore-scripts=false
+npm run browsers
+npm run test
 ```
 
 > Note: please ensure you have set up the [NVDA prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.

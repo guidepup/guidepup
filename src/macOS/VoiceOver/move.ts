@@ -11,7 +11,7 @@ import { withTransaction } from "../withTransaction";
 export async function move(
   direction: Directions | Containments,
   place?: Places,
-  options?: CommandOptions
+  options?: CommandOptions,
 ): Promise<void> {
   const moveScript = `tell vo cursor to move ${direction}${
     place ? ` to ${place}` : ""
@@ -24,9 +24,9 @@ export async function move(
   try {
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
-      options
+      options,
     );
   } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_MOVE}\n${e.message}`);
+    throw new Error(`${ERR_VOICE_OVER_MOVE}\n${e.message}`, { cause: e });
   }
 }

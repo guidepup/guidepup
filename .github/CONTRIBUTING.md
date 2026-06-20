@@ -24,10 +24,10 @@ We use `eslint` and `prettier` for linting. You can check and correct the code s
 
 ```console
 # Check linting
-yarn lint
+npm run lint
 
 # Fix linting
-yarn lint:fix
+npm run lint:fix
 ```
 
 ### Tests
@@ -35,7 +35,7 @@ yarn lint:fix
 Before opening a PR, please run the following command to make sure your branch will build and pass all the checks and tests:
 
 ```console
-yarn test
+npm run test
 ```
 
 ## Opening a PR

@@ -6,9 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall": "npx playwright install chromium firefox webkit",
-    "pretest": "yarn --cwd ../.. compile",
-    "test": "yarn test:chromium && yarn test:firefox && yarn test:webkit",
+    "browsers": "npx playwright install chromium firefox webkit",
+    "test": "npm run test:chromium && npm run test:firefox && npm run test:webkit",
     "test:chromium": "playwright test --config chromium.config.ts ./chromium/",
     "test:firefox": "playwright test --config firefox.config.ts ./firefox/",
     "test:webkit": "playwright test --config webkit.config.ts ./webkit/"

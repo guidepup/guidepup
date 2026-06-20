@@ -13,6 +13,8 @@ export async function itemText(options?: CommandOptions): Promise<string> {
   try {
     return await retry(() => runAppleScript(script, options), options);
   } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_GET_ITEM_TEXT}\n${e.message}`);
+    throw new Error(`${ERR_VOICE_OVER_GET_ITEM_TEXT}\n${e.message}`, {
+      cause: e,
+    });
   }
 }

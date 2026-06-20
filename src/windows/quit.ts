@@ -27,6 +27,6 @@ export async function quit(application: string): Promise<void> {
   try {
     await runVbsScript(script);
   } catch (e) {
-    throw new Error(`Unable to quit application\n${e.message}`);
+    throw new Error(`Unable to quit application\n${e.message}`, { cause: e });
   }
 }

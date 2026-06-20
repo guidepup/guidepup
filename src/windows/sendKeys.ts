@@ -11,13 +11,15 @@ function getKeys(command: KeyCodeCommand | KeystrokeCommand): string {
       : command.keyCode.symbol
     : command.characters;
 
-  const modifiers = (command.modifiers ?? []).map((modifier) => modifier.symbol).join();
+  const modifiers = (command.modifiers ?? [])
+    .map((modifier) => modifier.symbol)
+    .join();
 
   return `${modifiers}${characters}`;
 }
 
 export async function sendKeys(
-  command: KeyCodeCommand | KeystrokeCommand
+  command: KeyCodeCommand | KeystrokeCommand,
 ): Promise<void> {
   const keys = getKeys(command);
 
@@ -26,6 +28,6 @@ export async function sendKeys(
   try {
     await runVbsScript(script);
   } catch (e) {
-    throw new Error(`${ERR_SEND_KEYS}\n${e.message}`);
+    throw new Error(`${ERR_SEND_KEYS}\n${e.message}`, { cause: e });
   }
 }
