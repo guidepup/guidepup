@@ -24,4 +24,4 @@ jobs:
       # - name: Install Dependencies
       #   run: npm ci --no-audit --no-fund --no-progress
       # - name: VoiceOver Test
-      #   run: node --run test
+      #   run: npm run test

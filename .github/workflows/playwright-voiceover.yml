@@ -27,7 +27,7 @@ jobs:
         with:
           record: true
       - run: npm ci --no-audit --no-fund --no-progress
-      - run: node --run build
+      - run: npm run build
       - run: npm ci --prefix ./examples/playwright-voiceover --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-voiceover run browsers
       - run: npm --prefix ./examples/playwright-voiceover run test:${{ matrix.browser }}

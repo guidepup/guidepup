@@ -18,4 +18,4 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: npm ci --no-audit --no-fund --no-progress
-      - run: node --run verify
+      - run: npm run verify

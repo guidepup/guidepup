@@ -23,7 +23,7 @@ jobs:
       #     command: npm ci --no-audit --no-fund --no-progress
       # - run:
       #     name: VoiceOver Test
-      #     command: node --run test
+      #     command: npm run test
 
 workflows:
   version: 2
