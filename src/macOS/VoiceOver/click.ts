@@ -27,7 +27,7 @@ export async function click(
   }: ClickOptions = {
     button: DEFAULT_CLICK_BUTTON,
     clickCount: DEFAULT_CLICK_COUNT,
-  }
+  },
 ): Promise<void> {
   const mappedButton = buttonMap[button];
   const mappedClickCount = clickCountMap[clickCount];
@@ -41,9 +41,9 @@ export async function click(
   try {
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
-      options
+      options,
     );
   } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_CLICK}\n${e.message}`);
+    throw new Error(`${ERR_VOICE_OVER_CLICK}\n${e.message}`, { cause: e });
   }
 }

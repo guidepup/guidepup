@@ -35,18 +35,18 @@
     "verify": "npm run clean && npm run lint && npm run test:coverage && npm run build"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/jest": "^29.5.13",
     "@types/node": "^24.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.5.0",
-    "@typescript-eslint/parser": "^8.5.0",
-    "eslint": "^8.56.0",
+    "eslint": "^10.0.1",
     "eslint-config-prettier": "^9.1.0",
     "jest": "^29.4.0",
     "nock": "^13.5.5",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.61.1"
   },
   "dependencies": {
     "regedit": "5.1.2",

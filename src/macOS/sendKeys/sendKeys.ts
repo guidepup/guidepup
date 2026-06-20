@@ -10,7 +10,7 @@ import type { KeystrokeCommand } from "../KeystrokeCommand";
 export async function sendKeys(
   keyCommand: KeyCodeCommand | KeystrokeCommand,
   applicationName?: string,
-  options?: CommandOptions
+  options?: CommandOptions,
 ): Promise<void> {
   if (applicationName) {
     await activate(applicationName);
@@ -24,7 +24,8 @@ export async function sendKeys(
     throw new Error(
       `${ERR_PREFIX_SEND_KEYS}${
         applicationName ? `to application: ${applicationName}` : ""
-      }\n${e.message}`
+      }\n${e.message}`,
+      { cause: e },
     );
   }
 }

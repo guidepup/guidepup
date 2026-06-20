@@ -7,7 +7,7 @@ import {
 async function resolveWhenTrue(
   condition: () => boolean | Promise<boolean>,
   pollInterval: number,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<void> {
   let result;
 
@@ -36,7 +36,7 @@ export async function waitForCondition(
     pollInterval: DEFAULT_POLL_INTERVAL,
     pollTimeout: DEFAULT_TIMEOUT,
     timeoutErrorMessage: ERR_WAITING_TIMEOUT,
-  }
+  },
 ): Promise<void> {
   let timeoutTimerId: NodeJS.Timeout | undefined;
 
@@ -53,5 +53,4 @@ export async function waitForCondition(
   ]);
 
   clearTimeout(timeoutTimerId);
-  timeoutTimerId = undefined;
 }

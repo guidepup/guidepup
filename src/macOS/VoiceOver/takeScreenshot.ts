@@ -6,7 +6,7 @@ import { runAppleScript } from "../runAppleScript";
 import { withTransaction } from "../withTransaction";
 
 export async function takeScreenshot(
-  options?: CommandOptions
+  options?: CommandOptions,
 ): Promise<string> {
   const script = `tell application "${
     Applications.VoiceOver
@@ -15,6 +15,8 @@ export async function takeScreenshot(
   try {
     return await retry(() => runAppleScript(script, options), options);
   } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_TAKE_SCREENSHOT}\n${e.message}`);
+    throw new Error(`${ERR_VOICE_OVER_TAKE_SCREENSHOT}\n${e.message}`, {
+      cause: e,
+    });
   }
 }
