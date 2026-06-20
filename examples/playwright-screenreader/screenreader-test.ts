@@ -7,8 +7,8 @@ import {
   WindowsKeyCodes,
   WindowsModifiers,
 } from "../../src";
-import { test } from "@playwright/test";
 import type { ScreenReader } from "../../src";
+import { test } from "@playwright/test";
 
 const applicationNameMap = {
   chromium: "Google Chrome For Testing",

@@ -1,7 +1,7 @@
+import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import { NVDA } from "./windows/NVDA/NVDA";
 import { ScreenReader } from "./ScreenReader";
 import { VoiceOver } from "./macOS/VoiceOver/VoiceOver";
-import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 
 jest.mock("./windows/NVDA/NVDA", () => ({
   NVDA: jest.fn(),
