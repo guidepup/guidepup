@@ -1,117 +1,75 @@
 import { ClickOptions } from "./ClickOptions";
-import { CommandOptions } from "./CommandOptions";
-import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
-import { IScreenReader } from "./IScreenReader";
-import { KeyboardOptions } from "./KeyboardOptions";
-import { VoiceOver } from "./macOS/VoiceOver/VoiceOver";
-import { NVDA } from "./windows/NVDA/NVDA";
+import type { CommandOptions } from "./CommandOptions";
+import type { KeyboardOptions } from "./KeyboardOptions";
 
-export class ScreenReader implements IScreenReader {
-  private implementation: IScreenReader;
-
-  constructor() {
-    this.implementation = this.resolveImplementation();
-  }
-
-  private resolveImplementation(): IScreenReader {
-    if (VoiceOver.default()) {
-      return new VoiceOver();
-    }
-
-    if (NVDA.default()) {
-      return new NVDA();
-    }
-
-    throw new Error(ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS);
-  }
-
+export interface IScreenReader {
   /**
    * The screen reader name.
    */
-  get name(): string {
-    return this.implementation.name;
-  }
+  name: string;
 
   /**
    * Detect whether the screen reader is supported for the current OS.
    *
    * @returns {Promise<boolean>}
    */
-  detect(): Promise<boolean> {
-    return this.implementation.detect();
-  }
+  detect(): Promise<boolean>;
 
   /**
    * Detect whether the screen reader is the default screen reader for the current OS.
    *
    * @returns {boolean}
    */
-  default(): boolean {
-    return this.implementation.default();
-  }
+  default(): boolean;
 
   /**
    * Turn the screen reader on.
    *
    * @param {object} [options] Additional options.
    */
-  start(options?: CommandOptions): Promise<void> {
-    return this.implementation.start(options);
-  }
+  start(options?: CommandOptions): Promise<void>;
 
   /**
    * Turn the screen reader off.
    *
    * @param {object} [options] Additional options.
    */
-  stop(options?: CommandOptions): Promise<void> {
-    return this.implementation.stop(options);
-  }
+  stop(options?: CommandOptions): Promise<void>;
 
   /**
    * Move the screen reader cursor to the previous location.
    *
    * @param {object} [options] Additional options.
    */
-  previous(options?: CommandOptions): Promise<void> {
-    return this.implementation.previous(options);
-  }
+  previous(options?: CommandOptions): Promise<void>;
 
   /**
    * Move the screen reader cursor to the next location.
    *
    * @param {object} [options] Additional options.
    */
-  next(options?: CommandOptions): Promise<void> {
-    return this.implementation.next(options);
-  }
+  next(options?: CommandOptions): Promise<void>;
 
   /**
    * Perform the default action for the item in the screen reader cursor.
    *
    * @param {object} [options] Additional options.
    */
-  act(options?: CommandOptions): Promise<void> {
-    return this.implementation.act(options);
-  }
+  act(options?: CommandOptions): Promise<void>;
 
   /**
    * Interact with the item under the screen reader cursor.
    *
    * @param {object} [options] Additional options.
    */
-  interact(options?: CommandOptions): Promise<void> {
-    return this.implementation.interact(options);
-  }
+  interact(options?: CommandOptions): Promise<void>;
 
   /**
    * Stop interacting with the current item.
    *
    * @param {object} [options] Additional options.
    */
-  stopInteracting(options?: CommandOptions): Promise<void> {
-    return this.implementation.stopInteracting(options);
-  }
+  stopInteracting(options?: CommandOptions): Promise<void>;
 
   /**
    * Press a key on the focused item.
@@ -140,9 +98,7 @@ export class ScreenReader implements IScreenReader {
    * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
    * @param {object} [options] Additional options.
    */
-  press(key: string, options?: KeyboardOptions): Promise<void> {
-    return this.implementation.press(key, options);
-  }
+  press(key: string, options?: KeyboardOptions): Promise<void>;
 
   /**
    * Type text into the focused item.
@@ -157,9 +113,7 @@ export class ScreenReader implements IScreenReader {
    * @param {string} text Text to type into the focused item.
    * @param {object} [options] Additional options.
    */
-  type(text: string, options?: KeyboardOptions): Promise<void> {
-    return this.implementation.type(text, options);
-  }
+  type(text: string, options?: KeyboardOptions): Promise<void>;
 
   /**
    * Perform a screen reader command.
@@ -167,66 +121,50 @@ export class ScreenReader implements IScreenReader {
    * @param {any} command Screen reader keyboard command or commander command to execute.
    * @param {object} [options] Additional options.
    */
-  perform(command: unknown, options?: CommandOptions): Promise<void> {
-    return this.implementation.perform(command, options);
-  }
+  perform(command: unknown, options?: CommandOptions): Promise<void>;
 
   /**
    * Click the mouse.
    *
    * @param {object} [options] Click options.
    */
-  click(options?: ClickOptions): Promise<void> {
-    return this.implementation.click(options);
-  }
+  click(options?: ClickOptions): Promise<void>;
 
   /**
    * Get the last spoken phrase.
    *
    * @returns {Promise<string>} The last spoken phrase.
    */
-  lastSpokenPhrase(): Promise<string> {
-    return this.implementation.lastSpokenPhrase();
-  }
+  lastSpokenPhrase(): Promise<string>;
 
   /**
    * Get the text of the item in the screen reader cursor.
    *
    * @returns {Promise<string>} The item's text.
    */
-  itemText(): Promise<string> {
-    return this.implementation.itemText();
-  }
+  itemText(): Promise<string>;
 
   /**
    * Get the log of all spoken phrases for this screen reader instance.
    *
    * @returns {Promise<string[]>} The spoken phrase log.
    */
-  spokenPhraseLog(): Promise<string[]> {
-    return this.implementation.spokenPhraseLog();
-  }
+  spokenPhraseLog(): Promise<string[]>;
 
   /**
    * Clear the log of all spoken phrases for this screen reader instance.
    */
-  clearSpokenPhraseLog(): Promise<void> {
-    return this.implementation.clearSpokenPhraseLog();
-  }
+  clearSpokenPhraseLog(): Promise<void>;
 
   /**
    * Get the log of all visited item text for this screen reader instance.
    *
    * @returns {Promise<string[]>} The item text log.
    */
-  itemTextLog(): Promise<string[]> {
-    return this.implementation.itemTextLog();
-  }
+  itemTextLog(): Promise<string[]>;
 
   /**
    * Clear the log of all visited item text for this screen reader instance.
    */
-  clearItemTextLog(): Promise<void> {
-    return this.implementation.clearItemTextLog();
-  }
+  clearItemTextLog(): Promise<void>;
 }
