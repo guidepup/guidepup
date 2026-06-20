@@ -140,6 +140,24 @@ describe("VoiceOver", () => {
     result = undefined;
   });
 
+  describe("detect (static)", () => {
+    describe.each`
+      macOS    | expected
+      ${false} | ${false}
+      ${true}  | ${true}
+    `("when is macOS is $macOS", ({ macOS, expected }) => {
+      beforeEach(async () => {
+        jest.mocked(isMacOS).mockReturnValue(macOS);
+
+        result = await VoiceOver.detect();
+      });
+
+      it(`should return ${expected}`, () => {
+        expect(result).toBe(expected);
+      });
+    });
+  });
+
   describe("detect", () => {
     describe.each`
       macOS    | expected
@@ -158,16 +176,34 @@ describe("VoiceOver", () => {
     });
   });
 
+  describe("default (static)", () => {
+    describe.each`
+      macOS    | expected
+      ${false} | ${false}
+      ${true}  | ${true}
+    `("when is macOS is $macOS", ({ macOS, expected }) => {
+      beforeEach(() => {
+        jest.mocked(isMacOS).mockReturnValue(macOS);
+
+        result = VoiceOver.default();
+      });
+
+      it(`should return ${expected}`, () => {
+        expect(result).toBe(expected);
+      });
+    });
+  });
+
   describe("default", () => {
     describe.each`
       macOS    | expected
       ${false} | ${false}
       ${true}  | ${true}
     `("when is macOS is $macOS", ({ macOS, expected }) => {
-      beforeEach(async () => {
+      beforeEach(() => {
         jest.mocked(isMacOS).mockReturnValue(macOS);
 
-        result = await vo.default();
+        result = vo.default();
       });
 
       it(`should return ${expected}`, () => {
