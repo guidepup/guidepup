@@ -12,7 +12,7 @@ const clientStub = {
 };
 
 describe("isRunning", () => {
-  let resultPromise;
+  let resultPromise: Promise<boolean>;
 
   beforeEach(() => {
     jest.clearAllMocks();
