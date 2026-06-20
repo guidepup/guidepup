@@ -3,8 +3,8 @@ import type { CommandOptions } from "./CommandOptions";
 import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import type { IScreenReader } from "./IScreenReader";
 import { KeyboardOptions } from "./KeyboardOptions";
-import { NVDA } from "./windows/NVDA/NVDA";
-import { VoiceOver } from "./macOS/VoiceOver/VoiceOver";
+import { nvda } from "./windows";
+import { voiceOver } from "./macOS";
 
 export class ScreenReader implements IScreenReader {
   private implementation: IScreenReader;
@@ -14,12 +14,12 @@ export class ScreenReader implements IScreenReader {
   }
 
   private resolveImplementation(): IScreenReader {
-    if (VoiceOver.default()) {
-      return new VoiceOver();
+    if (voiceOver.default()) {
+      return voiceOver;
     }
 
-    if (NVDA.default()) {
-      return new NVDA();
+    if (nvda.default()) {
+      return nvda;
     }
 
     throw new Error(ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS);

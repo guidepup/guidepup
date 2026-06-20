@@ -1,45 +1,32 @@
 import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
-import { NVDA } from "./windows/NVDA/NVDA";
+import { nvda } from "./windows";
 import { ScreenReader } from "./ScreenReader";
-import { VoiceOver } from "./macOS/VoiceOver/VoiceOver";
+import { voiceOver } from "./macOS";
 
-jest.mock("./windows/NVDA/NVDA", () => ({
-  NVDA: jest.fn(),
+jest.mock("./windows", () => ({
+  nvda: {
+    default: jest.fn(),
+    name: "NVDA",
+  },
 }));
 
-jest.mock("./macOS/VoiceOver/VoiceOver", () => ({
-  VoiceOver: jest.fn(),
+jest.mock("./macOS", () => ({
+  voiceOver: {
+    default: jest.fn(),
+    name: "VoiceOver",
+  },
 }));
-
-const NVDAStub = {
-  default: jest.fn(),
-  name: "NVDA",
-};
-const VoiceOverStub = {
-  default: jest.fn(),
-  name: "VoiceOver",
-};
 
 describe("ScreenReader", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
-
-    jest
-      .mocked(VoiceOver)
-      .mockImplementation(() => VoiceOverStub as unknown as VoiceOver);
-
-    jest.mocked(VoiceOver).default = VoiceOverStub.default;
-
-    jest.mocked(NVDA).mockImplementation(() => NVDAStub as unknown as NVDA);
-
-    jest.mocked(NVDA).default = NVDAStub.default;
   });
 
   describe("when VoiceOver is the default screen reader for the environment", () => {
     beforeEach(() => {
-      NVDAStub.default.mockReturnValue(false);
-      VoiceOverStub.default.mockReturnValue(true);
+      jest.mocked(nvda.default).mockReturnValue(false);
+      jest.mocked(voiceOver.default).mockReturnValue(true);
     });
 
     describe("name", () => {
@@ -53,8 +40,8 @@ describe("ScreenReader", () => {
 
   describe("when NVDA is the default screen reader for the environment", () => {
     beforeEach(() => {
-      NVDAStub.default.mockReturnValue(true);
-      VoiceOverStub.default.mockReturnValue(false);
+      jest.mocked(nvda.default).mockReturnValue(true);
+      jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 
     describe("name", () => {
@@ -68,8 +55,8 @@ describe("ScreenReader", () => {
 
   describe("when neither VoiceOver nor NVDA is the default screen reader for the environment", () => {
     beforeEach(() => {
-      NVDAStub.default.mockReturnValue(false);
-      VoiceOverStub.default.mockReturnValue(false);
+      jest.mocked(nvda.default).mockReturnValue(false);
+      jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 
     describe("name", () => {
