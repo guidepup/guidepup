@@ -12,8 +12,8 @@ npm build
 # Then in the example directory:
 cd ./examples/playwright-nvda
 npm ci
-node --run browsers
-node --run test
+npm run browsers
+npm run test
 ```
 
 > Note: please ensure you have set up the [NVDA prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.

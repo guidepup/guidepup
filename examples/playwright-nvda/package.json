@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "browsers": "npx playwright install chromium firefox",
-    "test": "node --run test:chromium && node --run test:firefox",
+    "test": "npm run test:chromium && npm run test:firefox",
     "test:chromium": "playwright test --config chromium.config.ts ./chromium/",
     "test:firefox": "playwright test --config firefox.config.ts ./firefox/"
   },
