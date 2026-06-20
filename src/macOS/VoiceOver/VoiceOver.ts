@@ -11,12 +11,12 @@ import {
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
+import type { IScreenReader } from "../../IScreenReader";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
 import type { Prettify } from "../../typeHelpers";
-import type { IScreenReader } from "../../IScreenReader";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";

@@ -1,10 +1,10 @@
-import { ClickOptions } from "./ClickOptions";
-import { CommandOptions } from "./CommandOptions";
+import type { ClickOptions } from "./ClickOptions";
+import type { CommandOptions } from "./CommandOptions";
 import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
-import { IScreenReader } from "./IScreenReader";
+import type { IScreenReader } from "./IScreenReader";
 import { KeyboardOptions } from "./KeyboardOptions";
-import { VoiceOver } from "./macOS/VoiceOver/VoiceOver";
 import { NVDA } from "./windows/NVDA/NVDA";
+import { VoiceOver } from "./macOS/VoiceOver/VoiceOver";
 
 export class ScreenReader implements IScreenReader {
   private implementation: IScreenReader;

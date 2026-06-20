@@ -5,6 +5,7 @@ import {
 } from "../errors";
 import type { ClickOptions } from "../../ClickOptions";
 import { CommandOptions } from "../../CommandOptions";
+import type { IScreenReader } from "../../IScreenReader";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
 import type { KeyCodeCommand } from "../KeyCodeCommand";
@@ -15,7 +16,6 @@ import { NVDAClient } from "./NVDAClient";
 import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
 import { quit } from "./quit";
-import type { IScreenReader } from "../../IScreenReader";
 import { sendKeys } from "../sendKeys";
 import { start } from "./start";
 
