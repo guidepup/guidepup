@@ -2,8 +2,10 @@ import {
   macOSActivate,
   MacOSKeyCodes,
   nvda,
+  NVDAKeyCodeCommands,
   screenReader,
   voiceOver,
+  voiceOverKeyCodeCommands,
   WindowsKeyCodes,
   WindowsModifiers,
 } from "../../src";
@@ -56,7 +58,7 @@ const focusBrowser = async ({
   applicationName: string;
   pageTitle: string;
 }) => {
-  await screenReaderPlaywright.perform(nvda.keyboardCommands.reportTitle);
+  await screenReaderPlaywright.perform(NVDAKeyCodeCommands.reportTitle);
   let windowTitle = await screenReaderPlaywright.lastSpokenPhrase();
 
   if (hasFocus({ applicationName, pageTitle, windowTitle })) {
@@ -69,7 +71,7 @@ const focusBrowser = async ({
     applicationSwitchRetryCount++;
 
     await screenReaderPlaywright.perform(SWITCH_APPLICATION);
-    await screenReaderPlaywright.perform(nvda.keyboardCommands.reportTitle);
+    await screenReaderPlaywright.perform(NVDAKeyCodeCommands.reportTitle);
     windowTitle = await screenReaderPlaywright.lastSpokenPhrase();
 
     if (hasFocus({ applicationName, pageTitle, windowTitle })) {
@@ -113,7 +115,7 @@ const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
       if (nvda.default()) {
         screenReaderPlaywright.navigateToWebContent = async () => {
           await screenReaderPlaywright.perform(
-            nvda.keyboardCommands.exitFocusMode,
+            NVDAKeyCodeCommands.exitFocusMode,
           );
 
           const pageTitle = await page.title();
@@ -125,16 +127,16 @@ const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
           await page.locator("body").click();
 
           await screenReaderPlaywright.perform(
-            nvda.keyboardCommands.readNextFocusableItem,
+            NVDAKeyCodeCommands.readNextFocusableItem,
           );
           await screenReaderPlaywright.perform(
-            nvda.keyboardCommands.toggleBetweenBrowseAndFocusMode,
+            NVDAKeyCodeCommands.toggleBetweenBrowseAndFocusMode,
           );
           await screenReaderPlaywright.perform(
-            nvda.keyboardCommands.toggleBetweenBrowseAndFocusMode,
+            NVDAKeyCodeCommands.toggleBetweenBrowseAndFocusMode,
           );
           await screenReaderPlaywright.perform(
-            nvda.keyboardCommands.exitFocusMode,
+            NVDAKeyCodeCommands.exitFocusMode,
           );
           await screenReaderPlaywright.perform(MOVE_TO_TOP);
 
@@ -155,7 +157,7 @@ const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
           await page.locator("body").waitFor();
 
           await screenReaderPlaywright.perform(
-            voiceOver.keyboardCommands.openWebItemRotor,
+            voiceOverKeyCodeCommands.openWebItemRotor,
           );
 
           await screenReaderPlaywright.type("content");
@@ -167,7 +169,7 @@ const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
           await screenReaderPlaywright.interact();
 
           await screenReaderPlaywright.perform(
-            voiceOver.keyboardCommands.moveToBeginningOfText,
+            voiceOverKeyCodeCommands.moveToBeginningOfText,
           );
 
           await screenReaderPlaywright.perform({
