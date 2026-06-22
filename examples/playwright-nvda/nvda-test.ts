@@ -90,9 +90,6 @@ const nvdaTest = test.extend<{ nvda: NVDAPlaywright }>({
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      await page.goto("about:blank", { waitUntil: "load" });
-      await page.bringToFront();
-
       nvdaPlaywright.navigateToWebContent = async () => {
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode,
@@ -124,7 +121,7 @@ const nvdaTest = test.extend<{ nvda: NVDAPlaywright }>({
         await nvdaPlaywright.clearSpokenPhraseLog();
       };
 
-      await nvdaPlaywright.start();
+      await nvdaPlaywright.start({ capture: "initial" });
 
       await use(nvdaPlaywright);
     } finally {
