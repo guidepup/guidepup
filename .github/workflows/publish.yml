@@ -19,4 +19,4 @@ jobs:
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - run: npm ci --no-audit --no-fund --no-progress
-      - run: npm publish
+      - run: npm publish --access public
