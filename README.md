@@ -48,6 +48,22 @@ Alternatively check out [this project](https://github.com/guidepup/aria-at-tests
 
 ### Basic Navigation
 
+#### Cross-Platform
+
+```ts
+import { screenReader } from "@guidepup/guidepup";
+
+(async () => {
+  // On MacOS starts VoiceOver, on Windows starts NVDA.
+  await screenReader.start();
+
+  await screenReader.next();
+  console.log(await screenReader.spokenPhraseLog());
+
+  await screenReader.stop();
+})();
+```
+
 #### VoiceOver
 
 ```ts

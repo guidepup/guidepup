@@ -5,6 +5,7 @@ import {
 } from "../errors";
 import type { ClickOptions } from "../../ClickOptions";
 import { CommandOptions } from "../../CommandOptions";
+import type { IScreenReader } from "../../IScreenReader";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
 import type { KeyCodeCommand } from "../KeyCodeCommand";
@@ -15,7 +16,6 @@ import { NVDAClient } from "./NVDAClient";
 import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
 import { quit } from "./quit";
-import type { ScreenReader } from "../../ScreenReader";
 import { sendKeys } from "../sendKeys";
 import { start } from "./start";
 
@@ -24,7 +24,7 @@ type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
 /**
  * Class for controlling the NVDA screen reader on Windows.
  */
-export class NVDA implements ScreenReader {
+export class NVDA implements IScreenReader {
   /**
    * NVDA client.
    */
@@ -39,6 +39,13 @@ export class NVDA implements ScreenReader {
    * NVDA stopping status.
    */
   #stopping = false;
+
+  /**
+   * The screen reader name.
+   */
+  get name(): string {
+    return "NVDA";
+  }
 
   /**
    * Getter for all NVDA keyboard commands.
@@ -72,6 +79,29 @@ export class NVDA implements ScreenReader {
    * - `false` for Linux
    *
    * ```ts
+   * import { NVDA } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   const isNVDADefaultScreenReader = await NVDA.detect();
+   *
+   *   console.log(isNVDADefaultScreenReader);
+   * })();
+   * ```
+   *
+   * @returns {Promise<boolean>}
+   */
+  static async detect(): Promise<boolean> {
+    return isWindows() && (await isNVDAInstalled());
+  }
+
+  /**
+   * Detect whether NVDA is supported for the current OS:
+   *
+   * - `true` for Windows
+   * - `false` for MacOS
+   * - `false` for Linux
+   *
+   * ```ts
    * import { nvda } from "@guidepup/guidepup";
    *
    * (async () => {
@@ -84,7 +114,30 @@ export class NVDA implements ScreenReader {
    * @returns {Promise<boolean>}
    */
   async detect(): Promise<boolean> {
-    return isWindows() && (await isNVDAInstalled());
+    return NVDA.detect();
+  }
+
+  /**
+   * Detect whether NVDA is the default screen reader for the current OS:
+   *
+   * - `true` for Windows
+   * - `false` for MacOS
+   * - `false` for Linux
+   *
+   * ```ts
+   * import { NVDA } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   const isNVDADefaultScreenReader = NVDA.default();
+   *
+   *   console.log(isNVDADefaultScreenReader);
+   * })();
+   * ```
+   *
+   * @returns {boolean}
+   */
+  static default(): boolean {
+    return isWindows();
   }
 
   /**
@@ -98,16 +151,16 @@ export class NVDA implements ScreenReader {
    * import { nvda } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isNVDADefaultScreenReader = await nvda.default();
+   *   const isNVDADefaultScreenReader = nvda.default();
    *
    *   console.log(isNVDADefaultScreenReader);
    * })();
    * ```
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  async default(): Promise<boolean> {
-    return Promise.resolve(isWindows());
+  default(): boolean {
+    return NVDA.default();
   }
 
   /**

@@ -1,0 +1,42 @@
+name: Playwright Screen Reader
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  playwright-screenreader:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15, macos-26, windows-2022, windows-2025]
+        browser: [chromium]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Guidepup Setup
+        uses: guidepup/setup-action@0.20.0
+        with:
+          record: true
+      - run: npm ci --no-audit --no-fund --no-progress
+      - run: npm run build
+      - run: npm ci --prefix ./examples/playwright-screenreader --no-audit --no-fund --no-progress
+      - run: npm --prefix ./examples/playwright-screenreader rebuild ffmpeg-static --ignore-scripts=false
+      - run: npm --prefix ./examples/playwright-screenreader run browsers
+      - run: npm --prefix ./examples/playwright-screenreader run test:${{ matrix.browser }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: artifacts-${{ matrix.os }}-${{ matrix.browser }}
+          path: |
+            **/test-results/**/*
+            **/recordings/**/*

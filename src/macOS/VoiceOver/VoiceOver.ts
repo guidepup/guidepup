@@ -11,12 +11,12 @@ import {
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
+import type { IScreenReader } from "../../IScreenReader";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
 import type { Prettify } from "../../typeHelpers";
-import type { ScreenReader } from "../../ScreenReader";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";
@@ -33,7 +33,7 @@ type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
 /**
  * Class for controlling the VoiceOver screen reader on MacOS.
  */
-export class VoiceOver implements ScreenReader {
+export class VoiceOver implements IScreenReader {
   /**
    * Storage for VoiceOver settings reset.
    */
@@ -78,6 +78,13 @@ export class VoiceOver implements ScreenReader {
    * VoiceOver mouse APIs.
    */
   #mouse!: VoiceOverMouse;
+
+  /**
+   * The screen reader name.
+   */
+  get name(): string {
+    return "VoiceOver";
+  }
 
   /**
    * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-keyboard-commands)
@@ -151,6 +158,31 @@ export class VoiceOver implements ScreenReader {
    * - `false` for Linux
    *
    * ```ts
+   * import { VoiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   const isVoiceOverSupportedScreenReader = await VoiceOver.detect();
+   *
+   *   console.log(isVoiceOverSupportedScreenReader);
+   * })();
+   * ```
+   *
+   * @returns {Promise<boolean>}
+   */
+  static async detect(): Promise<boolean> {
+    return isMacOS();
+  }
+
+  /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-detect)
+   *
+   * Detect whether VoiceOver is supported for the current OS:
+   *
+   * - `false` for Windows
+   * - `true` for MacOS
+   * - `false` for Linux
+   *
+   * ```ts
    * import { voiceOver } from "@guidepup/guidepup";
    *
    * (async () => {
@@ -163,6 +195,31 @@ export class VoiceOver implements ScreenReader {
    * @returns {Promise<boolean>}
    */
   async detect(): Promise<boolean> {
+    return VoiceOver.detect();
+  }
+
+  /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-default)
+   *
+   * Detect whether VoiceOver is the default screen reader for the current OS:
+   *
+   * - `false` for Windows
+   * - `true` for MacOS
+   * - `false` for Linux
+   *
+   * ```ts
+   * import { VoiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   const isVoiceOverDefaultScreenReader = VoiceOver.default();
+   *
+   *   console.log(isVoiceOverDefaultScreenReader);
+   * })();
+   * ```
+   *
+   * @returns {boolean}
+   */
+  static default(): boolean {
     return isMacOS();
   }
 
@@ -179,16 +236,16 @@ export class VoiceOver implements ScreenReader {
    * import { voiceOver } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isVoiceOverDefaultScreenReader = await voiceOver.default();
+   *   const isVoiceOverDefaultScreenReader = voiceOver.default();
    *
    *   console.log(isVoiceOverDefaultScreenReader);
    * })();
    * ```
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  async default(): Promise<boolean> {
-    return Promise.resolve(isMacOS());
+  default(): boolean {
+    return VoiceOver.default();
   }
 
   /**

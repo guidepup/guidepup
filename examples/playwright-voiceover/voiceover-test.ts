@@ -54,10 +54,10 @@ const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
         await page.locator("body").waitFor();
 
         await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.openWebItemRotor,
+          voiceOverPlaywright.keyboardCommands.openItemChooser,
         );
 
-        await voiceOverPlaywright.type("content");
+        await voiceOverPlaywright.type("web content");
 
         await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Enter });
 
@@ -76,12 +76,6 @@ const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
       };
 
       await voiceOverPlaywright.start({ capture: "initial" });
-      await macOSActivate(applicationName);
-
-      await voiceOverPlaywright.perform(
-        { keyCode: MacOSKeyCodes.Control },
-        { capture: false },
-      );
 
       await use(voiceOverPlaywright);
     } finally {
