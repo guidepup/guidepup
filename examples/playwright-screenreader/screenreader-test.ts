@@ -157,10 +157,10 @@ const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
           await page.locator("body").waitFor();
 
           await screenReaderPlaywright.perform(
-            voiceOverKeyCodeCommands.openWebItemRotor,
+            voiceOverKeyCodeCommands.openItemChooser,
           );
 
-          await screenReaderPlaywright.type("content");
+          await screenReaderPlaywright.type("web content");
 
           await screenReaderPlaywright.perform({
             keyCode: MacOSKeyCodes.Enter,
