@@ -35,14 +35,27 @@ type FocusBrowserParams = {
   pageTitle: string;
 };
 
+const cleanString = (str: string): string =>
+  str
+    .toLowerCase()
+    // REF: https://github.com/nvaccess/nvda/blob/master/source/locale/en/symbols.dic
+    .replace(/[|¦:;'"`\-‐–—·_()[\]{}\\^~]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 const hasFocus = ({
   applicationName,
   pageTitle,
   windowTitle,
 }: FocusBrowserParams & { windowTitle: string }) => {
+  const cleanedApplicationName = cleanString(applicationName);
+  const cleanedPageTitle = cleanString(pageTitle);
+  const cleanedWindowTitle = cleanString(windowTitle);
+
   return (
-    (pageTitle.length && windowTitle.startsWith(pageTitle)) ||
-    windowTitle.includes(applicationName)
+    (cleanedPageTitle.length &&
+      cleanedWindowTitle.startsWith(cleanedPageTitle)) ||
+    cleanedWindowTitle.includes(cleanedApplicationName)
   );
 };
 
