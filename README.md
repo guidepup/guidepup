@@ -1,5 +1,5 @@
 <div align="center">
-  <img align="center" alt="" height="100px" width="100px" src="https://github.com/guidepup/guidepup/raw/main/img/logo.png">
+  <img align="center" alt="" height="200px" width="200px" src="https://github.com/guidepup/guidepup/raw/main/img/logo.png">
   <h1 align="center">Guidepup</h1>
 </div>
 
