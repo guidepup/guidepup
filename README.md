@@ -1,6 +1,6 @@
 <h1>
   <img alt="" height="60px" width="60px" style="vertical-align: middle;" src="https://github.com/guidepup/guidepup/raw/main/img/logo.png">
-  Guidepup
+  <span style="vertical-align: middle;">Guidepup</span>
 </h1>
 
 <a href="https://www.npmjs.com/package/@guidepup/guidepup"><img alt="Guidepup available on NPM" src="https://img.shields.io/npm/v/@guidepup/guidepup" /></a>
