@@ -54,19 +54,19 @@ const CANCEL_NOT_FIRE_TIMEOUT = 1000;
 const SPEAK_DEBOUNCE_TIMEOUT = 1000;
 
 const isChannelJoinedMessage = (
-  message: NVDABaseMessage,
+  message: NVDABaseMessage
 ): message is NVDAChannelJoinedMessage => {
   return message.type === CHANNEL_JOINED;
 };
 
 const isCancelMessage = (
-  message: NVDABaseMessage,
+  message: NVDABaseMessage
 ): message is NVDACancelMessage => {
   return message.type === CANCEL;
 };
 
 const isSpeakMessage = (
-  message: NVDABaseMessage,
+  message: NVDABaseMessage
 ): message is NVDASpeakMessage => {
   return message.type === SPEAK;
 };
@@ -126,11 +126,9 @@ export class NVDAClient extends EventEmitter {
     const caPath = join(
       dirname(executablePath),
       "userConfig",
-      "addons",
-      "remote",
-      "globalPlugins",
-      "remoteClient",
-      "server.pem",
+      "remoteAccess",
+      "localRelay",
+      "NvdaRemoteRelay.pem"
     );
 
     let ca;
@@ -142,7 +140,7 @@ export class NVDAClient extends EventEmitter {
     }
 
     return new Promise<void>((resolve, reject) =>
-      this.#connect(ca, options?.capture, resolve, reject),
+      this.#connect(ca, options?.capture, resolve, reject)
     );
   }
 
@@ -150,7 +148,7 @@ export class NVDAClient extends EventEmitter {
     ca: Buffer,
     capture: CommandOptions["capture"] = DEFAULT_CAPTURE,
     onSuccess?: () => void,
-    onError?: (error: Error) => void,
+    onError?: (error: Error) => void
   ): Promise<void> {
     let onSuccessCalled = false;
 
@@ -171,7 +169,7 @@ export class NVDAClient extends EventEmitter {
 
         await this.#send(connectionMessage);
         await this.#send(protocolMessage);
-      },
+      }
     );
 
     this.#socket.setEncoding("utf8");
@@ -231,7 +229,7 @@ export class NVDAClient extends EventEmitter {
         }
 
         spokenPhraseParts.push(
-          spokenPhrasePart.trim().replaceAll(/\s\s+/g, " "),
+          spokenPhrasePart.trim().replaceAll(/\s\s+/g, " ")
         );
       }
 
@@ -302,7 +300,7 @@ export class NVDAClient extends EventEmitter {
    */
   enqueueAndTap<T>(
     action: () => Promise<T>,
-    options?: ActionOptions,
+    options?: ActionOptions
   ): Promise<T> {
     if (this.#stopped) {
       throw new Error(ERR_NVDA_NOT_RUNNING);

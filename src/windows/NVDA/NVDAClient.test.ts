@@ -35,11 +35,9 @@ describe("NVDAClient", () => {
         join(
           dirname(installationPathDummy),
           "userConfig",
-          "addons",
-          "remote",
-          "globalPlugins",
-          "remoteClient",
-          "server.pem",
+          "remoteAccess",
+          "localRelay",
+          "NvdaRemoteRelay.pem"
         )
       ) {
         return readKey("server.pem");
@@ -89,7 +87,7 @@ describe("NVDAClient", () => {
           if (++counter === expectedMessages) {
             resolve();
           }
-        }),
+        })
       );
     }
 
@@ -117,7 +115,7 @@ describe("NVDAClient", () => {
 
         if (json.type === "join") {
           clientSocket.write(
-            JSON.stringify({ type: "channel_joined", user_id: 1 }),
+            JSON.stringify({ type: "channel_joined", user_id: 1 })
           );
         }
       });
@@ -140,8 +138,8 @@ describe("NVDAClient", () => {
           "remote",
           "globalPlugins",
           "remoteClient",
-          "server.pem",
-        ),
+          "server.pem"
+        )
       );
     });
 
@@ -152,14 +150,14 @@ describe("NVDAClient", () => {
           type: "join",
           connection_type: "master",
           channel: "guidepup",
-        }) + "\n",
+        }) + "\n"
       );
       expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
         2,
         JSON.stringify({
           type: "protocol_version",
           version: 2,
-        }) + "\n",
+        }) + "\n"
       );
     });
 
@@ -186,11 +184,11 @@ describe("NVDAClient", () => {
             type: "speak",
             sequence: [null, 1, {}, "test", "  test  with   extra spaces  "],
             priority: 1,
-          }) + "\n",
+          }) + "\n"
         );
 
         expect(await speakEmittedPromise).toEqual(
-          "test, test with extra spaces",
+          "test, test with extra spaces"
         );
       });
     });
@@ -217,7 +215,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -227,7 +225,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
       });
     });
@@ -257,7 +255,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -267,7 +265,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: true,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -277,7 +275,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: false,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
@@ -287,7 +285,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
       });
     });
@@ -309,7 +307,7 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.Alt.toString(true) + "\n",
+          Modifiers.Alt.toString(true) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -319,7 +317,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -329,11 +327,11 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
-          Modifiers.Alt.toString(false) + "\n",
+          Modifiers.Alt.toString(false) + "\n"
         );
       });
     });
@@ -358,11 +356,11 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.Alt.toString(true) + "\n",
+          Modifiers.Alt.toString(true) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
-          Modifiers.Control.toString(true) + "\n",
+          Modifiers.Control.toString(true) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -372,7 +370,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
@@ -382,7 +380,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: true,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           5,
@@ -392,7 +390,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: false,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           6,
@@ -402,15 +400,15 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n",
+          }) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           7,
-          Modifiers.Control.toString(false) + "\n",
+          Modifiers.Control.toString(false) + "\n"
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           8,
-          Modifiers.Alt.toString(false) + "\n",
+          Modifiers.Alt.toString(false) + "\n"
         );
       });
     });
@@ -460,7 +458,7 @@ describe("NVDAClient", () => {
 
           return result1;
         },
-        { capture: true },
+        { capture: true }
       );
 
       const promise2 = client.enqueueAndTap(
@@ -469,7 +467,7 @@ describe("NVDAClient", () => {
 
           return result2;
         },
-        { capture: true },
+        { capture: true }
       );
 
       const [r1, r2] = await Promise.all([promise1, promise2]);
@@ -524,7 +522,7 @@ describe("NVDAClient", () => {
         async () => {
           throw testError;
         },
-        { capture: true },
+        { capture: true }
       );
 
       await expect(promise).rejects.toBe(testError);
@@ -538,7 +536,7 @@ describe("NVDAClient", () => {
         async () => {
           throw testError;
         },
-        { capture: true },
+        { capture: true }
       );
 
       const successPromise = client.enqueueAndTap(
@@ -547,7 +545,7 @@ describe("NVDAClient", () => {
 
           return successResult;
         },
-        { capture: true },
+        { capture: true }
       );
 
       await expect(failPromise).rejects.toBe(testError);
@@ -567,7 +565,7 @@ describe("NVDAClient", () => {
 
           throw testError;
         },
-        { capture: false },
+        { capture: false }
       );
 
       await expect(promise).rejects.toBe(testError);
