@@ -1,10 +1,11 @@
-import { connect, TLSSocket } from "tls";
-import { dirname, join } from "path";
+import { connect, TLSSocket } from "node:tls";
+import { dirname, join } from "node:path";
 import {
   ERR_NVDA_CANNOT_CONNECT,
   ERR_NVDA_NOT_INSTALLED,
   ERR_NVDA_NOT_RUNNING,
 } from "../errors";
+import { existsSync, readFileSync } from "node:fs";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { CommandOptions } from "../../CommandOptions";
 import { DEFAULT_CAPTURE } from "../../constants";
@@ -12,7 +13,6 @@ import { EventEmitter } from "events";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { readFileSync } from "fs";
 
 const CHANNEL_JOINED = "channel_joined";
 const CANCEL = "cancel";
@@ -126,6 +126,14 @@ export class NVDAClient extends EventEmitter {
     const caPath = join(
       dirname(executablePath),
       "userConfig",
+      "remoteAccess",
+      "localRelay",
+      "NvdaRemoteRelay.pem",
+    );
+
+    const legacyCaPath = join(
+      dirname(executablePath),
+      "userConfig",
       "addons",
       "remote",
       "globalPlugins",
@@ -133,10 +141,12 @@ export class NVDAClient extends EventEmitter {
       "server.pem",
     );
 
-    let ca;
+    const caFile = existsSync(caPath) ? caPath : legacyCaPath;
+
+    let ca: Buffer;
 
     try {
-      ca = readFileSync(caPath);
+      ca = readFileSync(caFile);
     } catch {
       throw new Error(ERR_NVDA_NOT_INSTALLED);
     }

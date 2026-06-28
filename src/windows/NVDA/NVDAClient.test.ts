@@ -1,12 +1,12 @@
 import { createServer, Server, TLSSocket } from "tls";
 import { dirname, join } from "path";
 import { ERR_NVDA_CANNOT_CONNECT, ERR_NVDA_NOT_INSTALLED } from "../errors";
+import { existsSync, readFileSync } from "fs";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { Key } from "../Key";
 import { Modifiers } from "../Modifiers";
 import { NVDAClient } from "./NVDAClient";
-import { readFileSync } from "fs";
 import { readKey } from "../../../test/fixtures";
 
 const nvdaDataHandlerStub = jest.fn();
@@ -16,6 +16,7 @@ jest.mock("./getNVDAInstallationPath", () => ({
   getNVDAInstallationPath: jest.fn(),
 }));
 jest.mock("fs", () => ({
+  existsSync: jest.fn(),
   readFileSync: jest.fn(),
 }));
 
@@ -29,8 +30,21 @@ describe("NVDAClient", () => {
       .mocked(getNVDAInstallationPath)
       .mockResolvedValue(installationPathDummy);
 
+    jest.mocked(existsSync).mockReturnValue(true);
+
     jest.mocked(readFileSync).mockImplementation((path, ...args) => {
       if (
+        path ===
+        join(
+          dirname(installationPathDummy),
+          "userConfig",
+          "remoteAccess",
+          "localRelay",
+          "NvdaRemoteRelay.pem",
+        )
+      ) {
+        return readKey("server.pem");
+      } else if (
         path ===
         join(
           dirname(installationPathDummy),
@@ -131,16 +145,14 @@ describe("NVDAClient", () => {
       (clientSocket as unknown) = undefined;
     });
 
-    it("should read the CA from the NVDA plugin", () => {
+    it("should read the CA from the NVDA path", () => {
       expect(readFileSync).toHaveBeenCalledWith(
         join(
           dirname(installationPathDummy),
           "userConfig",
-          "addons",
-          "remote",
-          "globalPlugins",
-          "remoteClient",
-          "server.pem",
+          "remoteAccess",
+          "localRelay",
+          "NvdaRemoteRelay.pem",
         ),
       );
     });
@@ -440,6 +452,149 @@ describe("NVDAClient", () => {
 
         expect(() => client.stop()).not.toThrow();
       });
+    });
+  });
+
+  describe("when an old version of NVDA is running", () => {
+    let nvdaServerFake: Server;
+    let clientSocket: TLSSocket;
+
+    beforeEach(async () => {
+      client?.stop().catch(() => {});
+
+      jest.mocked(existsSync).mockReturnValue(false);
+
+      client = new NVDAClient();
+
+      const options = {
+        key: readKey("server.key"),
+        cert: readKey("server.cert"),
+        requestCert: false,
+      };
+
+      nvdaServerFake = createServer(options, (socket) => {
+        clientSocket = socket;
+        socket.setEncoding("utf8");
+        socket.on("data", nvdaDataHandlerStub);
+      });
+
+      await new Promise<void>((resolve) => {
+        nvdaServerFake.listen(NVDA_PORT, NVDA_HOST, () => {
+          resolve();
+        });
+      });
+
+      nvdaDataHandlerStub.mockImplementation((data) => {
+        const json = JSON.parse(data);
+
+        if (json.type === "join") {
+          clientSocket.write(
+            JSON.stringify({ type: "channel_joined", user_id: 1 }),
+          );
+        }
+      });
+
+      await client.connect();
+    });
+
+    afterEach(() => {
+      nvdaServerFake.close();
+      client.stop();
+      (clientSocket as unknown) = undefined;
+    });
+
+    it("should read the CA from the legacy NVDA path", () => {
+      expect(readFileSync).toHaveBeenCalledWith(
+        join(
+          dirname(installationPathDummy),
+          "userConfig",
+          "addons",
+          "remote",
+          "globalPlugins",
+          "remoteClient",
+          "server.pem",
+        ),
+      );
+    });
+  });
+
+  describe("when an incompatible version of NVDA is running", () => {
+    let nvdaServerFake: Server;
+    let clientSocket: TLSSocket;
+
+    beforeEach(async () => {
+      client?.stop().catch(() => {});
+
+      jest.mocked(existsSync).mockReturnValue(false);
+      jest.mocked(readFileSync).mockImplementation((path, ...args) => {
+        if (
+          path ===
+          join(
+            dirname(installationPathDummy),
+            "userConfig",
+            "remoteAccess",
+            "localRelay",
+            "NvdaRemoteRelay.pem",
+          )
+        ) {
+          throw new Error("test-read-file-error");
+        } else if (
+          path ===
+          join(
+            dirname(installationPathDummy),
+            "userConfig",
+            "addons",
+            "remote",
+            "globalPlugins",
+            "remoteClient",
+            "server.pem",
+          )
+        ) {
+          throw new Error("test-read-file-error");
+        }
+
+        return jest.requireActual("fs").readFileSync(path, ...args);
+      });
+
+      client = new NVDAClient();
+
+      const options = {
+        key: readKey("server.key"),
+        cert: readKey("server.cert"),
+        requestCert: false,
+      };
+
+      nvdaServerFake = createServer(options, (socket) => {
+        clientSocket = socket;
+        socket.setEncoding("utf8");
+        socket.on("data", nvdaDataHandlerStub);
+      });
+
+      await new Promise<void>((resolve) => {
+        nvdaServerFake.listen(NVDA_PORT, NVDA_HOST, () => {
+          resolve();
+        });
+      });
+
+      nvdaDataHandlerStub.mockImplementation((data) => {
+        const json = JSON.parse(data);
+
+        if (json.type === "join") {
+          clientSocket.write(
+            JSON.stringify({ type: "channel_joined", user_id: 1 }),
+          );
+        }
+      });
+    });
+
+    afterEach(() => {
+      nvdaServerFake?.close();
+      client?.stop().catch(() => {});
+      (clientSocket as unknown) = undefined;
+    });
+
+    it("should reject with a 'not installed' error", async () => {
+      await expect(client.connect()).rejects.toThrow(ERR_NVDA_NOT_INSTALLED);
     });
   });
 
