@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/guidepup",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "Screen reader automation library for testing.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -8,7 +8,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/guidepup/guidepup"
+    "url": "git+https://github.com/guidepup/guidepup.git"
   },
   "bugs": {
     "url": "https://github.com/guidepup/guidepup/issues"
