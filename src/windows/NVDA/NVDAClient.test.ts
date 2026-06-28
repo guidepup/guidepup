@@ -1,12 +1,12 @@
 import { createServer, Server, TLSSocket } from "tls";
 import { dirname, join } from "path";
 import { ERR_NVDA_CANNOT_CONNECT, ERR_NVDA_NOT_INSTALLED } from "../errors";
+import { existsSync, readFileSync } from "fs";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { Key } from "../Key";
 import { Modifiers } from "../Modifiers";
 import { NVDAClient } from "./NVDAClient";
-import { readFileSync } from "fs";
 import { readKey } from "../../../test/fixtures";
 
 const nvdaDataHandlerStub = jest.fn();
@@ -16,6 +16,7 @@ jest.mock("./getNVDAInstallationPath", () => ({
   getNVDAInstallationPath: jest.fn(),
 }));
 jest.mock("fs", () => ({
+  existsSync: jest.fn(),
   readFileSync: jest.fn(),
 }));
 
@@ -29,6 +30,8 @@ describe("NVDAClient", () => {
       .mocked(getNVDAInstallationPath)
       .mockResolvedValue(installationPathDummy);
 
+    jest.mocked(existsSync).mockReturnValue(true);
+
     jest.mocked(readFileSync).mockImplementation((path, ...args) => {
       if (
         path ===
@@ -37,7 +40,20 @@ describe("NVDAClient", () => {
           "userConfig",
           "remoteAccess",
           "localRelay",
-          "NvdaRemoteRelay.pem"
+          "NvdaRemoteRelay.pem",
+        )
+      ) {
+        return readKey("server.pem");
+      } else if (
+        path ===
+        join(
+          dirname(installationPathDummy),
+          "userConfig",
+          "addons",
+          "remote",
+          "globalPlugins",
+          "remoteClient",
+          "server.pem",
         )
       ) {
         return readKey("server.pem");
@@ -87,7 +103,7 @@ describe("NVDAClient", () => {
           if (++counter === expectedMessages) {
             resolve();
           }
-        })
+        }),
       );
     }
 
@@ -115,7 +131,7 @@ describe("NVDAClient", () => {
 
         if (json.type === "join") {
           clientSocket.write(
-            JSON.stringify({ type: "channel_joined", user_id: 1 })
+            JSON.stringify({ type: "channel_joined", user_id: 1 }),
           );
         }
       });
@@ -129,17 +145,15 @@ describe("NVDAClient", () => {
       (clientSocket as unknown) = undefined;
     });
 
-    it("should read the CA from the NVDA plugin", () => {
+    it("should read the CA from the NVDA path", () => {
       expect(readFileSync).toHaveBeenCalledWith(
         join(
           dirname(installationPathDummy),
           "userConfig",
-          "addons",
-          "remote",
-          "globalPlugins",
-          "remoteClient",
-          "server.pem"
-        )
+          "remoteAccess",
+          "localRelay",
+          "NvdaRemoteRelay.pem",
+        ),
       );
     });
 
@@ -150,14 +164,14 @@ describe("NVDAClient", () => {
           type: "join",
           connection_type: "master",
           channel: "guidepup",
-        }) + "\n"
+        }) + "\n",
       );
       expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
         2,
         JSON.stringify({
           type: "protocol_version",
           version: 2,
-        }) + "\n"
+        }) + "\n",
       );
     });
 
@@ -184,11 +198,11 @@ describe("NVDAClient", () => {
             type: "speak",
             sequence: [null, 1, {}, "test", "  test  with   extra spaces  "],
             priority: 1,
-          }) + "\n"
+          }) + "\n",
         );
 
         expect(await speakEmittedPromise).toEqual(
-          "test, test with extra spaces"
+          "test, test with extra spaces",
         );
       });
     });
@@ -215,7 +229,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -225,7 +239,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
       });
     });
@@ -255,7 +269,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -265,7 +279,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -275,7 +289,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
@@ -285,7 +299,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
       });
     });
@@ -307,7 +321,7 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.Alt.toString(true) + "\n"
+          Modifiers.Alt.toString(true) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
@@ -317,7 +331,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -327,11 +341,11 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
-          Modifiers.Alt.toString(false) + "\n"
+          Modifiers.Alt.toString(false) + "\n",
         );
       });
     });
@@ -356,11 +370,11 @@ describe("NVDAClient", () => {
       it("should send a key down command for the modifier, then the key, and then a key up command in the reverse order to NVDA", () => {
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           1,
-          Modifiers.Alt.toString(true) + "\n"
+          Modifiers.Alt.toString(true) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           2,
-          Modifiers.Control.toString(true) + "\n"
+          Modifiers.Control.toString(true) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           3,
@@ -370,7 +384,7 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           4,
@@ -380,7 +394,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: true,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           5,
@@ -390,7 +404,7 @@ describe("NVDAClient", () => {
             vk_code: 3,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           6,
@@ -400,15 +414,15 @@ describe("NVDAClient", () => {
             vk_code: 1,
             pressed: false,
             type: "key",
-          }) + "\n"
+          }) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           7,
-          Modifiers.Control.toString(false) + "\n"
+          Modifiers.Control.toString(false) + "\n",
         );
         expect(nvdaDataHandlerStub).toHaveBeenNthCalledWith(
           8,
-          Modifiers.Alt.toString(false) + "\n"
+          Modifiers.Alt.toString(false) + "\n",
         );
       });
     });
@@ -441,6 +455,149 @@ describe("NVDAClient", () => {
     });
   });
 
+  describe("when an old version of NVDA is running", () => {
+    let nvdaServerFake: Server;
+    let clientSocket: TLSSocket;
+
+    beforeEach(async () => {
+      client?.stop().catch(() => {});
+
+      jest.mocked(existsSync).mockReturnValue(false);
+
+      client = new NVDAClient();
+
+      const options = {
+        key: readKey("server.key"),
+        cert: readKey("server.cert"),
+        requestCert: false,
+      };
+
+      nvdaServerFake = createServer(options, (socket) => {
+        clientSocket = socket;
+        socket.setEncoding("utf8");
+        socket.on("data", nvdaDataHandlerStub);
+      });
+
+      await new Promise<void>((resolve) => {
+        nvdaServerFake.listen(NVDA_PORT, NVDA_HOST, () => {
+          resolve();
+        });
+      });
+
+      nvdaDataHandlerStub.mockImplementation((data) => {
+        const json = JSON.parse(data);
+
+        if (json.type === "join") {
+          clientSocket.write(
+            JSON.stringify({ type: "channel_joined", user_id: 1 }),
+          );
+        }
+      });
+
+      await client.connect();
+    });
+
+    afterEach(() => {
+      nvdaServerFake.close();
+      client.stop();
+      (clientSocket as unknown) = undefined;
+    });
+
+    it("should read the CA from the legacy NVDA path", () => {
+      expect(readFileSync).toHaveBeenCalledWith(
+        join(
+          dirname(installationPathDummy),
+          "userConfig",
+          "addons",
+          "remote",
+          "globalPlugins",
+          "remoteClient",
+          "server.pem",
+        ),
+      );
+    });
+  });
+
+  describe("when an incompatible version of NVDA is running", () => {
+    let nvdaServerFake: Server;
+    let clientSocket: TLSSocket;
+
+    beforeEach(async () => {
+      client?.stop().catch(() => {});
+
+      jest.mocked(existsSync).mockReturnValue(false);
+      jest.mocked(readFileSync).mockImplementation((path, ...args) => {
+        if (
+          path ===
+          join(
+            dirname(installationPathDummy),
+            "userConfig",
+            "remoteAccess",
+            "localRelay",
+            "NvdaRemoteRelay.pem",
+          )
+        ) {
+          throw new Error("test-read-file-error");
+        } else if (
+          path ===
+          join(
+            dirname(installationPathDummy),
+            "userConfig",
+            "addons",
+            "remote",
+            "globalPlugins",
+            "remoteClient",
+            "server.pem",
+          )
+        ) {
+          throw new Error("test-read-file-error");
+        }
+
+        return jest.requireActual("fs").readFileSync(path, ...args);
+      });
+
+      client = new NVDAClient();
+
+      const options = {
+        key: readKey("server.key"),
+        cert: readKey("server.cert"),
+        requestCert: false,
+      };
+
+      nvdaServerFake = createServer(options, (socket) => {
+        clientSocket = socket;
+        socket.setEncoding("utf8");
+        socket.on("data", nvdaDataHandlerStub);
+      });
+
+      await new Promise<void>((resolve) => {
+        nvdaServerFake.listen(NVDA_PORT, NVDA_HOST, () => {
+          resolve();
+        });
+      });
+
+      nvdaDataHandlerStub.mockImplementation((data) => {
+        const json = JSON.parse(data);
+
+        if (json.type === "join") {
+          clientSocket.write(
+            JSON.stringify({ type: "channel_joined", user_id: 1 }),
+          );
+        }
+      });
+    });
+
+    afterEach(() => {
+      nvdaServerFake?.close();
+      client?.stop().catch(() => {});
+      (clientSocket as unknown) = undefined;
+    });
+
+    it("should reject with a 'not installed' error", async () => {
+      await expect(client.connect()).rejects.toThrow(ERR_NVDA_NOT_INSTALLED);
+    });
+  });
+
   describe("when no phrases have been spoken", () => {
     it("should return an empty array", async () => {
       expect(await client.spokenPhraseLog()).toEqual([]);
@@ -458,7 +615,7 @@ describe("NVDAClient", () => {
 
           return result1;
         },
-        { capture: true }
+        { capture: true },
       );
 
       const promise2 = client.enqueueAndTap(
@@ -467,7 +624,7 @@ describe("NVDAClient", () => {
 
           return result2;
         },
-        { capture: true }
+        { capture: true },
       );
 
       const [r1, r2] = await Promise.all([promise1, promise2]);
@@ -522,7 +679,7 @@ describe("NVDAClient", () => {
         async () => {
           throw testError;
         },
-        { capture: true }
+        { capture: true },
       );
 
       await expect(promise).rejects.toBe(testError);
@@ -536,7 +693,7 @@ describe("NVDAClient", () => {
         async () => {
           throw testError;
         },
-        { capture: true }
+        { capture: true },
       );
 
       const successPromise = client.enqueueAndTap(
@@ -545,7 +702,7 @@ describe("NVDAClient", () => {
 
           return successResult;
         },
-        { capture: true }
+        { capture: true },
       );
 
       await expect(failPromise).rejects.toBe(testError);
@@ -565,7 +722,7 @@ describe("NVDAClient", () => {
 
           throw testError;
         },
-        { capture: false }
+        { capture: false },
       );
 
       await expect(promise).rejects.toBe(testError);

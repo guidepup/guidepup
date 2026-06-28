@@ -1,10 +1,11 @@
-import { connect, TLSSocket } from "tls";
-import { dirname, join } from "path";
+import { connect, TLSSocket } from "node:tls";
+import { dirname, join } from "node:path";
 import {
   ERR_NVDA_CANNOT_CONNECT,
   ERR_NVDA_NOT_INSTALLED,
   ERR_NVDA_NOT_RUNNING,
 } from "../errors";
+import { existsSync, readFileSync } from "node:fs";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { CommandOptions } from "../../CommandOptions";
 import { DEFAULT_CAPTURE } from "../../constants";
@@ -12,7 +13,6 @@ import { EventEmitter } from "events";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { readFileSync } from "fs";
 
 const CHANNEL_JOINED = "channel_joined";
 const CANCEL = "cancel";
@@ -54,19 +54,19 @@ const CANCEL_NOT_FIRE_TIMEOUT = 1000;
 const SPEAK_DEBOUNCE_TIMEOUT = 1000;
 
 const isChannelJoinedMessage = (
-  message: NVDABaseMessage
+  message: NVDABaseMessage,
 ): message is NVDAChannelJoinedMessage => {
   return message.type === CHANNEL_JOINED;
 };
 
 const isCancelMessage = (
-  message: NVDABaseMessage
+  message: NVDABaseMessage,
 ): message is NVDACancelMessage => {
   return message.type === CANCEL;
 };
 
 const isSpeakMessage = (
-  message: NVDABaseMessage
+  message: NVDABaseMessage,
 ): message is NVDASpeakMessage => {
   return message.type === SPEAK;
 };
@@ -128,19 +128,31 @@ export class NVDAClient extends EventEmitter {
       "userConfig",
       "remoteAccess",
       "localRelay",
-      "NvdaRemoteRelay.pem"
+      "NvdaRemoteRelay.pem",
     );
 
-    let ca;
+    const legacyCaPath = join(
+      dirname(executablePath),
+      "userConfig",
+      "addons",
+      "remote",
+      "globalPlugins",
+      "remoteClient",
+      "server.pem",
+    );
+
+    const caFile = existsSync(caPath) ? caPath : legacyCaPath;
+
+    let ca: Buffer;
 
     try {
-      ca = readFileSync(caPath);
+      ca = readFileSync(caFile);
     } catch {
       throw new Error(ERR_NVDA_NOT_INSTALLED);
     }
 
     return new Promise<void>((resolve, reject) =>
-      this.#connect(ca, options?.capture, resolve, reject)
+      this.#connect(ca, options?.capture, resolve, reject),
     );
   }
 
@@ -148,7 +160,7 @@ export class NVDAClient extends EventEmitter {
     ca: Buffer,
     capture: CommandOptions["capture"] = DEFAULT_CAPTURE,
     onSuccess?: () => void,
-    onError?: (error: Error) => void
+    onError?: (error: Error) => void,
   ): Promise<void> {
     let onSuccessCalled = false;
 
@@ -169,7 +181,7 @@ export class NVDAClient extends EventEmitter {
 
         await this.#send(connectionMessage);
         await this.#send(protocolMessage);
-      }
+      },
     );
 
     this.#socket.setEncoding("utf8");
@@ -229,7 +241,7 @@ export class NVDAClient extends EventEmitter {
         }
 
         spokenPhraseParts.push(
-          spokenPhrasePart.trim().replaceAll(/\s\s+/g, " ")
+          spokenPhrasePart.trim().replaceAll(/\s\s+/g, " "),
         );
       }
 
@@ -300,7 +312,7 @@ export class NVDAClient extends EventEmitter {
    */
   enqueueAndTap<T>(
     action: () => Promise<T>,
-    options?: ActionOptions
+    options?: ActionOptions,
   ): Promise<T> {
     if (this.#stopped) {
       throw new Error(ERR_NVDA_NOT_RUNNING);
