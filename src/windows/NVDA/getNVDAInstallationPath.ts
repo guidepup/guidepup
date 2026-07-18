@@ -1,46 +1,35 @@
-import { existsSync } from "fs";
-import { getNVDARegistryData } from "./getNVDARegistryData";
-import { join } from "path";
-import { maxSatisfying } from "semver";
+import { ERR_NVDA_NOT_INSTALLED } from "../errors";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { resolveCachePath } from "../../resolveCachePath";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const manifest = require("../../../manifest.json");
 
 let installationPath: string;
 
-export async function getNVDAInstallationPath(): Promise<string | null> {
+export async function getNVDAInstallationPath(): Promise<string> {
   if (installationPath) {
     return installationPath;
   }
 
-  const { exists, values } = await getNVDARegistryData();
+  const asset = manifest.screenReaders.find(({ id }) => id === "nvda")
+    .assets[0];
 
-  const versions = Object.keys(values).map((value) =>
-    value.replace("guidepup_nvda_", "")
+  const cachePath = resolveCachePath();
+
+  const assetPath = join(
+    cachePath,
+    "nvda",
+    "all",
+    asset.version,
+    "extracted",
+    "nvda.exe",
   );
 
-  const versionsWithoutSubVersion = versions.map(
-    (version) => version.split("-")[0]
-  );
-
-  if (!exists || !versions.length) {
-    return null;
+  if (!existsSync(assetPath)) {
+    throw new Error(ERR_NVDA_NOT_INSTALLED);
   }
 
-  const maxSatisfyingVersion = maxSatisfying(versionsWithoutSubVersion, ">=0");
-  const maxSatisfyingVersionWithSubVersion = versions.find((version) =>
-    version.startsWith(maxSatisfyingVersion)
-  );
-
-  const latestVersion = `guidepup_nvda_${maxSatisfyingVersionWithSubVersion}`;
-  const guidepupNVDADirectory = values[latestVersion]?.value;
-
-  if (!guidepupNVDADirectory) {
-    return null;
-  }
-
-  const guidepupNVDAExecutablePath = join(guidepupNVDADirectory, "nvda.exe");
-
-  if (!existsSync(guidepupNVDAExecutablePath)) {
-    return null;
-  }
-
-  return (installationPath = guidepupNVDAExecutablePath);
+  return (installationPath = assetPath);
 }

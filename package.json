@@ -48,8 +48,5 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.61.1"
   },
-  "dependencies": {
-    "regedit": "5.1.2",
-    "semver": "^7.3.8"
-  }
+  "dependencies": {}
 }
