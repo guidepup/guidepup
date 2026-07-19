@@ -1,13 +1,12 @@
 import {
-  configureSettings,
-  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
-  storeOriginalSettings,
-} from "./configureSettings";
-import {
   ERR_VOICE_OVER_ALREADY_RUNNING,
   ERR_VOICE_OVER_NOT_RUNNING,
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
+import {
+  mountGuidepupPreferences,
+  unmountGuidepupPreferences,
+} from "./preferences";
 import { CommanderCommands } from "./CommanderCommands";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
@@ -23,12 +22,9 @@ import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
-jest.mock("./configureSettings", () => ({
-  configureSettings: jest.fn(),
-  storeOriginalSettings: jest.fn(),
-  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS: Symbol(
-    "test-default-guidepup-voiceover-settings",
-  ),
+jest.mock("./preferences", () => ({
+  mountGuidepupPreferences: jest.fn(),
+  unmountGuidepupPreferences: jest.fn(),
 }));
 jest.mock("../../isKeyboard", () => ({
   isKeyboard: jest.fn(),
@@ -306,14 +302,8 @@ describe("VoiceOver", () => {
           expect(vo.commanderCommands).toBe(VoiceOverCommanderStub.commands);
         });
 
-        it("should store original settings (so they can be reset back when done)", () => {
-          expect(storeOriginalSettings).toHaveBeenCalled();
-        });
-
-        it("should configure settings", () => {
-          expect(configureSettings).toHaveBeenCalledWith(
-            DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
-          );
+        it("should mount Guidepup preferences", () => {
+          expect(mountGuidepupPreferences).toHaveBeenCalled();
         });
 
         it("should start VoiceOver", () => {
@@ -341,11 +331,8 @@ describe("VoiceOver", () => {
       ${"without options"} | ${undefined}
       ${"with options"}    | ${{}}
     `("when called $description", ({ options }) => {
-      const resetSettingsSpy = jest.fn();
-
       beforeEach(async () => {
         jest.mocked(isMacOS).mockReturnValue(true);
-        jest.mocked(storeOriginalSettings).mockResolvedValue(resetSettingsSpy);
 
         await vo.start();
 
@@ -362,8 +349,8 @@ describe("VoiceOver", () => {
         expect(waitForNotRunning).toHaveBeenCalledWith(options);
       });
 
-      it("should reset settings", () => {
-        expect(resetSettingsSpy).toHaveBeenCalled();
+      it("should unmount Guidepup preferences", () => {
+        expect(unmountGuidepupPreferences).toHaveBeenCalled();
       });
 
       describe("when called again and start hasn't been called this time", () => {
@@ -852,8 +839,6 @@ describe("VoiceOver", () => {
 
     beforeEach(async () => {
       jest.mocked(isMacOS).mockReturnValue(true);
-      const resetSettingsSpy = jest.fn();
-      jest.mocked(storeOriginalSettings).mockResolvedValue(resetSettingsSpy);
 
       jest.mocked(terminateVoiceOverProcess).mockImplementation(
         () =>

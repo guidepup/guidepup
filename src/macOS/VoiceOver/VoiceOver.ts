@@ -1,13 +1,12 @@
 import {
-  configureSettings,
-  DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS,
-  storeOriginalSettings,
-} from "./configureSettings";
-import {
   ERR_VOICE_OVER_ALREADY_RUNNING,
   ERR_VOICE_OVER_NOT_RUNNING,
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
+import {
+  mountGuidepupPreferences,
+  unmountGuidepupPreferences,
+} from "./preferences";
 import { ClickOptions } from "../../ClickOptions";
 import { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
@@ -34,11 +33,6 @@ type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
  * Class for controlling the VoiceOver screen reader on MacOS.
  */
 export class VoiceOver implements IScreenReader {
-  /**
-   * Storage for VoiceOver settings reset.
-   */
-  #resetSettings: () => Promise<void>;
-
   /**
    * VoiceOver running status.
    */
@@ -290,13 +284,8 @@ export class VoiceOver implements IScreenReader {
     this.#keyboard = new VoiceOverKeyboard(this.#client);
     this.#mouse = new VoiceOverMouse(this.#client);
 
-    // TODO: handle failures in the following steps more gracefully, we should
-    // look to gracefully reset back to default if fail to start rather than
-    // leave a half setup state.
+    mountGuidepupPreferences();
 
-    this.#resetSettings = await storeOriginalSettings();
-
-    await configureSettings(DEFAULT_GUIDEPUP_VOICEOVER_SETTINGS);
     await start();
     await waitForRunning(options);
 
@@ -342,10 +331,7 @@ export class VoiceOver implements IScreenReader {
     this.#keyboard = null;
     this.#mouse = null;
 
-    if (this.#resetSettings) {
-      await this.#resetSettings();
-      this.#resetSettings = null;
-    }
+    unmountGuidepupPreferences();
 
     this.#started = false;
     this.#stopping = false;

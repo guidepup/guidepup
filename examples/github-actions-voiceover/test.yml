@@ -18,10 +18,12 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Enable VoiceOver Automation
-        uses: guidepup/setup-action@0.21.0
+        run: npx -y @guidepup/setup setup
 
       # Uncomment and add your steps for your Guidepup tests here
       # - name: Install Dependencies
       #   run: npm ci --no-audit --no-fund --no-progress
+      # - name: Install VoiceOver Assets
+      #   run: npx -y @guidepup/setup install
       # - name: VoiceOver Test
       #   run: npm run test

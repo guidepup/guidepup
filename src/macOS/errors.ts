@@ -1,8 +1,9 @@
+export const ERR_MACOS_VERSION_NOT_SUPPORTED = "macOS version not supported";
 export const ERR_VOICE_OVER_NOT_SUPPORTED = "VoiceOver not supported";
 export const ERR_VOICE_OVER_ALREADY_RUNNING = "VoiceOver already running";
+export const ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES =
+  "Failed to mount Guidepup preferences\n\nPlease ensure you have run 'npx @guidepup/setup setup' at least once on your machine and 'npx @guidepup/setup install' at least once for this project";
 export const ERR_VOICE_OVER_NOT_RUNNING = "VoiceOver not running";
-export const ERR_VOICE_OVER_UNABLE_TO_CONFIGURE_VOICEOVER_SETTING =
-  "Unable to configure a VoiceOver setting";
 export const ERR_VOICE_OVER_CANNOT_BE_STARTED = "VoiceOver cannot be started";
 
 export const ERR_VOICE_OVER_RUNNING_TIMEOUT =
@@ -30,5 +31,5 @@ export const ERR_VOICE_OVER_TAKE_SCREENSHOT =
   "VoiceOver unable to take a screenshot";
 
 export const ERR_PREFIX_ACTIVATE = "Unable to activate application: ";
-export const ERR_PREFIX_SEND_KEYS = "Unable to send keys ";
+export const ERR_PREFIX_SEND_KEYS = "Unable to send keys: ";
 export const ERR_PREFIX_QUIT = "Unable to quit application: ";
