@@ -6,7 +6,7 @@ import { waitForRunning } from "./waitForRunning";
 const MAX_START_ATTEMPTS = 2;
 
 export async function start(): Promise<void> {
-  const executablePath = await getNVDAInstallationPath();
+  const executablePath = getNVDAInstallationPath();
 
   if (!executablePath) {
     throw new Error(ERR_NVDA_NOT_INSTALLED);

@@ -117,7 +117,7 @@ export class NVDAClient extends EventEmitter {
    * Connect to a NVDA instance.
    */
   async connect(options?: Pick<CommandOptions, "capture">): Promise<void> {
-    const executablePath = await getNVDAInstallationPath();
+    const executablePath = getNVDAInstallationPath();
 
     if (!executablePath) {
       throw new Error(ERR_NVDA_NOT_INSTALLED);
@@ -151,7 +151,7 @@ export class NVDAClient extends EventEmitter {
       throw new Error(ERR_NVDA_NOT_INSTALLED);
     }
 
-    return new Promise<void>((resolve, reject) =>
+    return await new Promise<void>((resolve, reject) =>
       this.#connect(ca, options?.capture, resolve, reject),
     );
   }

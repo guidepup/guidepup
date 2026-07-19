@@ -1,4 +1,3 @@
-import { ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { resolveCachePath } from "../../resolveCachePath";
@@ -8,7 +7,7 @@ const manifest = require("../../../manifest.json");
 
 let installationPath: string;
 
-export async function getNVDAInstallationPath(): Promise<string> {
+export function getNVDAInstallationPath(): string | null {
   if (installationPath) {
     return installationPath;
   }
@@ -28,8 +27,10 @@ export async function getNVDAInstallationPath(): Promise<string> {
   );
 
   if (!existsSync(assetPath)) {
-    throw new Error(ERR_NVDA_NOT_INSTALLED);
+    return null;
   }
 
-  return (installationPath = assetPath);
+  installationPath = assetPath;
+
+  return installationPath;
 }

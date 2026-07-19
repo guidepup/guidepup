@@ -17,8 +17,8 @@ describe("isNVDAInstalled", () => {
       });
     });
 
-    it("should return false", async () => {
-      await expect(isNVDAInstalled()).resolves.toBe(false);
+    it("should return false", () => {
+      expect(isNVDAInstalled()).toBe(false);
     });
   });
 
@@ -26,21 +26,21 @@ describe("isNVDAInstalled", () => {
     beforeEach(() => {
       jest
         .mocked(getNVDAInstallationPath)
-        .mockResolvedValue("test-installation-path");
+        .mockReturnValue("test-installation-path");
     });
 
-    it("should return true", async () => {
-      await expect(isNVDAInstalled()).resolves.toBe(true);
+    it("should return true", () => {
+      expect(isNVDAInstalled()).toBe(true);
     });
   });
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
     });
 
-    it("should return false", async () => {
-      await expect(isNVDAInstalled()).resolves.toBe(false);
+    it("should return false", () => {
+      expect(isNVDAInstalled()).toBe(false);
     });
   });
 });

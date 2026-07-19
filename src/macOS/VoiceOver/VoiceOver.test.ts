@@ -152,10 +152,10 @@ describe("VoiceOver", () => {
       ${false} | ${false}
       ${true}  | ${true}
     `("when is macOS is $macOS", ({ macOS, expected }) => {
-      beforeEach(async () => {
+      beforeEach(() => {
         jest.mocked(isMacOS).mockReturnValue(macOS);
 
-        result = await VoiceOver.detect();
+        result = VoiceOver.detect();
       });
 
       it(`should return ${expected}`, () => {
@@ -170,10 +170,10 @@ describe("VoiceOver", () => {
       ${false} | ${false}
       ${true}  | ${true}
     `("when is macOS is $macOS", ({ macOS, expected }) => {
-      beforeEach(async () => {
+      beforeEach(() => {
         jest.mocked(isMacOS).mockReturnValue(macOS);
 
-        result = await vo.detect();
+        result = vo.detect();
       });
 
       it(`should return ${expected}`, () => {

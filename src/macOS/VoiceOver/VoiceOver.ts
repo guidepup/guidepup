@@ -161,15 +161,15 @@ export class VoiceOver implements IScreenReader {
    * import { VoiceOver } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isVoiceOverSupportedScreenReader = await VoiceOver.detect();
+   *   const isVoiceOverSupportedScreenReader = VoiceOver.detect();
    *
    *   console.log(isVoiceOverSupportedScreenReader);
    * })();
    * ```
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  static async detect(): Promise<boolean> {
+  static detect(): boolean {
     return isMacOS();
   }
 
@@ -186,15 +186,15 @@ export class VoiceOver implements IScreenReader {
    * import { voiceOver } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isVoiceOverSupportedScreenReader = await voiceOver.detect();
+   *   const isVoiceOverSupportedScreenReader = voiceOver.detect();
    *
    *   console.log(isVoiceOverSupportedScreenReader);
    * })();
    * ```
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  async detect(): Promise<boolean> {
+  detect(): boolean {
     return VoiceOver.detect();
   }
 
