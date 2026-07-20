@@ -15,7 +15,10 @@ export function trustPortableIdentifier(preferencesDirectory: string): void {
     stdout = execFileSync(
       "/usr/libexec/PlistBuddy",
       ["-c", "Print :SCRCUserDefaultsAlwaysUsePortableIDs", localPlist],
-      { encoding: "utf-8" },
+      {
+        encoding: "utf-8",
+        stdio: ["ignore", "pipe", "pipe"],
+      },
     );
   } catch (cause) {
     if (!cause.stderr.includes("Does Not Exist")) {
