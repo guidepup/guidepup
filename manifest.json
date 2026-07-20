@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "screenReaders": [
+    {
+      "id": "nvda",
+      "name": "NVDA",
+      "platforms": ["win32"],
+      "defaultDownload": true,
+      "assets": [
+        {
+          "version": "0.2.1-2026.1.1",
+          "repository": "guidepup/nvda",
+          "asset": "guidepup-nvda-0.2.1-2026.1.1.zip",
+          "sha256": "b6fdfde86190c7c14132d459f2f88995da6251ded431e23947d676ffb152f963"
+        }
+      ]
+    },
+    {
+      "id": "voiceover",
+      "name": "VoiceOver",
+      "platforms": ["darwin"],
+      "defaultDownload": true,
+      "assets": [
+        {
+          "version": "0.0.1",
+          "platformVersion": "21",
+          "repository": "guidepup/voiceover",
+          "asset": "guidepup-voiceover-preferences-macos-14.dmg",
+          "sha256": "c6595f5ca50440e8553cde278936a46eff58d4c904e19c87e7d0e25950617ee1"
+        },
+        {
+          "version": "0.0.1",
+          "platformVersion": "22",
+          "repository": "guidepup/voiceover",
+          "asset": "guidepup-voiceover-preferences-macos-14.dmg",
+          "sha256": "c6595f5ca50440e8553cde278936a46eff58d4c904e19c87e7d0e25950617ee1"
+        },
+        {
+          "version": "0.0.1",
+          "platformVersion": "23",
+          "repository": "guidepup/voiceover",
+          "asset": "guidepup-voiceover-preferences-macos-14.dmg",
+          "sha256": "c6595f5ca50440e8553cde278936a46eff58d4c904e19c87e7d0e25950617ee1"
+        },
+        {
+          "version": "0.0.1",
+          "platformVersion": "24",
+          "repository": "guidepup/voiceover",
+          "asset": "guidepup-voiceover-preferences-macos-15.dmg",
+          "sha256": "8bdc3a11c45a19cc876a859bfbd64529469a8b7d4ad41fd7e00a0729ebdbcb25"
+        },
+        {
+          "version": "0.0.1",
+          "platformVersion": "25",
+          "repository": "guidepup/voiceover",
+          "asset": "guidepup-voiceover-preferences-macos-26.dmg",
+          "sha256": "9af2a3af7c9bffae1b2af26f1970548ecd62f33965fd30f4e43f21b9f57ce5ca"
+        }
+      ]
+    }
+  ]
+}

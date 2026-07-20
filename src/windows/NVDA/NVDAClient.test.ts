@@ -26,9 +26,7 @@ describe("NVDAClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest
-      .mocked(getNVDAInstallationPath)
-      .mockResolvedValue(installationPathDummy);
+    jest.mocked(getNVDAInstallationPath).mockReturnValue(installationPathDummy);
 
     jest.mocked(existsSync).mockReturnValue(true);
 
@@ -77,7 +75,7 @@ describe("NVDAClient", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
     });
 
     it("should reject with a 'not installed' error", async () => {

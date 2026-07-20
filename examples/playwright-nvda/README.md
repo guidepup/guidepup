@@ -5,9 +5,12 @@ An example demonstrating using Guidepup for testing NVDA automation with [Playwr
 Run this example's test with:
 
 ```bash
+# Once on your machine
+npx @guidepup/setup setup
+
 # In the root directory:
 npm ci
-npm build
+npx @guidepup/setup install
 
 # Then in the example directory:
 cd ./examples/playwright-nvda

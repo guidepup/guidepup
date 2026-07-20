@@ -1,6 +1,7 @@
 *
 !lib/**
 !LICENSE
+!manifest.json
 !package.json
 !package-lock.json
 !README.md

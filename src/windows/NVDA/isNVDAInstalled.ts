@@ -1,8 +1,8 @@
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 
-export async function isNVDAInstalled() {
+export function isNVDAInstalled() {
   try {
-    const path = await getNVDAInstallationPath();
+    const path = getNVDAInstallationPath();
 
     return !!path;
   } catch {
