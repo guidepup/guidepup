@@ -29,16 +29,22 @@ It enables testing for <a href="https://www.guidepup.dev/docs/api/class-voiceove
 
 ## Getting Started
 
-Set up your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+Set up your machine for screen reader automation:
 
-```bash
-npx @guidepup/setup
+```sh
+npx @guidepup/setup setup
 ```
 
 Install Guidepup to your project:
 
-```bash
+```sh
 npm install @guidepup/guidepup
+```
+
+Install the Guidepup screen reader assets:
+
+```sh
+npx @guidepup/setup install
 ```
 
 And get cracking with your first screen reader automation code!
@@ -47,9 +53,7 @@ And get cracking with your first screen reader automation code!
 
 Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real world examples, environment setup, and complete API documentation with examples.
 
-You can also check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects.
-
-Alternatively check out [this project](https://github.com/guidepup/aria-at-tests) which runs several thousand tests to assert screen reader compatibility against [W3C ARIA-AT](https://github.com/w3c/aria-at) test suite.
+You can also check out these [examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup in your projects.
 
 ### Basic Navigation
 
