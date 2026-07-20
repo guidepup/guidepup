@@ -25,11 +25,11 @@ export function trustPortableIdentifier(preferencesDirectory: string): void {
     }
 
     try {
-      execFileSync("/usr/libexec/PlistBuddy", [
-        "-c",
-        "Add :SCRCUserDefaultsAlwaysUsePortableIDs array",
-        localPlist,
-      ]);
+      execFileSync(
+        "/usr/libexec/PlistBuddy",
+        ["-c", "Add :SCRCUserDefaultsAlwaysUsePortableIDs array", localPlist],
+        { stdio: "ignore" },
+      );
     } catch (cause) {
       throw new Error(ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES, {
         cause,
@@ -49,11 +49,15 @@ export function trustPortableIdentifier(preferencesDirectory: string): void {
     .filter((line) => line && line !== "Array {" && line !== "}").length;
 
   try {
-    execFileSync("/usr/libexec/PlistBuddy", [
-      "-c",
-      `Add :SCRCUserDefaultsAlwaysUsePortableIDs:${index} string ${GUIDEPUP_IDENTIFIER}`,
-      localPlist,
-    ]);
+    execFileSync(
+      "/usr/libexec/PlistBuddy",
+      [
+        "-c",
+        `Add :SCRCUserDefaultsAlwaysUsePortableIDs:${index} string ${GUIDEPUP_IDENTIFIER}`,
+        localPlist,
+      ],
+      { stdio: "ignore" },
+    );
   } catch (cause) {
     throw new Error(ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES, {
       cause,

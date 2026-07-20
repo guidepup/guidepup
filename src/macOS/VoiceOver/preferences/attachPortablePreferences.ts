@@ -4,13 +4,11 @@ import { MOUNT_POINT } from "./constants";
 
 export function attachPortablePreferences(dmgPath: string): void {
   try {
-    execFileSync("/usr/bin/hdiutil", [
-      "attach",
-      dmgPath,
-      "-mountpoint",
-      MOUNT_POINT,
-      "-shadow",
-    ]);
+    execFileSync(
+      "/usr/bin/hdiutil",
+      ["attach", dmgPath, "-mountpoint", MOUNT_POINT, "-shadow"],
+      { stdio: "ignore" },
+    );
   } catch (cause) {
     throw new Error(ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES, {
       cause,

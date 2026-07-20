@@ -3,7 +3,9 @@ import { MOUNT_POINT } from "./constants";
 
 export function detachPortablePreferences(): void {
   try {
-    execFileSync("/usr/bin/hdiutil", ["detach", MOUNT_POINT]);
+    execFileSync("/usr/bin/hdiutil", ["detach", MOUNT_POINT], {
+      stdio: "ignore",
+    });
   } catch {
     // Swallow as already detached
   }

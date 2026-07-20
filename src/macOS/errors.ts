@@ -2,7 +2,7 @@ export const ERR_MACOS_VERSION_NOT_SUPPORTED = "macOS version not supported";
 export const ERR_VOICE_OVER_NOT_SUPPORTED = "VoiceOver not supported";
 export const ERR_VOICE_OVER_ALREADY_RUNNING = "VoiceOver already running";
 export const ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES =
-  "Failed to mount Guidepup preferences\n\nPlease ensure you have run 'npx @guidepup/setup setup' at least once on your machine and 'npx @guidepup/setup install' at least once for this project";
+  "Failed to mount Guidepup preferences\n\nPlease ensure you have run:\n\n\t- `npx @guidepup/setup setup` at least once on your machine to configure the OS\n\t- `npx @guidepup/setup install` at least once for this project to install screen reader assets";
 export const ERR_VOICE_OVER_NOT_RUNNING = "VoiceOver not running";
 export const ERR_VOICE_OVER_CANNOT_BE_STARTED = "VoiceOver cannot be started";
 
