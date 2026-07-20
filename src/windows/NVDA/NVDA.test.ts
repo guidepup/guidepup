@@ -38,7 +38,7 @@ describe("NVDA", () => {
     jest.clearAllMocks();
 
     jest.mocked(isWindows).mockReturnValue(true);
-    jest.mocked(isNVDAInstalled).mockResolvedValue(true);
+    jest.mocked(isNVDAInstalled).mockReturnValue(true);
     jest.mocked(NVDAClientStub.connect).mockResolvedValue(undefined);
     jest.mocked(NVDAClient).mockImplementation(() => NVDAClientStub);
   });
@@ -53,10 +53,10 @@ describe("NVDA", () => {
 
   describe("detect", () => {
     describe("when Windows and NVDA is installed", () => {
-      it("should return true", async () => {
+      it("should return true", () => {
         nvda = new NVDA();
 
-        const result = await nvda.detect();
+        const result = nvda.detect();
 
         expect(result).toBe(true);
       });
@@ -64,13 +64,13 @@ describe("NVDA", () => {
 
     describe("when Windows and NVDA is not installed", () => {
       beforeEach(() => {
-        jest.mocked(isNVDAInstalled).mockResolvedValue(false);
+        jest.mocked(isNVDAInstalled).mockReturnValue(false);
       });
 
-      it("should return false", async () => {
+      it("should return false", () => {
         nvda = new NVDA();
 
-        const result = await nvda.detect();
+        const result = nvda.detect();
 
         expect(result).toBe(false);
       });
@@ -81,10 +81,10 @@ describe("NVDA", () => {
         jest.mocked(isWindows).mockReturnValue(false);
       });
 
-      it("should return false", async () => {
+      it("should return false", () => {
         nvda = new NVDA();
 
-        const result = await nvda.detect();
+        const result = nvda.detect();
 
         expect(result).toBe(false);
       });
@@ -137,7 +137,7 @@ describe("NVDA", () => {
     describe("when NVDA is running", () => {
       beforeEach(async () => {
         jest.mocked(start).mockResolvedValue(undefined);
-        jest.mocked(quit).mockResolvedValue(undefined);
+        jest.mocked(quit).mockReturnValue(undefined);
 
         await nvda.start();
 
@@ -278,19 +278,11 @@ describe("NVDA", () => {
 
   describe("when stop is in progress", () => {
     let stopPromise: Promise<void>;
-    let resolveQuit: () => void;
 
     beforeEach(async () => {
       nvda = new NVDA();
 
       jest.mocked(start).mockResolvedValue(undefined);
-
-      jest.mocked(quit).mockImplementation(
-        () =>
-          new Promise<void>((resolve) => {
-            resolveQuit = resolve;
-          }),
-      );
 
       await nvda.start();
 
@@ -302,7 +294,6 @@ describe("NVDA", () => {
     });
 
     afterEach(async () => {
-      resolveQuit();
       await stopPromise;
     });
 

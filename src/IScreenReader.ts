@@ -11,9 +11,9 @@ export interface IScreenReader {
   /**
    * Detect whether the screen reader is supported for the current OS.
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  detect(): Promise<boolean>;
+  detect(): boolean;
 
   /**
    * Detect whether the screen reader is the default screen reader for the current OS.

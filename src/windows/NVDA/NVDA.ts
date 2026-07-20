@@ -82,16 +82,16 @@ export class NVDA implements IScreenReader {
    * import { NVDA } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isNVDADefaultScreenReader = await NVDA.detect();
+   *   const isNVDADefaultScreenReader = NVDA.detect();
    *
    *   console.log(isNVDADefaultScreenReader);
    * })();
    * ```
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  static async detect(): Promise<boolean> {
-    return isWindows() && (await isNVDAInstalled());
+  static detect(): boolean {
+    return isWindows() && isNVDAInstalled();
   }
 
   /**
@@ -105,15 +105,15 @@ export class NVDA implements IScreenReader {
    * import { nvda } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isNVDADefaultScreenReader = await nvda.detect();
+   *   const isNVDADefaultScreenReader = nvda.detect();
    *
    *   console.log(isNVDADefaultScreenReader);
    * })();
    * ```
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  async detect(): Promise<boolean> {
+  detect(): boolean {
     return NVDA.detect();
   }
 
@@ -233,7 +233,7 @@ export class NVDA implements IScreenReader {
     await this.#client.stop();
     this.#client = null;
 
-    await quit();
+    quit();
 
     this.#started = false;
     this.#stopping = false;

@@ -35,9 +35,9 @@ export class ScreenReader implements IScreenReader {
   /**
    * Detect whether the screen reader is supported for the current OS.
    *
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  detect(): Promise<boolean> {
+  detect(): boolean {
     return this.implementation.detect();
   }
 

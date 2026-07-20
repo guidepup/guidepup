@@ -27,7 +27,7 @@ describe("start", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
     });
 
     it("should attempt to get the installation path", async () => {
@@ -49,7 +49,7 @@ describe("start", () => {
     beforeEach(() => {
       jest
         .mocked(getNVDAInstallationPath)
-        .mockResolvedValue(mockInstallationPath);
+        .mockReturnValue(mockInstallationPath);
     });
 
     describe("when starting NVDA is successful first attempt", () => {
@@ -72,7 +72,7 @@ describe("start", () => {
     });
 
     describe("when starting NVDA throws an error first attempt", () => {
-      let error;
+      let error: unknown;
 
       beforeEach(async () => {
         jest.mocked(spawn).mockImplementation(() => {
@@ -95,7 +95,7 @@ describe("start", () => {
 
       it("should throw a wrapped error", () => {
         expect(error).toEqual(
-          new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${mockError.message}`)
+          new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${mockError.message}`),
         );
       });
     });
@@ -119,7 +119,7 @@ describe("start", () => {
           {
             shell: true,
             stdio: "ignore",
-          }
+          },
         );
       });
 
@@ -139,7 +139,7 @@ describe("start", () => {
           {
             shell: true,
             stdio: "ignore",
-          }
+          },
         );
       });
 
@@ -149,7 +149,7 @@ describe("start", () => {
     });
 
     describe("when starting NVDA times out on both attempts", () => {
-      let error;
+      let error: unknown;
 
       beforeEach(async () => {
         jest
@@ -172,7 +172,7 @@ describe("start", () => {
           {
             shell: true,
             stdio: "ignore",
-          }
+          },
         );
       });
 
@@ -192,7 +192,7 @@ describe("start", () => {
           {
             shell: true,
             stdio: "ignore",
-          }
+          },
         );
       });
 

@@ -19,7 +19,7 @@ describe("quit", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockResolvedValue(null);
+      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
     });
 
     it("should attempt to get the installation path", async () => {
@@ -33,7 +33,7 @@ describe("quit", () => {
     });
 
     it("should throw an error", async () => {
-      expect(quit).rejects.toThrow(new Error(ERR_NVDA_NOT_INSTALLED));
+      expect(quit).toThrow(new Error(ERR_NVDA_NOT_INSTALLED));
     });
   });
 
@@ -41,7 +41,7 @@ describe("quit", () => {
     beforeEach(() => {
       jest
         .mocked(getNVDAInstallationPath)
-        .mockResolvedValue(mockInstallationPath);
+        .mockReturnValue(mockInstallationPath);
     });
 
     describe("when no error is thrown", () => {
@@ -57,7 +57,7 @@ describe("quit", () => {
         expect(spawnSync).toHaveBeenCalledWith(
           `"${mockInstallationPath}"`,
           ["--quit"],
-          { shell: true, stdio: "ignore" }
+          { shell: true, stdio: "ignore" },
         );
       });
     });
@@ -65,7 +65,7 @@ describe("quit", () => {
     describe("when quitting throws an error", () => {
       const mockError = new Error("test-error");
 
-      let error;
+      let error: unknown;
 
       beforeEach(async () => {
         jest.mocked(spawnSync).mockImplementation(() => {
@@ -87,13 +87,13 @@ describe("quit", () => {
         expect(spawnSync).toHaveBeenCalledWith(
           `"${mockInstallationPath}"`,
           ["--quit"],
-          { shell: true, stdio: "ignore" }
+          { shell: true, stdio: "ignore" },
         );
       });
 
       it("should throw a wrapped error", () => {
         expect(error).toEqual(
-          new Error(`${ERR_NVDA_QUIT}\n${mockError.message}`)
+          new Error(`${ERR_NVDA_QUIT}\n${mockError.message}`),
         );
       });
     });

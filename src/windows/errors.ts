@@ -1,10 +1,8 @@
-export const ERR_WINDOWS_UNABLE_TO_ACCESS_REGISTRY =
-  "Unable to access Windows registry";
-
-export const ERR_NVDA_NOT_INSTALLED = "NVDA not installed";
-export const ERR_NVDA_NOT_SUPPORTED = "NVDA not supported";
-export const ERR_NVDA_ALREADY_RUNNING = "NVDA already running";
-export const ERR_NVDA_NOT_RUNNING = "NVDA not running";
+export const ERR_NVDA_NOT_INSTALLED =
+  "NVDA is not installed\n\nPlease ensure you have run:\n\n\t- `npx @guidepup/setup setup` at least once on your machine to configure the OS\n\t- `npx @guidepup/setup install` at least once for this project to install screen reader assets";
+export const ERR_NVDA_NOT_SUPPORTED = "NVDA is not supported";
+export const ERR_NVDA_ALREADY_RUNNING = "NVDA is already running";
+export const ERR_NVDA_NOT_RUNNING = "NVDA is not running";
 export const ERR_NVDA_CANNOT_BE_STARTED = "NVDA cannot be started";
 export const ERR_NVDA_CANNOT_CONNECT = "Cannot connect to NVDA";
 export const ERR_NVDA_QUIT = "NVDA cannot be quit";
