@@ -321,8 +321,6 @@ export class VoiceOver implements IScreenReader {
     this.#stopping = true;
 
     await this.#client.stop();
-    await terminateVoiceOverProcess(options);
-    await waitForNotRunning(options);
 
     this.#client = null;
     this.#caption = null;
@@ -332,6 +330,9 @@ export class VoiceOver implements IScreenReader {
     this.#mouse = null;
 
     unmountGuidepupPreferences();
+
+    await terminateVoiceOverProcess(options);
+    await waitForNotRunning(options);
 
     this.#started = false;
     this.#stopping = false;
