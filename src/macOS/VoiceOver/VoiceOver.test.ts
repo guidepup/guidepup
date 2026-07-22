@@ -1,5 +1,6 @@
 import {
   ERR_VOICE_OVER_ALREADY_RUNNING,
+  ERR_VOICE_OVER_CANNOT_BE_STARTED,
   ERR_VOICE_OVER_NOT_RUNNING,
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
@@ -8,6 +9,7 @@ import {
   unmountGuidepupPreferences,
 } from "./preferences";
 import { CommanderCommands } from "./CommanderCommands";
+import { delay } from "../../delay";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { start } from "./start";
@@ -25,6 +27,9 @@ import { waitForRunning } from "./waitForRunning";
 jest.mock("./preferences", () => ({
   mountGuidepupPreferences: jest.fn(),
   unmountGuidepupPreferences: jest.fn(),
+}));
+jest.mock("../activate", () => ({
+  activate: jest.fn(),
 }));
 jest.mock("../../isKeyboard", () => ({
   isKeyboard: jest.fn(),
@@ -312,6 +317,39 @@ describe("VoiceOver", () => {
 
         it("should wait for VoiceOver to be running", () => {
           expect(waitForRunning).toHaveBeenCalledWith(options);
+        });
+      });
+
+      describe('when VoiceOver does not become ready', () => {
+        const startupError = new Error("VoiceOver did not become ready");
+        let thrownError: Error;
+
+        beforeEach(async () => {
+          jest.mocked(waitForRunning).mockRejectedValue(startupError);
+
+          try {
+            await vo.start();
+          } catch (error) {
+            thrownError = error as Error;
+          }
+        });
+
+        test('should retry from a clean VoiceOver process', () => {
+          expect(start).toHaveBeenCalledTimes(2);
+          expect(terminateVoiceOverProcess).toHaveBeenCalledTimes(3);
+          expect(waitForNotRunning).toHaveBeenCalledTimes(2);
+        });
+
+        test('should return a stable startup error with the readiness failure as its cause', () => {
+          expect(thrownError).toEqual(
+            new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
+              cause: startupError,
+            }),
+          );
+        });
+
+        test('should unmount Guidepup preferences after failing', () => {
+          expect(unmountGuidepupPreferences).toHaveBeenCalledTimes(1);
         });
       });
     });
@@ -840,6 +878,10 @@ describe("VoiceOver", () => {
     beforeEach(async () => {
       jest.mocked(isMacOS).mockReturnValue(true);
 
+      await vo.start();
+
+      jest.clearAllMocks();
+
       jest.mocked(terminateVoiceOverProcess).mockImplementation(
         () =>
           new Promise<void>((resolve) => {
@@ -847,13 +889,9 @@ describe("VoiceOver", () => {
           }),
       );
 
-      await vo.start();
-
-      jest.clearAllMocks();
-
       stopPromise = vo.stop();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await delay(0);
     });
 
     afterEach(async () => {

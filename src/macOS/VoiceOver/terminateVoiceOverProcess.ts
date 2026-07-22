@@ -1,5 +1,5 @@
 import { CommandOptions } from "../../CommandOptions";
-import { exec } from "child_process";
+import { execFileSync } from "child_process";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { MacOSApplications } from "..";
 import { quit } from "../quit";
@@ -10,18 +10,29 @@ export async function terminateVoiceOverProcess(
 ): Promise<void> {
   // Most reliable way (counter-intuitively) is via the keyboard command to
   // quit VoiceOver.
-  await sendKeys(keyCodeCommands.quit, MacOSApplications.VoiceOver, options);
+  try {
+    await sendKeys(keyCodeCommands.quit, undefined, options);
+  } catch {
+    // VoiceOver may not be healthy enough to accept keyboard input.
+  }
 
   // Failing that we attempt to stop VoiceOver via it's AppleScript API.
-  await quit(MacOSApplications.VoiceOver, options);
+  try {
+    await quit(MacOSApplications.VoiceOver, options);
+  } catch {
+    // Continue to the process-level fallback when AppleScript is unavailable.
+  }
 
-  // Final fallback to trying to kill the launchd process.
-  await new Promise<void>((resolve) => {
-    exec(
-      `kill -15 $(ps aux | egrep "[V]oiceOver.app/Contents/MacOS/VoiceOver launchd -s" | awk '{print $2}')`,
-      () => {
-        resolve();
+  try {
+    execFileSync(
+      "pkill",
+      ["-15", "-f", "VoiceOver.app/Contents/MacOS/VoiceOver launchd -s"],
+      {
+        stdio: "ignore",
+        timeout: 2000,
       },
     );
-  });
+  } catch {
+    // `pkill` exits non-zero when no matching VoiceOver process exists.
+  }
 }

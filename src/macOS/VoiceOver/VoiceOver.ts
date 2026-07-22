@@ -1,5 +1,6 @@
 import {
   ERR_VOICE_OVER_ALREADY_RUNNING,
+  ERR_VOICE_OVER_CANNOT_BE_STARTED,
   ERR_VOICE_OVER_NOT_RUNNING,
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
@@ -34,9 +35,19 @@ type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
  */
 export class VoiceOver implements IScreenReader {
   /**
+   * Number of clean-start attempts before reporting a startup failure.
+   */
+  static readonly #START_ATTEMPTS = 2;
+
+  /**
    * VoiceOver running status.
    */
   #started = false;
+
+  /**
+   * VoiceOver startup status.
+   */
+  #starting = false;
 
   /**
    * VoiceOver stopping status.
@@ -273,8 +284,50 @@ export class VoiceOver implements IScreenReader {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
-    if (this.#started) {
+    if (this.#started || this.#starting) {
       throw new Error(ERR_VOICE_OVER_ALREADY_RUNNING);
+    }
+
+    this.#starting = true;
+
+    try {
+      mountGuidepupPreferences();
+
+      for (let attempt = 0; attempt < VoiceOver.#START_ATTEMPTS; attempt++) {
+        try {
+          await terminateVoiceOverProcess(options);
+          await waitForNotRunning(options);
+
+          await start(options);
+          await waitForRunning(options);
+
+          this.#started = true;
+
+          break;
+        } catch (error) {
+          if (attempt === VoiceOver.#START_ATTEMPTS - 1) {
+            throw error;
+          }
+        }
+      }
+    } catch (error) {
+      throw new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, { cause: error });
+    } finally {
+      this.#starting = false;
+
+      if (!this.#started) {
+        try {
+          await terminateVoiceOverProcess(options);
+        } catch {
+          // Swallow
+        }
+
+        try {
+          unmountGuidepupPreferences();
+        } catch {
+          // Swallow
+        }
+      }
     }
 
     this.#client = new VoiceOverClient(options);
@@ -283,13 +336,6 @@ export class VoiceOver implements IScreenReader {
     this.#cursor = new VoiceOverCursor(this.#client);
     this.#keyboard = new VoiceOverKeyboard(this.#client);
     this.#mouse = new VoiceOverMouse(this.#client);
-
-    mountGuidepupPreferences();
-
-    await start();
-    await waitForRunning(options);
-
-    this.#started = true;
   }
 
   /**
@@ -332,10 +378,13 @@ export class VoiceOver implements IScreenReader {
     unmountGuidepupPreferences();
 
     await terminateVoiceOverProcess(options);
-    await waitForNotRunning(options);
 
-    this.#started = false;
-    this.#stopping = false;
+    try {
+      await waitForNotRunning(options);
+    } finally {
+      this.#started = false;
+      this.#stopping = false;
+    }
   }
 
   /**

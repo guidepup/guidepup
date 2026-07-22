@@ -1,22 +1,23 @@
-import { activate } from "../activate";
 import { Applications } from "../Applications";
 import type { CommandOptions } from "../../CommandOptions";
-import { exec } from "child_process";
+import { execFileSync } from "child_process";
 import { runAppleScript } from "../runAppleScript";
 
 export async function isRunning(
   options?: CommandOptions,
   skipAppleScript = false,
 ): Promise<boolean> {
-  const processRunning = await new Promise<boolean>((resolve) => {
-    exec('ps aux | egrep "[V]oiceOver"', (err, stdout) => {
-      if (err) {
-        resolve(false);
-      } else {
-        resolve(stdout !== "");
-      }
-    });
-  });
+  let processRunning: boolean;
+
+  try {
+    processRunning =
+      execFileSync("pgrep", ["-f", "VoiceOver launchd -s"], {
+        encoding: "utf8",
+        timeout: 2000,
+      }).length > 0;
+  } catch {
+    return false;
+  }
 
   if (!processRunning) {
     return false;
@@ -28,17 +29,8 @@ export async function isRunning(
 
   const appleScriptRunning = await runAppleScript<string>(
     `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`,
+    options,
   );
 
-  if (appleScriptRunning === "false") {
-    return false;
-  }
-
-  try {
-    await activate(Applications.VoiceOver, options);
-
-    return true;
-  } catch {
-    return false;
-  }
+  return appleScriptRunning !== "false";
 }
