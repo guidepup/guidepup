@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.0 setup --macos-record
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.0 setup --ci --macos-record
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm run build
       - run: npm ci --prefix ./examples/playwright-screenreader --no-audit --no-fund --no-progress
