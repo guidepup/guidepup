@@ -229,4 +229,33 @@ export class ScreenReader implements IScreenReader {
   clearItemTextLog(): Promise<void> {
     return this.implementation.clearItemTextLog();
   }
+
+  /**
+   * Returns all available settings for the screen reader.
+   *
+   * @returns All available settings values.
+   */
+  getSettings(): Record<string, unknown> {
+    return this.implementation.getSettings();
+  }
+
+  /**
+   * Returns the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @returns The setting value.
+   */
+  getSetting(key: string): unknown {
+    return this.implementation.getSetting(key);
+  }
+
+  /**
+   * Sets the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @param value The value to assign.
+   */
+  setSetting(key: string, value: unknown): void {
+    return this.implementation.setSetting(key, value);
+  }
 }

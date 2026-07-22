@@ -5,7 +5,10 @@ import {
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
 import {
+  getPreference,
+  getPreferences,
   mountGuidepupPreferences,
+  setPreference,
   unmountGuidepupPreferences,
 } from "./preferences";
 import { ClickOptions } from "../../ClickOptions";
@@ -1050,5 +1053,34 @@ export class VoiceOver implements IScreenReader {
     }
 
     await this.#caption.clearItemTextLog();
+  }
+
+  /**
+   * Returns all available settings for the screen reader.
+   *
+   * @returns All available settings values.
+   */
+  getSettings(): Record<string, unknown> {
+    return getPreferences();
+  }
+
+  /**
+   * Returns the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @returns The setting value.
+   */
+  getSetting(key: string): unknown {
+    return getPreference(key);
+  }
+
+  /**
+   * Sets the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @param value The value to assign.
+   */
+  setSetting(key: string, value: unknown): void {
+    setPreference(key, value);
   }
 }

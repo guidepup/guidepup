@@ -12,6 +12,7 @@ import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
 import { Modifiers } from "../Modifiers";
+import { notImplemented } from "../../notImplemented";
 import { NVDAClient } from "./NVDAClient";
 import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
@@ -742,5 +743,34 @@ export class NVDA implements IScreenReader {
     }
 
     await this.#client.clearSpokenPhraseLog();
+  }
+
+  /**
+   * Returns all available settings for the screen reader.
+   *
+   * @returns All available settings values.
+   */
+  getSettings(): Record<string, unknown> {
+    notImplemented();
+  }
+
+  /**
+   * Returns the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @returns The setting value.
+   */
+  getSetting(): unknown {
+    notImplemented();
+  }
+
+  /**
+   * Sets the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @param value The value to assign.
+   */
+  setSetting(): void {
+    notImplemented();
   }
 }

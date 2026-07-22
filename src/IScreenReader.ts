@@ -167,4 +167,27 @@ export interface IScreenReader {
    * Clear the log of all visited item text for this screen reader instance.
    */
   clearItemTextLog(): Promise<void>;
+
+  /**
+   * Returns all available settings for the screen reader.
+   *
+   * @returns All available settings values.
+   */
+  getSettings(): Record<string, unknown>;
+
+  /**
+   * Returns the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @returns The setting value.
+   */
+  getSetting(key: string): unknown;
+
+  /**
+   * Sets the value of a screen reader setting.
+   *
+   * @param key The setting name.
+   * @param value The value to assign.
+   */
+  setSetting(key: string, value: unknown): void;
 }
