@@ -1,4 +1,5 @@
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
+import { delay } from "../../delay";
 import { ERR_VOICE_OVER_NOT_RUNNING } from "../errors";
 import { itemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
@@ -941,7 +942,7 @@ describe("VoiceOverClient", () => {
           stopResolved = true;
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await delay(0);
 
         expect(stopResolved).toBe(false);
 
@@ -1003,7 +1004,7 @@ describe("VoiceOverClient", () => {
           stopResolved = true;
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await delay(0);
 
         expect(stopResolved).toBe(false);
 

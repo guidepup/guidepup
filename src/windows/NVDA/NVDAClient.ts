@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
 import { CommandOptions } from "../../CommandOptions";
 import { DEFAULT_CAPTURE } from "../../constants";
+import { delay } from "../../delay";
 import { EventEmitter } from "events";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { KeyCodeCommand } from "../KeyCodeCommand";
@@ -70,9 +71,6 @@ const isSpeakMessage = (
 ): message is NVDASpeakMessage => {
   return message.type === SPEAK;
 };
-
-const delay = async (ms: number) =>
-  await new Promise((resolve) => setTimeout(resolve, ms));
 
 type ActionOptions = Pick<CommandOptions, "capture">;
 

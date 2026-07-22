@@ -53,12 +53,13 @@ describe("runAppleScript", () => {
       }
     });
 
-    it("should spawn osascript directly as a new process, using a max buffer of 100mb", () => {
+    it("should spawn osascript directly as a new process with a bounded runtime", () => {
       expect(execFile).toHaveBeenCalledWith(
         "/usr/bin/osascript",
         [],
         {
           maxBuffer: DEFAULT_MAX_BUFFER,
+          timeout: expectedTimeout,
         },
         expect.any(Function)
       );
@@ -66,7 +67,7 @@ describe("runAppleScript", () => {
 
     it("should add a timeout block to the script and pass it to the osascript process stdin", () => {
       expect(childStub.stdin.write).toHaveBeenCalledWith(
-        `with timeout of ${expectedTimeout} seconds\n${script}\nend timeout`
+        `with timeout of ${Math.ceil(expectedTimeout / 1000)} seconds\n${script}\nend timeout`
       );
     });
 

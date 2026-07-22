@@ -3,9 +3,11 @@ import { execFile } from "child_process";
 
 export async function runAppleScript<T = string | void>(
   script: string,
-  { timeout = DEFAULT_TIMEOUT } = { timeout: DEFAULT_TIMEOUT }
+  { timeout = DEFAULT_TIMEOUT } = { timeout: DEFAULT_TIMEOUT },
 ): Promise<T> {
-  const scriptWithTimeout = `with timeout of ${timeout} seconds\n${script}\nend timeout`;
+  const appleScriptTimeoutMs = Math.max(1, Math.ceil(timeout / 1000));
+
+  const scriptWithTimeout = `with timeout of ${appleScriptTimeoutMs} seconds\n${script}\nend timeout`;
 
   return (await new Promise<string | void>((resolve, reject) => {
     const child = execFile(
@@ -13,6 +15,7 @@ export async function runAppleScript<T = string | void>(
       [],
       {
         maxBuffer: DEFAULT_MAX_BUFFER,
+        timeout,
       },
       (e, stdout) => {
         if (e) {
@@ -24,7 +27,7 @@ export async function runAppleScript<T = string | void>(
         } else {
           return resolve(stdout.trim());
         }
-      }
+      },
     );
 
     child.stdin.write(scriptWithTimeout);
