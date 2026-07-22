@@ -3,6 +3,7 @@ import {
   DEFAULT_TIMEOUT,
   ERR_WAITING_TIMEOUT,
 } from "./constants";
+import { delay } from "./delay";
 
 async function resolveWhenTrue(
   condition: () => boolean | Promise<boolean>,
@@ -21,7 +22,7 @@ async function resolveWhenTrue(
     return;
   }
 
-  await new Promise((resolve) => setTimeout(resolve, pollInterval));
+  await delay(pollInterval);
 
   await resolveWhenTrue(condition, pollInterval, signal);
 }

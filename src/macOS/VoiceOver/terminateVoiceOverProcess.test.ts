@@ -1,4 +1,4 @@
-import { ChildProcess, exec } from "child_process";
+import { execFileSync } from "child_process";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { MacOSApplications } from "..";
 import { quit } from "../quit";
@@ -6,7 +6,7 @@ import { sendKeys } from "../sendKeys";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 
 jest.mock("child_process", () => ({
-  exec: jest.fn(),
+  execFileSync: jest.fn(),
 }));
 
 jest.mock("../quit", () => ({
@@ -21,20 +21,13 @@ const optionsDummy = {};
 
 describe("terminateVoiceOverProcess", () => {
   beforeEach(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (exec as any).mockImplementation((_command, callback) => {
-      callback();
-
-      return {} as unknown as ChildProcess;
-    });
-
     await terminateVoiceOverProcess(optionsDummy);
   });
 
-  it("should attempt to a quit key code command to the VoiceOver application", () => {
+  it("should attempt to a quit key code command", () => {
     expect(sendKeys).toHaveBeenCalledWith(
       keyCodeCommands.quit,
-      MacOSApplications.VoiceOver,
+      undefined,
       optionsDummy,
     );
   });
@@ -47,9 +40,13 @@ describe("terminateVoiceOverProcess", () => {
   });
 
   it("should attempt to terminate (kill -15) the VoiceOver process (SIGTERM over SIGKILL owing to the process being run by launchd)", () => {
-    expect(exec).toHaveBeenCalledWith(
-      `kill -15 $(ps aux | egrep "[V]oiceOver.app/Contents/MacOS/VoiceOver launchd -s" | awk '{print $2}')`,
-      expect.any(Function),
+    expect(execFileSync).toHaveBeenCalledWith(
+      "pkill",
+      ["-15", "-f", "VoiceOver.app/Contents/MacOS/VoiceOver launchd -s"],
+      {
+        stdio: "ignore",
+        timeout: 2000,
+      },
     );
   });
 });

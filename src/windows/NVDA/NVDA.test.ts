@@ -1,4 +1,5 @@
 import { ERR_NVDA_ALREADY_RUNNING, ERR_NVDA_NOT_RUNNING } from "../errors";
+import { delay } from "../../delay";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
 import { NVDA } from "./NVDA";
@@ -290,7 +291,7 @@ describe("NVDA", () => {
 
       stopPromise = nvda.stop();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await delay(0);
     });
 
     afterEach(async () => {
