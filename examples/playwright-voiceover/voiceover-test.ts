@@ -75,7 +75,13 @@ const voTest = test.extend<{ voiceOver: VoiceOverPlaywright }>({
         }
       };
 
-      await voiceOverPlaywright.start({ capture: "initial" });
+      await voiceOverPlaywright.start({
+        capture: "initial",
+        settings: {
+          SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier:
+            "com.apple.speech.synthesis.voice.custom.siri.martha.compact",
+        },
+      });
 
       await use(voiceOverPlaywright);
     } finally {

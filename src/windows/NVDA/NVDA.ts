@@ -1,5 +1,6 @@
 import {
   ERR_NVDA_ALREADY_RUNNING,
+  ERR_NVDA_CANNOT_BE_STARTED,
   ERR_NVDA_NOT_RUNNING,
   ERR_NVDA_NOT_SUPPORTED,
 } from "../errors";
@@ -19,8 +20,10 @@ import type { Prettify } from "../../typeHelpers";
 import { quit } from "./quit";
 import { sendKeys } from "../sendKeys";
 import { start } from "./start";
+import type { StartOptions } from "../../StartOptions";
 
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
+type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 
 /**
  * Class for controlling the NVDA screen reader on Windows.
@@ -37,9 +40,19 @@ export class NVDA implements IScreenReader {
   #started = false;
 
   /**
+   * NVDA startup status.
+   */
+  #starting = false;
+
+  /**
    * NVDA stopping status.
    */
   #stopping = false;
+
+  /**
+   * Settings to be applied when NVDA is next started.
+   */
+  #pendingSettings = {};
 
   /**
    * The screen reader name.
@@ -186,25 +199,54 @@ export class NVDA implements IScreenReader {
    * capture set `{ capture: true }`, or to disable capture set
    * `{ capture: false }`.
    */
-  async start(options?: CaptureCommandOptions): Promise<void> {
-    if (!(await this.detect())) {
+  async start(options?: CaptureStartOptions): Promise<void> {
+    if (!this.detect()) {
       throw new Error(ERR_NVDA_NOT_SUPPORTED);
     }
 
-    if (this.#started) {
+    if (this.#started || this.#starting) {
       throw new Error(ERR_NVDA_ALREADY_RUNNING);
     }
 
-    // TODO: handle failures in the following steps more gracefully, we should
-    // look to gracefully reset back to default if fail to start rather than
-    // leave a half setup state.
+    this.#starting = true;
 
-    await start();
+    try {
+      // Object.entries({
+      //   ...this.#pendingSettings,
+      //   ...options?.settings,
+      // }).forEach(([key, value]) => {
+      //   setConfig(key, value)
+      // });
 
-    this.#client = new NVDAClient();
-    await this.#client.connect(options);
+      await start();
 
-    this.#started = true;
+      this.#client = new NVDAClient();
+      await this.#client.connect(options);
+
+      this.#started = true;
+    } catch (cause) {
+      throw new Error(ERR_NVDA_CANNOT_BE_STARTED, { cause });
+    } finally {
+      this.#starting = false;
+
+      if (!this.#started) {
+        try {
+          await this.#client.stop();
+        } catch {
+          // Swallow
+        }
+
+        this.#client = null;
+
+        try {
+          quit();
+        } catch {
+          // Swallow
+        }
+      }
+    }
+
+    this.#pendingSettings = {};
   }
 
   /**
@@ -824,10 +866,11 @@ export class NVDA implements IScreenReader {
    * @param key The setting name.
    * @param value The value to assign.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setSetting(key: string, value: unknown): void {
     if (!this.#started || this.#stopping) {
-      throw new Error(ERR_NVDA_NOT_RUNNING);
+      this.#pendingSettings[key] = value;
+
+      return;
     }
 
     notImplemented();

@@ -16,6 +16,7 @@ module.exports = {
     "<rootDir>/src/IScreenReader.ts",
     // TODO: coverage needed for ScreenReader
     "<rootDir>/src/ScreenReader.ts",
+    "<rootDir>/src/StartOptions.ts",
     "<rootDir>/src/macOS/Applications.ts",
     "<rootDir>/src/macOS/KeyboardCommand.ts",
     "<rootDir>/src/macOS/KeyCodeCommand.ts",

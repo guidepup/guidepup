@@ -4,6 +4,7 @@ import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import type { IScreenReader } from "./IScreenReader";
 import { KeyboardOptions } from "./KeyboardOptions";
 import { nvda } from "./windows";
+import type { StartOptions } from "./StartOptions";
 import { voiceOver } from "./macOS";
 
 export class ScreenReader implements IScreenReader {
@@ -55,7 +56,7 @@ export class ScreenReader implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  start(options?: CommandOptions): Promise<void> {
+  start(options?: StartOptions): Promise<void> {
     return this.implementation.start(options);
   }
 
@@ -251,6 +252,8 @@ export class ScreenReader implements IScreenReader {
 
   /**
    * Sets the value of a setting for this screen reader instance.
+   *
+   * Note: Some settings must be set before or during at startup to take effect.
    *
    * @param key The setting name.
    * @param value The value to assign.

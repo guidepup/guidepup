@@ -21,6 +21,7 @@ import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
 import type { Prettify } from "../../typeHelpers";
 import { start } from "./start";
+import type { StartOptions } from "../../StartOptions";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";
 import { VoiceOverClient } from "./VoiceOverClient";
@@ -56,6 +57,11 @@ export class VoiceOver implements IScreenReader {
    * VoiceOver stopping status.
    */
   #stopping = false;
+
+  /**
+   * Settings to be applied when VoiceOver is next started.
+   */
+  #pendingSettings = {};
 
   /**
    * VoiceOver client for queued execution and log tapping.
@@ -282,8 +288,8 @@ export class VoiceOver implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async start(options?: CommandOptions): Promise<void> {
-    if (!(await this.detect())) {
+  async start(options?: StartOptions): Promise<void> {
+    if (!this.detect()) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
@@ -295,6 +301,13 @@ export class VoiceOver implements IScreenReader {
 
     try {
       mountGuidepupPreferences();
+
+      Object.entries({
+        ...this.#pendingSettings,
+        ...options?.settings,
+      }).forEach(([key, value]) => {
+        setPreference(key, value);
+      });
 
       for (let attempt = 0; attempt < VoiceOver.#START_ATTEMPTS; attempt++) {
         try {
@@ -313,8 +326,8 @@ export class VoiceOver implements IScreenReader {
           }
         }
       }
-    } catch (error) {
-      throw new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, { cause: error });
+    } catch (cause) {
+      throw new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, { cause });
     } finally {
       this.#starting = false;
 
@@ -332,6 +345,8 @@ export class VoiceOver implements IScreenReader {
         }
       }
     }
+
+    this.#pendingSettings = {};
 
     this.#client = new VoiceOverClient(options);
     this.#caption = new VoiceOverCaption(this.#client);
@@ -1079,6 +1094,7 @@ export class VoiceOver implements IScreenReader {
    */
   getSettings(): Record<string, unknown> {
     if (!this.#started || this.#stopping) {
+      // TODO: get preview of the settings.
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -1087,6 +1103,8 @@ export class VoiceOver implements IScreenReader {
 
   /**
    * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-get-setting)
+   *
+   * Returns the value of a setting for this VoiceOver instance.
    *
    * ```ts
    * import { voiceOver } from "@guidepup/guidepup";
@@ -1103,13 +1121,12 @@ export class VoiceOver implements IScreenReader {
    * })();
    * ```
    *
-   * Returns the value of a setting for this VoiceOver instance.
-   *
    * @param key The setting name.
    * @returns {unknown} The setting value.
    */
   getSetting(key: string): unknown {
     if (!this.#started || this.#stopping) {
+      // TODO: get preview of the setting.
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
@@ -1118,6 +1135,8 @@ export class VoiceOver implements IScreenReader {
 
   /**
    * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-set-setting)
+   *
+   * Sets the value of a setting for this VoiceOver instance.
    *
    * ```ts
    * import { voiceOver } from "@guidepup/guidepup";
@@ -1134,14 +1153,16 @@ export class VoiceOver implements IScreenReader {
    * })();
    * ```
    *
-   * Sets the value of a setting for this VoiceOver instance.
+   * Note: Some settings must be set before or during at startup to take effect.
    *
    * @param key The setting name.
    * @param value The value to assign.
    */
   setSetting(key: string, value: unknown): void {
     if (!this.#started || this.#stopping) {
-      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+      this.#pendingSettings[key] = value;
+
+      return;
     }
 
     setPreference(key, value);
