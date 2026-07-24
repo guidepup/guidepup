@@ -746,31 +746,90 @@ export class NVDA implements IScreenReader {
   }
 
   /**
-   * Returns all available settings for the screen reader.
+   * Returns all the current settings for this NVDA instance.
    *
-   * @returns All available settings values.
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Log current settings.
+   *   console.log(nvda.getSettings());
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   *
+   * @returns {Record<string, unknown>} Current settings values.
    */
   getSettings(): Record<string, unknown> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
   /**
-   * Returns the value of a screen reader setting.
+   * Returns the value of a setting for this NVDA instance.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Log the value for the 'virtualBuffers.autoSayAllOnPageLoad' setting.
+   *   console.log(nvda.getSetting('virtualBuffers.autoSayAllOnPageLoad'));
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
    *
    * @param key The setting name.
-   * @returns The setting value.
+   * @returns {unknown} The setting value.
    */
-  getSetting(): unknown {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getSetting(key: string): unknown {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
   /**
-   * Sets the value of a screen reader setting.
+   * Sets the value of a setting for this NVDA instance.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Set the 'virtualBuffers.autoSayAllOnPageLoad' setting to true.
+   *   console.log(nvda.setSetting('virtualBuffers.autoSayAllOnPageLoad', true));
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
    *
    * @param key The setting name.
    * @param value The value to assign.
    */
-  setSetting(): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setSetting(key: string, value: unknown): void {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 }

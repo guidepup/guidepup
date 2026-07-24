@@ -14,8 +14,8 @@ export function mountGuidepupPreferences(): void {
   const preferencesDirectory = getPreferencesDirectory();
   ensureLocalPreferencesExist(preferencesDirectory);
 
-  detachPortablePreferences();
   const dmgPath = resolveDmgPath(cachePath);
+  detachPortablePreferences(dmgPath);
   attachPortablePreferences(dmgPath);
 
   trustPortableIdentifier(preferencesDirectory);

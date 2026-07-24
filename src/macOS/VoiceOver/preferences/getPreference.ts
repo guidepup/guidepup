@@ -1,5 +1,7 @@
 import { getPreferences } from "./getPreferences";
 
 export function getPreference(key: string): unknown {
-  return getPreferences()[key];
+  const preferences = getPreferences();
+
+  return preferences[key];
 }

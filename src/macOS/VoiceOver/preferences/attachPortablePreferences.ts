@@ -6,7 +6,14 @@ export function attachPortablePreferences(dmgPath: string): void {
   try {
     execFileSync(
       "/usr/bin/hdiutil",
-      ["attach", dmgPath, "-mountpoint", MOUNT_POINT, "-shadow"],
+      [
+        "attach",
+        dmgPath,
+        "-mountpoint",
+        MOUNT_POINT,
+        "-shadow",
+        `${dmgPath}.shadow`,
+      ],
       { stdio: "ignore" },
     );
   } catch (cause) {

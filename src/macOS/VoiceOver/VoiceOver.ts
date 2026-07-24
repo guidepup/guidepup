@@ -1056,31 +1056,94 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
-   * Returns all available settings for the screen reader.
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-get-settings)
    *
-   * @returns All available settings values.
+   * Returns all the current settings for this VoiceOver instance.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Log current settings.
+   *   console.log(voiceOver.getSettings());
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @returns {Record<string, unknown>} Current settings values.
    */
   getSettings(): Record<string, unknown> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return getPreferences();
   }
 
   /**
-   * Returns the value of a screen reader setting.
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-get-setting)
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Log the value for the 'SCRCUserDefaultsCursorTrackingEnabled' setting.
+   *   console.log(voiceOver.getSetting('SCRCUserDefaultsCursorTrackingEnabled'));
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * Returns the value of a setting for this VoiceOver instance.
    *
    * @param key The setting name.
-   * @returns The setting value.
+   * @returns {unknown} The setting value.
    */
   getSetting(key: string): unknown {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     return getPreference(key);
   }
 
   /**
-   * Sets the value of a screen reader setting.
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-set-setting)
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Set the 'SCRCUserDefaultsCursorTrackingEnabled' setting to false.
+   *   console.log(voiceOver.setSetting('SCRCUserDefaultsCursorTrackingEnabled', false));
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * Sets the value of a setting for this VoiceOver instance.
    *
    * @param key The setting name.
    * @param value The value to assign.
    */
   setSetting(key: string, value: unknown): void {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
     setPreference(key, value);
   }
 }

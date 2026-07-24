@@ -49,6 +49,6 @@
     "typescript-eslint": "^8.61.1"
   },
   "dependencies": {
-    "plist": "^5.0.0"
+    "plist": "^4.0.0"
   }
 }

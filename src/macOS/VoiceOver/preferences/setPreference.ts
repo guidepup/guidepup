@@ -1,36 +1,24 @@
-import {
-  ERR_VOICE_OVER_FAILED_TO_SET_SETTING,
-  ERR_VOICE_OVER_UNSUPPORTED_SETTING,
-} from "../../errors";
-import { execFileSync } from "node:child_process";
-import { VOICEOVER_DOMAIN } from "./constants";
+import { DEFAULT_PREFERENCES } from "./constants";
+import { ERR_VOICE_OVER_FAILED_TO_SET_SETTING } from "../../errors";
+import { getPreferences } from "./getPreferences";
+import { restartPreferencesDaemon } from "./restartPreferencesDaemon";
+import { writeFileSync } from "node:fs";
 
-function getWriteArguments(key: string, value: unknown): string[] {
-  if (typeof value === "string") {
-    return ["write", VOICEOVER_DOMAIN, key, "-string", value];
-  }
-
-  if (typeof value === "boolean") {
-    return ["write", VOICEOVER_DOMAIN, key, "-bool", value ? "YES" : "NO"];
-  }
-
-  if (typeof value === "number") {
-    return [
-      "write",
-      VOICEOVER_DOMAIN,
-      key,
-      Number.isInteger(value) ? "-int" : "-float",
-      value.toString(),
-    ];
-  }
-
-  throw new TypeError(`${ERR_VOICE_OVER_UNSUPPORTED_SETTING}${typeof value}`);
-}
+let plist;
 
 export function setPreference(key: string, value: unknown): void {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  plist ??= require("plist");
+
   try {
-    execFileSync("defaults", getWriteArguments(key, value));
+    const preferences = getPreferences();
+
+    preferences[key] = value;
+
+    writeFileSync(DEFAULT_PREFERENCES, plist.build(preferences));
   } catch (cause) {
     throw new Error(ERR_VOICE_OVER_FAILED_TO_SET_SETTING, { cause });
   }
+
+  restartPreferencesDaemon();
 }
