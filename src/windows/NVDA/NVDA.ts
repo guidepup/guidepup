@@ -528,7 +528,7 @@ export class NVDA implements IScreenReader {
     }
 
     const command =
-      options.button === "right"
+      options?.button === "right"
         ? keyCodeCommands.rightMouseClick
         : keyCodeCommands.leftMouseClick;
 
