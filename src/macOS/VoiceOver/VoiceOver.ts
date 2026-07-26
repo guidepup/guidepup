@@ -1083,11 +1083,6 @@ export class VoiceOver implements IScreenReader {
    * @returns {Record<string, unknown>} Current settings values.
    */
   getSettings(): Record<string, unknown> {
-    if (!this.#started || this.#stopping) {
-      // TODO: get preview of the settings.
-      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
-    }
-
     return getPreferences();
   }
 
@@ -1115,11 +1110,6 @@ export class VoiceOver implements IScreenReader {
    * @returns {unknown} The setting value.
    */
   getSetting(key: string): unknown {
-    if (!this.#started || this.#stopping) {
-      // TODO: get preview of the setting.
-      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
-    }
-
     return getPreference(key);
   }
 }

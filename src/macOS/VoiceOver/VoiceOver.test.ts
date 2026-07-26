@@ -376,15 +376,17 @@ describe("VoiceOver", () => {
   });
 
   describe("getSettings", () => {
+    const settingsStub = { testSetting: true };
+
     describe("when VoiceOver is not running", () => {
-      it("should throw an error", () => {
-        expect(() => vo.getSettings()).toThrow(ERR_VOICE_OVER_NOT_RUNNING);
+      it("should return the current settings", async () => {
+        jest.mocked(getPreferences).mockReturnValue(settingsStub);
+
+        expect(vo.getSettings()).toEqual(settingsStub);
       });
     });
 
     describe("when VoiceOver is running", () => {
-      const settingsStub = { testSetting: true };
-
       it("should return the current settings", async () => {
         jest.mocked(getPreferences).mockReturnValue(settingsStub);
 
@@ -398,17 +400,17 @@ describe("VoiceOver", () => {
   });
 
   describe("getSetting", () => {
+    const settingStub = "test-value";
+
     describe("when VoiceOver is not running", () => {
-      it("should throw an error", () => {
-        expect(() => vo.getSetting("test-setting")).toThrow(
-          ERR_VOICE_OVER_NOT_RUNNING,
-        );
+      it("should return the value for the setting", async () => {
+        jest.mocked(getPreference).mockReturnValue(settingStub);
+
+        expect(vo.getSetting("test-setting")).toBe(settingStub);
       });
     });
 
     describe("when VoiceOver is running", () => {
-      const settingStub = "test-value";
-
       it("should return the value for the setting", async () => {
         jest.mocked(getPreference).mockReturnValue(settingStub);
 
