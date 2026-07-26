@@ -8,7 +8,7 @@ import {
   getPreference,
   getPreferences,
   mountGuidepupPreferences,
-  setPreference,
+  setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
 import { ClickOptions } from "../../ClickOptions";
@@ -57,11 +57,6 @@ export class VoiceOver implements IScreenReader {
    * VoiceOver stopping status.
    */
   #stopping = false;
-
-  /**
-   * Settings to be applied when VoiceOver is next started.
-   */
-  #pendingSettings = {};
 
   /**
    * VoiceOver client for queued execution and log tapping.
@@ -302,12 +297,9 @@ export class VoiceOver implements IScreenReader {
     try {
       mountGuidepupPreferences();
 
-      Object.entries({
-        ...this.#pendingSettings,
-        ...options?.settings,
-      }).forEach(([key, value]) => {
-        setPreference(key, value);
-      });
+      if (options?.settings) {
+        setPreferences(options.settings);
+      }
 
       for (let attempt = 0; attempt < VoiceOver.#START_ATTEMPTS; attempt++) {
         try {
@@ -345,8 +337,6 @@ export class VoiceOver implements IScreenReader {
         }
       }
     }
-
-    this.#pendingSettings = {};
 
     this.#client = new VoiceOverClient(options);
     this.#caption = new VoiceOverCaption(this.#client);
@@ -1131,40 +1121,5 @@ export class VoiceOver implements IScreenReader {
     }
 
     return getPreference(key);
-  }
-
-  /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-set-setting)
-   *
-   * Sets the value of a setting for this VoiceOver instance.
-   *
-   * ```ts
-   * import { voiceOver } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start VoiceOver.
-   *   await voiceOver.start();
-   *
-   *   // Set the 'SCRCUserDefaultsCursorTrackingEnabled' setting to false.
-   *   console.log(voiceOver.setSetting('SCRCUserDefaultsCursorTrackingEnabled', false));
-   *
-   *   // Stop VoiceOver.
-   *   await voiceOver.stop();
-   * })();
-   * ```
-   *
-   * Note: Some settings must be set before or during at startup to take effect.
-   *
-   * @param key The setting name.
-   * @param value The value to assign.
-   */
-  setSetting(key: string, value: unknown): void {
-    if (!this.#started || this.#stopping) {
-      this.#pendingSettings[key] = value;
-
-      return;
-    }
-
-    setPreference(key, value);
   }
 }

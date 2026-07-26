@@ -8,7 +8,7 @@ import {
   getPreference,
   getPreferences,
   mountGuidepupPreferences,
-  setPreference,
+  setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
 import { CommanderCommands } from "./CommanderCommands";
@@ -40,7 +40,7 @@ jest.mock("./preferences", () => ({
   getPreference: jest.fn(),
   getPreferences: jest.fn(),
   mountGuidepupPreferences: jest.fn(),
-  setPreference: jest.fn(),
+  setPreferences: jest.fn(),
   unmountGuidepupPreferences: jest.fn(),
 }));
 jest.mock("./VoiceOverClient", () => ({
@@ -328,6 +328,18 @@ describe("VoiceOver", () => {
         });
       });
 
+      describe("when called with custom settings", () => {
+        const settings = { testSettingKey: "test-setting-value" };
+
+        beforeEach(async () => {
+          await vo.start({ settings });
+        });
+
+        it("should configure VoiceOver with the desired settings", () => {
+          expect(setPreferences).toHaveBeenCalledWith(settings);
+        });
+      });
+
       describe("when VoiceOver does not become ready", () => {
         const startupError = new Error("VoiceOver did not become ready");
         let thrownError: Error;
@@ -405,43 +417,6 @@ describe("VoiceOver", () => {
         await vo.stop();
 
         expect(result).toBe(settingStub);
-      });
-    });
-  });
-
-  describe("setSetting", () => {
-    describe("when VoiceOver is not running", () => {
-      const settingKeyStub = "test-setting";
-      const settingValueStub = "test-value";
-
-      it("should queue the setting until VoiceOver starts", async () => {
-        vo.setSetting(settingKeyStub, settingValueStub);
-
-        expect(setPreference).not.toHaveBeenCalled();
-
-        await vo.start();
-
-        expect(setPreference).toHaveBeenCalledWith(
-          settingKeyStub,
-          settingValueStub,
-        );
-
-        await vo.stop();
-      });
-    });
-
-    describe("when VoiceOver is running", () => {
-      it("should set the preference immediately", async () => {
-        await vo.start();
-
-        vo.setSetting("test-setting", "test-value");
-
-        expect(setPreference).toHaveBeenCalledWith(
-          "test-setting",
-          "test-value",
-        );
-
-        await vo.stop();
       });
     });
   });

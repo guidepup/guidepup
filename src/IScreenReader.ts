@@ -182,14 +182,4 @@ export interface IScreenReader {
    * @returns {unknown} The setting value.
    */
   getSetting(key: string): unknown;
-
-  /**
-   * Sets the value of a setting for this screen reader instance.
-   *
-   * Note: Some settings must be set before or during at startup to take effect.
-   *
-   * @param key The setting name.
-   * @param value The value to assign.
-   */
-  setSetting(key: string, value: unknown): void;
 }

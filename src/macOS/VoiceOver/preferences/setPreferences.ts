@@ -6,16 +6,21 @@ import { writeFileSync } from "node:fs";
 
 let plist;
 
-export function setPreference(key: string, value: unknown): void {
+export function setPreferences(
+  desiredPreferences: Record<string, unknown>,
+): void {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   plist ??= require("plist");
 
   try {
     const preferences = getPreferences();
 
-    preferences[key] = value;
+    const updatedPreferences = {
+      ...preferences,
+      ...desiredPreferences,
+    };
 
-    writeFileSync(DEFAULT_PREFERENCES, plist.build(preferences));
+    writeFileSync(DEFAULT_PREFERENCES, plist.build(updatedPreferences));
   } catch (cause) {
     throw new Error(ERR_VOICE_OVER_FAILED_TO_SET_SETTING, { cause });
   }

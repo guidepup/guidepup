@@ -50,11 +50,6 @@ export class NVDA implements IScreenReader {
   #stopping = false;
 
   /**
-   * Settings to be applied when NVDA is next started.
-   */
-  #pendingSettings = {};
-
-  /**
    * The screen reader name.
    */
   get name(): string {
@@ -211,10 +206,7 @@ export class NVDA implements IScreenReader {
     this.#starting = true;
 
     try {
-      // Object.entries({
-      //   ...this.#pendingSettings,
-      //   ...options?.settings,
-      // }).forEach(([key, value]) => {
+      // Object.entries(options?.settings).forEach(([key, value]) => {
       //   setConfig(key, value)
       // });
 
@@ -245,8 +237,6 @@ export class NVDA implements IScreenReader {
         }
       }
     }
-
-    this.#pendingSettings = {};
   }
 
   /**
@@ -840,37 +830,6 @@ export class NVDA implements IScreenReader {
   getSetting(key: string): unknown {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_NVDA_NOT_RUNNING);
-    }
-
-    notImplemented();
-  }
-
-  /**
-   * Sets the value of a setting for this NVDA instance.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Set the 'virtualBuffers.autoSayAllOnPageLoad' setting to true.
-   *   console.log(nvda.setSetting('virtualBuffers.autoSayAllOnPageLoad', true));
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * @param key The setting name.
-   * @param value The value to assign.
-   */
-  setSetting(key: string, value: unknown): void {
-    if (!this.#started || this.#stopping) {
-      this.#pendingSettings[key] = value;
-
-      return;
     }
 
     notImplemented();

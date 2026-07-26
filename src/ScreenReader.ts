@@ -249,16 +249,4 @@ export class ScreenReader implements IScreenReader {
   getSetting(key: string): unknown {
     return this.implementation.getSetting(key);
   }
-
-  /**
-   * Sets the value of a setting for this screen reader instance.
-   *
-   * Note: Some settings must be set before or during at startup to take effect.
-   *
-   * @param key The setting name.
-   * @param value The value to assign.
-   */
-  setSetting(key: string, value: unknown): void {
-    return this.implementation.setSetting(key, value);
-  }
 }
