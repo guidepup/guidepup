@@ -23,8 +23,6 @@ module.exports = {
     "<rootDir>/src/macOS/KeyCodes.ts",
     "<rootDir>/src/macOS/KeystrokeCommand.ts",
     "<rootDir>/src/macOS/Modifiers.ts",
-    // TODO: coverage needed for VoiceOver preferences
-    "<rootDir>/src/macOS/VoiceOver/preferences",
     "<rootDir>/src/macOS/VoiceOver/ClickButton.ts",
     "<rootDir>/src/macOS/VoiceOver/ClickCount.ts",
     "<rootDir>/src/macOS/VoiceOver/CommanderCommands.ts",

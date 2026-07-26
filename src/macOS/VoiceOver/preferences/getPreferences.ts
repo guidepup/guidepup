@@ -39,7 +39,11 @@ export function getPreferences(): Record<string, unknown> {
     throw new Error(ERR_VOICE_OVER_FAILED_TO_GET_SETTINGS, { cause });
   } finally {
     if (!portablePreferencesAttached) {
-      detachPortablePreferences(dmgPath);
+      try {
+        detachPortablePreferences(dmgPath);
+      } catch {
+        // Swallow
+      }
     }
   }
 }
