@@ -12,3 +12,7 @@ export const ERR_NVDA_RUNNING_TIMEOUT =
   "Timed out waiting for NVDA to be running";
 
 export const ERR_SEND_KEYS = "Unable to send keys";
+
+export const ERR_NVDA_FAILED_TO_GET_SETTINGS = "Failed to get NVDA settings";
+export const ERR_NVDA_FAILED_TO_SET_SETTING = "Failed to set NVDA setting";
+export const ERR_NVDA_UNSUPPORTED_SETTING = "Unsupported NVDA setting: ";

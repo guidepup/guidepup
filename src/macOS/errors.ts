@@ -34,8 +34,6 @@ export const ERR_VOICE_OVER_FAILED_TO_GET_SETTINGS =
   "Failed to get VoiceOver settings";
 export const ERR_VOICE_OVER_FAILED_TO_SET_SETTING =
   "Failed to set VoiceOver setting";
-export const ERR_VOICE_OVER_UNSUPPORTED_SETTING =
-  "Unsupported VoiceOver setting: ";
 
 export const ERR_PREFIX_ACTIVATE = "Unable to activate application: ";
 export const ERR_PREFIX_SEND_KEYS = "Unable to send keys: ";
