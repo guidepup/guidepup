@@ -1,6 +1,14 @@
 import {
+  createGuidepupConfig,
+  deleteGuidepupConfig,
+  getConfig,
+  getConfigKey,
+  setConfig,
+} from "./config";
+import {
   ERR_NVDA_ALREADY_RUNNING,
   ERR_NVDA_CANNOT_BE_STARTED,
+  ERR_NVDA_NOT_INSTALLED,
   ERR_NVDA_NOT_RUNNING,
   ERR_NVDA_NOT_SUPPORTED,
 } from "../errors";
@@ -13,7 +21,6 @@ import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
 import { Modifiers } from "../Modifiers";
-import { notImplemented } from "../../notImplemented";
 import { NVDAClient } from "./NVDAClient";
 import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
@@ -100,7 +107,7 @@ export class NVDA implements IScreenReader {
    * @returns {boolean}
    */
   static detect(): boolean {
-    return isWindows() && isNVDAInstalled();
+    return isWindows();
   }
 
   /**
@@ -199,6 +206,10 @@ export class NVDA implements IScreenReader {
       throw new Error(ERR_NVDA_NOT_SUPPORTED);
     }
 
+    if (!isNVDAInstalled()) {
+      throw new Error(ERR_NVDA_NOT_INSTALLED);
+    }
+
     if (this.#started || this.#starting) {
       throw new Error(ERR_NVDA_ALREADY_RUNNING);
     }
@@ -206,9 +217,11 @@ export class NVDA implements IScreenReader {
     this.#starting = true;
 
     try {
-      // Object.entries(options?.settings).forEach(([key, value]) => {
-      //   setConfig(key, value)
-      // });
+      createGuidepupConfig();
+
+      if (options?.settings) {
+        setConfig(options.settings);
+      }
 
       await start();
 
@@ -232,6 +245,12 @@ export class NVDA implements IScreenReader {
 
         try {
           quit();
+        } catch {
+          // Swallow
+        }
+
+        try {
+          deleteGuidepupConfig();
         } catch {
           // Swallow
         }
@@ -798,11 +817,7 @@ export class NVDA implements IScreenReader {
    * @returns {Record<string, unknown>} Current settings values.
    */
   getSettings(): Record<string, unknown> {
-    if (!this.#started || this.#stopping) {
-      throw new Error(ERR_NVDA_NOT_RUNNING);
-    }
-
-    notImplemented();
+    return getConfig();
   }
 
   /**
@@ -826,12 +841,7 @@ export class NVDA implements IScreenReader {
    * @param key The setting name.
    * @returns {unknown} The setting value.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getSetting(key: string): unknown {
-    if (!this.#started || this.#stopping) {
-      throw new Error(ERR_NVDA_NOT_RUNNING);
-    }
-
-    notImplemented();
+    return getConfigKey(key);
   }
 }
