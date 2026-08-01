@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import {
   ERR_NVDA_FAILED_TO_CREATE_GUIDEPUP_PREFERENCES,
   ERR_NVDA_NOT_INSTALLED,
@@ -30,9 +30,17 @@ export const createGuidepupConfig = () => {
       recursive: true,
     });
 
-    cpSync(join(guidepupUserConfig, "."), sessionUserConfigPath, {
-      recursive: true,
-    });
+    for (const entry of readdirSync(guidepupUserConfig, {
+      encoding: "utf-8",
+    })) {
+      cpSync(
+        join(guidepupUserConfig, entry),
+        join(sessionUserConfigPath, entry),
+        {
+          recursive: true,
+        },
+      );
+    }
   } catch (error) {
     try {
       rmSync(sessionUserConfigPath, {
