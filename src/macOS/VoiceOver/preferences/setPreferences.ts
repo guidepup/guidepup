@@ -1,3 +1,4 @@
+import { deepMerge } from "../../../deepMerge";
 import { DEFAULT_PREFERENCES } from "./constants";
 import { ERR_VOICE_OVER_FAILED_TO_SET_SETTING } from "../../errors";
 import { getPreferences } from "./getPreferences";
@@ -15,10 +16,7 @@ export function setPreferences(
   try {
     const preferences = getPreferences();
 
-    const updatedPreferences = {
-      ...preferences,
-      ...desiredPreferences,
-    };
+    const updatedPreferences = deepMerge(preferences, desiredPreferences);
 
     writeFileSync(DEFAULT_PREFERENCES, plist.build(updatedPreferences));
   } catch (cause) {
