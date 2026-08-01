@@ -9,6 +9,8 @@ export function setConfig(desiredConfig: Record<string, unknown>): void {
   try {
     const config = getConfig();
 
+    console.log(JSON.stringify({ config, desiredConfig }, undefined, 2));
+
     const updatedConfig = {
       ...config,
       desiredConfig,
@@ -17,7 +19,12 @@ export function setConfig(desiredConfig: Record<string, unknown>): void {
     const sessionUserConfigPath = resolveSessionUserConfigPath();
     const iniConfigFilePath = join(sessionUserConfigPath, "nvda.ini");
 
-    writeFileSync(iniConfigFilePath, buildIni(updatedConfig));
+    const builtConfig = buildIni(updatedConfig);
+
+    console.log({ iniConfigFilePath });
+    console.log(builtConfig);
+
+    writeFileSync(iniConfigFilePath, builtConfig);
   } catch (cause) {
     throw new Error(ERR_NVDA_FAILED_TO_SET_SETTING, { cause });
   }

@@ -8,13 +8,17 @@ import { resolveGuidepupUserConfigPath } from "./resolveGuidepupUserConfigPath";
 import { resolveSessionUserConfigPath } from "./resolveSessionUserConfigPath";
 
 export const createGuidepupConfig = () => {
-  const guidepupUserConfig = resolveGuidepupUserConfigPath();
+  const guidepupUserConfigPath = resolveGuidepupUserConfigPath();
 
-  if (!existsSync(guidepupUserConfig)) {
+  console.log({ guidepupUserConfigPath });
+
+  if (!existsSync(guidepupUserConfigPath)) {
     throw new Error(ERR_NVDA_NOT_INSTALLED);
   }
 
   const sessionUserConfigPath = resolveSessionUserConfigPath();
+
+  console.log({ sessionUserConfigPath });
 
   try {
     rmSync(sessionUserConfigPath, {
@@ -30,11 +34,16 @@ export const createGuidepupConfig = () => {
       recursive: true,
     });
 
-    for (const entry of readdirSync(guidepupUserConfig, {
+    for (const entry of readdirSync(guidepupUserConfigPath, {
       encoding: "utf-8",
     })) {
+      console.log({
+        from: join(guidepupUserConfigPath, entry),
+        to: join(sessionUserConfigPath, entry),
+      });
+
       cpSync(
-        join(guidepupUserConfig, entry),
+        join(guidepupUserConfigPath, entry),
         join(sessionUserConfigPath, entry),
         {
           recursive: true,
