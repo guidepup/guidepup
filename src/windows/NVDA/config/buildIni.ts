@@ -14,7 +14,7 @@ function shouldQuote(value: string): boolean {
 }
 
 function quoteIniString(value: string): string {
-  return `"${value.replace(/"/g, '\\"')}"`;
+  return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
 function formatValue(value: unknown): string {
