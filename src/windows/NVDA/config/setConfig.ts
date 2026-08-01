@@ -10,12 +10,19 @@ export function setConfig(desiredConfig: Record<string, unknown>): void {
   try {
     const config = getConfig();
 
+    console.log({ config });
+
     const updatedConfig = deepMerge(config, desiredConfig);
+
+    console.log({ updatedConfig });
 
     const sessionUserConfigPath = resolveSessionUserConfigPath();
     const iniConfigFilePath = join(sessionUserConfigPath, "nvda.ini");
 
+    console.log({ sessionUserConfigPath, iniConfigFilePath });
+
     const builtConfig = buildIni(updatedConfig);
+    console.log(builtConfig);
 
     writeFileSync(iniConfigFilePath, builtConfig);
   } catch (cause) {
