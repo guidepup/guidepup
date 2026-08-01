@@ -134,7 +134,21 @@ const nvdaTest = test.extend<{ nvda: NVDAPlaywright }>({
         await nvdaPlaywright.clearSpokenPhraseLog();
       };
 
-      await nvdaPlaywright.start({ capture: "initial" });
+      await nvdaPlaywright.start({
+        capture: "initial",
+        settings: {
+          speech: {
+            oneCore: {
+              voice:
+                "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices\\Tokens\\MSTTS_V110_enGB_SusanM",
+            },
+          },
+          speechViewer: {
+            autoPositionWindow: false,
+            x: 500,
+          },
+        },
+      });
 
       await use(nvdaPlaywright);
     } finally {
