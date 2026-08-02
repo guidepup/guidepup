@@ -5,7 +5,10 @@ import {
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
 import {
+  getPreference,
+  getPreferences,
   mountGuidepupPreferences,
+  setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
 import { ClickOptions } from "../../ClickOptions";
@@ -18,6 +21,7 @@ import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
 import type { Prettify } from "../../typeHelpers";
 import { start } from "./start";
+import type { StartOptions } from "../../StartOptions";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";
 import { VoiceOverClient } from "./VoiceOverClient";
@@ -279,8 +283,8 @@ export class VoiceOver implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async start(options?: CommandOptions): Promise<void> {
-    if (!(await this.detect())) {
+  async start(options?: StartOptions): Promise<void> {
+    if (!this.detect()) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
 
@@ -292,6 +296,10 @@ export class VoiceOver implements IScreenReader {
 
     try {
       mountGuidepupPreferences();
+
+      if (options?.settings) {
+        setPreferences(options.settings);
+      }
 
       for (let attempt = 0; attempt < VoiceOver.#START_ATTEMPTS; attempt++) {
         try {
@@ -310,8 +318,8 @@ export class VoiceOver implements IScreenReader {
           }
         }
       }
-    } catch (error) {
-      throw new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, { cause: error });
+    } catch (cause) {
+      throw new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, { cause });
     } finally {
       this.#starting = false;
 
@@ -1050,5 +1058,58 @@ export class VoiceOver implements IScreenReader {
     }
 
     await this.#caption.clearItemTextLog();
+  }
+
+  /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-get-settings)
+   *
+   * Returns all the current settings for this VoiceOver instance.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Log current settings.
+   *   console.log(voiceOver.getSettings());
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @returns {Record<string, unknown>} Current settings values.
+   */
+  getSettings(): Record<string, unknown> {
+    return getPreferences();
+  }
+
+  /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-get-setting)
+   *
+   * Returns the value of a setting for this VoiceOver instance.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Log the value for the 'SCRCUserDefaultsCursorTrackingEnabled' setting.
+   *   console.log(voiceOver.getSetting('SCRCUserDefaultsCursorTrackingEnabled'));
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @param key The setting name.
+   * @returns {unknown} The setting value.
+   */
+  getSetting(key: string): unknown {
+    return getPreference(key);
   }
 }

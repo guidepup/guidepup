@@ -1,6 +1,7 @@
 import { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
 import type { KeyboardOptions } from "./KeyboardOptions";
+import type { StartOptions } from "./StartOptions";
 
 export interface IScreenReader {
   /**
@@ -27,7 +28,7 @@ export interface IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  start(options?: CommandOptions): Promise<void>;
+  start(options?: StartOptions): Promise<void>;
 
   /**
    * Turn the screen reader off.
@@ -167,4 +168,19 @@ export interface IScreenReader {
    * Clear the log of all visited item text for this screen reader instance.
    */
   clearItemTextLog(): Promise<void>;
+
+  /**
+   * Returns all the current settings for this screen reader instance.
+   *
+   * @returns {Record<string, unknown>} Current settings values.
+   */
+  getSettings(): Record<string, unknown>;
+
+  /**
+   * Returns the value of a setting for this screen reader instance.
+   *
+   * @param key The setting name.
+   * @returns {unknown} The setting value.
+   */
+  getSetting(key: string): unknown;
 }

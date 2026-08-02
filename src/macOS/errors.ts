@@ -30,6 +30,11 @@ export const ERR_VOICE_OVER_GET_ITEM_TEXT =
 export const ERR_VOICE_OVER_TAKE_SCREENSHOT =
   "VoiceOver unable to take a screenshot";
 
+export const ERR_VOICE_OVER_FAILED_TO_GET_SETTINGS =
+  "Failed to get VoiceOver settings";
+export const ERR_VOICE_OVER_FAILED_TO_SET_SETTING =
+  "Failed to set VoiceOver setting";
+
 export const ERR_PREFIX_ACTIVATE = "Unable to activate application: ";
 export const ERR_PREFIX_SEND_KEYS = "Unable to send keys: ";
 export const ERR_PREFIX_QUIT = "Unable to quit application: ";

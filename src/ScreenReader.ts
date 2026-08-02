@@ -4,6 +4,7 @@ import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import type { IScreenReader } from "./IScreenReader";
 import { KeyboardOptions } from "./KeyboardOptions";
 import { nvda } from "./windows";
+import type { StartOptions } from "./StartOptions";
 import { voiceOver } from "./macOS";
 
 export class ScreenReader implements IScreenReader {
@@ -55,7 +56,7 @@ export class ScreenReader implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  start(options?: CommandOptions): Promise<void> {
+  start(options?: StartOptions): Promise<void> {
     return this.implementation.start(options);
   }
 
@@ -228,5 +229,24 @@ export class ScreenReader implements IScreenReader {
    */
   clearItemTextLog(): Promise<void> {
     return this.implementation.clearItemTextLog();
+  }
+
+  /**
+   * Returns all the current settings for this screen reader instance.
+   *
+   * @returns {Record<string, unknown>} Current settings values.
+   */
+  getSettings(): Record<string, unknown> {
+    return this.implementation.getSettings();
+  }
+
+  /**
+   * Returns the value of a setting for this screen reader instance.
+   *
+   * @param key The setting name.
+   * @returns {unknown} The setting value.
+   */
+  getSetting(key: string): unknown {
+    return this.implementation.getSetting(key);
   }
 }

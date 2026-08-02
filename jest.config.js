@@ -16,14 +16,13 @@ module.exports = {
     "<rootDir>/src/IScreenReader.ts",
     // TODO: coverage needed for ScreenReader
     "<rootDir>/src/ScreenReader.ts",
+    "<rootDir>/src/StartOptions.ts",
     "<rootDir>/src/macOS/Applications.ts",
     "<rootDir>/src/macOS/KeyboardCommand.ts",
     "<rootDir>/src/macOS/KeyCodeCommand.ts",
     "<rootDir>/src/macOS/KeyCodes.ts",
     "<rootDir>/src/macOS/KeystrokeCommand.ts",
     "<rootDir>/src/macOS/Modifiers.ts",
-    // TODO: coverage needed for VoiceOver preferences
-    "<rootDir>/src/macOS/VoiceOver/preferences",
     "<rootDir>/src/macOS/VoiceOver/ClickButton.ts",
     "<rootDir>/src/macOS/VoiceOver/ClickCount.ts",
     "<rootDir>/src/macOS/VoiceOver/CommanderCommands.ts",

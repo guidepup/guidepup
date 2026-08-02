@@ -1,5 +1,10 @@
 import { detachPortablePreferences } from "./detachPortablePreferences";
+import { resolveCachePath } from "../../../resolveCachePath";
+import { resolveDmgPath } from "./resolveDmgPath";
 
 export function unmountGuidepupPreferences(): void {
-  detachPortablePreferences();
+  const cachePath = resolveCachePath();
+  const dmgPath = resolveDmgPath(cachePath);
+
+  detachPortablePreferences(dmgPath);
 }
