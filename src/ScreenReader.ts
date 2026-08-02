@@ -34,6 +34,13 @@ export class ScreenReader implements IScreenReader {
   }
 
   /**
+   * The screen reader version.
+   */
+  get version(): string {
+    return this.implementation.version;
+  }
+
+  /**
    * Detect whether the screen reader is supported for the current OS.
    *
    * @returns {boolean}

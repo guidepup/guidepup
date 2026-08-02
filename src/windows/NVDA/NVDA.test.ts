@@ -11,6 +11,21 @@ import { NVDAClient } from "./NVDAClient";
 import { quit } from "./quit";
 import { start } from "./start";
 
+jest.mock("../../../manifest.json", () => {
+  return {
+    screenReaders: [
+      {
+        id: "nvda",
+        assets: [
+          {
+            version: "test-version",
+          },
+        ],
+      },
+    ],
+  };
+});
+
 jest.mock("./config", () => ({
   createGuidepupConfig: jest.fn(),
   deleteGuidepupConfig: jest.fn(),
@@ -60,6 +75,14 @@ describe("NVDA", () => {
       nvda = new NVDA();
 
       expect(nvda.name).toBe("NVDA");
+    });
+  });
+
+  describe("version", () => {
+    it("should return the NVDA version", () => {
+      nvda = new NVDA();
+
+      expect(nvda.version).toBe("test-version");
     });
   });
 
