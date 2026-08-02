@@ -144,8 +144,9 @@ const nvdaTest = test.extend<{ nvda: NVDAPlaywright }>({
             },
           },
           speechViewer: {
-            autoPositionWindow: false,
             x: 500,
+            height: 200,
+            width: 1000,
           },
         },
       });
