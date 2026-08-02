@@ -26,7 +26,7 @@ export async function start(): Promise<void> {
     try {
       nvdaProcess = spawn(
         executablePath,
-        ["--config-path", sessionUserConfigPath],
+        ["--config-path", sessionUserConfigPath, "--log-level", "DEBUG"],
         {
           shell: true,
           stdio: ["ignore", "pipe", "pipe"],
