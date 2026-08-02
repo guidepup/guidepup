@@ -1,6 +1,7 @@
 import { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
 import type { KeyboardOptions } from "./KeyboardOptions";
+import type { StartOptions } from "./StartOptions";
 
 export interface IScreenReader {
   /**
@@ -27,7 +28,7 @@ export interface IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  start(options?: CommandOptions): Promise<void>;
+  start(options?: StartOptions): Promise<void>;
 
   /**
    * Turn the screen reader off.
