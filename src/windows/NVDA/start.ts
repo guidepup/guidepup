@@ -15,18 +15,35 @@ export async function start(): Promise<void> {
 
   const sessionUserConfigPath = resolveSessionUserConfigPath();
 
+  console.log({
+    executablePath,
+    sessionUserConfigPath,
+  });
+
   for (let attempt = 0; attempt < MAX_START_ATTEMPTS; attempt++) {
     let nvdaProcess: ChildProcess;
 
     try {
       nvdaProcess = spawn(
-        `"${executablePath}"`,
+        executablePath,
         ["--config-path", sessionUserConfigPath],
         {
           shell: true,
-          stdio: "ignore",
+          stdio: ["ignore", "pipe", "pipe"],
         },
       );
+
+      nvdaProcess.stdout?.on("data", (data) => {
+        console.log("NVDA stdout:", data.toString());
+      });
+
+      nvdaProcess.stderr?.on("data", (data) => {
+        console.error("NVDA stderr:", data.toString());
+      });
+
+      nvdaProcess.on("exit", (code, signal) => {
+        console.log("NVDA exited", { code, signal });
+      });
     } catch (e) {
       throw new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`, {
         cause: e,
