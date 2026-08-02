@@ -33,7 +33,7 @@ export async function start(): Promise<void> {
         executablePath,
         [
           "--config-path",
-          resolve(sessionUserConfigPath, ".."),
+          sessionUserConfigPath,
           "--log-file",
           logFilePath,
           "--debug-logging",
