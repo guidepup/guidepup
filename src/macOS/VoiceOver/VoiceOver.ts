@@ -1,4 +1,5 @@
 import {
+  ERR_MACOS_VERSION_NOT_SUPPORTED,
   ERR_VOICE_OVER_ALREADY_RUNNING,
   ERR_VOICE_OVER_CANNOT_BE_STARTED,
   ERR_VOICE_OVER_NOT_RUNNING,
@@ -20,6 +21,7 @@ import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
 import type { Prettify } from "../../typeHelpers";
+import { release } from "node:os";
 import { start } from "./start";
 import type { StartOptions } from "../../StartOptions";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
@@ -31,6 +33,9 @@ import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const manifest = require("../../../manifest.json");
 
 type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
 
@@ -93,6 +98,23 @@ export class VoiceOver implements IScreenReader {
    */
   get name(): string {
     return "VoiceOver";
+  }
+
+  /**
+   * The screen reader version.
+   */
+  get version(): string {
+    const osVersion = release().split(".", 1)[0];
+
+    const asset = manifest.screenReaders
+      .find(({ id }) => id === "voiceover")
+      .assets.find(({ platformVersion }) => platformVersion === osVersion);
+
+    if (!asset) {
+      throw new Error(ERR_MACOS_VERSION_NOT_SUPPORTED);
+    }
+
+    return asset.version;
   }
 
   /**

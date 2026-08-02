@@ -10,6 +10,11 @@ export interface IScreenReader {
   name: string;
 
   /**
+   * The screen reader version.
+   */
+  version: string;
+
+  /**
    * Detect whether the screen reader is supported for the current OS.
    *
    * @returns {boolean}
