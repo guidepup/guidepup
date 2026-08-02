@@ -7,6 +7,7 @@ jest.mock("./windows", () => ({
   nvda: {
     default: jest.fn(),
     name: "NVDA",
+    version: "test-nvda-version",
   },
 }));
 
@@ -14,6 +15,7 @@ jest.mock("./macOS", () => ({
   voiceOver: {
     default: jest.fn(),
     name: "VoiceOver",
+    version: "test-vo-version",
   },
 }));
 
@@ -36,6 +38,14 @@ describe("ScreenReader", () => {
         expect(screenReader.name).toBe("VoiceOver");
       });
     });
+
+    describe("version", () => {
+      it("should return the VoiceOver version", () => {
+        const screenReader = new ScreenReader();
+
+        expect(screenReader.version).toBe("test-vo-version");
+      });
+    });
   });
 
   describe("when NVDA is the default screen reader for the environment", () => {
@@ -51,6 +61,14 @@ describe("ScreenReader", () => {
         expect(screenReader.name).toBe("NVDA");
       });
     });
+
+    describe("version", () => {
+      it("should return the NVDA version", () => {
+        const screenReader = new ScreenReader();
+
+        expect(screenReader.version).toBe("test-nvda-version");
+      });
+    });
   });
 
   describe("when neither VoiceOver nor NVDA is the default screen reader for the environment", () => {
@@ -59,12 +77,10 @@ describe("ScreenReader", () => {
       jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 
-    describe("name", () => {
-      it("should return NVDA", () => {
-        expect(() => new ScreenReader()).toThrow(
-          new Error(ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS),
-        );
-      });
+    it("should throw an error", () => {
+      expect(() => new ScreenReader()).toThrow(
+        new Error(ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS),
+      );
     });
   });
 });

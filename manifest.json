@@ -22,35 +22,35 @@
       "defaultDownload": true,
       "assets": [
         {
-          "version": "0.0.1",
+          "version": "0.0.1-VoiceOver4",
           "platformVersion": "21",
           "repository": "guidepup/voiceover",
           "asset": "guidepup-voiceover-preferences-macos-14.dmg",
           "sha256": "c6595f5ca50440e8553cde278936a46eff58d4c904e19c87e7d0e25950617ee1"
         },
         {
-          "version": "0.0.1",
+          "version": "0.0.1-VoiceOver4",
           "platformVersion": "22",
           "repository": "guidepup/voiceover",
           "asset": "guidepup-voiceover-preferences-macos-14.dmg",
           "sha256": "c6595f5ca50440e8553cde278936a46eff58d4c904e19c87e7d0e25950617ee1"
         },
         {
-          "version": "0.0.1",
+          "version": "0.0.1-VoiceOver4",
           "platformVersion": "23",
           "repository": "guidepup/voiceover",
           "asset": "guidepup-voiceover-preferences-macos-14.dmg",
           "sha256": "c6595f5ca50440e8553cde278936a46eff58d4c904e19c87e7d0e25950617ee1"
         },
         {
-          "version": "0.0.1",
+          "version": "0.0.1-VoiceOver4",
           "platformVersion": "24",
           "repository": "guidepup/voiceover",
           "asset": "guidepup-voiceover-preferences-macos-15.dmg",
           "sha256": "8bdc3a11c45a19cc876a859bfbd64529469a8b7d4ad41fd7e00a0729ebdbcb25"
         },
         {
-          "version": "0.0.1",
+          "version": "0.0.1-VoiceOver4",
           "platformVersion": "25",
           "repository": "guidepup/voiceover",
           "asset": "guidepup-voiceover-preferences-macos-26.dmg",

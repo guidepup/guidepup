@@ -29,6 +29,9 @@ import { sendKeys } from "../sendKeys";
 import { start } from "./start";
 import type { StartOptions } from "../../StartOptions";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const manifest = require("../../../manifest.json");
+
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
 type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 
@@ -61,6 +64,14 @@ export class NVDA implements IScreenReader {
    */
   get name(): string {
     return "NVDA";
+  }
+
+  /**
+   * The screen reader version.
+   */
+  get version(): string {
+    return manifest.screenReaders.find(({ id }) => id === "nvda").assets[0]
+      .version;
   }
 
   /**

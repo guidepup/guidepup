@@ -1,4 +1,5 @@
 import {
+  ERR_MACOS_VERSION_NOT_SUPPORTED,
   ERR_VOICE_OVER_ALREADY_RUNNING,
   ERR_VOICE_OVER_CANNOT_BE_STARTED,
   ERR_VOICE_OVER_NOT_RUNNING,
@@ -15,6 +16,7 @@ import { CommanderCommands } from "./CommanderCommands";
 import { delay } from "../../delay";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
+import { release } from "node:os";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOver } from "./VoiceOver";
@@ -27,6 +29,22 @@ import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
+jest.mock("../../../manifest.json", () => ({
+  screenReaders: [
+    {
+      id: "voiceover",
+      assets: [
+        {
+          version: "test-version",
+          platformVersion: "123",
+        },
+      ],
+    },
+  ],
+}));
+jest.mock("node:os", () => ({
+  release: jest.fn(),
+}));
 jest.mock("../activate", () => ({
   activate: jest.fn(),
 }));
@@ -145,6 +163,8 @@ describe("VoiceOver", () => {
     jest.mocked(getPreferences).mockReturnValue({});
     jest.mocked(getPreference).mockReturnValue(undefined);
 
+    jest.mocked(release).mockReturnValue("123.0.0");
+
     vo = new VoiceOver();
     result = undefined;
   });
@@ -152,6 +172,21 @@ describe("VoiceOver", () => {
   describe("name", () => {
     it("should return VoiceOver", () => {
       expect(vo.name).toBe("VoiceOver");
+    });
+  });
+
+  describe("version", () => {
+    it("should return the VoiceOver version for supported versions of macOS", () => {
+      expect(vo.version).toBe("test-version");
+    });
+
+    it("should throw an error for unsupported versions of macOS", () => {
+      jest.clearAllMocks();
+      jest.mocked(release).mockReturnValue("321.0.0");
+
+      vo = new VoiceOver();
+
+      expect(() => vo.version).toThrow(ERR_MACOS_VERSION_NOT_SUPPORTED);
     });
   });
 
