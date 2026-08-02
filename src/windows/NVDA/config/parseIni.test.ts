@@ -54,87 +54,91 @@ const missingSeparatorResult = {
 
 const realWorldInput = `schemaVersion = 22
 [math]
-	[[speech]]
-		impairment = Blindness
-		language = en
-		verbosity = Medium
-		mathRate = 100
-		pauseFactor = 100
-		speechSound = None
-		chemistry = SpellOut
-		[[[en]]]
-			speechStyle = ClearSpeak
-	[[speech.speechOverrides]]
-	[[speech.ClearSpeak]]
-	[[navigation]]
-		navMode = Enhanced
-		resetNavMode = True
-		overview = False
-		resetOverview = True
-		navVerbosity = Medium
-		autoZoomOut = True
-		copyAs = MathML
-	[[braille]]
-		brailleCode = Auto
-		brailleNavHighlight = EndPoints
-	[[braille.nemeth]]
-	[[braille.UEB]]
-	[[braille.vietnam]]
-	[[braille.LaTeX]]
-	[[other]]
-		decimalSeparator = Auto
-		useWordNativeMath = False
-	[[ui]]
-		confirmDisconnectAsFollower = False
-		muteOnLocalControl = False
+\t[[speech]]
+\t\timpairment = Blindness
+\t\tlanguage = en
+\t\tverbosity = Medium
+\t\tmathRate = 100
+\t\tpauseFactor = 100
+\t\tspeechSound = None
+\t\tchemistry = SpellOut
+\t\t[[[en]]]
+\t\t\tspeechStyle = ClearSpeak
+\t[[speech.speechOverrides]]
+\t[[speech.ClearSpeak]]
+\t[[navigation]]
+\t\tnavMode = Enhanced
+\t\tresetNavMode = True
+\t\toverview = False
+\t\tresetOverview = True
+\t\tnavVerbosity = Medium
+\t\tautoZoomOut = True
+\t\tcopyAs = MathML
+\t[[braille]]
+\t\tbrailleCode = Auto
+\t\tbrailleNavHighlight = EndPoints
+\t[[braille.nemeth]]
+\t[[braille.UEB]]
+\t[[braille.vietnam]]
+\t[[braille.LaTeX]]
+\t[[other]]
+\t\tdecimalSeparator = Auto
+\t\tuseWordNativeMath = False
+\t[[ui]]
+\t\tconfirmDisconnectAsFollower = False
+\t\tmuteOnLocalControl = False
+[remote]
+\tenabled = True
+\t[[connections]]
+\t\tlastConnected = 127.0.0.1:6837,
 [development]
 [screenCurtain]
-	warnOnLoad = True
-	playToggleSounds = True
+\twarnOnLoad = True
+\tplayToggleSounds = True
 [update]
-	allowUsageStats = False
-	askedAllowUsageStats = True
-	autoCheck = False
-	startupNotification = False
+\tallowUsageStats = False
+\taskedAllowUsageStats = True
+\tautoCheck = False
+\tstartupNotification = False
 [addonStore]
-	automaticUpdates = disabled
-	allowIncompatibleUpdates = False
-	defaultUpdateChannel = 2
+\tautomaticUpdates = disabled
+\tallowIncompatibleUpdates = False
+\tdefaultUpdateChannel = 2
 [general]
-	showWelcomeDialogAtStartup = False
-	language = Windows
-	saveConfigurationOnExit = False
-	askToExit = False
-	playStartAndExitSounds = False
-	loggingLevel = OFF
-	preventDisplayTurningOff = True
+\tshowWelcomeDialogAtStartup = False
+\tlanguage = Windows
+\tsaveConfigurationOnExit = False
+\taskToExit = False
+\tplayStartAndExitSounds = False
+\tloggingLevel = OFF
+\tpreventDisplayTurningOff = True
 [speech]
-	synth = oneCore
-	[[oneCore]]
-		voice = HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices\\Tokens\\MSTTS_V110_enGB_GeorgeM
-		volume = 100
-		rate = 100
-		rateBoost = True
+\tsynth = oneCore
+\t[[oneCore]]
+\t\tvoice = HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices\\Tokens\\MSTTS_V110_enGB_GeorgeM
+\t\tvolume = 100
+\t\trate = 100
+\t\trateBoost = True
 [braille]
-	[[noBraille]]
+\t[[noBraille]]
 [vision]
-	[[NVDAHighlighter]]
-		highlightFocus = True
-		highlightNavigator = True
-		highlightBrowseMode = True
-		enabled = True
+\t[[NVDAHighlighter]]
+\t\thighlightFocus = True
+\t\thighlightNavigator = True
+\t\thighlightBrowseMode = True
+\t\tenabled = True
 [speechViewer]
-	x = 0
-	y = 0
-	width = 500
-	height = 500
-	displays = "(1920, 1080)",
-	autoPositionWindow = True
-	showSpeechViewerAtStartup = True
+\tx = 0
+\ty = 0
+\twidth = 500
+\theight = 500
+\tdisplays = "(1920, 1080)",
+\tautoPositionWindow = True
+\tshowSpeechViewerAtStartup = True
 [virtualBuffers]
-	autoSayAllOnPageLoad = False
+\tautoSayAllOnPageLoad = False
 [uwpOcr]
-	language = en-GB`;
+\tlanguage = en-GB`;
 
 const realWorldResult = {
   addonStore: {
@@ -196,6 +200,12 @@ const realWorldResult = {
       muteOnLocalControl: false,
     },
   },
+  remote: {
+    connections: {
+      lastConnected: ["127.0.0.1:6837"],
+    },
+    enabled: true,
+  },
   schemaVersion: 22,
   screenCurtain: {
     playToggleSounds: true,
@@ -213,7 +223,7 @@ const realWorldResult = {
   },
   speechViewer: {
     autoPositionWindow: true,
-    displays: '"(1920, 1080)",',
+    displays: ["(1920, 1080)"],
     height: 500,
     showSpeechViewerAtStartup: true,
     width: 500,

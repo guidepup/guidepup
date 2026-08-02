@@ -1,3 +1,30 @@
+function splitArray(value: string): string[] {
+  const result: string[] = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (const char of value) {
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    }
+
+    if (char === "," && !inQuotes) {
+      if (current) {
+        result.push(current.trim());
+        current = "";
+      }
+    } else {
+      current += char;
+    }
+  }
+
+  if (current) {
+    result.push(current.trim());
+  }
+
+  return result;
+}
+
 function parseValue(value: string): unknown {
   if (value === "True") {
     return true;
@@ -13,7 +40,13 @@ function parseValue(value: string): unknown {
     return number;
   }
 
-  return value.replace(/^"(.*)"$/, "$1");
+  if (value.endsWith(",")) {
+    return splitArray(value.slice(0, -1)).map((item) =>
+      item.replace(/^"(.*)"$/, "$1").replace(/\\"/g, '"'),
+    );
+  }
+
+  return value.replace(/^"(.*)"$/, "$1").replace(/\\"/g, '"');
 }
 
 export function parseIni(contents: string): Record<string, unknown> {
