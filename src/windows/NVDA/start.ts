@@ -32,12 +32,11 @@ export async function start(): Promise<void> {
       nvdaProcess = spawn(
         executablePath,
         [
-          "--config-path",
-          sessionUserConfigPath,
+          // "--config-path",
+          // sessionUserConfigPath,
           "--log-file",
           logFilePath,
-          "--log-level",
-          "DEBUG",
+          "--debug-logging",
         ],
         {
           shell: true,
