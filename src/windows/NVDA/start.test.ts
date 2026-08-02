@@ -1,11 +1,15 @@
 import { ChildProcess, spawn } from "child_process";
 import { ERR_NVDA_CANNOT_BE_STARTED, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { resolveSessionUserConfigPath } from "./config";
 import { start } from "./start";
 import { waitForRunning } from "./waitForRunning";
 
 jest.mock("./getNVDAInstallationPath", () => ({
   getNVDAInstallationPath: jest.fn(),
+}));
+jest.mock("./config", () => ({
+  resolveSessionUserConfigPath: jest.fn(),
 }));
 jest.mock("child_process", () => ({
   spawn: jest.fn(),
@@ -15,6 +19,7 @@ jest.mock("./waitForRunning", () => ({
 }));
 
 const mockInstallationPath = "test-installation-path";
+const mockSessionUserConfigPath = "test-session-user-config-path";
 const mockChildProcess = {
   kill: jest.fn(),
 };
@@ -28,6 +33,7 @@ describe("start", () => {
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
       jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
+      jest.mocked(resolveSessionUserConfigPath).mockReturnValue("");
     });
 
     it("should attempt to get the installation path", async () => {
@@ -50,6 +56,10 @@ describe("start", () => {
       jest
         .mocked(getNVDAInstallationPath)
         .mockReturnValue(mockInstallationPath);
+
+      jest
+        .mocked(resolveSessionUserConfigPath)
+        .mockReturnValue(mockSessionUserConfigPath);
     });
 
     describe("when starting NVDA is successful first attempt", () => {
@@ -60,10 +70,14 @@ describe("start", () => {
       });
 
       it("should spawn a NVDA command", () => {
-        expect(spawn).toHaveBeenCalledWith(`"${mockInstallationPath}"`, [], {
-          shell: true,
-          stdio: "ignore",
-        });
+        expect(spawn).toHaveBeenCalledWith(
+          mockInstallationPath,
+          ["--config-path", mockSessionUserConfigPath],
+          {
+            shell: true,
+            stdio: "ignore",
+          },
+        );
       });
 
       it("should wait for NVDA to be running", () => {
@@ -87,10 +101,14 @@ describe("start", () => {
       });
 
       it("should spawn a NVDA command", () => {
-        expect(spawn).toHaveBeenCalledWith(`"${mockInstallationPath}"`, [], {
-          shell: true,
-          stdio: "ignore",
-        });
+        expect(spawn).toHaveBeenCalledWith(
+          mockInstallationPath,
+          ["--config-path", mockSessionUserConfigPath],
+          {
+            shell: true,
+            stdio: "ignore",
+          },
+        );
       });
 
       it("should throw a wrapped error", () => {
@@ -114,8 +132,8 @@ describe("start", () => {
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           1,
-          `"${mockInstallationPath}"`,
-          [],
+          mockInstallationPath,
+          ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
             stdio: "ignore",
@@ -134,8 +152,8 @@ describe("start", () => {
       it("should attempt to spawn a NVDA command again", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           2,
-          `"${mockInstallationPath}"`,
-          [],
+          mockInstallationPath,
+          ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
             stdio: "ignore",
@@ -167,8 +185,8 @@ describe("start", () => {
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           1,
-          `"${mockInstallationPath}"`,
-          [],
+          mockInstallationPath,
+          ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
             stdio: "ignore",
@@ -187,8 +205,8 @@ describe("start", () => {
       it("should attempt to spawn a NVDA command again", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           2,
-          `"${mockInstallationPath}"`,
-          [],
+          mockInstallationPath,
+          ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
             stdio: "ignore",

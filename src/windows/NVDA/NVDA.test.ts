@@ -1,4 +1,8 @@
-import { ERR_NVDA_ALREADY_RUNNING, ERR_NVDA_NOT_RUNNING } from "../errors";
+import {
+  ERR_NVDA_ALREADY_RUNNING,
+  ERR_NVDA_NOT_INSTALLED,
+  ERR_NVDA_NOT_RUNNING,
+} from "../errors";
 import { delay } from "../../delay";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
@@ -7,6 +11,13 @@ import { NVDAClient } from "./NVDAClient";
 import { quit } from "./quit";
 import { start } from "./start";
 
+jest.mock("./config", () => ({
+  createGuidepupConfig: jest.fn(),
+  deleteGuidepupConfig: jest.fn(),
+  getConfig: jest.fn(),
+  getConfigKey: jest.fn(),
+  setConfig: jest.fn(),
+}));
 jest.mock("./isNVDAInstalled", () => ({
   isNVDAInstalled: jest.fn(),
 }));
@@ -53,7 +64,7 @@ describe("NVDA", () => {
   });
 
   describe("detect", () => {
-    describe("when Windows and NVDA is installed", () => {
+    describe("when on Windows", () => {
       it("should return true", () => {
         nvda = new NVDA();
 
@@ -63,21 +74,7 @@ describe("NVDA", () => {
       });
     });
 
-    describe("when Windows and NVDA is not installed", () => {
-      beforeEach(() => {
-        jest.mocked(isNVDAInstalled).mockReturnValue(false);
-      });
-
-      it("should return false", () => {
-        nvda = new NVDA();
-
-        const result = nvda.detect();
-
-        expect(result).toBe(false);
-      });
-    });
-
-    describe("when not Windows", () => {
+    describe("when not on Windows", () => {
       beforeEach(() => {
         jest.mocked(isWindows).mockReturnValue(false);
       });
@@ -107,16 +104,24 @@ describe("NVDA", () => {
 
     describe("when NVDA is already running", () => {
       beforeEach(async () => {
-        jest.mocked(start).mockResolvedValue(undefined);
-
         await nvda.start();
-
-        jest.clearAllMocks();
       });
 
       it("should throw an error", async () => {
         await expect(async () => await nvda.start()).rejects.toThrow(
           ERR_NVDA_ALREADY_RUNNING,
+        );
+      });
+    });
+
+    describe("when NVDA is not installed", () => {
+      beforeEach(async () => {
+        jest.mocked(isNVDAInstalled).mockReturnValue(false);
+      });
+
+      it("should throw an error", async () => {
+        await expect(async () => await nvda.start()).rejects.toThrow(
+          ERR_NVDA_NOT_INSTALLED,
         );
       });
     });

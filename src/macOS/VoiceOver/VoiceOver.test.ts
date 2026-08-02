@@ -5,7 +5,10 @@ import {
   ERR_VOICE_OVER_NOT_SUPPORTED,
 } from "../errors";
 import {
+  getPreference,
+  getPreferences,
   mountGuidepupPreferences,
+  setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
 import { CommanderCommands } from "./CommanderCommands";
@@ -24,10 +27,6 @@ import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
-jest.mock("./preferences", () => ({
-  mountGuidepupPreferences: jest.fn(),
-  unmountGuidepupPreferences: jest.fn(),
-}));
 jest.mock("../activate", () => ({
   activate: jest.fn(),
 }));
@@ -36,6 +35,13 @@ jest.mock("../../isKeyboard", () => ({
 }));
 jest.mock("../isMacOS", () => ({
   isMacOS: jest.fn(),
+}));
+jest.mock("./preferences", () => ({
+  getPreference: jest.fn(),
+  getPreferences: jest.fn(),
+  mountGuidepupPreferences: jest.fn(),
+  setPreferences: jest.fn(),
+  unmountGuidepupPreferences: jest.fn(),
 }));
 jest.mock("./VoiceOverClient", () => ({
   VoiceOverClient: jest.fn(),
@@ -136,6 +142,8 @@ describe("VoiceOver", () => {
     );
 
     jest.mocked(isMacOS).mockReturnValue(true);
+    jest.mocked(getPreferences).mockReturnValue({});
+    jest.mocked(getPreference).mockReturnValue(undefined);
 
     vo = new VoiceOver();
     result = undefined;
@@ -320,7 +328,19 @@ describe("VoiceOver", () => {
         });
       });
 
-      describe('when VoiceOver does not become ready', () => {
+      describe("when called with custom settings", () => {
+        const settings = { testSettingKey: "test-setting-value" };
+
+        beforeEach(async () => {
+          await vo.start({ settings });
+        });
+
+        it("should configure VoiceOver with the desired settings", () => {
+          expect(setPreferences).toHaveBeenCalledWith(settings);
+        });
+      });
+
+      describe("when VoiceOver does not become ready", () => {
         const startupError = new Error("VoiceOver did not become ready");
         let thrownError: Error;
 
@@ -334,13 +354,13 @@ describe("VoiceOver", () => {
           }
         });
 
-        test('should retry from a clean VoiceOver process', () => {
+        test("should retry from a clean VoiceOver process", () => {
           expect(start).toHaveBeenCalledTimes(2);
           expect(terminateVoiceOverProcess).toHaveBeenCalledTimes(3);
           expect(waitForNotRunning).toHaveBeenCalledTimes(2);
         });
 
-        test('should return a stable startup error with the readiness failure as its cause', () => {
+        test("should return a stable startup error with the readiness failure as its cause", () => {
           expect(thrownError).toEqual(
             new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
               cause: startupError,
@@ -348,9 +368,57 @@ describe("VoiceOver", () => {
           );
         });
 
-        test('should unmount Guidepup preferences after failing', () => {
+        test("should unmount Guidepup preferences after failing", () => {
           expect(unmountGuidepupPreferences).toHaveBeenCalledTimes(1);
         });
+      });
+    });
+  });
+
+  describe("getSettings", () => {
+    const settingsStub = { testSetting: true };
+
+    describe("when VoiceOver is not running", () => {
+      it("should return the current settings", async () => {
+        jest.mocked(getPreferences).mockReturnValue(settingsStub);
+
+        expect(vo.getSettings()).toEqual(settingsStub);
+      });
+    });
+
+    describe("when VoiceOver is running", () => {
+      it("should return the current settings", async () => {
+        jest.mocked(getPreferences).mockReturnValue(settingsStub);
+
+        await vo.start();
+        result = vo.getSettings();
+        await vo.stop();
+
+        expect(result).toEqual(settingsStub);
+      });
+    });
+  });
+
+  describe("getSetting", () => {
+    const settingStub = "test-value";
+
+    describe("when VoiceOver is not running", () => {
+      it("should return the value for the setting", async () => {
+        jest.mocked(getPreference).mockReturnValue(settingStub);
+
+        expect(vo.getSetting("test-setting")).toBe(settingStub);
+      });
+    });
+
+    describe("when VoiceOver is running", () => {
+      it("should return the value for the setting", async () => {
+        jest.mocked(getPreference).mockReturnValue(settingStub);
+
+        await vo.start();
+        result = vo.getSetting("test-setting");
+        await vo.stop();
+
+        expect(result).toBe(settingStub);
       });
     });
   });
