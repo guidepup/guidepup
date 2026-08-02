@@ -1,8 +1,8 @@
 import { ChildProcess, spawn } from "child_process";
 import { ERR_NVDA_CANNOT_BE_STARTED, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { existsSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
-import { join } from "node:path";
 import { resolveSessionUserConfigPath } from "./config";
 import { waitForRunning } from "./waitForRunning";
 
@@ -32,8 +32,8 @@ export async function start(): Promise<void> {
       nvdaProcess = spawn(
         executablePath,
         [
-          // "--config-path",
-          // sessionUserConfigPath,
+          "--config-path",
+          resolve(sessionUserConfigPath, ".."),
           "--log-file",
           logFilePath,
           "--debug-logging",
