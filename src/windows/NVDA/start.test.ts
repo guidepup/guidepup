@@ -71,7 +71,7 @@ describe("start", () => {
 
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenCalledWith(
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
@@ -102,7 +102,7 @@ describe("start", () => {
 
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenCalledWith(
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
@@ -132,7 +132,7 @@ describe("start", () => {
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           1,
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
@@ -152,7 +152,7 @@ describe("start", () => {
       it("should attempt to spawn a NVDA command again", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           2,
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
@@ -185,7 +185,7 @@ describe("start", () => {
       it("should spawn a NVDA command", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           1,
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,
@@ -205,7 +205,7 @@ describe("start", () => {
       it("should attempt to spawn a NVDA command again", () => {
         expect(spawn).toHaveBeenNthCalledWith(
           2,
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
             shell: true,

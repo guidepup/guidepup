@@ -16,8 +16,6 @@ export const createGuidepupConfig = () => {
 
   const sessionUserConfigPath = resolveSessionUserConfigPath();
 
-  console.log({ guidepupUserConfigPath, sessionUserConfigPath });
-
   try {
     rmSync(sessionUserConfigPath, {
       recursive: true,
@@ -36,8 +34,6 @@ export const createGuidepupConfig = () => {
       encoding: "utf-8",
     });
 
-    console.log({ entries });
-
     for (const entry of entries) {
       cpSync(
         join(guidepupUserConfigPath, entry),
@@ -47,12 +43,6 @@ export const createGuidepupConfig = () => {
         },
       );
     }
-
-    console.log({
-      dest: readdirSync(sessionUserConfigPath, {
-        encoding: "utf-8",
-      }),
-    });
   } catch (error) {
     try {
       rmSync(sessionUserConfigPath, {

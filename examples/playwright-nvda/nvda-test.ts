@@ -143,10 +143,13 @@ const nvdaTest = test.extend<{ nvda: NVDAPlaywright }>({
                 "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices\\Tokens\\MSTTS_V110_enGB_SusanM",
             },
           },
-          speechViewer: {
-            x: 500,
-            height: 200,
-            width: 1000,
+          vision: {
+            NVDAHighlighter: {
+              highlightFocus: false,
+              highlightNavigator: false,
+              highlightBrowseMode: false,
+              enabled: false,
+            },
           },
         },
       });

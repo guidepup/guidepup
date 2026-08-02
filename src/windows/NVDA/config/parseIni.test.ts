@@ -263,6 +263,9 @@ describe("parseIni", () => {
     ${"top level keys with primitive values"} | ${topLevelPrimitivesInput}      | ${topLevelPrimitivesResult}
     ${"nested keys"}                          | ${nestedKeysInput}              | ${nestedKeysResult}
     ${"missing separator"}                    | ${missingSeparatorInput}        | ${missingSeparatorResult}
+    ${"empty array"}                          | ${`a = ,`}                      | ${{ a: [] }}
+    ${"array with empty item"}                | ${`a = one,,two,`}              | ${{ a: ["one", "two"] }}
+    ${"array with quoted items"}              | ${`a = "one, still one",two,`}  | ${{ a: ["one, still one", "two"] }}
     ${"real world input"}                     | ${realWorldInput}               | ${realWorldResult}
   `("$description", ({ input, expectedResult }) => {
     expect(parseIni(input)).toEqual(expectedResult);
