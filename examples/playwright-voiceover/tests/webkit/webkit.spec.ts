@@ -31,6 +31,8 @@ test.describe("Webkit Playwright VoiceOver", () => {
     const osName = platform();
     const osVersion = release();
     const browserVersion = browser.version();
+    const screenReaderName = voiceOver.name;
+    const screenReaderVersion = voiceOver.version;
     const { retry } = test.info();
     const recordingFilePath = `./recordings/playwright-voiceover-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
@@ -39,6 +41,8 @@ test.describe("Webkit Playwright VoiceOver", () => {
       osVersion,
       browserName,
       browserVersion,
+      screenReaderName,
+      screenReaderVersion,
       retry,
     });
 
@@ -74,6 +78,8 @@ test.describe("Webkit Playwright VoiceOver", () => {
     const osName = platform();
     const osVersion = release();
     const browserVersion = browser.version();
+    const screenReaderName = voiceOver.name;
+    const screenReaderVersion = voiceOver.version;
     const { retry } = test.info();
     const recordingFilePath = `./recordings/playwright-voiceOver-textarea-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
@@ -82,6 +88,8 @@ test.describe("Webkit Playwright VoiceOver", () => {
       osVersion,
       browserName,
       browserVersion,
+      screenReaderName,
+      screenReaderVersion,
       retry,
     });
 

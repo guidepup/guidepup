@@ -30,6 +30,8 @@ test.describe("Chromium Playwright NVDA", () => {
     const osName = platform();
     const osVersion = release();
     const browserVersion = browser.version();
+    const screenReaderName = nvda.name;
+    const screenReaderVersion = nvda.version;
     const { retry } = test.info();
     const recordingFilePath = `./recordings/playwright-nvda-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
@@ -38,6 +40,8 @@ test.describe("Chromium Playwright NVDA", () => {
       osVersion,
       browserName,
       browserVersion,
+      screenReaderName,
+      screenReaderVersion,
       retry,
     });
 
@@ -70,6 +74,8 @@ test.describe("Chromium Playwright NVDA", () => {
     const osName = platform();
     const osVersion = release();
     const browserVersion = browser.version();
+    const screenReaderName = nvda.name;
+    const screenReaderVersion = nvda.version;
     const { retry } = test.info();
     const recordingFilePath = `./recordings/playwright-nvda-textarea-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
@@ -78,6 +84,8 @@ test.describe("Chromium Playwright NVDA", () => {
       osVersion,
       browserName,
       browserVersion,
+      screenReaderName,
+      screenReaderVersion,
       retry,
     });
 

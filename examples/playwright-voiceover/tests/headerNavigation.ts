@@ -37,7 +37,7 @@ export async function headerNavigation({
     headingCount++;
 
     log(`Performing command: "VO+Command+H" - "Find the next heading"`);
-    await voiceOver.perform(voiceOver.keyboardCommands.findNextHeading);
+    await voiceOver.nextHeading();
     log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
     log(

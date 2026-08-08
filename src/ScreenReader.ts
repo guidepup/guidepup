@@ -95,6 +95,60 @@ export class ScreenReader implements IScreenReader {
   }
 
   /**
+   * Move the screen reader cursor to the previous heading.
+   *
+   * @param {object} [options] Additional options.
+   */
+  previousHeading(options?: CommandOptions): Promise<void> {
+    return this.implementation.previousHeading(options);
+  }
+
+  /**
+   * Move the screen reader cursor to the next heading.
+   *
+   * @param {object} [options] Additional options.
+   */
+  nextHeading(options?: CommandOptions): Promise<void> {
+    return this.implementation.nextHeading(options);
+  }
+
+  /**
+   * Move the screen reader cursor to the previous link.
+   *
+   * @param {object} [options] Additional options.
+   */
+  previousLink(options?: CommandOptions): Promise<void> {
+    return this.implementation.previousLink(options);
+  }
+
+  /**
+   * Move the screen reader cursor to the next link.
+   *
+   * @param {object} [options] Additional options.
+   */
+  nextLink(options?: CommandOptions): Promise<void> {
+    return this.implementation.nextLink(options);
+  }
+
+  /**
+   * Move the screen reader cursor to the previous landmark.
+   *
+   * @param {object} [options] Additional options.
+   */
+  previousLandmark(options?: CommandOptions): Promise<void> {
+    return this.implementation.previousLandmark(options);
+  }
+
+  /**
+   * Move the screen reader cursor to the next landmark.
+   *
+   * @param {object} [options] Additional options.
+   */
+  nextLandmark(options?: CommandOptions): Promise<void> {
+    return this.implementation.nextLandmark(options);
+  }
+
+  /**
    * Perform the default action for the item in the screen reader cursor.
    *
    * @param {object} [options] Additional options.

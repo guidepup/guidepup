@@ -245,6 +245,186 @@ describe("NVDA", () => {
     });
   });
 
+  describe("previousHeading", () => {
+    beforeEach(() => {
+      nvda = new NVDA();
+    });
+
+    describe("when NVDA is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await nvda.previousHeading()).rejects.toThrow(
+          ERR_NVDA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when NVDA is running", () => {
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        await nvda.previousHeading();
+      });
+
+      it("should enqueue a key press command", () => {
+        expect(NVDAClientStub.enqueueAndTap).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("nextHeading", () => {
+    beforeEach(() => {
+      nvda = new NVDA();
+    });
+
+    describe("when NVDA is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await nvda.nextHeading()).rejects.toThrow(
+          ERR_NVDA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when NVDA is running", () => {
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        await nvda.nextHeading();
+      });
+
+      it("should enqueue a key press command", () => {
+        expect(NVDAClientStub.enqueueAndTap).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("previousLink", () => {
+    beforeEach(() => {
+      nvda = new NVDA();
+    });
+
+    describe("when NVDA is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await nvda.previousLink()).rejects.toThrow(
+          ERR_NVDA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when NVDA is running", () => {
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        await nvda.previousLink();
+      });
+
+      it("should enqueue a key press command", () => {
+        expect(NVDAClientStub.enqueueAndTap).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("nextLink", () => {
+    beforeEach(() => {
+      nvda = new NVDA();
+    });
+
+    describe("when NVDA is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await nvda.nextLink()).rejects.toThrow(
+          ERR_NVDA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when NVDA is running", () => {
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        await nvda.nextLink();
+      });
+
+      it("should enqueue a key press command", () => {
+        expect(NVDAClientStub.enqueueAndTap).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("previousLandmark", () => {
+    beforeEach(() => {
+      nvda = new NVDA();
+    });
+
+    describe("when NVDA is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await nvda.previousLandmark()).rejects.toThrow(
+          ERR_NVDA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when NVDA is running", () => {
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        await nvda.previousLandmark();
+      });
+
+      it("should enqueue a key press command", () => {
+        expect(NVDAClientStub.enqueueAndTap).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("nextLandmark", () => {
+    beforeEach(() => {
+      nvda = new NVDA();
+    });
+
+    describe("when NVDA is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await nvda.nextLandmark()).rejects.toThrow(
+          ERR_NVDA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when NVDA is running", () => {
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        await nvda.nextLandmark();
+      });
+
+      it("should enqueue a key press command", () => {
+        expect(NVDAClientStub.enqueueAndTap).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe("spokenPhraseLog", () => {
     beforeEach(() => {
       nvda = new NVDA();

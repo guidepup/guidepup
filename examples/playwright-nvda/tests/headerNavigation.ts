@@ -37,7 +37,7 @@ export async function headerNavigation({
     headingCount++;
 
     log(`Performing command: "H"`);
-    await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
+    await nvda.nextHeading();
     log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
   }
 
@@ -45,9 +45,7 @@ export async function headerNavigation({
 
   // Move across text and buttons using NVDA
   while (
-    !(await nvda.lastSpokenPhrase())
-      .replaceAll(/\s/g, "")
-      .includes("GitHub") &&
+    !(await nvda.lastSpokenPhrase()).replaceAll(/\s/g, "").includes("GitHub") &&
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;

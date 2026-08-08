@@ -365,6 +365,186 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * Move the NVDA cursor to the previous heading.
+   *
+   * Equivalent of executing `Shift-H`.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Move to the previous heading.
+   *   await nvda.previousHeading();
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async previousHeading(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return this.perform(this.keyboardCommands.moveToPreviousHeading, options);
+  }
+
+  /**
+   * Move the NVDA cursor to the previous heading.
+   *
+   * Equivalent of executing `H`.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Move to the next heading.
+   *   await nvda.nextHeading();
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async nextHeading(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return this.perform(this.keyboardCommands.moveToNextHeading, options);
+  }
+
+  /**
+   * Move the NVDA cursor to the previous link.
+   *
+   * Equivalent of executing `Shift-K`.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Move to the previous link.
+   *   await nvda.previousLink();
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async previousLink(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return this.perform(this.keyboardCommands.moveToNextLink, options);
+  }
+
+  /**
+   * Move the NVDA cursor to the previous link.
+   *
+   * Equivalent of executing `K`.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Move to the next link.
+   *   await nvda.nextLink();
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async nextLink(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return this.perform(this.keyboardCommands.moveToPreviousLink, options);
+  }
+
+  /**
+   * Move the NVDA cursor to the previous landmark.
+   *
+   * Equivalent of executing `Shift-D`.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Move to the previous landmark.
+   *   await nvda.previousLandmark();
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async previousLandmark(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return this.perform(this.keyboardCommands.moveToPreviousLandmark, options);
+  }
+
+  /**
+   * Move the NVDA cursor to the previous landmark.
+   *
+   * Equivalent of executing `D`.
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Move to the next landmark.
+   *   await nvda.nextLandmark();
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async nextLandmark(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return this.perform(this.keyboardCommands.moveToNextLandmark, options);
+  }
+
+  /**
    * Perform the default action for the item in the NVDA cursor.
    *
    * Equivalent of executing `Enter`.

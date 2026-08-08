@@ -113,7 +113,7 @@ import { voiceOver } from "@guidepup/guidepup";
 (async () => {
   await voiceOver.start();
 
-  await voiceOver.perform(voiceOver.keyboardCommands.findNextHeading);
+  await voiceOver.nextHeading();
   console.log(await voiceOver.itemText());
 
   await voiceOver.perform(voiceOver.keyboardCommands.findNextControl);
@@ -131,7 +131,7 @@ import { nvda } from "@guidepup/guidepup";
 (async () => {
   await nvda.start();
 
-  await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
+  await nvda.nextHeading();
   console.log(await nvda.itemText());
 
   await nvda.perform(nvda.keyboardCommands.moveToNextFormField);
