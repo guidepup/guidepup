@@ -395,7 +395,7 @@ export class NVDA implements IScreenReader {
   }
 
   /**
-   * Move the NVDA cursor to the previous heading.
+   * Move the NVDA cursor to the next heading.
    *
    * Equivalent of executing `H`.
    *
@@ -451,11 +451,11 @@ export class NVDA implements IScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return this.perform(this.keyboardCommands.moveToNextLink, options);
+    return this.perform(this.keyboardCommands.moveToPreviousLink, options);
   }
 
   /**
-   * Move the NVDA cursor to the previous link.
+   * Move the NVDA cursor to the next link.
    *
    * Equivalent of executing `K`.
    *
@@ -481,7 +481,7 @@ export class NVDA implements IScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return this.perform(this.keyboardCommands.moveToPreviousLink, options);
+    return this.perform(this.keyboardCommands.moveToNextLink, options);
   }
 
   /**
@@ -515,7 +515,7 @@ export class NVDA implements IScreenReader {
   }
 
   /**
-   * Move the NVDA cursor to the previous landmark.
+   * Move the NVDA cursor to the next landmark.
    *
    * Equivalent of executing `D`.
    *

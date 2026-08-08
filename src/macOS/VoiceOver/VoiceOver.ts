@@ -513,7 +513,7 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
-   * Move the VoiceOver cursor to the previous heading.
+   * Move the VoiceOver cursor to the next heading.
    *
    * Equivalent of executing `VO-Command-H`.
    *
@@ -573,7 +573,7 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
-   * Move the VoiceOver cursor to the previous link.
+   * Move the VoiceOver cursor to the next link.
    *
    * Equivalent of executing `VO-Command-L`.
    *
@@ -633,7 +633,7 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
-   * Move the VoiceOver cursor to the previous landmark.
+   * Move the VoiceOver cursor to the next landmark.
    *
    * Equivalent of executing `VO-Command-N`.
    *
