@@ -20,6 +20,7 @@ import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { KeyboardCommand } from "../KeyboardCommand";
 import { KeyboardOptions } from "../../KeyboardOptions";
+import { keyCodeCommands } from "./keyCodeCommands";
 import type { Prettify } from "../../typeHelpers";
 import { release } from "node:os";
 import { start } from "./start";
@@ -479,6 +480,186 @@ export class VoiceOver implements IScreenReader {
     }
 
     return this.#cursor.next(options);
+  }
+
+  /**
+   * Move the VoiceOver cursor to the previous heading.
+   *
+   * Equivalent of executing `VO-Command-Shift-H`.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Move to the previous heading.
+   *   await voiceOver.previousHeading();
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async previousHeading(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    return this.perform(keyCodeCommands.findPreviousHeading, options);
+  }
+
+  /**
+   * Move the VoiceOver cursor to the previous heading.
+   *
+   * Equivalent of executing `VO-Command-H`.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Move to the next heading.
+   *   await voiceOver.nextHeading();
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async nextHeading(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    return this.perform(keyCodeCommands.findNextHeading, options);
+  }
+
+  /**
+   * Move the VoiceOver cursor to the previous link.
+   *
+   * Equivalent of executing `VO-Command-Shift-L`.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Move to the previous link.
+   *   await voiceOver.previousLink();
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async previousLink(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    return this.perform(keyCodeCommands.findPreviousLink, options);
+  }
+
+  /**
+   * Move the VoiceOver cursor to the previous link.
+   *
+   * Equivalent of executing `VO-Command-L`.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Move to the next link.
+   *   await voiceOver.nextLink();
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async nextLink(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    return this.perform(keyCodeCommands.findNextLink, options);
+  }
+
+  /**
+   * Move the VoiceOver cursor to the previous landmark.
+   *
+   * Equivalent of executing `VO-Command-Shift-N`.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Move to the previous landmark.
+   *   await voiceOver.previousLandmark();
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async previousLandmark(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    return this.perform(keyCodeCommands.moveToPreviousAutoWebSpot, options);
+  }
+
+  /**
+   * Move the VoiceOver cursor to the previous landmark.
+   *
+   * Equivalent of executing `VO-Command-N`.
+   *
+   * ```ts
+   * import { voiceOver } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start VoiceOver.
+   *   await voiceOver.start();
+   *
+   *   // Move to the next landmark.
+   *   await voiceOver.nextLandmark();
+   *
+   *   // Stop VoiceOver.
+   *   await voiceOver.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
+   */
+  async nextLandmark(options?: CommandOptions): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    return this.perform(keyCodeCommands.moveToNextAutoWebSpot, options);
   }
 
   /**

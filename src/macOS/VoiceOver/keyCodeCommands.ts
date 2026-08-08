@@ -1,4 +1,5 @@
 // REF: https://www.apple.com/voiceover/info/guide/_1131.html
+// TODO: migrate / fix based on https://help.apple.com/voiceover/command-charts/
 
 import { KeyCodes } from "../KeyCodes";
 import { Modifiers } from "../Modifiers";
