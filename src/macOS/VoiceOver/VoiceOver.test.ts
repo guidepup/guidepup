@@ -16,6 +16,7 @@ import { CommanderCommands } from "./CommanderCommands";
 import { delay } from "../../delay";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
+import { keyCodeCommands } from "./keyCodeCommands";
 import { release } from "node:os";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
@@ -552,6 +553,204 @@ describe("VoiceOver", () => {
 
       it("should move the cursor to the next item", () => {
         expect(VoiceOverCursorStub.next).toHaveBeenCalledWith(options);
+      });
+    });
+  });
+
+  describe("previousHeading", () => {
+    beforeEach(() => {
+      jest.mocked(isKeyboard).mockReturnValue(true);
+    });
+
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.previousHeading()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.start();
+        await vo.previousHeading(options);
+        await vo.stop();
+      });
+
+      it("should perform a keyboard command to find the previous heading", () => {
+        expect(VoiceOverKeyboardStub.perform).toHaveBeenCalledWith(
+          keyCodeCommands.findPreviousHeading,
+          options,
+        );
+      });
+    });
+  });
+
+  describe("nextHeading", () => {
+    beforeEach(() => {
+      jest.mocked(isKeyboard).mockReturnValue(true);
+    });
+
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.nextHeading()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.start();
+        await vo.nextHeading(options);
+        await vo.stop();
+      });
+
+      it("should perform a keyboard command to find the next heading", () => {
+        expect(VoiceOverKeyboardStub.perform).toHaveBeenCalledWith(
+          keyCodeCommands.findNextHeading,
+          options,
+        );
+      });
+    });
+  });
+
+  describe("previousLink", () => {
+    beforeEach(() => {
+      jest.mocked(isKeyboard).mockReturnValue(true);
+    });
+
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.previousLink()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.start();
+        await vo.previousLink(options);
+        await vo.stop();
+      });
+
+      it("should perform a keyboard command to find the previous link", () => {
+        expect(VoiceOverKeyboardStub.perform).toHaveBeenCalledWith(
+          keyCodeCommands.findPreviousLink,
+          options,
+        );
+      });
+    });
+  });
+
+  describe("nextLink", () => {
+    beforeEach(() => {
+      jest.mocked(isKeyboard).mockReturnValue(true);
+    });
+
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.nextLink()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.start();
+        await vo.nextLink(options);
+        await vo.stop();
+      });
+
+      it("should perform a keyboard command to find the next link", () => {
+        expect(VoiceOverKeyboardStub.perform).toHaveBeenCalledWith(
+          keyCodeCommands.findNextLink,
+          options,
+        );
+      });
+    });
+  });
+
+  describe("previousLandmark", () => {
+    beforeEach(() => {
+      jest.mocked(isKeyboard).mockReturnValue(true);
+    });
+
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.previousLandmark()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.start();
+        await vo.previousLandmark(options);
+        await vo.stop();
+      });
+
+      it("should perform a keyboard command to move to the previous landmark", () => {
+        expect(VoiceOverKeyboardStub.perform).toHaveBeenCalledWith(
+          keyCodeCommands.moveToPreviousAutoWebSpot,
+          options,
+        );
+      });
+    });
+  });
+
+  describe("nextLandmark", () => {
+    beforeEach(() => {
+      jest.mocked(isKeyboard).mockReturnValue(true);
+    });
+
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.nextLandmark()).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      beforeEach(async () => {
+        await vo.start();
+        await vo.nextLandmark(options);
+        await vo.stop();
+      });
+
+      it("should perform a keyboard command to move to the next landmark", () => {
+        expect(VoiceOverKeyboardStub.perform).toHaveBeenCalledWith(
+          keyCodeCommands.moveToNextAutoWebSpot,
+          options,
+        );
       });
     });
   });

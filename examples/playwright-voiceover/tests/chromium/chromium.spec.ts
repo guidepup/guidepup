@@ -27,6 +27,8 @@ test.describe("Chromium Playwright VoiceOver", () => {
     const osName = platform();
     const osVersion = release();
     const browserVersion = browser.version();
+    const screenReaderName = voiceOver.name;
+    const screenReaderVersion = voiceOver.version;
     const { retry } = test.info();
     const recordingFilePath = `./recordings/playwright-voiceover-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
@@ -35,6 +37,8 @@ test.describe("Chromium Playwright VoiceOver", () => {
       osVersion,
       browserName,
       browserVersion,
+      screenReaderName,
+      screenReaderVersion,
       retry,
     });
 

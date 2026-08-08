@@ -14,6 +14,8 @@ test.describe("Chromium Playwright Screen Reader", () => {
     const osName = platform();
     const osVersion = release();
     const browserVersion = browser.version();
+    const screenReaderName = screenReader.name;
+    const screenReaderVersion = screenReader.version;
     const { retry } = test.info();
 
     console.table({
@@ -21,6 +23,8 @@ test.describe("Chromium Playwright Screen Reader", () => {
       osVersion,
       browserName,
       browserVersion,
+      screenReaderName,
+      screenReaderVersion,
       retry,
     });
 

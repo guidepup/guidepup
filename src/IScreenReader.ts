@@ -57,6 +57,48 @@ export interface IScreenReader {
   next(options?: CommandOptions): Promise<void>;
 
   /**
+   * Move the screen reader cursor to the previous heading.
+   *
+   * @param {object} [options] Additional options.
+   */
+  previousHeading(options?: CommandOptions): Promise<void>;
+
+  /**
+   * Move the screen reader cursor to the next heading.
+   *
+   * @param {object} [options] Additional options.
+   */
+  nextHeading(options?: CommandOptions): Promise<void>;
+
+  /**
+   * Move the screen reader cursor to the previous link.
+   *
+   * @param {object} [options] Additional options.
+   */
+  previousLink(options?: CommandOptions): Promise<void>;
+
+  /**
+   * Move the screen reader cursor to the next link.
+   *
+   * @param {object} [options] Additional options.
+   */
+  nextLink(options?: CommandOptions): Promise<void>;
+
+  /**
+   * Move the screen reader cursor to the previous landmark.
+   *
+   * @param {object} [options] Additional options.
+   */
+  previousLandmark(options?: CommandOptions): Promise<void>;
+
+  /**
+   * Move the screen reader cursor to the next landmark.
+   *
+   * @param {object} [options] Additional options.
+   */
+  nextLandmark(options?: CommandOptions): Promise<void>;
+
+  /**
    * Perform the default action for the item in the screen reader cursor.
    *
    * @param {object} [options] Additional options.
