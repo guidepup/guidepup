@@ -627,8 +627,16 @@ describe("NVDAClient", () => {
 
       const [r1, r2] = await Promise.all([promise1, promise2]);
 
-      expect(r1).toBe(result1);
-      expect(r2).toBe(result2);
+      expect(r1).toEqual({
+        itemText: "first phrase",
+        result: result1,
+        spokenPhrase: "first phrase",
+      });
+      expect(r2).toEqual({
+        itemText: "second phrase",
+        result: result2,
+        spokenPhrase: "second phrase",
+      });
 
       expect(await client.spokenPhraseLog()).toEqual([
         "first phrase",
@@ -706,7 +714,11 @@ describe("NVDAClient", () => {
       await expect(failPromise).rejects.toBe(testError);
       const result = await successPromise;
 
-      expect(result).toBe(successResult);
+      expect(result).toEqual({
+        itemText: "success phrase",
+        result: successResult,
+        spokenPhrase: "success phrase",
+      });
 
       expect(await client.spokenPhraseLog()).toEqual(["success phrase"]);
     });

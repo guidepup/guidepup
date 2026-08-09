@@ -1,5 +1,6 @@
 export * from "./macOS";
 export * from "./windows";
+export type { Capture } from "./Capture";
 export type { ClickOptions } from "./ClickOptions";
 export type { CommandOptions } from "./CommandOptions";
 export type { KeyboardCommand } from "./KeyboardCommand";
@@ -7,6 +8,7 @@ export type { KeyboardOptions } from "./KeyboardOptions";
 export type { KeyCodeCommand } from "./KeyCodeCommand";
 export type { KeystrokeCommand } from "./KeystrokeCommand";
 export type { IScreenReader } from "./IScreenReader";
+export type { StartOptions } from "./StartOptions";
 
 import { ScreenReader } from "./ScreenReader";
 

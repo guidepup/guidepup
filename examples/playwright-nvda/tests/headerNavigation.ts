@@ -1,4 +1,4 @@
-import { delay } from "./delay";
+import { delay } from "../../../src/delay";
 import { log } from "../../log";
 import { NVDAPlaywright } from "../nvda-test";
 import { Page } from "@playwright/test";

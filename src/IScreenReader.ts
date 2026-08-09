@@ -1,4 +1,5 @@
-import { ClickOptions } from "./ClickOptions";
+import type { Capture } from "./Capture";
+import type { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
 import type { KeyboardOptions } from "./KeyboardOptions";
 import type { StartOptions } from "./StartOptions";
@@ -226,8 +227,24 @@ export interface IScreenReader {
   /**
    * Returns the value of a setting for this screen reader instance.
    *
-   * @param key The setting name.
+   * @param {string} key The setting name.
    * @returns {unknown} The setting value.
    */
   getSetting(key: string): unknown;
+
+  /**
+   * Capture screen reader output produced by an action.
+   *
+   * The action can be performed using an external automation tool such as
+   * Playwright. Guidepup captures the screen reader output associated with
+   * the action and returns it together with the action's result.
+   *
+   * @param {() => Promise<T>} action The action to perform while capturing screen reader output.
+   * @param {object} [options] Additional options.
+   * @returns {Promise<Capture<T>>} The action's result and captured screen reader output.
+   */
+  capture<T>(
+    action: () => Promise<T>,
+    options?: CommandOptions,
+  ): Promise<Capture<T>>;
 }

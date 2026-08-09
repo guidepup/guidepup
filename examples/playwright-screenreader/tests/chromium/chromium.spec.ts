@@ -2,7 +2,7 @@ import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
-import { srTest as test } from "../../screenreader-test";
+import { screenReaderTest as test } from "../../screenreader-test";
 
 test.describe("Chromium Playwright Screen Reader", () => {
   test("I can navigate the Guidepup Github page", async ({

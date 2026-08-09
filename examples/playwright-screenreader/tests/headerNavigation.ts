@@ -1,4 +1,4 @@
-import { delay } from "./delay";
+import { delay } from "../../../src/delay";
 import { log } from "../../log";
 import { Page } from "@playwright/test";
 import { ScreenReaderPlaywright } from "../screenreader-test";

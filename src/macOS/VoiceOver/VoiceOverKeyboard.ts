@@ -49,7 +49,7 @@ export class VoiceOverKeyboard {
    * @param {object} [options] Additional options.
    */
   async press(key: string, options?: KeyboardOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () =>
         sendKeys(
           parseKey<KeyCodeCommand>(key, Modifiers, KeyCodes),
@@ -102,7 +102,7 @@ export class VoiceOverKeyboard {
     command: KeyboardCommand,
     options?: CommandOptions,
   ): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () => sendKeys(command, Applications.VoiceOver, options),
       options,
     );

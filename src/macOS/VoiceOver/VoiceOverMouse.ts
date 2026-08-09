@@ -18,9 +18,6 @@ export class VoiceOverMouse {
    * @param {object} [options] Click options.
    */
   async click(options?: ClickOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
-      () => click(options),
-      options,
-    );
+    await this.#voiceOverClient.enqueueAndTap(() => click(options), options);
   }
 }

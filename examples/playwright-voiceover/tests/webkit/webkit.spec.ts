@@ -1,5 +1,4 @@
 import { platform, release } from "os";
-import { delay } from "../delay";
 import { expect } from "@playwright/test";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshotDocs from "./webkit.itemText.docs.snapshot.json";
@@ -7,7 +6,7 @@ import { log } from "../../../log";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshotDocs from "./webkit.spokenPhrase.docs.snapshot.json";
 import spokenPhraseSnapshotTextarea from "./webkit.spokenPhrase.textarea.snapshot.json";
-import { voTest as test } from "../../voiceover-test";
+import { voiceOverTest as test } from "../../voiceover-test";
 
 const record = async (filepath: string) => {
   try {
@@ -110,10 +109,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
 
       const input = page.locator("#test");
       await input.waitFor();
-      await delay(500);
-
       await voiceOver.navigateToWebContent();
-      await delay(500);
 
       log(`Performing command: "VO+Right Arrow"`);
       await voiceOver.next();

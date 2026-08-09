@@ -31,7 +31,7 @@ export class VoiceOverCommander {
     command: CommanderCommands,
     options?: CommandOptions,
   ): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () => performCommand(command, options),
       options,
     );
