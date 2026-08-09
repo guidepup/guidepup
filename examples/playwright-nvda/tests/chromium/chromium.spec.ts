@@ -1,5 +1,5 @@
 import { platform, release } from "os";
-import { delay } from "../delay";
+import { delay } from "../../../../src/delay";
 import { expect } from "@playwright/test";
 import { headerNavigation } from "../headerNavigation";
 import { log } from "../../../log";
@@ -19,6 +19,28 @@ const record = async (filepath: string) => {
     );
   }
 };
+
+test.use({
+  nvdaStartOptions: {
+    capture: "initial",
+    settings: {
+      speech: {
+        oneCore: {
+          voice:
+            "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices\\Tokens\\MSTTS_V110_enGB_SusanM",
+        },
+      },
+      vision: {
+        NVDAHighlighter: {
+          highlightFocus: false,
+          highlightNavigator: false,
+          highlightBrowseMode: false,
+          enabled: false,
+        },
+      },
+    },
+  },
+});
 
 test.describe("Chromium Playwright NVDA", () => {
   test("I can navigate the Guidepup Github page", async ({

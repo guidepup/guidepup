@@ -530,4 +530,58 @@ describe("NVDA", () => {
       ).rejects.toThrow(ERR_NVDA_NOT_RUNNING);
     });
   });
+
+  describe("capture", () => {
+    const actionStub = jest.fn();
+    const outputStub = {
+      itemText: "test-item-text",
+      result: "test-result",
+      spokenPhrase: "test-spoken-phrase",
+    };
+
+    beforeEach(() => {
+      jest.mocked(NVDAClientStub.enqueueAndTap).mockResolvedValue(outputStub);
+
+      nvda = new NVDA();
+    });
+
+    describe("when NVDA is not running", () => {
+      it("should throw an error", async () => {
+        await expect(
+          async () => await nvda.capture(actionStub),
+        ).rejects.toThrow(ERR_NVDA_NOT_RUNNING);
+      });
+    });
+
+    describe("when NVDA is running", () => {
+      let output: unknown;
+
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        output = await nvda.capture(actionStub);
+      });
+
+      it("should enqueue and tap an async wrapper of the provided action", async () => {
+        expect(NVDAClientStub.enqueueAndTap).toHaveBeenCalledWith(
+          expect.any(Function),
+          undefined,
+        );
+
+        expect(actionStub).not.toHaveBeenCalled();
+
+        await jest.mocked(NVDAClientStub.enqueueAndTap).mock.calls[0][0]();
+
+        expect(actionStub).toHaveBeenCalled();
+      });
+
+      it("should return the result of the action, item text, and spoken phrase", async () => {
+        expect(output).toBe(outputStub);
+      });
+    });
+  });
 });

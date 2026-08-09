@@ -24,7 +24,6 @@ jobs:
           node-version-file: .nvmrc
       - run: npx -y @guidepup/setup@0.24.1 setup --ci
       - run: npm ci --no-audit --no-fund --no-progress
-      - run: npm run build
       - run: npm ci --prefix ./examples/playwright-nvda --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-nvda rebuild ffmpeg-static --ignore-scripts=false
       - run: npx -y @guidepup/setup@0.24.1 install

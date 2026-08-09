@@ -3,7 +3,7 @@ import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./firefox.itemText.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
-import { voTest as test } from "../../voiceover-test";
+import { voiceOverTest as test } from "../../voiceover-test";
 
 const record = async (filepath: string) => {
   try {
@@ -16,6 +16,16 @@ const record = async (filepath: string) => {
     );
   }
 };
+
+test.use({
+  voiceOverStartOptions: {
+    capture: "initial",
+    settings: {
+      SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier:
+        "com.apple.speech.synthesis.voice.custom.siri.martha.compact",
+    },
+  },
+});
 
 test.describe("Firefox Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({

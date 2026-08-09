@@ -12,14 +12,15 @@ import {
   setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
-import { ClickOptions } from "../../ClickOptions";
-import { CommanderCommands } from "./CommanderCommands";
+import type { Capture } from "../../Capture";
+import type { ClickOptions } from "../../ClickOptions";
+import type { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
 import type { IScreenReader } from "../../IScreenReader";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
-import { KeyboardCommand } from "../KeyboardCommand";
-import { KeyboardOptions } from "../../KeyboardOptions";
+import type { KeyboardCommand } from "../KeyboardCommand";
+import type { KeyboardOptions } from "../../KeyboardOptions";
 import { keyCodeCommands } from "./keyCodeCommands";
 import type { Prettify } from "../../typeHelpers";
 import { release } from "node:os";
@@ -1309,10 +1310,32 @@ export class VoiceOver implements IScreenReader {
    * })();
    * ```
    *
-   * @param key The setting name.
+   * @param {string} key The setting name.
    * @returns {unknown} The setting value.
    */
   getSetting(key: string): unknown {
     return getPreference(key);
+  }
+
+  /**
+   * Capture VoiceOver output produced by an action.
+   *
+   * The action can be performed using an external automation tool such as
+   * Playwright. Guidepup captures the VoiceOver output associated with
+   * the action and returns it together with the action's result.
+   *
+   * @param {() => Promise<T>} action The action to perform while capturing VoiceOver output.
+   * @param {object} [options] Additional options.
+   * @returns {Promise<Capture<T>>} The action's result and captured VoiceOver output.
+   */
+  async capture<T>(
+    action: () => Promise<T> | T,
+    options?: CommandOptions,
+  ): Promise<Capture<T>> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
+    }
+
+    return await this.#client.enqueueAndTap(async () => action(), options);
   }
 }

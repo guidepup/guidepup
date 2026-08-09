@@ -1,3 +1,4 @@
+import type { CommandOptions, ScreenReader } from "../../src";
 import {
   macOSActivate,
   MacOSKeyCodes,
@@ -9,19 +10,17 @@ import {
   WindowsKeyCodes,
   WindowsModifiers,
 } from "../../src";
-import type { ScreenReader } from "../../src";
+import { applicationNameMap } from "../applicationNameMap";
+import { delay } from "../../src/delay";
+import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
 
-const applicationNameMap = {
-  chromium: "Google Chrome For Testing",
-  chrome: "Google Chrome",
-  "chrome-beta": "Google Chrome Beta",
-  msedge: "Microsoft Edge",
-  "msedge-beta": "Microsoft Edge Beta",
-  "msedge-dev": "Microsoft Edge Dev",
-  firefox: "Nightly",
-  webkit: "Playwright",
-};
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
+
+type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
+type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 
 const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
 
@@ -83,7 +82,11 @@ const focusBrowser = async ({
   while (applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
     applicationSwitchRetryCount++;
 
-    await screenReaderPlaywright.perform(SWITCH_APPLICATION);
+    await screenReaderPlaywright.perform(SWITCH_APPLICATION, {
+      capture: false,
+    });
+    await delay(500);
+
     await screenReaderPlaywright.perform(NVDAKeyCodeCommands.reportTitle);
     windowTitle = await screenReaderPlaywright.lastSpokenPhrase();
 
@@ -93,16 +96,37 @@ const focusBrowser = async ({
   }
 };
 
+/**
+ * This object can be used to launch and control the default screen reader for
+ * the environment.
+ *
+ * Here's a typical example:
+ *
+ * ```ts
+ * import { screenReader } from "@guidepup/guidepup";
+ *
+ * (async () => {
+ *   // Start the screen reader.
+ *   await screenReader.start();
+ *
+ *   // Move to the next item.
+ *   await screenReader.next();
+ *
+ *   // ... perform some commands.
+ *
+ *   // Stop the screen reader.
+ *   await screenReader.stop();
+ * })();
+ * ```
+ */
 export interface ScreenReaderPlaywright extends ScreenReader {
   /**
    * Guidepup Playwright specific command that navigates the screen reader to
    * the beginning of the browser's web content.
    *
    * This command should be used after page navigation.
-   *
-   * Note: this command clears all logs.
    */
-  navigateToWebContent(): Promise<void>;
+  navigateToWebContent(options?: CaptureCommandOptions): Promise<void>;
 }
 
 const screenReaderPlaywright: ScreenReaderPlaywright =
@@ -116,8 +140,41 @@ const screenReaderPlaywright: ScreenReaderPlaywright =
  * A fresh started screen reader instance `screenReader` is provided to each
  * test.
  */
-const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
-  screenReader: async ({ browserName, page }, use) => {
+export const screenReaderTest = test.extend<{
+  /**
+   * This object can be used to launch and control the default screen reader for
+   * the environment.
+   *
+   * Here's a typical example:
+   *
+   * ```ts
+   * import { screenReader } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start the screen reader.
+   *   await screenReader.start();
+   *
+   *   // Move to the next item.
+   *   await screenReader.next();
+   *
+   *   // ... perform some commands.
+   *
+   *   // Stop the screen reader.
+   *   await screenReader.stop();
+   * })();
+   * ```
+   */
+  screenReader: ScreenReaderPlaywright;
+  /**
+   * Options to start the default screen reader with.
+   */
+  screenReaderStartOptions: CaptureStartOptions;
+}>({
+  screenReaderStartOptions: { capture: "initial" },
+  screenReader: async (
+    { browserName, page, screenReaderStartOptions },
+    use,
+  ) => {
     try {
       const applicationName = applicationNameMap[browserName];
 
@@ -126,80 +183,190 @@ const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
       }
 
       if (nvda.default()) {
-        screenReaderPlaywright.navigateToWebContent = async () => {
+        screenReaderPlaywright.navigateToWebContent = async ({
+          capture,
+        } = {}) => {
+          const currentSpokenPhraseLog = [
+            ...(await screenReaderPlaywright.spokenPhraseLog()),
+          ];
+          const currentItemTextLog = [
+            ...(await screenReaderPlaywright.itemTextLog()),
+          ];
+
+          // Make sure NVDA is not in focus mode.
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.exitFocusMode,
+            { capture: false },
           );
+          await delay(100);
 
+          // Ensure application is brought to front and focused.
           const pageTitle = await page.title();
           await focusBrowser({ applicationName, pageTitle });
 
+          // Ensure the document is ready and focused.
           await page.bringToFront();
           await page.locator("body").waitFor();
           await page.locator("body").focus();
           await page.locator("body").click();
+          await page.locator("body").blur();
 
+          // NVDA appears to not work well with Firefox when switching between
+          // applications resulting in the entire browser window having NVDA focus
+          // with focus mode.
+          //
+          // One workaround is to tab to the next focusable item. From there we can
+          // toggle into (yes although we are already in it...) focus mode and back
+          // out. In case this ever transpires to not happen as expect, we then ensure
+          // we exit focus mode and move NVDA to the top of the page.
+          //
+          // REF: https://github.com/nvaccess/nvda/issues/5758
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.readNextFocusableItem,
+            { capture: false },
           );
+          await delay(100);
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.toggleBetweenBrowseAndFocusMode,
+            { capture: false },
           );
+          await delay(100);
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.toggleBetweenBrowseAndFocusMode,
+            { capture: false },
           );
+          await delay(100);
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.exitFocusMode,
+            { capture: false },
           );
-          await screenReaderPlaywright.perform(MOVE_TO_TOP);
+          await delay(100);
 
-          await screenReaderPlaywright.clearItemTextLog();
           await screenReaderPlaywright.clearSpokenPhraseLog();
+          await screenReaderPlaywright.clearItemTextLog();
+
+          const spokenPhraseLog =
+            await screenReaderPlaywright.spokenPhraseLog();
+          const itemTextLog = await screenReaderPlaywright.itemTextLog();
+
+          spokenPhraseLog.push(...currentSpokenPhraseLog);
+          itemTextLog.push(...currentItemTextLog);
+
+          // Navigate to the beginning of the web content, using chosen capture
+          // settings, so don't miss announcing the first item on the page.
+          await screenReaderPlaywright.perform(MOVE_TO_TOP, { capture });
         };
       } else if (voiceOver.default()) {
-        screenReaderPlaywright.navigateToWebContent = async (
-          clearLogs: boolean = true,
-        ) => {
+        screenReaderPlaywright.navigateToWebContent = async ({
+          capture,
+        } = {}) => {
+          // Ensure application is brought to front and focused.
           await macOSActivate(applicationName);
 
-          await screenReaderPlaywright.perform({
-            keyCode: MacOSKeyCodes.Control,
-          });
+          // Cancel auto navigation.
+          await screenReaderPlaywright.perform(
+            { keyCode: MacOSKeyCodes.Control },
+            { capture: false },
+          );
+          await delay(100);
 
+          // Ensure the document is ready and focused.
           await page.bringToFront();
           await page.locator("body").waitFor();
 
-          await screenReaderPlaywright.perform(
-            voiceOverKeyCodeCommands.openItemChooser,
-          );
+          try {
+            // Add an interactive marker to the page that will force VoiceOver
+            // to listen to events emitted by Playwright interactions when
+            // navigated to.
+            await page.evaluate(() => {
+              const marker = document.createElement("input");
 
-          await screenReaderPlaywright.type("web content");
+              marker.id = "__guidepup_marker__";
+              marker.type = "text";
+              marker.value = "Guidepup Marker";
+              marker.readOnly = true;
+              marker.tabIndex = -1;
+              marker.autocomplete = "off";
+              marker.setAttribute("aria-label", "Guidepup Marker");
+              marker.style.cssText = `
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              overflow: hidden;
+              clip: rect(0 0 0 0);
+              white-space: nowrap;
+            `;
 
-          await screenReaderPlaywright.perform({
-            keyCode: MacOSKeyCodes.Enter,
-          });
+              document.body.prepend(marker);
+            });
 
-          await screenReaderPlaywright.interact();
+            // Open the web item chooser.
+            await screenReaderPlaywright.perform(
+              voiceOverKeyCodeCommands.openItemChooser,
+              { capture: false },
+            );
+            await delay(500);
 
-          await screenReaderPlaywright.perform(
-            voiceOverKeyCodeCommands.moveToBeginningOfText,
-          );
+            // Filter by "web content" - currently web content items for all browsers
+            // are suffixed by "web content".
+            for (const character of "web content") {
+              await screenReaderPlaywright.type(character, { capture: false });
+              await delay(100);
+            }
 
-          await screenReaderPlaywright.perform({
-            keyCode: MacOSKeyCodes.Control,
-          });
+            // Select the web content window spot.
+            await screenReaderPlaywright.perform(
+              { keyCode: MacOSKeyCodes.Enter },
+              { capture: false },
+            );
+            await delay(100);
 
-          if (clearLogs) {
-            await screenReaderPlaywright.clearItemTextLog();
-            await screenReaderPlaywright.clearSpokenPhraseLog();
+            // Navigate into web content.
+            await screenReaderPlaywright.interact({ capture: false });
+            await delay(100);
+
+            // Navigate to the beginning of the web content.
+            await screenReaderPlaywright.perform(
+              voiceOverKeyCodeCommands.moveToBeginningOfText,
+              { capture: false },
+            );
+            await delay(100);
+
+            // Cancel auto navigation
+            await screenReaderPlaywright.perform(
+              { keyCode: MacOSKeyCodes.Control },
+              { capture: false },
+            );
+            await delay(100);
+
+            // Navigate to the Guidepup marker element at beginning of the web
+            // content.
+            await screenReaderPlaywright.perform(
+              voiceOverKeyCodeCommands.moveToBeginningOfText,
+              { capture: false },
+            );
+            await delay(100);
+
+            // Navigate to the first element of the page using the provided
+            // capture settings.
+            await screenReaderPlaywright.next({ capture });
+          } finally {
+            // Remove the temporary Guidepup marker element to restore original
+            // page structure.
+            await page.evaluate(() => {
+              const marker = document.querySelector("#__guidepup_marker__");
+
+              if (marker) {
+                document.body.removeChild(marker);
+              }
+            });
           }
         };
       } else {
         throw new Error("No supported screen reader");
       }
 
-      await screenReaderPlaywright.start({ capture: "initial" });
-
+      await screenReaderPlaywright.start(screenReaderStartOptions);
       await use(screenReaderPlaywright);
     } finally {
       try {
@@ -210,5 +377,3 @@ const srTest = test.extend<{ screenReader: ScreenReaderPlaywright }>({
     }
   },
 });
-
-export { srTest };

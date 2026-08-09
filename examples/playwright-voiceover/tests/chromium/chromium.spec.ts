@@ -3,7 +3,7 @@ import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./chromium.itemText.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
-import { voTest as test } from "../../voiceover-test";
+import { voiceOverTest as test } from "../../voiceover-test";
 
 const record = async (filepath: string) => {
   try {
