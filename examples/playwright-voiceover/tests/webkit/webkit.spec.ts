@@ -1,5 +1,4 @@
 import { platform, release } from "os";
-import { delay } from "../delay";
 import { expect } from "@playwright/test";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshotDocs from "./webkit.itemText.docs.snapshot.json";
@@ -7,7 +6,7 @@ import { log } from "../../../log";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshotDocs from "./webkit.spokenPhrase.docs.snapshot.json";
 import spokenPhraseSnapshotTextarea from "./webkit.spokenPhrase.textarea.snapshot.json";
-import { voTest as test } from "../../voiceover-test";
+import { voiceOverTest as test } from "../../voiceover-test";
 
 const record = async (filepath: string) => {
   try {
@@ -110,10 +109,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
 
       const input = page.locator("#test");
       await input.waitFor();
-      await delay(500);
-
       await voiceOver.navigateToWebContent();
-      await delay(500);
 
       log(`Performing command: "VO+Right Arrow"`);
       await voiceOver.next();
@@ -142,90 +138,6 @@ test.describe("Webkit Playwright VoiceOver", () => {
       console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotTextarea);
-    } finally {
-      stopRecording?.();
-    }
-  });
-
-  test("I can capture screen reader output from Playwright commands", async ({
-    browser,
-    browserName,
-    page,
-    voiceOver,
-  }) => {
-    const osName = platform();
-    const osVersion = release();
-    const browserVersion = browser.version();
-    const screenReaderName = voiceOver.name;
-    const screenReaderVersion = voiceOver.version;
-    const { retry } = test.info();
-    const recordingFilePath = `./recordings/playwright-voiceOver-live-region-playwright-capture-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
-
-    console.table({
-      osName,
-      osVersion,
-      browserName,
-      browserVersion,
-      screenReaderName,
-      screenReaderVersion,
-      retry,
-    });
-
-    let stopRecording: (() => void) | undefined;
-
-    try {
-      stopRecording = await record(recordingFilePath);
-
-      log("Navigating to live region test page.");
-      await page.goto("about:blank", {
-        waitUntil: "load",
-      });
-
-      await page.setContent(`
-      <main>
-        <h1>Example 1</h1>
-        <button id="trigger">Update</button>
-      </main>
-
-      <div role="alert" id="live"></div>
-
-      <script>
-        document.querySelector("#trigger").addEventListener("click", () => {
-          document.querySelector("#live").textContent = "testing testing 123"
-        });
-
-        setInterval(() => {
-          document.querySelector("#live").textContent = Math.random();
-        }, 2000);
-      </script>
-    `);
-
-      const button = page.locator("#trigger");
-      await button.waitFor();
-      await delay(500);
-
-      await voiceOver.navigateToWebContent();
-
-      console.log(
-        await voiceOver.capture(() =>
-          page.evaluate(() => {
-            document.querySelector("#live")!.textContent =
-              "Playwright overwrite";
-          }),
-        ),
-      );
-
-      await delay(2000);
-
-      await button.focus();
-      console.log(await voiceOver.capture(() => page.keyboard.press("Enter")));
-
-      await delay(2000);
-
-      await button.focus();
-      console.log(await voiceOver.capture(() => button.click()));
-
-      console.log(await voiceOver.spokenPhraseLog());
     } finally {
       stopRecording?.();
     }

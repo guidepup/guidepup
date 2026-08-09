@@ -1,10 +1,10 @@
 import { platform, release } from "os";
-import { delay } from "../delay";
+import { expect } from "@playwright/test";
 import { headerNavigation } from "../headerNavigation";
 import { log } from "../../../log";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
-import { srTest as test } from "../../screenreader-test";
+import { screenReaderTest as test } from "../../screenreader-test";
 
 test.describe("Chromium Playwright Screen Reader", () => {
   test("I can navigate the Guidepup Github page", async ({
@@ -68,6 +68,7 @@ test.describe("Chromium Playwright Screen Reader", () => {
     });
 
     log("Navigating to live region test page.");
+
     await page.goto("about:blank", {
       waitUntil: "load",
     });
@@ -84,37 +85,17 @@ test.describe("Chromium Playwright Screen Reader", () => {
         document.querySelector("#trigger").addEventListener("click", () => {
           document.querySelector("#live").textContent = "testing testing 123"
         });
-
-        setInterval(() => {
-          document.querySelector("#live").textContent = Math.random();
-        }, 2000);
       </script>
     `);
 
     const button = page.locator("#trigger");
     await button.waitFor();
-    await delay(500);
-
     await screenReader.navigateToWebContent();
 
-    console.log(
-      await screenReader.capture(() =>
-        page.evaluate(() => {
-          document.querySelector("#live")!.textContent = "Playwright overwrite";
-        }),
-      ),
-    );
+    log(`Performing capture: Playwright click`);
+    const { spokenPhrase } = await screenReader.capture(() => button.click());
+    log(`Screen reader output: "${spokenPhrase}".`);
 
-    await delay(2000);
-
-    await button.focus();
-    console.log(await screenReader.capture(() => page.keyboard.press("Enter")));
-
-    await delay(2000);
-
-    await button.focus();
-    console.log(await screenReader.capture(() => button.click()));
-
-    console.log(await screenReader.spokenPhraseLog());
+    expect(spokenPhrase).toBe("testing testing 123");
   });
 });

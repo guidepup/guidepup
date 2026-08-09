@@ -24,7 +24,6 @@ jobs:
           node-version-file: .nvmrc
       - run: npx -y @guidepup/setup@0.24.1 setup --ci --macos-record
       - run: npm ci --no-audit --no-fund --no-progress
-      - run: npm run build
       - run: npm ci --prefix ./examples/playwright-screenreader --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-screenreader rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-screenreader run browsers
