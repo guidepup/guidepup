@@ -94,6 +94,7 @@ jest.mock("./waitForRunning", () => ({
 }));
 
 const VoiceOverClientStub = {
+  enqueueAndTap: jest.fn(),
   stop: jest.fn(),
 };
 
@@ -1259,6 +1260,60 @@ describe("VoiceOver", () => {
       await expect(async () => await vo.itemText()).rejects.toThrow(
         ERR_VOICE_OVER_NOT_RUNNING,
       );
+    });
+  });
+
+  describe("capture", () => {
+    const actionStub = jest.fn();
+    const outputStub = {
+      itemText: "test-item-text",
+      result: "test-result",
+      spokenPhrase: "test-spoken-phrase",
+    };
+
+    beforeEach(() => {
+      jest
+        .mocked(VoiceOverClientStub.enqueueAndTap)
+        .mockResolvedValue(outputStub);
+    });
+
+    describe("when VoiceOver is not running", () => {
+      it("should throw an error", async () => {
+        await expect(async () => await vo.capture(actionStub)).rejects.toThrow(
+          ERR_VOICE_OVER_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe.each`
+      description          | options
+      ${"without options"} | ${undefined}
+      ${"with options"}    | ${{}}
+    `("when called $description", ({ options }) => {
+      let output: unknown;
+
+      beforeEach(async () => {
+        await vo.start();
+        output = await vo.capture(actionStub, options);
+        await vo.stop();
+      });
+
+      it("should enqueue and tap an async wrapper of the provided action", async () => {
+        expect(VoiceOverClientStub.enqueueAndTap).toHaveBeenCalledWith(
+          expect.any(Function),
+          options,
+        );
+
+        expect(actionStub).not.toHaveBeenCalled();
+
+        await jest.mocked(VoiceOverClientStub.enqueueAndTap).mock.calls[0][0]();
+
+        expect(actionStub).toHaveBeenCalled();
+      });
+
+      it("should return the result of the action, item text, and spoken phrase", async () => {
+        expect(output).toBe(outputStub);
+      });
     });
   });
 });

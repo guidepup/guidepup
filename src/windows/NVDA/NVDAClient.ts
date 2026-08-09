@@ -7,6 +7,7 @@ import {
 } from "../errors";
 import { existsSync, readFileSync } from "node:fs";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
+import type { Capture } from "../../Capture";
 import { CommandOptions } from "../../CommandOptions";
 import { DEFAULT_CAPTURE } from "../../constants";
 import { delay } from "../../delay";
@@ -311,14 +312,14 @@ export class NVDAClient extends EventEmitter {
   enqueueAndTap<T>(
     action: () => Promise<T>,
     options?: ActionOptions,
-  ): Promise<T> {
+  ): Promise<Capture<T>> {
     if (this.#stopped) {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
     let resolve, reject;
 
-    const promise = new Promise<T>((_resolve, _reject) => {
+    const promise = new Promise<Capture<T>>((_resolve, _reject) => {
       resolve = _resolve;
       reject = _reject;
     });
@@ -397,9 +398,15 @@ export class NVDAClient extends EventEmitter {
         result = await action();
       }
 
-      this.#spokenPhrases.push(spokenPhrases.join(". "));
+      const spokenPhrase = spokenPhrases.join(". ");
 
-      resolve(result);
+      this.#spokenPhrases.push(spokenPhrase);
+
+      resolve({
+        itemText: spokenPhrase ?? "",
+        result,
+        spokenPhrase: spokenPhrase ?? "",
+      });
     } catch (error) {
       reject(error);
     } finally {

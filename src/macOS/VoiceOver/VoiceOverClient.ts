@@ -6,6 +6,7 @@ import {
   SPOKEN_PHRASES_POLL_INTERVAL,
   SPOKEN_PHRASES_RETRY_COUNT,
 } from "./constants";
+import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import { CommandOptions } from "../../CommandOptions";
 import { DEFAULT_CAPTURE } from "../../constants";
@@ -124,14 +125,14 @@ export class VoiceOverClient {
   async enqueueAndTap<T>(
     action: () => Promise<T>,
     options?: Pick<CommandOptions, "capture">,
-  ): Promise<T> {
+  ): Promise<Capture<T>> {
     if (this.#stopped) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
     let resolve, reject;
 
-    const promise = new Promise<T>((_resolve, _reject) => {
+    const promise = new Promise<Capture<T>>((_resolve, _reject) => {
       resolve = _resolve;
       reject = _reject;
     });
@@ -167,17 +168,24 @@ export class VoiceOverClient {
 
       const result = await action();
 
+      let itemText: string;
+      let spokenPhrase: string;
+
       if (options?.capture ?? this.#capture) {
-        const [itemText, lastSpokenPhrase] = await Promise.all([
+        [itemText, spokenPhrase] = await Promise.all([
           this.#pollForItemText(),
           this.#pollForSpokenPhrases(options),
         ]);
 
         this.#itemTextLogStore.push(itemText);
-        this.#spokenPhraseLogStore.push(lastSpokenPhrase);
+        this.#spokenPhraseLogStore.push(spokenPhrase);
       }
 
-      resolve(result);
+      resolve({
+        itemText: itemText ?? "",
+        result,
+        spokenPhrase: spokenPhrase ?? "",
+      });
     } catch (error) {
       reject(error);
     } finally {

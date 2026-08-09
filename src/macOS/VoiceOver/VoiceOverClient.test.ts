@@ -103,7 +103,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: `cleaned_${itemTextDummy}`,
+            result: expectedResult,
+            spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+          });
         });
 
         it("should return the item text from the last action", async () => {
@@ -163,7 +167,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: `cleaned_${itemTextDummy}`,
+            result: expectedResult,
+            spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+          });
         });
 
         it("should return the item text from the last action", async () => {
@@ -219,7 +227,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: "",
+            result: expectedResult,
+            spokenPhrase: "",
+          });
         });
 
         it("should not return the item text from the last action", async () => {
@@ -417,7 +429,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: `cleaned_${itemTextDummy}`,
+            result: expectedResult,
+            spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+          });
         });
 
         it("should return the item text from the last action", async () => {
@@ -477,7 +493,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: `cleaned_${itemTextDummy}`,
+            result: expectedResult,
+            spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+          });
         });
 
         it("should return the item text from the last action", async () => {
@@ -561,7 +581,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: "",
+            result: expectedResult,
+            spokenPhrase: "",
+          });
         });
 
         it("should not return the item text from the last action", async () => {
@@ -637,7 +661,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: "",
+            result: expectedResult,
+            spokenPhrase: "",
+          });
         });
 
         it("should not return the item text from the last action", async () => {
@@ -693,7 +721,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: `cleaned_${itemTextDummy}`,
+            result: expectedResult,
+            spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+          });
         });
 
         it("should return the item text from the last action", async () => {
@@ -749,7 +781,11 @@ describe("VoiceOverClient", () => {
         });
 
         it("should return the action's result", async () => {
-          await expect(resultPromise).resolves.toBe(expectedResult);
+          await expect(resultPromise).resolves.toEqual({
+            itemText: "",
+            result: expectedResult,
+            spokenPhrase: "",
+          });
         });
 
         it("should not return the item text from the last action", async () => {
@@ -789,9 +825,21 @@ describe("VoiceOverClient", () => {
 
       const [r1, r2, r3] = await Promise.all([promise1, promise2, promise3]);
 
-      expect(r1).toBe(result1);
-      expect(r2).toBe(result2);
-      expect(r3).toBe(result3);
+      expect(r1).toEqual({
+        itemText: `cleaned_${itemTextDummy}`,
+        result: result1,
+        spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+      });
+      expect(r2).toEqual({
+        itemText: `cleaned_${itemTextDummy}`,
+        result: result2,
+        spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+      });
+      expect(r3).toEqual({
+        itemText: `cleaned_${itemTextDummy}`,
+        result: result3,
+        spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+      });
 
       expect(await voiceOverClientWithCapture.itemTextLog()).toEqual([
         `cleaned_${itemTextDummy}`,
@@ -873,7 +921,11 @@ describe("VoiceOverClient", () => {
       await expect(rejectingPromise).rejects.toBe(testError);
       const result = await successPromise;
 
-      expect(result).toBe(successResult);
+      expect(result).toEqual({
+        itemText: `cleaned_${itemTextDummy}`,
+        result: successResult,
+        spokenPhrase: `cleaned_${lastSpokenPhraseDummy}`,
+      });
 
       // Only the successful action should be logged
       expect(await voiceOverClientWithCapture.itemTextLog()).toEqual([

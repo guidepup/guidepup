@@ -1,8 +1,9 @@
+import type { Capture } from "./Capture";
 import type { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
 import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import type { IScreenReader } from "./IScreenReader";
-import { KeyboardOptions } from "./KeyboardOptions";
+import type { KeyboardOptions } from "./KeyboardOptions";
 import { nvda } from "./windows";
 import type { StartOptions } from "./StartOptions";
 import { voiceOver } from "./macOS";
@@ -309,5 +310,23 @@ export class ScreenReader implements IScreenReader {
    */
   getSetting(key: string): unknown {
     return this.implementation.getSetting(key);
+  }
+
+  /**
+   * Capture screen reader output produced by an action.
+   *
+   * The action can be performed using an external automation tool such as
+   * Playwright. Guidepup captures the screen reader output associated with
+   * the action and returns it together with the action's result.
+   *
+   * @param {() => Promise<T>} action The action to perform while capturing screen reader output.
+   * @param {object} [options] Additional options.
+   * @returns {Promise<Capture<T>>} The action's result and captured screen reader output.
+   */
+  async capture<T>(
+    action: () => Promise<T>,
+    options?: CommandOptions,
+  ): Promise<Capture<T>> {
+    return await this.implementation.capture(action, options);
   }
 }

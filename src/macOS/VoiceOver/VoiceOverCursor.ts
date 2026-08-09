@@ -26,7 +26,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async previous(options?: CommandOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () => move(Directions.Left, undefined, options),
       options,
     );
@@ -40,7 +40,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async next(options?: CommandOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () => move(Directions.Right, undefined, options),
       options,
     );
@@ -52,7 +52,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async act(options?: CommandOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () => performAction(options),
       options,
     );
@@ -66,7 +66,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async interact(options?: CommandOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () =>
         sendKeys(
           keyCodeCommands.interactWithItem,
@@ -85,7 +85,7 @@ export class VoiceOverCursor {
    * @param {object} [options] Additional options.
    */
   async stopInteracting(options?: CommandOptions): Promise<void> {
-    return await this.#voiceOverClient.enqueueAndTap(
+    await this.#voiceOverClient.enqueueAndTap(
       () =>
         sendKeys(
           keyCodeCommands.stopInteractingWithItem,

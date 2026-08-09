@@ -12,8 +12,9 @@ import {
   ERR_NVDA_NOT_RUNNING,
   ERR_NVDA_NOT_SUPPORTED,
 } from "../errors";
+import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
-import { CommandOptions } from "../../CommandOptions";
+import type { CommandOptions } from "../../CommandOptions";
 import type { IScreenReader } from "../../IScreenReader";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
@@ -327,7 +328,7 @@ export class NVDA implements IScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return this.#client.enqueueAndTap(
+    await this.#client.enqueueAndTap(
       () => this.#client.sendKeyCode(keyCodeCommands.moveToPrevious),
       options,
     );
@@ -358,7 +359,7 @@ export class NVDA implements IScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return this.#client.enqueueAndTap(
+    await this.#client.enqueueAndTap(
       () => this.#client.sendKeyCode(keyCodeCommands.moveToNext),
       options,
     );
@@ -572,7 +573,7 @@ export class NVDA implements IScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return this.#client.enqueueAndTap(
+    await this.#client.enqueueAndTap(
       () => this.#client.sendKeyCode(keyCodeCommands.activate),
       options,
     );
@@ -733,7 +734,7 @@ export class NVDA implements IScreenReader {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
-    return this.#client.enqueueAndTap(
+    await this.#client.enqueueAndTap(
       () => this.#client.sendKeyCode(command),
       options,
     );
@@ -1034,5 +1035,27 @@ export class NVDA implements IScreenReader {
    */
   getSetting(key: string): unknown {
     return getConfigKey(key);
+  }
+
+  /**
+   * Capture NVDA output produced by an action.
+   *
+   * The action can be performed using an external automation tool such as
+   * Playwright. Guidepup captures the NVDA output associated with
+   * the action and returns it together with the action's result.
+   *
+   * @param {() => Promise<T>} action The action to perform while capturing NVDA output.
+   * @param {object} [options] Additional options.
+   * @returns {Promise<Capture<T>>} The action's result and captured NVDA output.
+   */
+  async capture<T>(
+    action: () => Promise<T> | T,
+    options?: CommandOptions,
+  ): Promise<Capture<T>> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_NVDA_NOT_RUNNING);
+    }
+
+    return await this.#client.enqueueAndTap(async () => action(), options);
   }
 }

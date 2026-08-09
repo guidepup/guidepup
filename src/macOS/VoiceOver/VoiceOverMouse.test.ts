@@ -22,7 +22,15 @@ describe("VoiceOverMouse", () => {
 
     jest
       .mocked(voiceOverClientStub.enqueueAndTap)
-      .mockImplementation(async (action) => await action());
+      .mockImplementation(async (action) => {
+        const result = await action();
+
+        return {
+          itemText: "test-item-text",
+          result,
+          spokenPhrase: "test-spoken-phrase",
+        };
+      });
 
     mouse = new VoiceOverMouse(voiceOverClientStub);
   });
