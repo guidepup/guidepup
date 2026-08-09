@@ -86,17 +86,14 @@ test.describe("Chromium Playwright Screen Reader", () => {
         });
 
         setInterval(() => {
-          document.querySelector("#cart-status").textContent = Math.random();
+          document.querySelector("#live").textContent = Math.random();
         }, 2000);
       </script>
     `);
 
-    const input = page.locator("#add-to-cart");
-    await input.waitFor();
+    const button = page.locator("#trigger");
+    await button.waitFor();
     await delay(500);
-
-    await screenReader.stop();
-    await screenReader.start({ capture: "initial" });
 
     await screenReader.navigateToWebContent();
 
@@ -110,13 +107,13 @@ test.describe("Chromium Playwright Screen Reader", () => {
 
     await delay(2000);
 
-    await input.focus();
+    await button.focus();
     console.log(await screenReader.capture(() => page.keyboard.press("Enter")));
 
     await delay(2000);
 
-    await input.focus();
-    console.log(await screenReader.capture(() => input.click()));
+    await button.focus();
+    console.log(await screenReader.capture(() => button.click()));
 
     console.log(await screenReader.spokenPhraseLog());
   });
