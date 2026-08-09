@@ -1,4 +1,5 @@
 import { platform, release } from "os";
+import { delay } from "../../../../src/delay";
 import { expect } from "@playwright/test";
 import { log } from "../../../log";
 import { screenReaderTest as test } from "../../screenreader-test";
@@ -50,7 +51,10 @@ test.describe("Chromium Playwright Screen Reader", () => {
 
     const button = page.locator("#trigger");
     await button.waitFor();
+    await delay(500);
+
     await screenReader.navigateToWebContent();
+    await delay(500);
 
     log(`Performing capture: Playwright focus`);
     const { spokenPhrase: focusSpokenPhrase } = await screenReader.capture(() =>
