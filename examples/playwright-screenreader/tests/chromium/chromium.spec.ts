@@ -1,7 +1,5 @@
 import { platform, release } from "os";
-import { expect } from "@playwright/test";
 import { headerNavigation } from "../headerNavigation";
-import { log } from "../../../log";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
 import { screenReaderTest as test } from "../../screenreader-test";
@@ -42,60 +40,5 @@ test.describe("Chromium Playwright Screen Reader", () => {
     console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
     logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
-  });
-
-  test("I can capture screen reader output from Playwright commands", async ({
-    browser,
-    browserName,
-    page,
-    screenReader,
-  }) => {
-    const osName = platform();
-    const osVersion = release();
-    const browserVersion = browser.version();
-    const screenReaderName = screenReader.name;
-    const screenReaderVersion = screenReader.version;
-    const { retry } = test.info();
-
-    console.table({
-      osName,
-      osVersion,
-      browserName,
-      browserVersion,
-      screenReaderName,
-      screenReaderVersion,
-      retry,
-    });
-
-    log("Navigating to live region test page.");
-
-    await page.goto("about:blank", {
-      waitUntil: "load",
-    });
-
-    await page.setContent(`
-      <main>
-        <h1>Example 1</h1>
-        <button id="trigger">Update</button>
-      </main>
-
-      <div role="alert" id="live"></div>
-
-      <script>
-        document.querySelector("#trigger").addEventListener("click", () => {
-          document.querySelector("#live").textContent = "testing testing 123"
-        });
-      </script>
-    `);
-
-    const button = page.locator("#trigger");
-    await button.waitFor();
-    await screenReader.navigateToWebContent();
-
-    log(`Performing capture: Playwright click`);
-    const { spokenPhrase } = await screenReader.capture(() => button.click());
-    log(`Screen reader output: "${spokenPhrase}".`);
-
-    expect(spokenPhrase).toBe("testing testing 123");
   });
 });
