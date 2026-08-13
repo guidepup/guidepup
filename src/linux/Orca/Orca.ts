@@ -1,5 +1,6 @@
 import type { Capture } from "../../Capture";
 import type { IScreenReader } from "../../IScreenReader";
+import { isLinux } from "../isLinux";
 import { notImplemented } from "../../notImplemented";
 import type { Prettify } from "../../typeHelpers";
 import { quit } from "./quit";
@@ -87,7 +88,7 @@ export class Orca implements IScreenReader {
    * @returns {boolean}
    */
   static detect(): boolean {
-    notImplemented();
+    return isLinux();
   }
 
   /**
@@ -133,7 +134,7 @@ export class Orca implements IScreenReader {
    * @returns {boolean}
    */
   static default(): boolean {
-    notImplemented();
+    return isLinux();
   }
 
   /**
