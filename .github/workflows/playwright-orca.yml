@@ -34,7 +34,7 @@ jobs:
       - run: npm --prefix ./examples/playwright-orca run browsers
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 install
-      - run: npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
+      - run: xvfb-run -a npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
