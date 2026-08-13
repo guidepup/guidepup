@@ -2,6 +2,9 @@ import type { Capture } from "../../Capture";
 import type { IScreenReader } from "../../IScreenReader";
 import { notImplemented } from "../../notImplemented";
 import type { Prettify } from "../../typeHelpers";
+import { quit } from "./quit";
+import { start } from "./start";
+import { StartOptions } from "../../StartOptions";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const manifest = require("../../../manifest.json");
@@ -10,6 +13,21 @@ const manifest = require("../../../manifest.json");
  * Class for controlling the Orca screen reader on Linux.
  */
 export class Orca implements IScreenReader {
+  /**
+   * NVDA running status.
+   */
+  #started = false;
+
+  /**
+   * NVDA startup status.
+   */
+  #starting = false;
+
+  /**
+   * NVDA stopping status.
+   */
+  #stopping = false;
+
   /**
    * The screen reader name.
    */
@@ -163,8 +181,35 @@ export class Orca implements IScreenReader {
    * capture set `{ capture: true }`, or to disable capture set
    * `{ capture: false }`.
    */
-  async start(): Promise<void> {
-    notImplemented();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async start(_options?: StartOptions): Promise<void> {
+    if (!this.detect()) {
+      throw new Error("TODO: not supported error");
+    }
+
+    if (this.#started || this.#starting) {
+      throw new Error("TODO: already running error");
+    }
+
+    this.#starting = true;
+
+    try {
+      await start();
+
+      this.#started = true;
+    } catch (cause) {
+      throw new Error("TODO: cannot be started error", { cause });
+    } finally {
+      this.#starting = false;
+
+      if (!this.#started) {
+        try {
+          quit();
+        } catch {
+          // Swallow
+        }
+      }
+    }
   }
 
   /**
@@ -185,7 +230,16 @@ export class Orca implements IScreenReader {
    * ```
    */
   async stop(): Promise<void> {
-    notImplemented();
+    if (!this.#started || this.#stopping) {
+      throw new Error("TODO: not running error");
+    }
+
+    this.#stopping = true;
+
+    quit();
+
+    this.#started = false;
+    this.#stopping = false;
   }
 
   /**
