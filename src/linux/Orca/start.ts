@@ -5,7 +5,7 @@ const MAX_START_ATTEMPTS = 2;
 export async function start(): Promise<void> {
   for (let attempt = 0; attempt < MAX_START_ATTEMPTS; attempt++) {
     try {
-      spawnSync("orca ", ["--replace"], {
+      spawnSync("orca", ["--replace"], {
         shell: true,
         stdio: "ignore",
       });
