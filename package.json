@@ -49,6 +49,7 @@
     "typescript-eslint": "^8.61.1"
   },
   "dependencies": {
+    "dbus-native": "^0.15.1",
     "plist": "^4.0.0"
   }
 }

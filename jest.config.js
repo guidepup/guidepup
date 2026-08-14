@@ -17,6 +17,8 @@ module.exports = {
     // TODO: coverage needed for ScreenReader
     "<rootDir>/src/ScreenReader.ts",
     "<rootDir>/src/StartOptions.ts",
+    // TODO: coverage needed for linux/Orca
+    "<rootDir>/src/linux",
     "<rootDir>/src/macOS/Applications.ts",
     "<rootDir>/src/macOS/KeyboardCommand.ts",
     "<rootDir>/src/macOS/KeyCodeCommand.ts",
