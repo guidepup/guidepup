@@ -1,12 +1,13 @@
+import { ERR_ORCA_QUIT } from "../errors";
 import { spawnSync } from "child_process";
 
 export function quit(): void {
   try {
-    spawnSync("orca", ["--quit"], {
+    spawnSync("killall", ["orca"], {
       shell: true,
       stdio: "ignore",
     });
   } catch (e) {
-    throw new Error(`TODO: stop failed error`, { cause: e });
+    throw new Error(ERR_ORCA_QUIT, { cause: e });
   }
 }

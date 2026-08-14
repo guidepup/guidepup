@@ -1,3 +1,9 @@
+import {
+  ERR_ORCA_ALREADY_RUNNING,
+  ERR_ORCA_CANNOT_BE_STARTED,
+  ERR_ORCA_NOT_RUNNING,
+  ERR_ORCA_NOT_SUPPORTED,
+} from "../errors";
 import type { Capture } from "../../Capture";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
@@ -7,6 +13,9 @@ import { quit } from "./quit";
 import { start } from "./start";
 import { StartOptions } from "../../StartOptions";
 
+// REF: https://man.archlinux.org/man/orca.1.en
+// REF: https://gitlab.gnome.org/GNOME/orca
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const manifest = require("../../../manifest.json");
 
@@ -15,17 +24,17 @@ const manifest = require("../../../manifest.json");
  */
 export class Orca implements IScreenReader {
   /**
-   * NVDA running status.
+   * Orca running status.
    */
   #started = false;
 
   /**
-   * NVDA startup status.
+   * Orca startup status.
    */
   #starting = false;
 
   /**
-   * NVDA stopping status.
+   * Orca stopping status.
    */
   #stopping = false;
 
@@ -79,9 +88,9 @@ export class Orca implements IScreenReader {
    * import { Orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isNVDADefaultScreenReader = Orca.detect();
+   *   const isOrcaDefaultScreenReader = Orca.detect();
    *
-   *   console.log(isNVDADefaultScreenReader);
+   *   console.log(isOrcaDefaultScreenReader);
    * })();
    * ```
    *
@@ -102,9 +111,9 @@ export class Orca implements IScreenReader {
    * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isNVDADefaultScreenReader = orca.detect();
+   *   const isOrcaDefaultScreenReader = orca.detect();
    *
-   *   console.log(isNVDADefaultScreenReader);
+   *   console.log(isOrcaDefaultScreenReader);
    * })();
    * ```
    *
@@ -125,9 +134,9 @@ export class Orca implements IScreenReader {
    * import { Orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isNVDADefaultScreenReader = Orca.default();
+   *   const isOrcaDefaultScreenReader = Orca.default();
    *
-   *   console.log(isNVDADefaultScreenReader);
+   *   console.log(isOrcaDefaultScreenReader);
    * })();
    * ```
    *
@@ -148,9 +157,9 @@ export class Orca implements IScreenReader {
    * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isNVDADefaultScreenReader = orca.default();
+   *   const isOrcaDefaultScreenReader = orca.default();
    *
-   *   console.log(isNVDADefaultScreenReader);
+   *   console.log(isOrcaDefaultScreenReader);
    * })();
    * ```
    *
@@ -185,11 +194,11 @@ export class Orca implements IScreenReader {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async start(_options?: StartOptions): Promise<void> {
     if (!this.detect()) {
-      throw new Error("TODO: not supported error");
+      throw new Error(ERR_ORCA_NOT_SUPPORTED);
     }
 
     if (this.#started || this.#starting) {
-      throw new Error("TODO: already running error");
+      throw new Error(ERR_ORCA_ALREADY_RUNNING);
     }
 
     this.#starting = true;
@@ -199,7 +208,7 @@ export class Orca implements IScreenReader {
 
       this.#started = true;
     } catch (cause) {
-      throw new Error("TODO: cannot be started error", { cause });
+      throw new Error(ERR_ORCA_CANNOT_BE_STARTED, { cause });
     } finally {
       this.#starting = false;
 
@@ -232,7 +241,7 @@ export class Orca implements IScreenReader {
    */
   async stop(): Promise<void> {
     if (!this.#started || this.#stopping) {
-      throw new Error("TODO: not running error");
+      throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     this.#stopping = true;
@@ -264,6 +273,10 @@ export class Orca implements IScreenReader {
    * ```
    */
   async previous(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -288,6 +301,10 @@ export class Orca implements IScreenReader {
    * ```
    */
   async next(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -314,6 +331,10 @@ export class Orca implements IScreenReader {
    * @param {object} [options] Additional options.
    */
   async previousHeading(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -340,6 +361,10 @@ export class Orca implements IScreenReader {
    * @param {object} [options] Additional options.
    */
   async nextHeading(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -366,6 +391,10 @@ export class Orca implements IScreenReader {
    * @param {object} [options] Additional options.
    */
   async previousLink(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -392,6 +421,10 @@ export class Orca implements IScreenReader {
    * @param {object} [options] Additional options.
    */
   async nextLink(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -418,6 +451,10 @@ export class Orca implements IScreenReader {
    * @param {object} [options] Additional options.
    */
   async previousLandmark(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -444,6 +481,10 @@ export class Orca implements IScreenReader {
    * @param {object} [options] Additional options.
    */
   async nextLandmark(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -471,6 +512,10 @@ export class Orca implements IScreenReader {
    * ```
    */
   async act(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -481,6 +526,10 @@ export class Orca implements IScreenReader {
    * with the item in the Orca cursor.
    */
   async interact(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -491,6 +540,10 @@ export class Orca implements IScreenReader {
    * with the item in the Orca cursor.
    */
   async stopInteracting(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -536,6 +589,10 @@ export class Orca implements IScreenReader {
    * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
    */
   async press(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -569,6 +626,10 @@ export class Orca implements IScreenReader {
    * @param {string} text Text to type into the focused item.
    */
   async type(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -578,7 +639,7 @@ export class Orca implements IScreenReader {
    * The command can be a [WindowsKeyCodeCommand](https://www.guidepup.dev/docs/api/class-windows-key-code-command) or [WindowsKeystrokeCommand](https://www.guidepup.dev/docs/api/class-windows-keystroke-command).
    *
    * ```ts
-   * import { orca, NVDAKeyCodeCommands } from "@guidepup/guidepup";
+   * import { orca, OrcaKeyCodeCommands } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
@@ -598,6 +659,10 @@ export class Orca implements IScreenReader {
    * @param {any} command Orca keyboard command to execute.
    */
   async perform(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -628,6 +693,10 @@ export class Orca implements IScreenReader {
    * @param {object} [options] Click options.
    */
   async click(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -656,6 +725,10 @@ export class Orca implements IScreenReader {
    * @returns {string} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -689,6 +762,10 @@ export class Orca implements IScreenReader {
    * @returns {Promise<string>} The last spoken phrase.
    */
   async itemText(): Promise<string> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -719,6 +796,10 @@ export class Orca implements IScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -743,6 +824,10 @@ export class Orca implements IScreenReader {
    * ```
    */
   async clearSpokenPhraseLog(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -777,6 +862,10 @@ export class Orca implements IScreenReader {
    * @returns {Promise<string[]>} The spoken phrase log.
    */
   async itemTextLog(): Promise<string[]> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -805,6 +894,10 @@ export class Orca implements IScreenReader {
    * @alias clearSpokenPhraseLog
    */
   async clearItemTextLog(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 
@@ -869,6 +962,10 @@ export class Orca implements IScreenReader {
    * @returns {Promise<Capture<T>>} The action's result and captured Orca output.
    */
   async capture<T>(): Promise<Capture<T>> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
     notImplemented();
   }
 }
