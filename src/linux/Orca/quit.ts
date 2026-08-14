@@ -3,7 +3,7 @@ import { spawnSync } from "child_process";
 
 export function quit(): void {
   try {
-    spawnSync("killall", ["orca"], {
+    spawnSync("pkill", ["orca"], {
       shell: true,
       stdio: "ignore",
     });
