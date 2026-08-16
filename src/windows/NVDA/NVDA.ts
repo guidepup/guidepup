@@ -1,3 +1,4 @@
+import { addTeardownHandler, removeTeardownHandler } from "../../teardown";
 import {
   createGuidepupConfig,
   deleteGuidepupConfig,
@@ -59,6 +60,44 @@ export class NVDA implements IScreenReader {
    * NVDA stopping status.
    */
   #stopping = false;
+
+  /**
+   * Attempt to stop NVD and teardown config when the process is terminating.
+   */
+  #teardownAfterTermination = async (): Promise<void> => {
+    try {
+      await this.#client.stop();
+    } catch {
+      // Best effort only.
+    }
+
+    this.#client = null;
+
+    try {
+      quit();
+    } catch {
+      // Best effort only.
+    }
+
+    try {
+      deleteGuidepupConfig();
+    } catch {
+      // Best effort only.
+    }
+
+    this.#started = false;
+    this.#starting = false;
+    this.#stopping = false;
+  };
+
+  /**
+   * Handler for teardown should the process be interrupted, killed, etc.
+   */
+  #teardownHandler = async (): Promise<void> => {
+    removeTeardownHandler(this.#teardownHandler);
+
+    await this.#teardownAfterTermination();
+  };
 
   /**
    * The screen reader name.
@@ -228,7 +267,11 @@ export class NVDA implements IScreenReader {
 
     this.#starting = true;
 
+    addTeardownHandler(this.#teardownHandler);
+
     try {
+      quit();
+
       createGuidepupConfig();
 
       if (options?.settings) {
@@ -247,25 +290,7 @@ export class NVDA implements IScreenReader {
       this.#starting = false;
 
       if (!this.#started) {
-        try {
-          await this.#client.stop();
-        } catch {
-          // Swallow
-        }
-
-        this.#client = null;
-
-        try {
-          quit();
-        } catch {
-          // Swallow
-        }
-
-        try {
-          deleteGuidepupConfig();
-        } catch {
-          // Swallow
-        }
+        await this.#teardownHandler();
       }
     }
   }
@@ -294,13 +319,20 @@ export class NVDA implements IScreenReader {
 
     this.#stopping = true;
 
-    await this.#client.stop();
-    this.#client = null;
+    try {
+      await this.#client.stop();
 
-    quit();
+      this.#client = null;
 
-    this.#started = false;
-    this.#stopping = false;
+      quit();
+
+      deleteGuidepupConfig();
+
+      removeTeardownHandler(this.#teardownHandler);
+    } finally {
+      this.#started = false;
+      this.#stopping = false;
+    }
   }
 
   /**

@@ -1,3 +1,4 @@
+import { addTeardownHandler, removeTeardownHandler } from "../../teardown";
 import {
   ERR_MACOS_VERSION_NOT_SUPPORTED,
   ERR_VOICE_OVER_ALREADY_RUNNING,
@@ -42,6 +43,10 @@ jest.mock("../../../manifest.json", () => ({
       ],
     },
   ],
+}));
+jest.mock("../../teardown", () => ({
+  addTeardownHandler: jest.fn(),
+  removeTeardownHandler: jest.fn(),
 }));
 jest.mock("node:os", () => ({
   release: jest.fn(),
@@ -287,11 +292,11 @@ describe("VoiceOver", () => {
           }
         });
 
-        test("should throw an error trying to access the keyboard commands getter", () => {
+        it("should throw an error trying to access the keyboard commands getter", () => {
           expect(() => vo.keyboardCommands).toThrow(ERR_VOICE_OVER_NOT_RUNNING);
         });
 
-        test("should throw an error trying to access the commander commands getter", () => {
+        it("should throw an error trying to access the commander commands getter", () => {
           expect(() => vo.commanderCommands).toThrow(
             ERR_VOICE_OVER_NOT_RUNNING,
           );
@@ -318,6 +323,10 @@ describe("VoiceOver", () => {
       `("when called $description", ({ options }) => {
         beforeEach(async () => {
           await vo.start(options);
+        });
+
+        it("should add a teardown handler to terminate VoiceOver if the process terminates without graceful user stop", () => {
+          expect(addTeardownHandler).toHaveBeenCalled();
         });
 
         it("should construct a VoiceOver Client instance", () => {
@@ -363,6 +372,25 @@ describe("VoiceOver", () => {
         it("should wait for VoiceOver to be running", () => {
           expect(waitForRunning).toHaveBeenCalledWith(options);
         });
+
+        describe("when the process is terminated and the teardown is triggered", () => {
+          beforeEach(async () => {
+            await jest.mocked(addTeardownHandler).mock.calls[0][0]();
+          });
+
+          it("should remove the teardown handler", () => {
+            expect(removeTeardownHandler).toHaveBeenCalled();
+          });
+
+          it("should attempt to terminate the process", () => {
+            expect(terminateVoiceOverProcess).toHaveBeenCalled();
+            expect(waitForNotRunning).toHaveBeenCalled();
+          });
+
+          it("should attempt to unmount the Guidepup preferences", () => {
+            expect(unmountGuidepupPreferences).toHaveBeenCalled();
+          });
+        });
       });
 
       describe("when called with custom settings", () => {
@@ -391,13 +419,13 @@ describe("VoiceOver", () => {
           }
         });
 
-        test("should retry from a clean VoiceOver process", () => {
+        it("should retry from a clean VoiceOver process", () => {
           expect(start).toHaveBeenCalledTimes(2);
-          expect(terminateVoiceOverProcess).toHaveBeenCalledTimes(3);
-          expect(waitForNotRunning).toHaveBeenCalledTimes(2);
+          expect(terminateVoiceOverProcess).toHaveBeenCalledTimes(2 + 2);
+          expect(waitForNotRunning).toHaveBeenCalledTimes(2 + 2);
         });
 
-        test("should return a stable startup error with the readiness failure as its cause", () => {
+        it("should return a stable startup error with the readiness failure as its cause", () => {
           expect(thrownError).toEqual(
             new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
               cause: startupError,
@@ -405,7 +433,44 @@ describe("VoiceOver", () => {
           );
         });
 
-        test("should unmount Guidepup preferences after failing", () => {
+        it("should remove the teardown handler", () => {
+          expect(removeTeardownHandler).toHaveBeenCalled();
+        });
+
+        it("should unmount Guidepup preferences after failing", () => {
+          expect(unmountGuidepupPreferences).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      describe("when VoiceOver is already running from outside of Guidepup and fails to terminate VoiceOver after several attempts", () => {
+        const terminationErrorStub = new Error("test-termination-error");
+        let thrownError: Error;
+
+        beforeEach(async () => {
+          jest
+            .mocked(terminateVoiceOverProcess)
+            .mockRejectedValue(terminationErrorStub);
+
+          try {
+            await vo.start();
+          } catch (error) {
+            thrownError = error as Error;
+          }
+        });
+
+        it("should throw an error", () => {
+          expect(thrownError).toEqual(
+            new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
+              cause: terminationErrorStub,
+            }),
+          );
+        });
+
+        it("should remove the teardown handler", () => {
+          expect(removeTeardownHandler).toHaveBeenCalled();
+        });
+
+        it("should unmount Guidepup preferences after failing", () => {
           expect(unmountGuidepupPreferences).toHaveBeenCalledTimes(1);
         });
       });
@@ -496,12 +561,42 @@ describe("VoiceOver", () => {
         expect(unmountGuidepupPreferences).toHaveBeenCalled();
       });
 
+      it("should remove the teardown handler", () => {
+        expect(removeTeardownHandler).toHaveBeenCalled();
+      });
+
       describe("when called again and start hasn't been called this time", () => {
         it("should throw an error", async () => {
           await expect(async () => await vo.stop(options)).rejects.toThrow(
             ERR_VOICE_OVER_NOT_RUNNING,
           );
         });
+      });
+    });
+
+    describe("when fails to terminate VoiceOver after several attempts", () => {
+      const terminationErrorStub = new Error("test-termination-error");
+
+      beforeEach(async () => {
+        jest.mocked(isMacOS).mockReturnValue(true);
+
+        await vo.start();
+
+        jest.clearAllMocks();
+
+        jest
+          .mocked(terminateVoiceOverProcess)
+          .mockRejectedValue(terminationErrorStub);
+      });
+
+      it("should throw an error", async () => {
+        await expect(async () => await vo.stop()).rejects.toThrow(
+          terminationErrorStub,
+        );
+      });
+
+      it("should not remove the teardown handler so it tries to teardown again on exit", () => {
+        expect(removeTeardownHandler).not.toHaveBeenCalled();
       });
     });
   });
