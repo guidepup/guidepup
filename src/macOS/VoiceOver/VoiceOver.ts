@@ -1,3 +1,4 @@
+import { addTeardownHandler, removeTeardownHandler } from "../../teardown";
 import {
   ERR_MACOS_VERSION_NOT_SUPPORTED,
   ERR_VOICE_OVER_ALREADY_RUNNING,
@@ -49,6 +50,10 @@ export class VoiceOver implements IScreenReader {
    * Number of clean-start attempts before reporting a startup failure.
    */
   static readonly #START_ATTEMPTS = 2;
+  /**
+   * Number of attempts before reporting a stop failure.
+   */
+  static readonly #STOP_ATTEMPTS = 2;
 
   /**
    * VoiceOver running status.
@@ -94,6 +99,48 @@ export class VoiceOver implements IScreenReader {
    * VoiceOver mouse APIs.
    */
   #mouse!: VoiceOverMouse;
+
+  /**
+   * Attempt to stop VoiceOver and teardown preferences when the process is terminating.
+   */
+  #teardownAfterTermination = async (): Promise<void> => {
+    for (let attempt = 0; attempt < VoiceOver.#STOP_ATTEMPTS; attempt++) {
+      try {
+        await terminateVoiceOverProcess();
+        await waitForNotRunning();
+
+        break;
+      } catch {
+        // Best effort only.
+      }
+    }
+
+    try {
+      unmountGuidepupPreferences();
+    } catch {
+      // Best effort only.
+    }
+
+    this.#client = null;
+    this.#caption = null;
+    this.#commander = null;
+    this.#cursor = null;
+    this.#keyboard = null;
+    this.#mouse = null;
+
+    this.#started = false;
+    this.#starting = false;
+    this.#stopping = false;
+  };
+
+  /**
+   * Handler for teardown should the process be interrupted, killed, etc.
+   */
+  #teardownHandler = async (): Promise<void> => {
+    removeTeardownHandler(this.#teardownHandler);
+
+    await this.#teardownAfterTermination();
+  };
 
   /**
    * The screen reader name.
@@ -307,6 +354,7 @@ export class VoiceOver implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
+
   async start(options?: StartOptions): Promise<void> {
     if (!this.detect()) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
@@ -318,7 +366,22 @@ export class VoiceOver implements IScreenReader {
 
     this.#starting = true;
 
+    addTeardownHandler(this.#teardownHandler);
+
     try {
+      for (let attempt = 0; attempt < VoiceOver.#STOP_ATTEMPTS; attempt++) {
+        try {
+          await terminateVoiceOverProcess(options);
+          await waitForNotRunning(options);
+
+          break;
+        } catch (error) {
+          if (attempt === VoiceOver.#STOP_ATTEMPTS - 1) {
+            throw error;
+          }
+        }
+      }
+
       mountGuidepupPreferences();
 
       if (options?.settings) {
@@ -348,17 +411,7 @@ export class VoiceOver implements IScreenReader {
       this.#starting = false;
 
       if (!this.#started) {
-        try {
-          await terminateVoiceOverProcess(options);
-        } catch {
-          // Swallow
-        }
-
-        try {
-          unmountGuidepupPreferences();
-        } catch {
-          // Swallow
-        }
+        await this.#teardownHandler();
       }
     }
 
@@ -398,21 +451,32 @@ export class VoiceOver implements IScreenReader {
 
     this.#stopping = true;
 
-    await this.#client.stop();
-
-    this.#client = null;
-    this.#caption = null;
-    this.#commander = null;
-    this.#cursor = null;
-    this.#keyboard = null;
-    this.#mouse = null;
-
-    unmountGuidepupPreferences();
-
-    await terminateVoiceOverProcess(options);
-
     try {
-      await waitForNotRunning(options);
+      await this.#client.stop();
+
+      this.#client = null;
+      this.#caption = null;
+      this.#commander = null;
+      this.#cursor = null;
+      this.#keyboard = null;
+      this.#mouse = null;
+
+      for (let attempt = 0; attempt < VoiceOver.#STOP_ATTEMPTS; attempt++) {
+        try {
+          await terminateVoiceOverProcess(options);
+          await waitForNotRunning(options);
+
+          break;
+        } catch (error) {
+          if (attempt === VoiceOver.#STOP_ATTEMPTS - 1) {
+            throw error;
+          }
+        }
+      }
+
+      unmountGuidepupPreferences();
+
+      removeTeardownHandler(this.#teardownHandler);
     } finally {
       this.#started = false;
       this.#stopping = false;
