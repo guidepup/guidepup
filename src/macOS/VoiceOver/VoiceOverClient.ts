@@ -6,6 +6,7 @@ import {
   SPOKEN_PHRASES_POLL_INTERVAL,
   SPOKEN_PHRASES_RETRY_COUNT,
 } from "./constants";
+import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import { CommandOptions } from "../../CommandOptions";
@@ -13,6 +14,8 @@ import { DEFAULT_CAPTURE } from "../../constants";
 import { ERR_VOICE_OVER_NOT_RUNNING } from "../errors";
 import { itemText as getItemText } from "./itemText";
 import { lastSpokenPhrase } from "./lastSpokenPhrase";
+
+const debug = base.extend("VoiceOverClient");
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -47,9 +50,11 @@ export class VoiceOverClient {
    * Stop VoiceOver action execution.
    */
   async stop(): Promise<void> {
+    debug("stopping");
     this.#stopped = true;
 
     await this.#waitForAllActions();
+    debug("stopped");
   }
 
   /**
@@ -130,6 +135,8 @@ export class VoiceOverClient {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
+    debug("enqueuing action");
+
     let resolve, reject;
 
     const promise = new Promise<Capture<T>>((_resolve, _reject) => {
@@ -158,6 +165,8 @@ export class VoiceOverClient {
       return;
     }
 
+    debug("processing next queued action");
+
     const { action, options, resolve, reject, promise } = this.#queue.shift()!;
     this.#inFlight = promise;
 
@@ -166,16 +175,22 @@ export class VoiceOverClient {
         throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
       }
 
+      debug("executing action");
       const result = await action();
+      debug("action completed");
 
       let itemText: string;
       let spokenPhrase: string;
 
       if (options?.capture ?? this.#capture) {
+        debug("executing polling for item text and spoken phrases");
+
         [itemText, spokenPhrase] = await Promise.all([
           this.#pollForItemText(),
           this.#pollForSpokenPhrases(options),
         ]);
+
+        debug("polling for item text and spoken phrases completed");
 
         this.#itemTextLogStore.push(itemText);
         this.#spokenPhraseLogStore.push(spokenPhrase);
@@ -224,6 +239,12 @@ export class VoiceOverClient {
     const previousSpokenPhrase =
       this.#spokenPhraseLogStore.at(-1) ?? this.#clearedLastSpokenPhrase ?? "";
 
+    debug(
+      "Polling for spoken phrases; previous phrase=%o, capture=%s",
+      previousSpokenPhrase,
+      options?.capture ?? this.#capture,
+    );
+
     const phrases = [];
     let stableCount = 0;
     let pollCount = 0;
@@ -234,6 +255,8 @@ export class VoiceOverClient {
       try {
         rawLastSpokenPhrase = await lastSpokenPhrase();
       } catch {
+        debug("Poll %d: failed to retrieve last spoken phrase", pollCount);
+
         // swallow
       }
 
@@ -242,16 +265,37 @@ export class VoiceOverClient {
       let pollTimeout;
 
       if (!phrase) {
+        debug(
+          "Poll %d: no spoken phrase; retrying in %dms",
+          pollCount,
+          SPOKEN_PHRASES_POLL_INTERVAL,
+        );
+
         // Error retrieving phrase
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else if (
         pollCount < SPOKEN_PHRASES_RETRY_COUNT / 2 &&
         phrase === previousSpokenPhrase
       ) {
+        debug(
+          "Poll %d: previous spoken phrase still present; retrying in %dms",
+          pollCount,
+          SPOKEN_PHRASES_POLL_INTERVAL,
+        );
+
         // Cater for VO not picking up the new phrase immediately
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else if (phrase === phrases.at(-1)) {
         stableCount++;
+
+        debug(
+          "Poll %d: spoken phrase stable (%d/%d); retrying in %dms",
+          pollCount,
+          stableCount,
+          SPOKEN_PHRASES_RETRY_COUNT,
+          SPOKEN_PHRASES_POLL_INTERVAL,
+        );
+
         pollTimeout = SPOKEN_PHRASES_POLL_INTERVAL;
       } else {
         const approxWords = countApproxWords(phrase);
@@ -262,12 +306,32 @@ export class VoiceOverClient {
           SPOKEN_PHRASES_POLL_INTERVAL;
 
         phrases.push(phrase);
+
+        debug(
+          "Poll %d: new spoken phrase=%o; approxWords=%d; next poll in %dms",
+          pollCount,
+          phrase,
+          approxWords,
+          pollTimeout,
+        );
       }
 
-      if (
-        stableCount >= SPOKEN_PHRASES_RETRY_COUNT ||
-        (options?.capture ?? this.#capture) === "initial"
-      ) {
+      if (stableCount >= SPOKEN_PHRASES_RETRY_COUNT) {
+        debug(
+          "Polling complete after %d polls: phrase stable for %d polls",
+          pollCount + 1,
+          stableCount,
+        );
+
+        break;
+      }
+
+      if ((options?.capture ?? this.#capture) === "initial") {
+        debug(
+          "Polling complete after %d polls: initial capture",
+          pollCount + 1,
+        );
+
         break;
       }
 
@@ -276,6 +340,17 @@ export class VoiceOverClient {
       pollCount++;
     }
 
-    return phrases.filter(Boolean).join(". ");
+    if (pollCount >= MAX_SPOKEN_PHRASES_POLL_COUNT) {
+      debug(
+        "Polling stopped after reaching maximum poll count (%d)",
+        MAX_SPOKEN_PHRASES_POLL_COUNT,
+      );
+    }
+
+    const result = phrases.filter(Boolean).join(". ");
+
+    debug("Polling result: %o", result);
+
+    return result;
   }
 }
