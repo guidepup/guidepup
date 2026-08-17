@@ -1,8 +1,11 @@
+import { base } from "../debug";
 import type { CommandOptions } from "../CommandOptions";
 import { ERR_PREFIX_QUIT } from "./errors";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
 import { withTransaction } from "./withTransaction";
+
+const debug = base.extend("quit");
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-macos-quit)
@@ -34,6 +37,8 @@ export async function quit(
   applicationName: string,
   options?: CommandOptions,
 ): Promise<void> {
+  debug(applicationName);
+
   const script = `tell application "${applicationName}"\n${withTransaction(
     "quit",
   )}\nend tell`;

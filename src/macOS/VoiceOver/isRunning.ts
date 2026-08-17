@@ -1,7 +1,10 @@
 import { Applications } from "../Applications";
+import { base } from "../../debug";
 import type { CommandOptions } from "../../CommandOptions";
 import { execFileSync } from "child_process";
 import { runAppleScript } from "../runAppleScript";
+
+const debug = base.extend("isRunning");
 
 export async function isRunning(
   options?: CommandOptions,
@@ -15,7 +18,11 @@ export async function isRunning(
         encoding: "utf8",
         timeout: 2000,
       }).length > 0;
+
+    debug("pgrep VoiceOver running", processRunning);
   } catch {
+    debug("pgrep VoiceOver failed");
+
     return false;
   }
 
@@ -27,10 +34,13 @@ export async function isRunning(
     return true;
   }
 
-  const appleScriptRunning = await runAppleScript<string>(
-    `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`,
-    options,
-  );
+  const appleScriptRunning =
+    (await runAppleScript<string>(
+      `tell application "${Applications.VoiceOver}"\nreturn running\nend tell`,
+      options,
+    )) !== "false";
 
-  return appleScriptRunning !== "false";
+  debug("AppleScript detection for VoiceOver running", appleScriptRunning);
+
+  return appleScriptRunning;
 }

@@ -1,5 +1,8 @@
 import { DEFAULT_MAX_BUFFER, DEFAULT_TIMEOUT } from "../constants";
+import { base } from "../debug";
 import { execFile } from "child_process";
+
+const debug = base.extend("osascript");
 
 export async function runAppleScript<T = string | void>(
   script: string,
@@ -9,6 +12,8 @@ export async function runAppleScript<T = string | void>(
 
   const scriptWithTimeout = `with timeout of ${appleScriptTimeoutMs} seconds\n${script}\nend timeout`;
 
+  debug("execute", { scriptWithTimeout });
+
   return (await new Promise<string | void>((resolve, reject) => {
     const child = execFile(
       "/usr/bin/osascript",
@@ -17,10 +22,14 @@ export async function runAppleScript<T = string | void>(
         maxBuffer: DEFAULT_MAX_BUFFER,
         timeout,
       },
-      (e, stdout) => {
-        if (e) {
-          return reject(e);
+      (error, stdout) => {
+        if (error) {
+          debug("failed", { error });
+
+          return reject(error);
         }
+
+        debug("completed");
 
         if (!stdout) {
           return resolve();
@@ -30,7 +39,11 @@ export async function runAppleScript<T = string | void>(
       },
     );
 
+    debug("process started", { pid: child.pid });
+
     child.stdin.write(scriptWithTimeout);
     child.stdin.end();
+
+    debug("script written");
   })) as unknown as T;
 }
