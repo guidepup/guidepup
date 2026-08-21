@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+
+import sys
+
+LOG = "/tmp/speech.log"
+
+def log(text):
+    with open(LOG, "a", buffering=1) as f:
+        f.write(text + "\n")
+
+def send(text):
+    log(f"OUT: {text!r}")
+    sys.stdout.write(text + "\n")
+    sys.stdout.flush()
+
+def receive_data():
+    lines = []
+
+    while True:
+        line = sys.stdin.readline()
+
+        if not line:
+            return None
+
+        line = line.rstrip("\n")
+        log(f"IN: {line!r}")
+
+        if line == ".":
+            break
+
+        if line == "..":
+            line = "."
+
+        lines.append(line)
+
+    return "\n".join(lines)
+
+while True:
+    line = sys.stdin.readline()
+
+    if not line:
+        break
+
+    line = line.rstrip("\n")
+    log(f"IN: {line!r}")
+
+    if line == "INIT":
+        send("299 OK LOADED")
+
+    elif line == "AUDIO":
+        send("207 OK RECEIVING AUDIO SETTINGS")
+
+        data = receive_data()
+
+        if data is None:
+            break
+
+        log(f"AUDIO SETTINGS: {data!r}")
+        send("203 OK AUDIO SETTINGS RECEIVED")
+
+    elif line == "LOGLEVEL":
+        send("200 OK RECEIVING LOGLEVEL")
+
+        data = receive_data()
+
+        if data is None:
+            break
+
+        log(f"LOGLEVEL: {data!r}")
+        send("200 OK")
+
+    elif line == "LIST VOICES":
+        send("200 OK")
+
+    elif line == "SET":
+        send("203 OK RECEIVING SETTINGS")
+
+        data = receive_data()
+
+        if data is None:
+            break
+
+        log(f"SETTINGS: {data!r}")
+        send("203 OK SETTINGS RECEIVED")
+
+    elif line == "SPEAK":
+        send("202 OK SEND DATA")
+
+        data = receive_data()
+
+        if data is None:
+            break
+
+        log(f"SPEECH: {data!r}")
+
+        send("200 OK SPEAKING")
+        send("701 BEGIN")
+        send("702 END")
+
+    elif line == "STOP":
+        send("703 STOP")
+
+    elif line == "PAUSE":
+        send("704 PAUSE")
+
+    elif line == "CANCEL":
+        send("703 STOP")
+
+    elif line in ("QUIT", "END"):
+        send("210 OK QUIT")
+        break
+
+    else:
+        log(f"UNKNOWN: {line!r}")
+        send("200 OK")
