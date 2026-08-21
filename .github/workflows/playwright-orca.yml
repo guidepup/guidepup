@@ -51,9 +51,7 @@ jobs:
             "${SPEECHD_DIR}/logs" \
             "${SPEECHD_DIR}/run"
 
-          cp -r ./.github/tmp-orca-speechd/ ${SPEECHD_DIR}/
-
-          export SPEECHD_DIR=/tmp/guidepup-speechd
+          cp -r ./.github/tmp-orca-speechd/. "${SPEECHD_DIR}/"
 
           speech-dispatcher \
             --run-single \
