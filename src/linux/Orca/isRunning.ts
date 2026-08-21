@@ -21,13 +21,13 @@ export async function isRunning(): Promise<boolean> {
       return false;
     }
 
-    const { stdout: apps } = await execFileAsync("orca", ["--list-apps"]);
+    // const { stdout: apps } = await execFileAsync("orca", ["--list-apps"]);
 
-    debug("`orca --list-apps`: ", apps);
+    // debug("`orca --list-apps`: ", apps);
 
-    if (!apps.includes("orca")) {
-      return false;
-    }
+    // if (!apps.includes("orca")) {
+    //   return false;
+    // }
 
     const bus = sessionBus();
     await bus.getInterface(SERVICE, OBJECT_PATH, INTERFACE);
