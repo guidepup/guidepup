@@ -93,9 +93,9 @@ jobs:
           echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
           echo "DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID"
 
-          /usr/libexec/at-spi-bus-launcher &
+          ps -p "$DBUS_SESSION_BUS_PID" -f
 
-          orca --version
+          /usr/libexec/at-spi-bus-launcher &
 
           DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
