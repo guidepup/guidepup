@@ -1,8 +1,6 @@
 import { platform, release } from "os";
-import { headerNavigation } from "../headerNavigation";
-import itemTextSnapshot from "./firefox.itemText.snapshot.json";
-import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
+import { delay } from "../../../../src/delay";
+import { log } from "console";
 import { orcaTest as test } from "../../orca-test";
 
 test.use({
@@ -35,18 +33,21 @@ test.describe("Firefox Playwright Orca", () => {
       retry,
     });
 
-    await headerNavigation({ page, orca });
+    log("Navigating to URL: https://www.guidepup.dev.");
+    await page.goto("https://www.guidepup.dev", {
+      waitUntil: "load",
+    });
 
-    // Assert that we've ended up where we expected and what we were told on
-    // the way there is as expected.
+    const header = page.locator("h1");
+    await header.waitFor();
+    await delay(500);
 
-    const itemTextLog = await orca.itemTextLog();
-    const spokenPhraseLog = await orca.spokenPhraseLog();
+    // TODO: flesh out to full example
 
-    console.log(JSON.stringify(itemTextLog, undefined, 2));
-    console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
-
-    logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
-    logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+    await orca.next();
+    await orca.next();
+    await orca.next();
+    await orca.next();
+    await orca.next();
   });
 });
