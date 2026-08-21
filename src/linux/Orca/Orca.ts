@@ -370,7 +370,10 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(
-      async () => await this.#client.getService().CaretNavigator.NextLine(),
+      async () =>
+        await this.#client
+          .getService()
+          .CaretNavigator.ExecuteCommand("NextLine", true),
     );
   }
 
