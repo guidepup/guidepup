@@ -3,13 +3,21 @@ import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
 import { ERR_ORCA_NOT_RUNNING } from "../errors";
 
-const ORCA_SERVICE = "org.gnome.Orca.Service";
-const ORCA_PATH = "/org/gnome/Orca/Service";
-const ORCA_INTERFACE = "org.gnome.Orca.Service";
+const SERVICE = "org.gnome.Orca.Service";
+
+const OBJECT_PATHS = {
+  // TODO: generate all
+  CaretNavigator: "/org/gnome/Orca/Service/CaretNavigator",
+};
+
+interface CaretNavigator {
+  // TODO: generate all
+  NextLine(): DBusPromise<void>;
+}
 
 interface OrcaService {
-  GetVersion(): DBusPromise<string>;
-  Quit(): DBusPromise<boolean>;
+  // TODO: generate all
+  CaretNavigator: CaretNavigator;
 }
 
 type ActionOptions = Pick<CommandOptions, "capture">;
@@ -57,11 +65,19 @@ export class OrcaClient {
   async connect(options?: Pick<CommandOptions, "capture">): Promise<void> {
     this.#bus = sessionBus();
 
-    this.#service = await this.#bus.getInterface<OrcaService>(
-      ORCA_SERVICE,
-      ORCA_PATH,
-      ORCA_INTERFACE,
+    const entries = await Promise.all(
+      Object.entries(OBJECT_PATHS).map(async ([name, objectPath]) => {
+        const service = await this.#bus.getInterface(
+          SERVICE,
+          objectPath,
+          `${SERVICE}.${name}`,
+        );
+
+        return [name, service] as const;
+      }),
     );
+
+    this.#service = Object.fromEntries(entries) as unknown as OrcaService;
 
     // TODO: handle speech output connection as well
 

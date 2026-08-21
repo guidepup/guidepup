@@ -369,7 +369,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(
+      async () => await this.#client.getService().CaretNavigator.NextLine(),
+    );
   }
 
   /**
