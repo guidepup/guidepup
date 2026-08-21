@@ -1,3 +1,4 @@
+import { addTeardownHandler, removeTeardownHandler } from "../../teardown";
 import {
   ERR_ORCA_ALREADY_RUNNING,
   ERR_ORCA_CANNOT_BE_STARTED,
@@ -8,6 +9,7 @@ import type { Capture } from "../../Capture";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
 import { notImplemented } from "../../notImplemented";
+import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
 import { quit } from "./quit";
 import { start } from "./start";
@@ -24,6 +26,11 @@ const manifest = require("../../../manifest.json");
  */
 export class Orca implements IScreenReader {
   /**
+   * Orca client.
+   */
+  #client: OrcaClient;
+
+  /**
    * Orca running status.
    */
   #started = false;
@@ -37,6 +44,44 @@ export class Orca implements IScreenReader {
    * Orca stopping status.
    */
   #stopping = false;
+
+  /**
+   * Attempt to stop Orca and teardown config when the process is terminating.
+   */
+  #teardownAfterTermination = async (): Promise<void> => {
+    try {
+      await this.#client?.stop();
+    } catch {
+      // Best effort only.
+    }
+
+    this.#client = null;
+
+    try {
+      quit();
+    } catch {
+      // Best effort only.
+    }
+
+    try {
+      // TODO: teardown settings
+    } catch {
+      // Best effort only.
+    }
+
+    this.#started = false;
+    this.#starting = false;
+    this.#stopping = false;
+  };
+
+  /**
+   * Handler for teardown should the process be interrupted, killed, etc.
+   */
+  #teardownHandler = async (): Promise<void> => {
+    removeTeardownHandler(this.#teardownHandler);
+
+    await this.#teardownAfterTermination();
+  };
 
   /**
    * The screen reader name.
@@ -203,8 +248,17 @@ export class Orca implements IScreenReader {
 
     this.#starting = true;
 
+    addTeardownHandler(this.#teardownHandler);
+
     try {
+      quit();
+
+      // TODO: settings
+
       await start();
+
+      this.#client = new OrcaClient();
+      await this.#client.connect();
 
       this.#started = true;
     } catch (cause) {
@@ -246,10 +300,20 @@ export class Orca implements IScreenReader {
 
     this.#stopping = true;
 
-    quit();
+    try {
+      await this.#client.stop();
 
-    this.#started = false;
-    this.#stopping = false;
+      this.#client = null;
+
+      quit();
+
+      // TODO: teardown settings
+
+      removeTeardownHandler(this.#teardownHandler);
+    } finally {
+      this.#started = false;
+      this.#stopping = false;
+    }
   }
 
   /**
