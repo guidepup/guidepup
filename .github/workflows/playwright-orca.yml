@@ -36,13 +36,13 @@ jobs:
             dbus-x11 \
             libglib2.0-bin
 
-            export SPEECHD_DIR=/tmp/guidepup-speechd
+          export SPEECHD_DIR=/tmp/guidepup-speechd
 
-            mkdir -p \
-              "${SPEECHD_DIR}/logs" \
-              "${SPEECHD_DIR}/run"
+          mkdir -p \
+            "${SPEECHD_DIR}/logs" \
+            "${SPEECHD_DIR}/run"
 
-            cp -r ./.github/tmp-orca-speechd/ ${SPEECHD_DIR}/
+          cp -r ./.github/tmp-orca-speechd/ ${SPEECHD_DIR}/
 
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 setup --ci
@@ -52,7 +52,52 @@ jobs:
       - run: npm --prefix ./examples/playwright-orca run browsers
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 install
-      - run: xvfb-run -a npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
+      - run: |
+          speech-dispatcher \
+            --run-single \
+            --config-dir "${SPEECHD_DIR}" \
+            --module-dir "${SPEECHD_DIR}/modules" \
+            --communication-method unix_socket \
+            --socket-path "${SPEECHD_DIR}/run/speechd.sock" \
+            --log-dir "${SPEECHD_DIR}/logs" \
+            --log-level 5 \
+            --timeout 0 &
+
+          SPEECHD_PID=$!
+
+          export SPEECHD_ADDRESS="unix_socket:${SPEECHD_DIR}/run/speechd.sock"
+
+          for i in $(seq 1 50); do
+            if [ -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
+              break
+            fi
+
+            sleep 0.1
+          done
+
+          if [ ! -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
+            echo "Speech Dispatcher failed to create socket"
+            cat "${SPEECHD_DIR}/logs/"* 2>/dev/null || true
+            exit 1
+          fi
+
+          echo "Speech Dispatcher running:"
+          echo "  PID:    $SPEECHD_PID"
+          echo "  socket: ${SPEECHD_DIR}/run/speechd.sock"
+
+          Xvfb :99 >/dev/null 2>&1 &
+          export DISPLAY=:99
+
+          eval "$(dbus-launch --sh-syntax --exit-with-session)"
+
+          echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+          echo "DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID"
+
+          /usr/libexec/at-spi-bus-launcher &
+
+          orca --version
+
+          npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
