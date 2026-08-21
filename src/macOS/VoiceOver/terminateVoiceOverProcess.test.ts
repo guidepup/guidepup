@@ -21,6 +21,9 @@ const optionsDummy = {};
 
 describe("terminateVoiceOverProcess", () => {
   beforeEach(async () => {
+    jest.resetAllMocks();
+    jest.clearAllMocks();
+
     await terminateVoiceOverProcess(optionsDummy);
   });
 
@@ -32,6 +35,16 @@ describe("terminateVoiceOverProcess", () => {
     );
   });
 
+  it("should gracefully handle when the quit key code command rejects", async () => {
+    jest.mocked(sendKeys).mockImplementation(() => {
+      throw new Error("test-error");
+    });
+
+    await expect(() =>
+      terminateVoiceOverProcess(optionsDummy),
+    ).resolves.not.toThrow();
+  });
+
   it("should attempt an AppleScript based quit of the VoiceOver application", () => {
     expect(quit).toHaveBeenCalledWith(
       MacOSApplications.VoiceOver,
@@ -39,7 +52,17 @@ describe("terminateVoiceOverProcess", () => {
     );
   });
 
-  it("should attempt to terminate (kill -15) the VoiceOver process (SIGTERM over SIGKILL owing to the process being run by launchd)", () => {
+  it("should gracefully handle when the AppleScript based quit rejects", async () => {
+    jest.mocked(quit).mockImplementation(() => {
+      throw new Error("test-error");
+    });
+
+    await expect(() =>
+      terminateVoiceOverProcess(optionsDummy),
+    ).resolves.not.toThrow();
+  });
+
+  it("should attempt to terminate (pkill -15) the VoiceOver process (SIGTERM over SIGKILL owing to the process being run by launchd)", () => {
     expect(execFileSync).toHaveBeenCalledWith(
       "pkill",
       ["-15", "-f", "VoiceOver.app/Contents/MacOS/VoiceOver launchd -s"],
@@ -48,5 +71,15 @@ describe("terminateVoiceOverProcess", () => {
         timeout: 2000,
       },
     );
+  });
+
+  it("should gracefully handle when the pkill based quit rejects", async () => {
+    jest.mocked(execFileSync).mockImplementation(() => {
+      throw new Error("test-error");
+    });
+
+    await expect(() =>
+      terminateVoiceOverProcess(optionsDummy),
+    ).resolves.not.toThrow();
   });
 });

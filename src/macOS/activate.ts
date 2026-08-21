@@ -1,8 +1,11 @@
+import { base } from "../debug";
 import type { CommandOptions } from "../CommandOptions";
 import { ERR_PREFIX_ACTIVATE } from "./errors";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
 import { withTransaction } from "./withTransaction";
+
+const debug = base.extend("activate");
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-macos-activate)
@@ -25,6 +28,8 @@ export async function activate(
   applicationName: string,
   options?: CommandOptions,
 ): Promise<void> {
+  debug(applicationName);
+
   const script = `tell application "${applicationName}"\n${withTransaction(
     "activate",
   )}\nend tell`;

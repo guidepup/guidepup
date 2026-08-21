@@ -19,6 +19,8 @@ module.exports = {
     "<rootDir>/src/StartOptions.ts",
     // TODO: coverage needed for linux/Orca
     "<rootDir>/src/linux",
+    // TODO: coverage needed for teardown
+    "<rootDir>/src/teardown.ts",
     "<rootDir>/src/macOS/Applications.ts",
     "<rootDir>/src/macOS/KeyboardCommand.ts",
     "<rootDir>/src/macOS/KeyCodeCommand.ts",

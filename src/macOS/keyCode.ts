@@ -7,7 +7,7 @@ import { withModifiers } from "./withModifiers";
 
 export async function keyCode(
   { keyCode, modifiers = [] }: KeyCodeCommand,
-  options?: CommandOptions
+  options?: CommandOptions,
 ): Promise<void> {
   const keyCodeCommand = `key code ${
     Array.isArray(keyCode) ? `{${keyCode.join(", ")}}` : keyCode
@@ -19,6 +19,6 @@ export async function keyCode(
 
   return await retryIfAppleEventTimeout(
     () => runAppleScript(script, options),
-    options
+    options,
   );
 }
