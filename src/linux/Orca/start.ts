@@ -15,7 +15,7 @@ export async function start(): Promise<void> {
     // --import-dir DIR
     // TODO: work out if get use out of specifying speech system:
     // --speech-system NAME
-    const orcaProcess = spawn("orca", ["--replace"], {
+    const orcaProcess = spawn("orca", ["--replace", "--debug"], {
       shell: true,
       stdio: "ignore",
     });
@@ -27,7 +27,7 @@ export async function start(): Promise<void> {
 
       return;
     } catch (cause) {
-      debug("`orca --replace` failed", cause);
+      debug("`orca --replace` failed", cause, orcaProcess);
 
       try {
         orcaProcess.kill("SIGKILL");
