@@ -1,10 +1,15 @@
+import { base } from "../../debug";
 import { ERR_ORCA_CANNOT_BE_STARTED } from "../errors";
 import { spawn } from "child_process";
 import { waitForRunning } from "./waitForRunning";
 
+const debug = base.extend("start");
+
 const MAX_START_ATTEMPTS = 2;
 
 export async function start(): Promise<void> {
+  debug("executing `orca --replace`");
+
   for (let attempt = 0; attempt < MAX_START_ATTEMPTS; attempt++) {
     // TODO: start with Guidepup custom preferences using:
     // --import-dir DIR
@@ -17,8 +22,13 @@ export async function start(): Promise<void> {
 
     try {
       await waitForRunning();
+
+      debug("`orca --replace` succeeded");
+
       return;
-    } catch (e) {
+    } catch (cause) {
+      debug("`orca --replace` failed", cause);
+
       try {
         orcaProcess.kill("SIGKILL");
       } catch {
@@ -26,8 +36,8 @@ export async function start(): Promise<void> {
       }
 
       if (attempt === MAX_START_ATTEMPTS - 1) {
-        throw new Error(`${ERR_ORCA_CANNOT_BE_STARTED}\n${e.message}`, {
-          cause: e,
+        throw new Error(ERR_ORCA_CANNOT_BE_STARTED, {
+          cause,
         });
       }
     }
