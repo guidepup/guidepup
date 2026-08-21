@@ -10,14 +10,13 @@ const OBJECT_PATHS = {
   CaretNavigator: "/org/gnome/Orca/Service/CaretNavigator",
 };
 
-interface CaretNavigator {
-  // TODO: generate all
-  NextLine(): DBusPromise<void>;
+interface OrcaModule {
+  ExecuteCommand(command: string, notifyUser: boolean): DBusPromise<void>;
 }
 
 interface OrcaService {
   // TODO: generate all
-  CaretNavigator: CaretNavigator;
+  CaretNavigator: OrcaModule;
 }
 
 type ActionOptions = Pick<CommandOptions, "capture">;
@@ -70,7 +69,7 @@ export class OrcaClient {
         const service = await this.#bus.getInterface(
           SERVICE,
           objectPath,
-          `${SERVICE}.${name}`,
+          "org.gnome.Orca.Module",
         );
 
         return [name, service] as const;
