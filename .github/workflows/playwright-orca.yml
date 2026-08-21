@@ -97,7 +97,7 @@ jobs:
 
           orca --version
 
-          npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
+          DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true

@@ -1,7 +1,10 @@
 import { type DBusPromise, type MessageBus, sessionBus } from "dbus-native";
+import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
 import { ERR_ORCA_NOT_RUNNING } from "../errors";
+
+const debug = base.extend("OrcaClient");
 
 const SERVICE = "org.gnome.Orca.Service";
 
@@ -101,10 +104,14 @@ export class OrcaClient {
    * Stop Orca action execution.
    */
   async stop(): Promise<void> {
+    debug("stopping");
+
     this.#stopped = true;
 
     await this.#waitForAllActions();
     await this.disconnect();
+
+    debug("stopped");
   }
 
   getService(): OrcaService {
@@ -132,6 +139,8 @@ export class OrcaClient {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
+    debug("enqueuing action");
+
     let resolve, reject;
 
     const promise = new Promise<Capture<T>>((_resolve, _reject) => {
@@ -150,6 +159,8 @@ export class OrcaClient {
       return;
     }
 
+    debug("processing next queued action");
+
     const { action, options, resolve, reject, promise } = this.#queue.shift()!;
     this.#inFlight = promise;
 
@@ -165,7 +176,9 @@ export class OrcaClient {
         // TODO: handle different capture options
         // TODO: wrap with speech capture logic and push to `spokenPhrases`
 
+        debug("executing action");
         result = await action();
+        debug("action completed");
 
         spokenPhrases.push("Spoken phrase capture not implemented");
       } else {
