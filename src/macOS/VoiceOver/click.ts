@@ -1,5 +1,6 @@
 import { DEFAULT_CLICK_BUTTON, DEFAULT_CLICK_COUNT } from "../../constants";
 import { Applications } from "../Applications";
+import { base } from "../../debug";
 import { ClickButton } from "./ClickButton";
 import { ClickCount } from "./ClickCount";
 import type { ClickOptions } from "../../ClickOptions";
@@ -7,6 +8,8 @@ import { ERR_VOICE_OVER_CLICK } from "../errors";
 import { retryIfAppleEventTimeout } from "../retryIfAppleEventTimeout";
 import { runAppleScript } from "../runAppleScript";
 import { withTransaction } from "../withTransaction";
+
+const debug = base.extend("click");
 
 const buttonMap = {
   left: ClickButton.Left,
@@ -29,6 +32,8 @@ export async function click(
     clickCount: DEFAULT_CLICK_COUNT,
   },
 ): Promise<void> {
+  debug({ button, clickCount });
+
   const mappedButton = buttonMap[button];
   const mappedClickCount = clickCountMap[clickCount];
 

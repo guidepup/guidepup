@@ -22,11 +22,11 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - run: npx -y @guidepup/setup@0.24.1 setup --ci
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.6 setup --ci
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm ci --prefix ./examples/playwright-nvda --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-nvda rebuild ffmpeg-static --ignore-scripts=false
-      - run: npx -y @guidepup/setup@0.24.1 install
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.6 install
       - run: npm --prefix ./examples/playwright-nvda run browsers
       - run: npm --prefix ./examples/playwright-nvda run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4

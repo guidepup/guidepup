@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/guidepup",
-  "version": "0.33.0",
+  "version": "0.33.2",
   "description": "Screen reader automation library for testing.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/debug": "^4.1.13",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
     "eslint": "^10.0.1",
@@ -50,6 +51,7 @@
   },
   "dependencies": {
     "dbus-native": "^0.15.1",
+    "debug": "^4.4.3",
     "plist": "^4.0.0"
   }
 }

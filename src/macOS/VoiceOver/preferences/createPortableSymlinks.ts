@@ -1,4 +1,4 @@
-import { rmSync, symlinkSync } from "node:fs";
+import { lstatSync, readlinkSync, rmSync, symlinkSync } from "node:fs";
 import { ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES } from "../../errors";
 import { join } from "node:path";
 import { PREFERENCES_PATH } from "./constants";
@@ -15,12 +15,18 @@ export function createPortableSymlinks(preferencesDirectory: string): void {
     const linkPath = join(preferencesDirectory, file);
 
     try {
-      rmSync(linkPath, { force: true });
+      if (
+        lstatSync(linkPath).isSymbolicLink() &&
+        readlinkSync(linkPath) === PREFERENCES_PATH
+      ) {
+        continue;
+      }
     } catch {
-      // Swallow
+      // Doesn't exist — create it below.
     }
 
     try {
+      rmSync(linkPath, { force: true });
       symlinkSync(PREFERENCES_PATH, linkPath);
     } catch (cause) {
       throw new Error(ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES, {

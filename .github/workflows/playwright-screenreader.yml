@@ -22,12 +22,12 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - run: npx -y @guidepup/setup@0.24.1 setup --ci --macos-record
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.6 setup --ci --macos-record
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm ci --prefix ./examples/playwright-screenreader --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-screenreader rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-screenreader run browsers
-      - run: npx -y @guidepup/setup@0.24.1 install
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.6 install
       - run: npm --prefix ./examples/playwright-screenreader run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
