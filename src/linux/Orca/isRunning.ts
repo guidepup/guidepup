@@ -1,6 +1,20 @@
+import { execFile } from "child_process";
+import { promisify } from "util";
+
+const execFileAsync = promisify(execFile);
+
 export async function isRunning(): Promise<boolean> {
-  // TODO: could consider `orca --list-apps` and check for output and orca listed
-  // Probably more interested in a similar setup to NVDA where can prove that we can
-  // successfully open a connection for receiving speech output.
-  return Promise.resolve(true);
+  try {
+    const { stdout } = await execFileAsync("pgrep", ["-x", "orca"]);
+
+    if (!stdout.trim()) {
+      return false;
+    }
+
+    const { stdout: apps } = await execFileAsync("orca", ["--list-apps"]);
+
+    return apps.includes("orca");
+  } catch {
+    return false;
+  }
 }
