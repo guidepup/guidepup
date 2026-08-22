@@ -37,7 +37,7 @@ jobs:
       - run: |
           sudo apt-get update
 
-          apt-get install -y \
+          sudo apt-get install -y \
             orca \
             xvfb \
             dbus-x11 \
