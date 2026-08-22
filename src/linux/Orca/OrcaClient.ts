@@ -1,4 +1,10 @@
-import { type DBusPromise, type MessageBus, sessionBus } from "dbus-native";
+import { ChildProcess, spawn } from "node:child_process";
+import {
+  type DBusPromise,
+  DBusService,
+  type MessageBus,
+  sessionBus,
+} from "dbus-native";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
@@ -6,11 +12,24 @@ import { ERR_ORCA_NOT_RUNNING } from "../errors";
 
 const debug = base.extend("OrcaClient");
 
-const SERVICE = "org.gnome.Orca.Service";
+const ATSPI_LAUNCHER = "/usr/libexec/at-spi-bus-launcher";
+const DISPLAY = ":99";
+const DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
 
-const OBJECT_PATHS = {
+const DBUS_ORCA_COMMANDS = {
   // TODO: generate all
-  CaretNavigator: "/org/gnome/Orca/Service/CaretNavigator",
+  CaretNavigator: {
+    objectPath: "/org/gnome/Orca/Service/CaretNavigator",
+    interface: "org.gnome.Orca.CaretNavigator",
+  },
+};
+
+const killProcess = (process, name) => {
+  if (process && process.exitCode === null) {
+    debug(`Killing ${name}...`);
+
+    process.kill("SIGTERM");
+  }
 };
 
 interface OrcaModule {
@@ -33,13 +52,25 @@ interface QueueAction {
 }
 
 export class OrcaClient {
+  #dbusAddress = null;
   #bus: MessageBus = null;
+  #dbusOrcaService: DBusService = null;
+
+  #orcaService: OrcaService = null;
+
+  #xvfbProcess: ChildProcess = null;
+  #dbusProcess: ChildProcess = null;
+  #atSpiProcess: ChildProcess = null;
+  #orcaProcess: ChildProcess = null;
+
   #capture: CommandOptions["capture"];
   #inFlight: Promise<unknown> | null = null;
   #queue: QueueAction[] = [];
-  #service: OrcaService = null;
   #spokenPhrases = [];
-  #stopped = false;
+
+  #started = false;
+  #starting = false;
+  #stopping = false;
 
   /**
    * Get the log of all spoken phrases for this Orca connection.
@@ -61,16 +92,106 @@ export class OrcaClient {
     this.#spokenPhrases = [];
   }
 
-  /**
-   * Connect to an Orca instance.
-   */
-  async connect(options?: Pick<CommandOptions, "capture">): Promise<void> {
-    this.#bus = sessionBus();
+  #startXvfb() {
+    return new Promise((resolve, reject) => {
+      debug(`[1/5] Starting Xvfb on DISPLAY ${DISPLAY}...`);
+
+      this.#xvfbProcess = spawn("Xvfb", [
+        DISPLAY,
+        "-screen",
+        "0",
+        "1024x768x24",
+      ]);
+
+      this.#xvfbProcess.on("error", reject);
+
+      setTimeout(resolve, 500);
+    });
+  }
+
+  #startDBus() {
+    return new Promise<void>((resolve, reject) => {
+      debug("[2/5] Starting isolated session D-Bus...");
+      const env = { ...process.env, DISPLAY };
+
+      this.#dbusProcess = spawn(
+        "dbus-daemon",
+        ["--session", "--print-address", "--nofork"],
+        { env },
+      );
+
+      this.#dbusProcess.on("error", reject);
+
+      this.#dbusProcess.stdout.once("data", (data) => {
+        this.#dbusAddress = data.toString().trim();
+
+        debug(`\tD-Bus Address: ${this.#dbusAddress}`);
+
+        resolve();
+      });
+    });
+  }
+
+  #startAtSpi() {
+    return new Promise((resolve, reject) => {
+      debug("[3/5] Starting AT-SPI...");
+      const env = {
+        ...process.env,
+        DISPLAY,
+        DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
+      };
+
+      this.#atSpiProcess = spawn(ATSPI_LAUNCHER, ["--launch-immediately"], {
+        env,
+      });
+
+      this.#atSpiProcess.on("error", reject);
+
+      setTimeout(resolve, 500);
+    });
+  }
+
+  #startOrca() {
+    return new Promise((resolve, reject) => {
+      debug(`[4/5] Starting application: "orca --replace"...`);
+      const env = {
+        ...process.env,
+        DISPLAY,
+        DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
+      };
+
+      this.#orcaProcess = spawn("orca", ["--replace"], {
+        env,
+      });
+
+      this.#orcaProcess.once("exit", (code) => {
+        if (!this.#started && code !== 0) {
+          reject(new Error(`Application exited prematurely with code ${code}`));
+        }
+      });
+
+      this.#orcaProcess.on("error", reject);
+      setTimeout(resolve, 1500);
+    });
+  }
+
+  async #connect() {
+    debug("[5/5] Connecting Node to D-Bus and verifying services...");
+    this.#bus = sessionBus({ busAddress: this.#dbusAddress });
+
+    const names = await this.#bus.listNames();
+
+    if (!names.includes(DBUS_ORCA_WELL_KNOWN_SERVICE_NAME)) {
+      throw new Error("TODO: error for not registered");
+    }
+
+    this.#dbusOrcaService = this.#bus.getService(
+      DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
+    );
 
     const entries = await Promise.all(
-      Object.entries(OBJECT_PATHS).map(async ([name, objectPath]) => {
-        const service = await this.#bus.getInterface(
-          SERVICE,
+      Object.entries(DBUS_ORCA_COMMANDS).map(async ([name, { objectPath }]) => {
+        const service = await this.#dbusOrcaService.getInterface(
           objectPath,
           "org.gnome.Orca.Module",
         );
@@ -79,47 +200,73 @@ export class OrcaClient {
       }),
     );
 
-    this.#service = Object.fromEntries(entries) as unknown as OrcaService;
+    this.#orcaService = Object.fromEntries(entries) as unknown as OrcaService;
 
-    // TODO: handle speech output connection as well
-
-    this.#capture = options?.capture;
+    debug(
+      `Ready: Successfully mapped interface ${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}.`,
+    );
   }
 
-  /**
-   * Disconnect the Orca connection.
-   */
-  async disconnect(): Promise<void> {
-    try {
-      await this.#bus?.close();
-    } catch {
-      // swallow
+  async start() {
+    if (this.#started || this.#starting) {
+      return;
     }
 
-    this.#bus = null;
-    this.#service = null;
+    this.#starting = true;
+
+    try {
+      await this.#startXvfb();
+      await this.#startDBus();
+      await this.#startAtSpi();
+      await this.#startOrca();
+      await this.#connect();
+
+      this.#started = true;
+    } catch (cause) {
+      throw new Error("TODO: start error", { cause });
+    } finally {
+      if (!this.#started) {
+        await this.stop();
+      }
+
+      this.#starting = false;
+    }
   }
 
-  /**
-   * Stop Orca action execution.
-   */
-  async stop(): Promise<void> {
+  async stop() {
     debug("stopping");
-
-    this.#stopped = true;
+    this.#stopping = true;
 
     await this.#waitForAllActions();
-    await this.disconnect();
 
-    debug("stopped");
-  }
+    if (this.#bus) {
+      await this.#bus.close();
 
-  getService(): OrcaService {
-    if (!this.#service) {
-      throw new Error("OrcaClient is not connected");
+      this.#bus = null;
     }
 
-    return this.#service;
+    this.#dbusOrcaService = null;
+
+    killProcess(this.#orcaProcess, "Orca");
+    killProcess(this.#atSpiProcess, "AT-SPI");
+    killProcess(this.#dbusProcess, "D-Bus");
+    killProcess(this.#xvfbProcess, "Xvfb");
+
+    this.#orcaProcess = null;
+    this.#atSpiProcess = null;
+    this.#dbusProcess = null;
+    this.#xvfbProcess = null;
+
+    this.#stopping = false;
+    this.#started = false;
+  }
+
+  get service(): OrcaService {
+    if (!this.#started || this.#stopping || !this.#dbusOrcaService) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
+    return this.#orcaService;
   }
 
   /**
@@ -135,7 +282,7 @@ export class OrcaClient {
     action: () => Promise<T>,
     options?: ActionOptions,
   ): Promise<Capture<T>> {
-    if (this.#stopped) {
+    if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
@@ -165,7 +312,7 @@ export class OrcaClient {
     this.#inFlight = promise;
 
     try {
-      if (this.#stopped) {
+      if (!this.#started || this.#stopping) {
         throw new Error(ERR_ORCA_NOT_RUNNING);
       }
 

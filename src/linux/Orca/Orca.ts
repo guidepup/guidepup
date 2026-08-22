@@ -12,7 +12,7 @@ import { notImplemented } from "../../notImplemented";
 import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
 import { quit } from "./quit";
-import { start } from "./start";
+// import { start } from "./start";
 import { StartOptions } from "../../StartOptions";
 
 // REF: https://man.archlinux.org/man/orca.1.en
@@ -255,17 +255,15 @@ export class Orca implements IScreenReader {
 
       // TODO: settings
 
-      await start();
+      // await start();
 
       this.#client = new OrcaClient();
-      await this.#client.connect();
+      await this.#client.start();
 
       this.#started = true;
     } catch (cause) {
       throw new Error(ERR_ORCA_CANNOT_BE_STARTED, { cause });
     } finally {
-      this.#starting = false;
-
       if (!this.#started) {
         try {
           quit();
@@ -273,6 +271,8 @@ export class Orca implements IScreenReader {
           // Swallow
         }
       }
+
+      this.#starting = false;
     }
   }
 
@@ -371,9 +371,10 @@ export class Orca implements IScreenReader {
 
     await this.#client.enqueueAndTap(
       async () =>
-        await this.#client
-          .getService()
-          .CaretNavigator.ExecuteCommand("NextLine", true),
+        await this.#client.service.CaretNavigator.ExecuteCommand(
+          "NextLine",
+          true,
+        ),
     );
   }
 
