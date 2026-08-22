@@ -35,7 +35,8 @@ jobs:
             xvfb \
             dbus-x11 \
             libglib2.0-bin \
-            pulseaudio
+            pulseaudio \
+            python3-dasbus
 
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 setup --ci
