@@ -91,7 +91,9 @@ jobs:
           echo "  socket: ${SPEECHD_DIR}/run/speechd.sock"
           echo " "
 
-          DEBUG=guidepup:* xvfb-run npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
+          DEBUG=guidepup:* xvfb-run npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
+
+          cat /tmp/guidepup-orca-speech.log
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
