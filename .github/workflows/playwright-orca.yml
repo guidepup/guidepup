@@ -84,9 +84,17 @@ jobs:
           echo "Speech Dispatcher running:"
           echo "  PID:    $SPEECHD_PID"
           echo "  socket: ${SPEECHD_DIR}/run/speechd.sock"
+          echo " "
+          echo " "
+          echo " "
+          echo " "
 
-          Xvfb :99 >/dev/null 2>&1 &
           export DISPLAY=:99
+          Xvfb :99 >/dev/null 2>&1 &
+          echo " "
+          echo " "
+          echo " "
+          echo " "
 
           DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
