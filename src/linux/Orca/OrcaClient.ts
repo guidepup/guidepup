@@ -141,8 +141,23 @@ export class OrcaClient {
   }
 
   #startAtSpi() {
-    return new Promise<void>((resolve, reject) => {
-      debug("[2/4] Starting AT-SPI...");
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise<void>(async (resolve, reject) => {
+      debug("[2/4] Ensuring AT-SPI...");
+
+      try {
+        const names = await this.#bus.listNames();
+
+        if (names.includes("org.a11y.Bus")) {
+          debug("AT-SPI already running; reusing existing bus");
+
+          return;
+        }
+      } catch {
+        // swallow
+      }
+
+      debug("AT-SPI not running; starting launcher");
 
       this.#atSpiProcess = spawn(ATSPI_LAUNCHER, ["--launch-immediately"], {
         env: {
