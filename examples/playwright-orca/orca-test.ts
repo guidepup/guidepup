@@ -1,5 +1,6 @@
 import type { CommandOptions, Orca } from "../../src";
 import { applicationNameMap } from "../applicationNameMap";
+import { execFileSync } from "node:child_process";
 import { orca } from "../../src";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
@@ -82,13 +83,26 @@ export const orcaTest = test.extend<{
   orcaStartOptions: StartOptions;
 }>({
   orcaStartOptions: { capture: "initial" },
-  orca: async ({ browserName, orcaStartOptions }, use) => {
+  orca: async ({ browserName, orcaStartOptions, page }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
 
       if (!applicationName) {
         throw new Error(`Browser ${browserName} is not installed.`);
       }
+
+      await page.bringToFront();
+
+      console.log(
+        execFileSync("wmctrl", ["-lx"], {
+          encoding: "utf8",
+        }),
+      );
+      console.log(
+        execFileSync("wmctrl", ["-a", "Nightly"], {
+          encoding: "utf8",
+        }),
+      );
 
       orcaPlaywright.navigateToWebContent = async () => {};
 

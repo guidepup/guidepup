@@ -39,7 +39,8 @@ jobs:
             dbus-x11 \
             libglib2.0-bin \
             pulseaudio \
-            python3-dasbus
+            python3-dasbus \
+            wmctrl
 
           pulseaudio \
             --start \
