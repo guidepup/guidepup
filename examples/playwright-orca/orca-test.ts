@@ -1,9 +1,9 @@
 import type { CommandOptions, Orca } from "../../src";
-import { Page, test } from "@playwright/test";
 import { applicationNameMap } from "../applicationNameMap";
 import { execSync } from "child_process";
 import { orca } from "../../src";
 import type { StartOptions } from "../../src/StartOptions";
+import { test } from "@playwright/test";
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
@@ -83,9 +83,7 @@ export const orcaTest = test.extend<{
   orcaStartOptions: StartOptions;
 }>({
   orcaStartOptions: { capture: "initial" },
-  orca: async ({ browserName, orcaStartOptions, playwright }, use) => {
-    let page: Page;
-
+  orca: async ({ browserName, orcaStartOptions, page }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
 
@@ -111,16 +109,6 @@ export const orcaTest = test.extend<{
         ).toString(),
       );
       await use(orcaPlaywright);
-
-      const browser = await playwright.firefox.launch();
-      const context = await browser.newContext();
-      page = await context.newPage();
-
-      console.log(
-        execSync(
-          "ps -ef | grep -E '[f]irefox|[o]rca|[a]t-spi|[d]bus'",
-        ).toString(),
-      );
     } finally {
       try {
         await orcaPlaywright.stop();

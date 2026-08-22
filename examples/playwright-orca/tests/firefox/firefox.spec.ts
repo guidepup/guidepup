@@ -1,6 +1,6 @@
-import { execFileSync, spawn } from "child_process";
 import { platform, release } from "os";
 import { delay } from "../../../../src/delay";
+import { execFileSync } from "child_process";
 import { log } from "console";
 import { orcaTest as test } from "../../orca-test";
 
@@ -46,12 +46,6 @@ test.describe("Firefox Playwright Orca", () => {
     await orca.navigateToWebContent();
 
     try {
-      console.log(execFileSync("orca", ["--list-apps"], { encoding: "utf-8" }));
-
-      spawn("firefox", ["--no-remote", "about:blank"], {
-        env: process.env,
-      });
-
       console.log(execFileSync("orca", ["--list-apps"], { encoding: "utf-8" }));
     } catch (cause) {
       // swallow
