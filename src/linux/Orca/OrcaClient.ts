@@ -102,7 +102,7 @@ export class OrcaClient {
         { env: { ...process.env, DISPLAY: this.#display } },
       );
 
-      this.#atSpiProcess.on("error", (error) => {
+      this.#dbusProcess.on("error", (error) => {
         debug("D-Bus error:", error);
 
         reject(error);
@@ -118,7 +118,7 @@ export class OrcaClient {
         resolve();
       });
 
-      this.#atSpiProcess.stderr?.on("data", (data) => {
+      this.#dbusProcess.stderr?.on("data", (data) => {
         debug(`D-Bus stderr: ${data.toString().trim()}`);
       });
 
