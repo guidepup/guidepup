@@ -95,19 +95,8 @@ export const orcaTest = test.extend<{
         await page.bringToFront();
       };
 
-      console.log(
-        execSync(
-          "ps -ef | grep -E '[f]irefox|[o]rca|[a]t-spi|[d]bus'",
-        ).toString(),
-      );
-
       await orcaPlaywright.start(orcaStartOptions);
 
-      console.log(
-        execSync(
-          "ps -ef | grep -E '[f]irefox|[o]rca|[a]t-spi|[d]bus'",
-        ).toString(),
-      );
       await use(orcaPlaywright);
     } finally {
       try {
@@ -116,5 +105,29 @@ export const orcaTest = test.extend<{
         // swallow stop failure
       }
     }
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  page: async ({ orca, playwright }, use) => {
+    const browser = await playwright.firefox.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    try {
+      console.log(
+        execSync(
+          "ps -ef | grep -E '[f]irefox|[o]rca|[a]t-spi|[d]bus'",
+        ).toString(),
+      );
+    } catch {
+      // swallow
+    }
+
+    try {
+      console.log(execSync("orca -l").toString());
+    } catch {
+      // swallow
+    }
+
+    await use(page);
   },
 });
