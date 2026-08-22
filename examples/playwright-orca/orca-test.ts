@@ -1,6 +1,5 @@
 import type { CommandOptions, Orca } from "../../src";
 import { applicationNameMap } from "../applicationNameMap";
-import { execFileSync } from "node:child_process";
 import { orca } from "../../src";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
