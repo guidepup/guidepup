@@ -34,7 +34,8 @@ jobs:
             orca \
             xvfb \
             dbus-x11 \
-            libglib2.0-bin
+            libglib2.0-bin \
+            pulseaudio
 
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 setup --ci
@@ -45,6 +46,13 @@ jobs:
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 install
       - run: |
+          pulseaudio \
+            --start \
+            --exit-idle-time=-1 \
+            --log-target=stderr
+
+          pactl info
+
           export SPEECHD_DIR=/tmp/guidepup-speechd
 
           mkdir -p \
@@ -52,6 +60,8 @@ jobs:
             "${SPEECHD_DIR}/run"
 
           cp -r ./.github/tmp-orca-speechd/. "${SPEECHD_DIR}/"
+
+          ls -laR ${SPEECHD_DIR}
 
           speech-dispatcher \
             --run-single \
