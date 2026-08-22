@@ -11,15 +11,9 @@ test.use({
 });
 
 test.describe("Firefox Playwright Orca", () => {
-  test("I can navigate the Guidepup Github page", async ({
-    browser,
-    browserName,
-    page,
-    orca,
-  }) => {
+  test("I can navigate the Guidepup Github opage", async ({ opage, orca }) => {
     const osName = platform();
     const osVersion = release();
-    const browserVersion = browser.version();
     const screenReaderName = orca.name;
     const screenReaderVersion = orca.version;
     const { retry } = test.info();
@@ -27,19 +21,17 @@ test.describe("Firefox Playwright Orca", () => {
     console.table({
       osName,
       osVersion,
-      browserName,
-      browserVersion,
       screenReaderName,
       screenReaderVersion,
       retry,
     });
 
     log("Navigating to URL: https://www.guidepup.dev.");
-    await page.goto("https://www.guidepup.dev", {
+    await opage.goto("https://www.guidepup.dev", {
       waitUntil: "load",
     });
 
-    const header = page.locator("h1");
+    const header = opage.locator("h1");
     await header.waitFor();
     await delay(500);
 
