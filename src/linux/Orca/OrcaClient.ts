@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from "node:child_process";
+import { ChildProcess, execFileSync, spawn } from "node:child_process";
 import {
   type DBusPromise,
   DBusService,
@@ -271,11 +271,42 @@ export class OrcaClient {
         }
 
         try {
-          const names = await this.#bus.listNames();
+          const output = execFileSync(
+            "gdbus",
+            [
+              "call",
+              "--session",
+              "--dest",
+              DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
+              "--object-path",
+              "/org/gnome/Orca1/Service",
+              "--method",
+              "org.gnome.Orca1.Service.GetVersion",
+            ],
+            {
+              encoding: "utf8",
+              env: {
+                ...process.env,
+                DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
+              },
+            },
+          );
 
-          debug(`Polling for '${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}'`, names);
+          debug(`Orca GetVersion: ${output.trim()}`);
+        } catch (error) {
+          debug(`Orca GetVersion failed: ${error}`);
+        }
 
-          if (names.includes(DBUS_ORCA_WELL_KNOWN_SERVICE_NAME)) {
+        try {
+          debug(
+            `Polling for '${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
+          );
+
+          const hasOwner = await this.#bus.nameHasOwner(
+            DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
+          );
+
+          if (hasOwner) {
             resolve();
 
             return;
