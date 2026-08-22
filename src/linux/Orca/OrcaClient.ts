@@ -9,11 +9,11 @@ import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
 import { ERR_ORCA_NOT_RUNNING } from "../errors";
+import { waitForRunning } from "./waitForRunning";
 
 const debug = base.extend("OrcaClient");
 
 const ATSPI_LAUNCHER = "/usr/libexec/at-spi-bus-launcher";
-const DISPLAY = ":99";
 const DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
 
 const DBUS_ORCA_COMMANDS = {
@@ -52,6 +52,8 @@ interface QueueAction {
 }
 
 export class OrcaClient {
+  #display = null;
+
   #dbusAddress = null;
   #bus: MessageBus = null;
   #dbusOrcaService: DBusService = null;
@@ -92,32 +94,14 @@ export class OrcaClient {
     this.#spokenPhrases = [];
   }
 
-  #startXvfb() {
-    return new Promise((resolve, reject) => {
-      debug(`[1/5] Starting Xvfb on DISPLAY ${DISPLAY}...`);
-
-      this.#xvfbProcess = spawn("Xvfb", [
-        DISPLAY,
-        "-screen",
-        "0",
-        "1024x768x24",
-      ]);
-
-      this.#xvfbProcess.on("error", reject);
-
-      setTimeout(resolve, 500);
-    });
-  }
-
   #startDBus() {
     return new Promise<void>((resolve, reject) => {
       debug("[2/5] Starting isolated session D-Bus...");
-      const env = { ...process.env, DISPLAY };
 
       this.#dbusProcess = spawn(
         "dbus-daemon",
         ["--session", "--print-address", "--nofork"],
-        { env },
+        { env: { ...process.env, DISPLAY: this.#display } },
       );
 
       this.#dbusProcess.on("error", reject);
@@ -135,14 +119,13 @@ export class OrcaClient {
   #startAtSpi() {
     return new Promise((resolve, reject) => {
       debug("[3/5] Starting AT-SPI...");
-      const env = {
-        ...process.env,
-        DISPLAY,
-        DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
-      };
 
       this.#atSpiProcess = spawn(ATSPI_LAUNCHER, ["--launch-immediately"], {
-        env,
+        env: {
+          ...process.env,
+          DISPLAY: this.#display,
+          DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
+        },
       });
 
       this.#atSpiProcess.on("error", reject);
@@ -154,14 +137,13 @@ export class OrcaClient {
   #startOrca() {
     return new Promise((resolve, reject) => {
       debug(`[4/5] Starting application: "orca --replace"...`);
-      const env = {
-        ...process.env,
-        DISPLAY,
-        DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
-      };
 
       this.#orcaProcess = spawn("orca", ["--replace"], {
-        env,
+        env: {
+          ...process.env,
+          DISPLAY: this.#display,
+          DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
+        },
       });
 
       this.#orcaProcess.once("exit", (code) => {
@@ -171,7 +153,8 @@ export class OrcaClient {
       });
 
       this.#orcaProcess.on("error", reject);
-      setTimeout(resolve, 1500);
+
+      waitForRunning().then(resolve, reject);
     });
   }
 
@@ -207,15 +190,20 @@ export class OrcaClient {
     );
   }
 
-  async start() {
+  async start(options: { display?: string } = {}) {
     if (this.#started || this.#starting) {
       return;
     }
 
     this.#starting = true;
 
+    this.#display = options?.display ?? process.env.DISPLAY;
+
+    if (!this.#display) {
+      throw new Error("TODO: X server not running error");
+    }
+
     try {
-      await this.#startXvfb();
       await this.#startDBus();
       await this.#startAtSpi();
       await this.#startOrca();

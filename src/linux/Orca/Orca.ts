@@ -11,8 +11,6 @@ import { isLinux } from "../isLinux";
 import { notImplemented } from "../../notImplemented";
 import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
-import { quit } from "./quit";
-// import { start } from "./start";
 import { StartOptions } from "../../StartOptions";
 
 // REF: https://man.archlinux.org/man/orca.1.en
@@ -56,12 +54,6 @@ export class Orca implements IScreenReader {
     }
 
     this.#client = null;
-
-    try {
-      quit();
-    } catch {
-      // Best effort only.
-    }
 
     try {
       // TODO: teardown settings
@@ -251,11 +243,7 @@ export class Orca implements IScreenReader {
     addTeardownHandler(this.#teardownHandler);
 
     try {
-      quit();
-
       // TODO: settings
-
-      // await start();
 
       this.#client = new OrcaClient();
       await this.#client.start();
@@ -266,7 +254,7 @@ export class Orca implements IScreenReader {
     } finally {
       if (!this.#started) {
         try {
-          quit();
+          await this.#client.stop();
         } catch {
           // Swallow
         }
@@ -304,8 +292,6 @@ export class Orca implements IScreenReader {
       await this.#client.stop();
 
       this.#client = null;
-
-      quit();
 
       // TODO: teardown settings
 

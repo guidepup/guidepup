@@ -1,42 +1,21 @@
 import { base } from "../../debug";
-import { execFile } from "child_process";
-import { promisify } from "util";
-import { sessionBus } from "dbus-native";
+import { execFileSync } from "child_process";
 
 const debug = base.extend("isRunning");
 
-const SERVICE = "org.gnome.Orca.Service";
-const OBJECT_PATH = "/org/gnome/Orca/Service/SystemInformationPresenter";
-const INTERFACE = "org.gnome.Orca.Module";
-
-const execFileAsync = promisify(execFile);
-
 export async function isRunning(): Promise<boolean> {
   try {
-    const { stdout } = await execFileAsync("pgrep", ["-x", "orca"]);
+    const processRunning =
+      execFileSync("pgrep", ["-x", "orca"], {
+        encoding: "utf8",
+        timeout: 2000,
+      }).trim().length > 0;
 
-    debug("`pgrep -x orca`: ", stdout);
+    debug("orca running", processRunning);
 
-    if (!stdout.trim()) {
-      return false;
-    }
-
-    // const { stdout: apps } = await execFileAsync("orca", ["--list-apps"]);
-
-    // debug("`orca --list-apps`: ", apps);
-
-    // if (!apps.includes("orca")) {
-    //   return false;
-    // }
-
-    const bus = sessionBus();
-    await bus.getInterface(SERVICE, OBJECT_PATH, INTERFACE);
-    debug(`D-Bus service "${SERVICE}" is available`);
-    await bus.close();
-
-    return true;
-  } catch (cause) {
-    debug("checks failed: ", cause);
+    return processRunning;
+  } catch {
+    debug("`pgrep -x orca` failed");
 
     return false;
   }
