@@ -14,6 +14,7 @@ const debug = base.extend("OrcaClient");
 
 const ATSPI_LAUNCHER = "/usr/libexec/at-spi-bus-launcher";
 const DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
+const ORCA_DEBUG_FILE = "/tmp/guidepup-orca-debug.log";
 
 const DBUS_ORCA_COMMANDS = {
   // TODO: generate all
@@ -210,16 +211,32 @@ export class OrcaClient {
     return new Promise<void>((resolve, reject) => {
       debug("[3/4] Starting Orca");
 
-      this.#orcaProcess = spawn("orca", ["--replace", "--debug"], {
-        env: {
-          ...process.env,
-          DISPLAY: this.#display,
-          DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
+      this.#orcaProcess = spawn(
+        "orca",
+        ["--replace", "--debug", `--debug-file=${ORCA_DEBUG_FILE}`],
+        {
+          env: {
+            ...process.env,
+            DISPLAY: this.#display,
+            DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
+          },
         },
+      );
+
+      const orcaDebugProcess = spawn("tail", ["-F", ORCA_DEBUG_FILE]);
+
+      orcaDebugProcess.stdout?.on("data", (data) => {
+        debug(`Orca debug: ${data.toString().trim()}`);
+      });
+
+      orcaDebugProcess.stderr?.on("data", (data) => {
+        debug(`Orca debug tail error: ${data.toString().trim()}`);
       });
 
       this.#orcaProcess.once("exit", (code, signal) => {
         debug(`Orca exited (code=${code}, signal=${signal})`);
+
+        orcaDebugProcess.kill();
 
         if (code !== 0) {
           reject(new Error(`Orca exited prematurely with code ${code}`));
