@@ -1,0 +1,104 @@
+name: Playwright Orca
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  playwright-orca:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-26.04]
+        browser: [firefox]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      # TODO: update @guidepup/setup to support linux + orca
+      # - run: npx -y @guidepup/setup@0.24.1 setup --ci
+      - run: npm ci --no-audit --no-fund --no-progress
+      - run: npm ci --prefix ./examples/playwright-orca --no-audit --no-fund --no-progress
+      - run: npm --prefix ./examples/playwright-orca rebuild ffmpeg-static --ignore-scripts=false
+      - run: npm --prefix ./examples/playwright-orca run browsers
+      # TODO: update @guidepup/setup to support linux + orca
+      # - run: npx -y @guidepup/setup@0.24.1 install
+      - run: |
+          sudo apt-get update
+
+          sudo apt-get install -y \
+            orca \
+            xvfb \
+            dbus-x11 \
+            libglib2.0-bin \
+            pulseaudio \
+            python3-dasbus
+
+          pulseaudio \
+            --start \
+            --exit-idle-time=-1 \
+            --log-target=stderr
+
+          pactl info
+
+          export SPEECHD_DIR=/tmp/guidepup-speechd
+
+          mkdir -p \
+            "${SPEECHD_DIR}/logs" \
+            "${SPEECHD_DIR}/run"
+
+          cp -r ./.github/tmp-orca-speechd/. "${SPEECHD_DIR}/"
+
+          ls -laR ${SPEECHD_DIR}
+
+          speech-dispatcher \
+            --run-single \
+            --config-dir "${SPEECHD_DIR}" \
+            --module-dir "${SPEECHD_DIR}/modules" \
+            --communication-method unix_socket \
+            --socket-path "${SPEECHD_DIR}/run/speechd.sock" \
+            --log-dir "${SPEECHD_DIR}/logs" \
+            --log-level 5 \
+            --timeout 0 &
+
+          SPEECHD_PID=$!
+
+          export SPEECHD_ADDRESS="unix_socket:${SPEECHD_DIR}/run/speechd.sock"
+
+          for i in $(seq 1 50); do
+            if [ -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
+              break
+            fi
+
+            sleep 0.1
+          done
+
+          if [ ! -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
+            echo "Speech Dispatcher failed to create socket"
+            cat "${SPEECHD_DIR}/logs/"* 2>/dev/null || true
+            exit 1
+          fi
+
+          echo "Speech Dispatcher running:"
+          echo "  PID:    $SPEECHD_PID"
+          echo "  socket: ${SPEECHD_DIR}/run/speechd.sock"
+          echo " "
+
+          DEBUG=guidepup:* xvfb-run npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
+
+          cat /tmp/guidepup-orca-speech.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: artifacts-${{ matrix.os }}-${{ matrix.browser }}
+          path: |
+            **/test-results/**/*
+            **/recordings/**/*

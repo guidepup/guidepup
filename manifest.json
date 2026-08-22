@@ -2,6 +2,20 @@
   "version": 1,
   "screenReaders": [
     {
+      "id": "orca",
+      "name": "Orca",
+      "platforms": ["linux"],
+      "defaultDownload": true,
+      "assets": [
+        {
+          "version": "TBD",
+          "repository": "TBD",
+          "asset": "TBD",
+          "sha256": "TBD"
+        }
+      ]
+    },
+    {
       "id": "nvda",
       "name": "NVDA",
       "platforms": ["win32"],
