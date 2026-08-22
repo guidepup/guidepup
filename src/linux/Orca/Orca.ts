@@ -359,8 +359,8 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      const result = await this.#client.service.CaretNavigator.ExecuteCommand(
-        "NextLine",
+      const result = await this.#client.service.ObjectNavigator.ExecuteCommand(
+        "MoveToNextSibling",
         true,
       );
 
