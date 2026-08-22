@@ -26,18 +26,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      # TODO: all installation handled by @guidepup/setup
-      - run: |
-          sudo apt-get update
-
-          sudo apt-get install -y \
-            orca \
-            xvfb \
-            dbus-x11 \
-            libglib2.0-bin \
-            pulseaudio \
-            python3-dasbus
-
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 setup --ci
       - run: npm ci --no-audit --no-fund --no-progress
@@ -47,6 +35,19 @@ jobs:
       # TODO: update @guidepup/setup to support linux + orca
       # - run: npx -y @guidepup/setup@0.24.1 install
       - run: |
+          sudo apt-get update
+
+          ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime
+          echo "Europe/London" > /etc/timezone
+
+          apt-get install -y \
+            orca \
+            xvfb \
+            dbus-x11 \
+            libglib2.0-bin \
+            pulseaudio \
+            python3-dasbus
+
           pulseaudio \
             --start \
             --exit-idle-time=-1 \
