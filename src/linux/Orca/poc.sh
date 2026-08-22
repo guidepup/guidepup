@@ -45,7 +45,7 @@ cat > "${SPEECHD_DIR}/modules/guidepup" <<'PY'
 
 import sys
 
-LOG = "/tmp/speech.log"
+LOG = "/tmp/guidepup-orca-speech.log"
 
 
 def log(text):
@@ -269,4 +269,4 @@ gdbus call \
 
 # TODO: Move away from a log file and we would instead consume off Unix socket
 # in the Guidepup OrcaClient.
-cat /tmp/speech.log
+cat /tmp/guidepup-orca-speech.log

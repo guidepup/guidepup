@@ -2,7 +2,7 @@
 
 import sys
 
-LOG = "/tmp/speech.log"
+LOG = "/tmp/guidepup-orca-speech.log"
 
 def log(text):
     with open(LOG, "a", buffering=1) as f:
