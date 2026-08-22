@@ -212,8 +212,8 @@ export class OrcaClient {
       debug("[3/4] Starting Orca");
 
       this.#orcaProcess = spawn(
-        "sudo",
-        ["orca", "--replace", "--debug", `--debug-file=${ORCA_DEBUG_FILE}`],
+        "orca",
+        ["--replace", "--debug", `--debug-file=${ORCA_DEBUG_FILE}`],
         {
           env: {
             ...process.env,
