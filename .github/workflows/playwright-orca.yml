@@ -75,7 +75,7 @@ jobs:
           SPEECHD_PID=$!
 
           export SPEECHD_ADDRESS="unix_socket:${SPEECHD_DIR}/run/speechd.sock"
-export SPEECHD_SOCKET="${SPEECHD_DIR}/run/speechd.sock"
+
           for i in $(seq 1 50); do
             if [ -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
               break
