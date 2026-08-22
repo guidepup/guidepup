@@ -37,9 +37,6 @@ jobs:
       - run: |
           sudo apt-get update
 
-          ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime
-          echo "Europe/London" > /etc/timezone
-
           apt-get install -y \
             orca \
             xvfb \
@@ -97,16 +94,9 @@ jobs:
           echo "  PID:    $SPEECHD_PID"
           echo "  socket: ${SPEECHD_DIR}/run/speechd.sock"
           echo " "
-          echo " "
-          echo " "
-          echo " "
 
           export DISPLAY=:99
           Xvfb :99 >/dev/null 2>&1 &
-          echo " "
-          echo " "
-          echo " "
-          echo " "
 
           DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
