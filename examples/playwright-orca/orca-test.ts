@@ -90,9 +90,9 @@ export const orcaTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      await page.bringToFront();
-
-      orcaPlaywright.navigateToWebContent = async () => {};
+      orcaPlaywright.navigateToWebContent = async () => {
+        await page.bringToFront();
+      };
 
       await orcaPlaywright.start(orcaStartOptions);
       await use(orcaPlaywright);
