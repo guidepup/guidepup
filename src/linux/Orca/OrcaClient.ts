@@ -12,6 +12,8 @@ import { ERR_ORCA_NOT_RUNNING } from "../errors";
 
 const debug = base.extend("OrcaClient");
 
+const POLL_INTERVAL = 2_000;
+
 const ATSPI_LAUNCHER = "/usr/libexec/at-spi-bus-launcher";
 const DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
 const ORCA_DEBUG_FILE = "/tmp/guidepup-orca-debug.log";
@@ -185,7 +187,7 @@ export class OrcaClient {
           return;
         }
 
-        setTimeout(poll, 100);
+        setTimeout(poll, POLL_INTERVAL);
       };
 
       poll();
@@ -302,7 +304,7 @@ export class OrcaClient {
           return;
         }
 
-        setTimeout(poll, 100);
+        setTimeout(poll, POLL_INTERVAL);
       };
 
       poll();
