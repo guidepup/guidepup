@@ -102,16 +102,10 @@ export class OrcaClient {
         { env: { ...process.env, DISPLAY: this.#display } },
       );
 
-      this.#dbusProcess.on("error", reject);
+      this.#atSpiProcess.on("error", (error) => {
+        debug("D-Bus error:", error);
 
-      this.#dbusProcess.once("exit", (code, signal) => {
-        if (code !== 0) {
-          reject(
-            new Error(
-              `D-Bus daemon exited before startup (code=${code}, signal=${signal})`,
-            ),
-          );
-        }
+        reject(error);
       });
 
       this.#dbusProcess.stdout.once("data", (data) => {
@@ -122,6 +116,22 @@ export class OrcaClient {
         this.#bus = sessionBus({ busAddress: this.#dbusAddress });
 
         resolve();
+      });
+
+      this.#atSpiProcess.stderr?.on("data", (data) => {
+        debug(`D-Bus stderr: ${data.toString().trim()}`);
+      });
+
+      this.#dbusProcess.once("exit", (code, signal) => {
+        debug(`D-Bus exited (code=${code}, signal=${signal})`);
+
+        if (code !== 0) {
+          reject(
+            new Error(
+              `D-Bus daemon exited before startup (code=${code}, signal=${signal})`,
+            ),
+          );
+        }
       });
     });
   }
@@ -138,9 +148,23 @@ export class OrcaClient {
         },
       });
 
-      this.#atSpiProcess.on("error", reject);
+      this.#atSpiProcess.on("error", (error) => {
+        debug("AT-SPI error:", error);
+
+        reject(error);
+      });
+
+      this.#atSpiProcess.stdout?.on("data", (data) => {
+        debug(`AT-SPI stdout: ${data.toString().trim()}`);
+      });
+
+      this.#atSpiProcess.stderr?.on("data", (data) => {
+        debug(`AT-SPI stderr: ${data.toString().trim()}`);
+      });
 
       this.#atSpiProcess.once("exit", (code, signal) => {
+        debug(`AT-SPI exited (code=${code}, signal=${signal})`);
+
         if (code !== 0) {
           reject(
             new Error(
@@ -150,7 +174,15 @@ export class OrcaClient {
         }
       });
 
+      const startTime = Date.now();
+
       const poll = async () => {
+        if (Date.now() - startTime >= 30_000) {
+          reject(new Error("TODO: Timed out waiting for AT-SPI D-Bus service"));
+
+          return;
+        }
+
         try {
           const names = await this.#bus.listNames();
 
@@ -158,10 +190,12 @@ export class OrcaClient {
 
           if (names.includes("org.a11y.Bus")) {
             resolve();
+
             return;
           }
         } catch (error) {
           reject(error);
+
           return;
         }
 
@@ -176,7 +210,7 @@ export class OrcaClient {
     return new Promise<void>((resolve, reject) => {
       debug("[3/4] Starting Orca");
 
-      this.#orcaProcess = spawn("orca", ["--replace"], {
+      this.#orcaProcess = spawn("orca", ["--replace", "--debug"], {
         env: {
           ...process.env,
           DISPLAY: this.#display,
@@ -184,15 +218,41 @@ export class OrcaClient {
         },
       });
 
-      this.#orcaProcess.once("exit", (code) => {
+      this.#orcaProcess.once("exit", (code, signal) => {
+        debug(`Orca exited (code=${code}, signal=${signal})`);
+
         if (code !== 0) {
           reject(new Error(`Orca exited prematurely with code ${code}`));
         }
       });
 
-      this.#orcaProcess.on("error", reject);
+      this.#orcaProcess.on("error", (error) => {
+        debug("Orca error:", error);
+
+        reject(error);
+      });
+
+      this.#orcaProcess.stdout?.on("data", (data) => {
+        debug(`Orca stdout: ${data.toString().trim()}`);
+      });
+
+      this.#orcaProcess.stderr?.on("data", (data) => {
+        debug(`Orca stderr: ${data.toString().trim()}`);
+      });
+
+      const startTime = Date.now();
 
       const poll = async () => {
+        if (Date.now() - startTime >= 30_000) {
+          reject(
+            new Error(
+              `TODO: Timed out waiting for '${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' D-Bus service`,
+            ),
+          );
+
+          return;
+        }
+
         try {
           const names = await this.#bus.listNames();
 
@@ -200,10 +260,12 @@ export class OrcaClient {
 
           if (names.includes(DBUS_ORCA_WELL_KNOWN_SERVICE_NAME)) {
             resolve();
+
             return;
           }
         } catch (error) {
           reject(error);
+
           return;
         }
 
