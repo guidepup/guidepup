@@ -111,7 +111,30 @@ export class OrcaClient {
   }
 
   async #startDBus(): Promise<void> {
-    debug("[1/4] Starting isolated session D-Bus...");
+    debug("[1/4] Ensuring session D-Bus...");
+
+    const existingAddress = process.env.DBUS_SESSION_BUS_ADDRESS;
+
+    if (existingAddress) {
+      debug(`Using existing session D-Bus: ${existingAddress}`);
+
+      this.#dbusAddress = existingAddress;
+      this.#bus = sessionBus({
+        busAddress: this.#dbusAddress,
+      });
+
+      try {
+        await this.#bus.listNames();
+
+        debug("Existing session D-Bus is reachable");
+
+        return;
+      } catch {
+        debug(
+          "Existing D-Bus address is unavailable; starting isolated session",
+        );
+      }
+    }
 
     try {
       const output = execFileSync("dbus-launch", [], {
