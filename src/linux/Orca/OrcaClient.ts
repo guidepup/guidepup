@@ -9,7 +9,6 @@ import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
 import { ERR_ORCA_NOT_RUNNING } from "../errors";
-import { waitForRunning } from "./waitForRunning";
 
 const debug = base.extend("OrcaClient");
 
@@ -20,9 +19,8 @@ const DBUS_ORCA_COMMANDS = {
   // TODO: generate all
   CaretNavigator: {
     objectPath: "/org/gnome/Orca/Service/CaretNavigator",
-    interface: "org.gnome.Orca.CaretNavigator",
   },
-};
+} as const;
 
 const killProcess = (process, name) => {
   if (process && process.exitCode === null) {
@@ -96,7 +94,7 @@ export class OrcaClient {
 
   #startDBus() {
     return new Promise<void>((resolve, reject) => {
-      debug("[2/5] Starting isolated session D-Bus...");
+      debug("[1/4] Starting isolated session D-Bus...");
 
       this.#dbusProcess = spawn(
         "dbus-daemon",
@@ -106,10 +104,22 @@ export class OrcaClient {
 
       this.#dbusProcess.on("error", reject);
 
+      this.#dbusProcess.once("exit", (code, signal) => {
+        if (code !== 0) {
+          reject(
+            new Error(
+              `D-Bus daemon exited before startup (code=${code}, signal=${signal})`,
+            ),
+          );
+        }
+      });
+
       this.#dbusProcess.stdout.once("data", (data) => {
         this.#dbusAddress = data.toString().trim();
 
         debug(`\tD-Bus Address: ${this.#dbusAddress}`);
+
+        this.#bus = sessionBus({ busAddress: this.#dbusAddress });
 
         resolve();
       });
@@ -117,8 +127,8 @@ export class OrcaClient {
   }
 
   #startAtSpi() {
-    return new Promise((resolve, reject) => {
-      debug("[3/5] Starting AT-SPI...");
+    return new Promise<void>((resolve, reject) => {
+      debug("[2/4] Starting AT-SPI...");
 
       this.#atSpiProcess = spawn(ATSPI_LAUNCHER, ["--launch-immediately"], {
         env: {
@@ -130,13 +140,41 @@ export class OrcaClient {
 
       this.#atSpiProcess.on("error", reject);
 
-      setTimeout(resolve, 500);
+      this.#atSpiProcess.once("exit", (code, signal) => {
+        if (code !== 0) {
+          reject(
+            new Error(
+              `AT-SPI launcher exited before startup (code=${code}, signal=${signal})`,
+            ),
+          );
+        }
+      });
+
+      const poll = async () => {
+        try {
+          const names = await this.#bus.listNames();
+
+          debug("Polling for 'org.a11y.Bus'", names);
+
+          if (names.includes("org.a11y.Bus")) {
+            resolve();
+            return;
+          }
+        } catch (error) {
+          reject(error);
+          return;
+        }
+
+        setTimeout(poll, 100);
+      };
+
+      poll();
     });
   }
 
   #startOrca() {
-    return new Promise((resolve, reject) => {
-      debug(`[4/5] Starting application: "orca --replace"...`);
+    return new Promise<void>((resolve, reject) => {
+      debug("[3/4] Starting Orca");
 
       this.#orcaProcess = spawn("orca", ["--replace"], {
         env: {
@@ -147,26 +185,37 @@ export class OrcaClient {
       });
 
       this.#orcaProcess.once("exit", (code) => {
-        if (!this.#started && code !== 0) {
-          reject(new Error(`Application exited prematurely with code ${code}`));
+        if (code !== 0) {
+          reject(new Error(`Orca exited prematurely with code ${code}`));
         }
       });
 
       this.#orcaProcess.on("error", reject);
 
-      waitForRunning().then(resolve, reject);
+      const poll = async () => {
+        try {
+          const names = await this.#bus.listNames();
+
+          debug(`Polling for '${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}'`, names);
+
+          if (names.includes(DBUS_ORCA_WELL_KNOWN_SERVICE_NAME)) {
+            resolve();
+            return;
+          }
+        } catch (error) {
+          reject(error);
+          return;
+        }
+
+        setTimeout(poll, 100);
+      };
+
+      poll();
     });
   }
 
   async #connect() {
-    debug("[5/5] Connecting Node to D-Bus and verifying services...");
-    this.#bus = sessionBus({ busAddress: this.#dbusAddress });
-
-    const names = await this.#bus.listNames();
-
-    if (!names.includes(DBUS_ORCA_WELL_KNOWN_SERVICE_NAME)) {
-      throw new Error("TODO: error for not registered");
-    }
+    debug("[4/4] Connecting to Orca D-Bus service...");
 
     this.#dbusOrcaService = this.#bus.getService(
       DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
