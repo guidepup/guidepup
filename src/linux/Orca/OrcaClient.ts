@@ -325,6 +325,8 @@ export class OrcaClient {
           "org.gnome.Orca.Module",
         );
 
+        debug(objectPath, "org.gnome.Orca.Module", service);
+
         return [name, service] as const;
       }),
     );

@@ -5,6 +5,7 @@ import {
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_NOT_SUPPORTED,
 } from "../errors";
+import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
@@ -12,6 +13,8 @@ import { notImplemented } from "../../notImplemented";
 import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
 import { StartOptions } from "../../StartOptions";
+
+const debug = base.extend("Orca");
 
 // REF: https://man.archlinux.org/man/orca.1.en
 // REF: https://gitlab.gnome.org/GNOME/orca
@@ -355,13 +358,14 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    await this.#client.enqueueAndTap(
-      async () =>
-        await this.#client.service.CaretNavigator.ExecuteCommand(
-          "NextLine",
-          true,
-        ),
-    );
+    await this.#client.enqueueAndTap(async () => {
+      const result = await this.#client.service.CaretNavigator.ExecuteCommand(
+        "NextLine",
+        true,
+      );
+
+      debug("result of ExecuteCommand", result);
+    });
   }
 
   /**
