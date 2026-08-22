@@ -59,8 +59,7 @@ export class OrcaClient {
 
   #orcaService: OrcaService = null;
 
-  #xvfbProcess: ChildProcess = null;
-  #dbusProcess: ChildProcess = null;
+  #dbusPid: number = null;
   #atSpiProcess: ChildProcess = null;
   #orcaProcess: ChildProcess = null;
 
@@ -93,48 +92,34 @@ export class OrcaClient {
     this.#spokenPhrases = [];
   }
 
-  #startDBus() {
-    return new Promise<void>((resolve, reject) => {
-      debug("[1/4] Starting isolated session D-Bus...");
+  async #startDBus(): Promise<void> {
+    debug("[1/4] Starting isolated session D-Bus...");
 
-      this.#dbusProcess = spawn(
-        "dbus-daemon",
-        ["--session", "--print-address", "--nofork"],
-        { env: { ...process.env, DISPLAY: this.#display } },
-      );
-
-      this.#dbusProcess.on("error", (error) => {
-        debug("D-Bus error:", error);
-
-        reject(error);
+    try {
+      const output = execFileSync("dbus-launch", [], {
+        encoding: "utf8",
+        env: { ...process.env, DISPLAY: this.#display },
       });
 
-      this.#dbusProcess.stdout.once("data", (data) => {
-        this.#dbusAddress = data.toString().trim();
+      const addressMatch = output.match(/DBUS_SESSION_BUS_ADDRESS=([^\n]+)/);
+      const pidMatch = output.match(/DBUS_SESSION_BUS_PID=(\d+)/);
 
-        debug(`\tD-Bus Address: ${this.#dbusAddress}`);
+      if (!addressMatch || !pidMatch) {
+        throw new Error(`Failed to parse dbus-launch output:\n${output}`);
+      }
 
-        this.#bus = sessionBus({ busAddress: this.#dbusAddress });
+      this.#dbusAddress = addressMatch[1];
 
-        resolve();
-      });
+      // Store the PID instead of a ChildProcess object so we can kill it later
+      this.#dbusPid = parseInt(pidMatch[1], 10);
 
-      this.#dbusProcess.stderr?.on("data", (data) => {
-        debug(`D-Bus stderr: ${data.toString().trim()}`);
-      });
+      debug(`\tD-Bus Address: ${this.#dbusAddress} (PID: ${this.#dbusPid})`);
 
-      this.#dbusProcess.once("exit", (code, signal) => {
-        debug(`D-Bus exited (code=${code}, signal=${signal})`);
-
-        if (code !== 0) {
-          reject(
-            new Error(
-              `D-Bus daemon exited before startup (code=${code}, signal=${signal})`,
-            ),
-          );
-        }
-      });
-    });
+      this.#bus = sessionBus({ busAddress: this.#dbusAddress });
+    } catch (error) {
+      debug("D-Bus error:", error);
+      throw error;
+    }
   }
 
   #startAtSpi() {
@@ -398,13 +383,20 @@ export class OrcaClient {
 
     killProcess(this.#orcaProcess, "Orca");
     killProcess(this.#atSpiProcess, "AT-SPI");
-    killProcess(this.#dbusProcess, "D-Bus");
-    killProcess(this.#xvfbProcess, "Xvfb");
+
+    if (this.#dbusPid) {
+      debug("Killing D-Bus...");
+
+      try {
+        process.kill(this.#dbusPid, "SIGTERM");
+      } catch {
+        // Best effort
+      }
+    }
 
     this.#orcaProcess = null;
     this.#atSpiProcess = null;
-    this.#dbusProcess = null;
-    this.#xvfbProcess = null;
+    this.#dbusPid = null;
 
     this.#stopping = false;
     this.#started = false;
