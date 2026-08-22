@@ -364,7 +364,32 @@ export class Orca implements IScreenReader {
         true,
       );
 
-      debug("result of ExecuteCommand", result);
+      debug(
+        "result of ObjectNavigator.ExecuteCommand('MoveToNextSibling', true)",
+        result,
+      );
+    });
+  }
+
+  /**
+   * Temporary debug method
+   */
+  async whereAmI(): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
+    await this.#client.enqueueAndTap(async () => {
+      const result =
+        await this.#client.service.WhereAmIPresenter.ExecuteCommand(
+          "WhereAmIDetailed",
+          true,
+        );
+
+      debug(
+        "result of WhereAmIPresenter.ExecuteCommand('WhereAmIDetailed', true)",
+        result,
+      );
     });
   }
 
@@ -425,7 +450,18 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      const result =
+        await this.#client.service.StructuralNavigator.ExecuteCommand(
+          "NextHeading",
+          true,
+        );
+
+      debug(
+        "result of StructuralNavigator.ExecuteCommand('NextHeading', true)",
+        result,
+      );
+    });
   }
 
   /**
