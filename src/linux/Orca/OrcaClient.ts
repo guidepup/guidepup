@@ -279,9 +279,9 @@ export class OrcaClient {
               "--dest",
               DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
               "--object-path",
-              "/org/gnome/Orca1/Service",
+              "/org/gnome/Orca/Service",
               "--method",
-              "org.gnome.Orca1.Service.GetVersion",
+              "org.gnome.Orca.Service.GetVersion",
             ],
             {
               encoding: "utf8",
