@@ -1,5 +1,6 @@
 import { platform, release } from "os";
 import { delay } from "../../../../src/delay";
+import { execFileSync } from "child_process";
 import { log } from "console";
 import { orcaTest as test } from "../../orca-test";
 
@@ -42,12 +43,23 @@ test.describe("Firefox Playwright Orca", () => {
     await header.waitFor();
     await delay(500);
 
+    await orca.navigateToWebContent();
+
+    try {
+      console.log(execFileSync("orca", ["--list-apps"], { encoding: "utf-8" }));
+    } catch {
+      // swallow
+    }
+
+    await header.focus();
+
     // TODO: flesh out to full example
 
+    await orca.whereAmI();
     await orca.next();
     await orca.next();
-    await orca.next();
-    await orca.next();
-    await orca.next();
+    await orca.nextHeading();
+    await orca.nextHeading();
+    await orca.whereAmI();
   });
 });

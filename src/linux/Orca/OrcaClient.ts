@@ -29,6 +29,12 @@ const DBUS_ORCA_COMMANDS = {
   ObjectNavigator: {
     objectPath: "/org/gnome/Orca/Service/ObjectNavigator",
   },
+  StructuralNavigator: {
+    objectPath: "/org/gnome/Orca/Service/StructuralNavigator",
+  },
+  WhereAmIPresenter: {
+    objectPath: "/org/gnome/Orca/Service/WhereAmIPresenter",
+  },
 } as const;
 
 const killProcess = (process, name) => {
@@ -48,6 +54,8 @@ interface OrcaService {
   CaretNavigator: OrcaModule;
   FlatReviewPresenter: OrcaModule;
   ObjectNavigator: OrcaModule;
+  StructuralNavigator: OrcaModule;
+  WhereAmIPresenter: OrcaModule;
 }
 
 type ActionOptions = Pick<CommandOptions, "capture">;
