@@ -93,17 +93,6 @@ export const orcaTest = test.extend<{
 
       await page.bringToFront();
 
-      console.log(
-        execFileSync("wmctrl", ["-lx"], {
-          encoding: "utf8",
-        }),
-      );
-      console.log(
-        execFileSync("wmctrl", ["-a", "Nightly"], {
-          encoding: "utf8",
-        }),
-      );
-
       orcaPlaywright.navigateToWebContent = async () => {};
 
       await orcaPlaywright.start(orcaStartOptions);
