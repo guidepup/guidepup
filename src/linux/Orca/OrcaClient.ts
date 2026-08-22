@@ -358,6 +358,8 @@ export class OrcaClient {
 
     this.#display = options?.display ?? process.env.DISPLAY;
 
+    debug(`DISPLAY=${this.#display}`);
+
     if (!this.#display) {
       throw new Error("TODO: X server not running error");
     }
