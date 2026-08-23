@@ -174,6 +174,8 @@ export class OrcaClient {
         if (names.includes("org.a11y.Bus")) {
           debug("AT-SPI already running; reusing existing bus");
 
+          resolve();
+
           return;
         }
       } catch {
