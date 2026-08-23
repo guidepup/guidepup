@@ -9,7 +9,7 @@ def log(text):
         f.write(text + "\n")
 
 def send(text):
-    log(f"OUT: {text!r}")
+    # log(f"OUT: {text!r}")
     sys.stdout.write(text + "\n")
     sys.stdout.flush()
 
@@ -23,7 +23,7 @@ def receive_data():
             return None
 
         line = line.rstrip("\n")
-        log(f"IN: {line!r}")
+        # log(f"IN: {line!r}")
 
         if line == ".":
             break
@@ -42,7 +42,7 @@ while True:
         break
 
     line = line.rstrip("\n")
-    log(f"IN: {line!r}")
+    # log(f"IN: {line!r}")
 
     if line == "INIT":
         send("299 OK LOADED")
@@ -55,7 +55,7 @@ while True:
         if data is None:
             break
 
-        log(f"AUDIO SETTINGS: {data!r}")
+        # log(f"AUDIO SETTINGS: {data!r}")
         send("203 OK AUDIO SETTINGS RECEIVED")
 
     elif line == "LOGLEVEL":
@@ -66,7 +66,7 @@ while True:
         if data is None:
             break
 
-        log(f"LOGLEVEL: {data!r}")
+        # log(f"LOGLEVEL: {data!r}")
         send("200 OK")
 
     elif line == "LIST VOICES":
@@ -80,7 +80,7 @@ while True:
         if data is None:
             break
 
-        log(f"SETTINGS: {data!r}")
+        # log(f"SETTINGS: {data!r}")
         send("203 OK SETTINGS RECEIVED")
 
     elif line == "SPEAK":
@@ -111,5 +111,5 @@ while True:
         break
 
     else:
-        log(f"UNKNOWN: {line!r}")
+        # log(f"UNKNOWN: {line!r}")
         send("200 OK")
