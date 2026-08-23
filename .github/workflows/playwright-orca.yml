@@ -91,7 +91,21 @@ jobs:
           echo "  socket: ${SPEECHD_DIR}/run/speechd.sock"
           echo " "
 
-          DEBUG=guidepup:* xvfb-run npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
+          export DISPLAY=:99
+          Xvfb :99 >/dev/null 2>&1 &
+
+          eval "$(dbus-launch --sh-syntax --exit-with-session)"
+
+          echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+          echo "DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID"
+
+          /usr/libexec/at-spi-bus-launcher --launch-immediately &
+
+          touch /tmp/guidepup.log
+
+          orca --version
+
+          DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
 
           cat /tmp/guidepup-orca-speech.log
       - uses: actions/upload-artifact@v4
