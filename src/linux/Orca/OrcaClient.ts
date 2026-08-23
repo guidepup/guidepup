@@ -54,11 +54,8 @@ interface QueueAction {
 }
 
 export class OrcaClient {
-  #display = null;
-
+  #sessionDisplay = null;
   #sessionDBusAddress = null;
-  #atSpiDBusAddress = null;
-
   #sessionDBus: MessageBus = null;
   #orcaProcess: ChildProcess = null;
   #orcaService: OrcaService = null;
@@ -95,13 +92,13 @@ export class OrcaClient {
   async #verifyXServer(): Promise<void> {
     debug("Verifying X Server running...");
 
-    this.#display = process.env.DISPLAY;
+    this.#sessionDisplay = process.env.DISPLAY;
 
-    if (!this.#display) {
+    if (!this.#sessionDisplay) {
       throw new Error("TODO: X Server must be running and DISPLAY set");
     }
 
-    debug(`DISPLAY=${this.#display}`);
+    debug(`DISPLAY=${this.#sessionDisplay}`);
   }
 
   async #verifyDBus(): Promise<void> {
@@ -153,16 +150,6 @@ export class OrcaClient {
   #verifyAtSpi() {
     debug("Verifying AT-SPI D-Bus running...");
 
-    this.#atSpiDBusAddress = process.env.AT_SPI_BUS_ADDRESS;
-
-    if (!this.#atSpiDBusAddress) {
-      throw new Error(
-        "TODO: AT-SPI D-Bus must be running and AT_SPI_BUS_ADDRESS set",
-      );
-    }
-
-    debug(`AT_SPI_BUS_ADDRESS=${this.#atSpiDBusAddress}`);
-
     const startTime = Date.now();
 
     return new Promise<void>((resolve, reject) => {
@@ -200,7 +187,7 @@ export class OrcaClient {
     this.#orcaProcess = spawn("orca", ["--replace"], {
       env: {
         ...process.env,
-        DISPLAY: this.#display,
+        DISPLAY: this.#sessionDisplay,
         DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
       },
     });
@@ -310,11 +297,8 @@ export class OrcaClient {
       this.#orcaProcess.kill("SIGTERM");
     }
 
-    this.#display = null;
-
+    this.#sessionDisplay = null;
     this.#sessionDBusAddress = null;
-    this.#atSpiDBusAddress = null;
-
     this.#sessionDBus = null;
     this.#orcaProcess = null;
     this.#orcaService = null;

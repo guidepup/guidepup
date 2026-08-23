@@ -38,15 +38,14 @@ jobs:
             xvfb \
             dbus-x11 \
             libglib2.0-bin \
-            pulseaudio \
-            python3-dasbus
+            pulseaudio
 
           pulseaudio \
             --start \
             --exit-idle-time=-1 \
-            --log-target=stderr
+            --log-target=stderr >/dev/null 2>&1 &
 
-          pactl info
+          # TODO: move speechd logic into OrcaClient.ts
 
           export SPEECHD_DIR=/tmp/guidepup-speechd
 
@@ -56,8 +55,6 @@ jobs:
 
           cp -r ./.github/tmp-orca-speechd/. "${SPEECHD_DIR}/"
 
-          ls -laR ${SPEECHD_DIR}
-
           speech-dispatcher \
             --run-single \
             --config-dir "${SPEECHD_DIR}" \
@@ -65,8 +62,7 @@ jobs:
             --communication-method unix_socket \
             --socket-path "${SPEECHD_DIR}/run/speechd.sock" \
             --log-dir "${SPEECHD_DIR}/logs" \
-            --log-level 5 \
-            --timeout 0 &
+            --timeout 0 >/dev/null 2>&1 &
 
           SPEECHD_PID=$!
 
@@ -83,13 +79,9 @@ jobs:
           if [ ! -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
             echo "Speech Dispatcher failed to create socket"
             cat "${SPEECHD_DIR}/logs/"* 2>/dev/null || true
+
             exit 1
           fi
-
-          echo "Speech Dispatcher running:"
-          echo "  PID:    $SPEECHD_PID"
-          echo "  socket: ${SPEECHD_DIR}/run/speechd.sock"
-          echo " "
 
           Xvfb :99 >/dev/null 2>&1 &
           export DISPLAY=:99
@@ -98,18 +90,11 @@ jobs:
 
           eval "$(dbus-launch --sh-syntax --exit-with-session)"
 
-          echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
-          echo "DBUS_SESSION_BUS_PID=$DBUS_SESSION_BUS_PID"
-
           sleep 5
 
-          /usr/libexec/at-spi-bus-launcher --launch-immediately &
+          /usr/libexec/at-spi-bus-launcher --launch-immediately >/dev/null 2>&1 &
 
           sleep 5
-
-          touch /tmp/guidepup.log
-
-          orca --version
 
           DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
 
