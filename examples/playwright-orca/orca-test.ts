@@ -1,9 +1,7 @@
 import type { CommandOptions, Orca } from "../../src";
-import { Page, test } from "@playwright/test";
-import { applicationNameMap } from "../applicationNameMap";
-import { execSync } from "child_process";
 import { orca } from "../../src";
 import type { StartOptions } from "../../src/StartOptions";
+import { test } from "@playwright/test";
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
@@ -81,17 +79,10 @@ export const orcaTest = test.extend<{
    * Options to start Orca with, see also [orca.start([options])](https://www.guidepup.dev/docs/api/class-orca#orca-start).
    */
   orcaStartOptions: StartOptions;
-  opage: Page;
 }>({
   orcaStartOptions: { capture: "initial" },
-  orca: async ({ browserName, orcaStartOptions, page }, use) => {
+  orca: async ({ orcaStartOptions, page }, use) => {
     try {
-      const applicationName = applicationNameMap[browserName];
-
-      if (!applicationName) {
-        throw new Error(`Browser ${browserName} is not installed.`);
-      }
-
       orcaPlaywright.navigateToWebContent = async () => {
         await page.bringToFront();
       };
@@ -106,29 +97,5 @@ export const orcaTest = test.extend<{
         // swallow stop failure
       }
     }
-  },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  opage: async ({ orca, playwright }, use) => {
-    const browser = await playwright.firefox.launch();
-    const context = await browser.newContext();
-    const page = await context.newPage();
-
-    try {
-      console.log(
-        execSync(
-          "ps -ef | grep -E '[f]irefox|[o]rca|[a]t-spi|[d]bus'",
-        ).toString(),
-      );
-    } catch {
-      // swallow
-    }
-
-    try {
-      console.log(execSync("orca -l").toString());
-    } catch {
-      // swallow
-    }
-
-    await use(page);
   },
 });

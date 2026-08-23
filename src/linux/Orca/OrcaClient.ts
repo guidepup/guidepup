@@ -1,10 +1,5 @@
-import { ChildProcess, execFileSync, spawn } from "node:child_process";
-import {
-  type DBusPromise,
-  DBusService,
-  type MessageBus,
-  sessionBus,
-} from "dbus-native";
+import { ChildProcess, spawn } from "node:child_process";
+import { type DBusPromise, type MessageBus, sessionBus } from "dbus-native";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
@@ -12,11 +7,9 @@ import { ERR_ORCA_NOT_RUNNING } from "../errors";
 
 const debug = base.extend("OrcaClient");
 
-const POLL_INTERVAL = 2_000;
+const POLL_INTERVAL = 500;
 
-const ATSPI_LAUNCHER = "/usr/libexec/at-spi-bus-launcher";
 const DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
-const ORCA_DEBUG_FILE = "/tmp/guidepup-orca-debug.log";
 
 const DBUS_ORCA_COMMANDS = {
   // TODO: generate all
@@ -36,14 +29,6 @@ const DBUS_ORCA_COMMANDS = {
     objectPath: "/org/gnome/Orca/Service/WhereAmIPresenter",
   },
 } as const;
-
-const killProcess = (process, name) => {
-  if (process && process.exitCode === null) {
-    debug(`Killing ${name}...`);
-
-    process.kill("SIGTERM");
-  }
-};
 
 interface OrcaModule {
   ExecuteCommand(command: string, notifyUser: boolean): DBusPromise<void>;
@@ -71,15 +56,12 @@ interface QueueAction {
 export class OrcaClient {
   #display = null;
 
-  #dbusAddress = null;
-  #bus: MessageBus = null;
-  #dbusOrcaService: DBusService = null;
+  #sessionDBusAddress = null;
+  #atSpiDBusAddress = null;
 
-  #orcaService: OrcaService = null;
-
-  #dbusPid: number = null;
-  #atSpiProcess: ChildProcess = null;
+  #sessionDBus: MessageBus = null;
   #orcaProcess: ChildProcess = null;
+  #orcaService: OrcaService = null;
 
   #capture: CommandOptions["capture"];
   #inFlight: Promise<unknown> | null = null;
@@ -110,116 +92,80 @@ export class OrcaClient {
     this.#spokenPhrases = [];
   }
 
-  async #startDBus(): Promise<void> {
-    debug("[1/4] Ensuring session D-Bus...");
+  async #verifyXServer(): Promise<void> {
+    debug("Verifying X Server running...");
 
-    const existingAddress = process.env.DBUS_SESSION_BUS_ADDRESS;
+    this.#display = process.env.DISPLAY;
 
-    if (existingAddress) {
-      debug(`Using existing session D-Bus: ${existingAddress}`);
-
-      this.#dbusAddress = existingAddress;
-      this.#bus = sessionBus({
-        busAddress: this.#dbusAddress,
-      });
-
-      try {
-        await this.#bus.listNames();
-
-        debug("Existing session D-Bus is reachable");
-
-        return;
-      } catch {
-        debug(
-          "Existing D-Bus address is unavailable; starting isolated session",
-        );
-      }
+    if (!this.#display) {
+      throw new Error("TODO: X Server must be running and DISPLAY set");
     }
 
-    try {
-      const output = execFileSync("dbus-launch", [], {
-        encoding: "utf8",
-        env: { ...process.env, DISPLAY: this.#display },
-      });
-
-      const addressMatch = output.match(/DBUS_SESSION_BUS_ADDRESS=([^\n]+)/);
-      const pidMatch = output.match(/DBUS_SESSION_BUS_PID=(\d+)/);
-
-      if (!addressMatch || !pidMatch) {
-        throw new Error(`Failed to parse dbus-launch output:\n${output}`);
-      }
-
-      this.#dbusAddress = addressMatch[1];
-
-      // Store the PID instead of a ChildProcess object so we can kill it later
-      this.#dbusPid = parseInt(pidMatch[1], 10);
-
-      debug(`\tD-Bus Address: ${this.#dbusAddress} (PID: ${this.#dbusPid})`);
-
-      this.#bus = sessionBus({ busAddress: this.#dbusAddress });
-    } catch (error) {
-      debug("D-Bus error:", error);
-      throw error;
-    }
+    debug(`DISPLAY=${this.#display}`);
   }
 
-  #startAtSpi() {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise<void>(async (resolve, reject) => {
-      debug("[2/4] Ensuring AT-SPI...");
+  async #verifyDBus(): Promise<void> {
+    debug("Verifying session D-Bus running...");
 
-      try {
-        const names = await this.#bus.listNames();
+    this.#sessionDBusAddress = process.env.DBUS_SESSION_BUS_ADDRESS;
 
-        if (names.includes("org.a11y.Bus")) {
-          debug("AT-SPI already running; reusing existing bus");
+    if (!this.#sessionDBusAddress) {
+      throw new Error(
+        "TODO: D-Bus must be running and DBUS_SESSION_BUS_ADDRESS set",
+      );
+    }
+
+    debug(`DBUS_SESSION_BUS_ADDRESS=${this.#sessionDBusAddress}`);
+
+    this.#sessionDBus = sessionBus({
+      busAddress: this.#sessionDBusAddress,
+    });
+
+    const startTime = Date.now();
+
+    return new Promise((resolve, reject) => {
+      const poll = async () => {
+        if (Date.now() - startTime >= 30_000) {
+          reject(new Error("TODO: Timed out waiting for D-Bus"));
+
+          return;
+        }
+
+        debug("Polling for D-Bus connectivity");
+
+        try {
+          await this.#sessionDBus.listNames();
 
           resolve();
 
           return;
+        } catch {
+          // Swallow
         }
-      } catch {
-        // swallow
-      }
 
-      debug("AT-SPI not running; starting launcher");
+        setTimeout(poll, POLL_INTERVAL);
+      };
 
-      this.#atSpiProcess = spawn(ATSPI_LAUNCHER, ["--launch-immediately"], {
-        env: {
-          ...process.env,
-          DISPLAY: this.#display,
-          DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
-        },
-      });
+      poll();
+    });
+  }
 
-      this.#atSpiProcess.on("error", (error) => {
-        debug("AT-SPI error:", error);
+  #verifyAtSpi() {
+    debug("Verifying AT-SPI D-Bus running...");
 
-        reject(error);
-      });
+    this.#atSpiDBusAddress = process.env.AT_SPI_BUS_ADDRESS;
 
-      this.#atSpiProcess.stdout?.on("data", (data) => {
-        debug(`AT-SPI stdout: ${data.toString().trim()}`);
-      });
+    if (!this.#atSpiDBusAddress) {
+      throw new Error(
+        "TODO: AT-SPI D-Bus must be running and AT_SPI_BUS_ADDRESS set",
+      );
+    }
 
-      this.#atSpiProcess.stderr?.on("data", (data) => {
-        debug(`AT-SPI stderr: ${data.toString().trim()}`);
-      });
+    debug(`AT_SPI_BUS_ADDRESS=${this.#atSpiDBusAddress}`);
 
-      this.#atSpiProcess.once("exit", (code, signal) => {
-        debug(`AT-SPI exited (code=${code}, signal=${signal})`);
+    const startTime = Date.now();
 
-        if (code !== 0) {
-          reject(
-            new Error(
-              `AT-SPI launcher exited before startup (code=${code}, signal=${signal})`,
-            ),
-          );
-        }
-      });
-
-      const startTime = Date.now();
-
+    return new Promise<void>((resolve, reject) => {
       const poll = async () => {
         if (Date.now() - startTime >= 30_000) {
           reject(new Error("TODO: Timed out waiting for AT-SPI D-Bus service"));
@@ -228,19 +174,17 @@ export class OrcaClient {
         }
 
         try {
-          const names = await this.#bus.listNames();
+          const names = await this.#sessionDBus.listNames();
 
-          debug("Polling for 'org.a11y.Bus'", names);
+          debug("Polling for 'org.a11y.Bus' registration", names);
 
           if (names.includes("org.a11y.Bus")) {
             resolve();
 
             return;
           }
-        } catch (error) {
-          reject(error);
-
-          return;
+        } catch {
+          // Swallow
         }
 
         setTimeout(poll, POLL_INTERVAL);
@@ -251,57 +195,19 @@ export class OrcaClient {
   }
 
   #startOrca() {
+    debug("[3/4] Starting Orca");
+
+    this.#orcaProcess = spawn("orca", ["--replace"], {
+      env: {
+        ...process.env,
+        DISPLAY: this.#display,
+        DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
+      },
+    });
+
+    const startTime = Date.now();
+
     return new Promise<void>((resolve, reject) => {
-      debug("[3/4] Starting Orca");
-
-      this.#orcaProcess = spawn(
-        "orca",
-        ["--replace", "--debug", `--debug-file=${ORCA_DEBUG_FILE}`],
-        {
-          env: {
-            ...process.env,
-            DISPLAY: this.#display,
-            DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
-          },
-        },
-      );
-
-      const orcaDebugProcess = spawn("tail", ["-F", ORCA_DEBUG_FILE]);
-
-      orcaDebugProcess.stdout?.on("data", (data) => {
-        debug(`Orca debug: ${data.toString().trim()}`);
-      });
-
-      orcaDebugProcess.stderr?.on("data", (data) => {
-        debug(`Orca debug tail error: ${data.toString().trim()}`);
-      });
-
-      this.#orcaProcess.once("exit", (code, signal) => {
-        debug(`Orca exited (code=${code}, signal=${signal})`);
-
-        orcaDebugProcess.kill();
-
-        if (code !== 0) {
-          reject(new Error(`Orca exited prematurely with code ${code}`));
-        }
-      });
-
-      this.#orcaProcess.on("error", (error) => {
-        debug("Orca error:", error);
-
-        reject(error);
-      });
-
-      this.#orcaProcess.stdout?.on("data", (data) => {
-        debug(`Orca stdout: ${data.toString().trim()}`);
-      });
-
-      this.#orcaProcess.stderr?.on("data", (data) => {
-        debug(`Orca stderr: ${data.toString().trim()}`);
-      });
-
-      const startTime = Date.now();
-
       const poll = async () => {
         if (Date.now() - startTime >= 30_000) {
           reject(
@@ -314,38 +220,11 @@ export class OrcaClient {
         }
 
         try {
-          const output = execFileSync(
-            "gdbus",
-            [
-              "call",
-              "--session",
-              "--dest",
-              DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
-              "--object-path",
-              "/org/gnome/Orca/Service",
-              "--method",
-              "org.gnome.Orca.Service.GetVersion",
-            ],
-            {
-              encoding: "utf8",
-              env: {
-                ...process.env,
-                DBUS_SESSION_BUS_ADDRESS: this.#dbusAddress,
-              },
-            },
-          );
-
-          debug(`Orca GetVersion: ${output.trim()}`);
-        } catch (error) {
-          debug(`Orca GetVersion failed: ${error}`);
-        }
-
-        try {
           debug(
             `Polling for '${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
           );
 
-          const hasOwner = await this.#bus.nameHasOwner(
+          const hasOwner = await this.#sessionDBus.nameHasOwner(
             DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
           );
 
@@ -354,10 +233,8 @@ export class OrcaClient {
 
             return;
           }
-        } catch (error) {
-          reject(error);
-
-          return;
+        } catch {
+          // Swallow
         }
 
         setTimeout(poll, POLL_INTERVAL);
@@ -367,16 +244,16 @@ export class OrcaClient {
     });
   }
 
-  async #connect() {
+  async #mapOrcaDBusService() {
     debug("[4/4] Connecting to Orca D-Bus service...");
 
-    this.#dbusOrcaService = this.#bus.getService(
+    const sessionDBusOrcaService = this.#sessionDBus.getService(
       DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
     );
 
     const entries = await Promise.all(
       Object.entries(DBUS_ORCA_COMMANDS).map(async ([name, { objectPath }]) => {
-        const service = await this.#dbusOrcaService.getInterface(
+        const service = await sessionDBusOrcaService.getInterface(
           objectPath,
           "org.gnome.Orca.Module",
         );
@@ -394,26 +271,19 @@ export class OrcaClient {
     );
   }
 
-  async start(options: { display?: string } = {}) {
+  async start() {
     if (this.#started || this.#starting) {
       return;
     }
 
     this.#starting = true;
 
-    this.#display = options?.display ?? process.env.DISPLAY;
-
-    debug(`DISPLAY=${this.#display}`);
-
-    if (!this.#display) {
-      throw new Error("TODO: X server not running error");
-    }
-
     try {
-      await this.#startDBus();
-      await this.#startAtSpi();
+      await this.#verifyXServer();
+      await this.#verifyDBus();
+      await this.#verifyAtSpi();
       await this.#startOrca();
-      await this.#connect();
+      await this.#mapOrcaDBusService();
 
       this.#started = true;
     } catch (cause) {
@@ -429,41 +299,32 @@ export class OrcaClient {
 
   async stop() {
     debug("stopping");
+
     this.#stopping = true;
 
     await this.#waitForAllActions();
 
-    if (this.#bus) {
-      await this.#bus.close();
+    if (this.#orcaProcess && this.#orcaProcess.exitCode === null) {
+      debug("Terminating Orca...");
 
-      this.#bus = null;
+      this.#orcaProcess.kill("SIGTERM");
     }
 
-    this.#dbusOrcaService = null;
+    this.#display = null;
 
-    killProcess(this.#orcaProcess, "Orca");
-    killProcess(this.#atSpiProcess, "AT-SPI");
+    this.#sessionDBusAddress = null;
+    this.#atSpiDBusAddress = null;
 
-    if (this.#dbusPid) {
-      debug("Killing D-Bus...");
-
-      try {
-        process.kill(this.#dbusPid, "SIGTERM");
-      } catch {
-        // Best effort
-      }
-    }
-
+    this.#sessionDBus = null;
     this.#orcaProcess = null;
-    this.#atSpiProcess = null;
-    this.#dbusPid = null;
+    this.#orcaService = null;
 
     this.#stopping = false;
     this.#started = false;
   }
 
   get service(): OrcaService {
-    if (!this.#started || this.#stopping || !this.#dbusOrcaService) {
+    if (!this.#started || this.#stopping || !this.#orcaService) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
