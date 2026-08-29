@@ -46,11 +46,9 @@ test.describe("Firefox Playwright Orca", () => {
 
     // TODO: flesh out to full example
 
-    await orca.whereAmI();
     await orca.next();
     await orca.next();
     await orca.nextHeading();
     await orca.nextHeading();
-    await orca.whereAmI();
   });
 });

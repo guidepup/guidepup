@@ -5,16 +5,15 @@ import {
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_NOT_SUPPORTED,
 } from "../errors";
-import { base } from "../../debug";
+import { type KeyCodeCommand, keyCodeCommands } from "./keyCodeCommands";
 import type { Capture } from "../../Capture";
+import type { ClickOptions } from "../../ClickOptions";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
 import { notImplemented } from "../../notImplemented";
 import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
-import { StartOptions } from "../../StartOptions";
-
-const debug = base.extend("Orca");
+import type { StartOptions } from "../../StartOptions";
 
 // REF: https://man.archlinux.org/man/orca.1.en
 // REF: https://gitlab.gnome.org/GNOME/orca
@@ -99,22 +98,22 @@ export class Orca implements IScreenReader {
    * Use with the Orca `perform` command to invoke a keyboard action:
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the next item.
-   *   await orca.perform(orca.keyboardCommands.moveToNext);
+   *   await unstable_orca.perform(unstable_orca.keyboardCommands.MoveToNextSibling);
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    */
-  get keyboardCommands(): Prettify<unknown> {
-    return notImplemented();
+  get keyboardCommands(): Prettify<typeof keyCodeCommands> {
+    return keyCodeCommands;
   }
 
   /**
@@ -148,10 +147,10 @@ export class Orca implements IScreenReader {
    * - `false` for Linux
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isOrcaDefaultScreenReader = orca.detect();
+   *   const isOrcaDefaultScreenReader = unstable_orca.detect();
    *
    *   console.log(isOrcaDefaultScreenReader);
    * })();
@@ -194,10 +193,10 @@ export class Orca implements IScreenReader {
    * - `false` for Linux
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isOrcaDefaultScreenReader = orca.default();
+   *   const isOrcaDefaultScreenReader = unstable_orca.default();
    *
    *   console.log(isOrcaDefaultScreenReader);
    * })();
@@ -213,16 +212,16 @@ export class Orca implements IScreenReader {
    * Turn Orca on.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // ... perform some commands.
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
@@ -246,7 +245,7 @@ export class Orca implements IScreenReader {
     addTeardownHandler(this.#teardownHandler);
 
     try {
-      // TODO: settings
+      // TODO: configure settings
 
       this.#client = new OrcaClient();
       await this.#client.start();
@@ -271,16 +270,16 @@ export class Orca implements IScreenReader {
    * Turn Orca off.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // ... perform some commands.
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    */
@@ -311,17 +310,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `Up Arrow`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the previous item.
-   *   await orca.previous();
+   *   await unstable_orca.previous();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    */
@@ -330,7 +329,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.ObjectNavigator.commands.MoveToPreviousSibling.execute();
+    });
   }
 
   /**
@@ -339,17 +340,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `Down Arrow`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the next item.
-   *   await orca.next();
+   *   await unstable_orca.next();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    */
@@ -359,37 +360,7 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      const result = await this.#client.service.ObjectNavigator.ExecuteCommand(
-        "MoveToNextSibling",
-        true,
-      );
-
-      debug(
-        "result of ObjectNavigator.ExecuteCommand('MoveToNextSibling', true)",
-        result,
-      );
-    });
-  }
-
-  /**
-   * Temporary debug method
-   */
-  async whereAmI(): Promise<void> {
-    if (!this.#started || this.#stopping) {
-      throw new Error(ERR_ORCA_NOT_RUNNING);
-    }
-
-    await this.#client.enqueueAndTap(async () => {
-      const result =
-        await this.#client.service.WhereAmIPresenter.ExecuteCommand(
-          "WhereAmIDetailed",
-          true,
-        );
-
-      debug(
-        "result of WhereAmIPresenter.ExecuteCommand('WhereAmIDetailed', true)",
-        result,
-      );
+      await this.#client.service.ObjectNavigator.commands.MoveToNextSibling;
     });
   }
 
@@ -399,17 +370,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `Shift-H`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the previous heading.
-   *   await orca.previousHeading();
+   *   await unstable_orca.previousHeading();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
@@ -420,7 +391,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.StructuralNavigator.commands.PreviousHeading.execute();
+    });
   }
 
   /**
@@ -429,17 +402,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `H`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the next heading.
-   *   await orca.nextHeading();
+   *   await unstable_orca.nextHeading();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
@@ -451,16 +424,7 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      const result =
-        await this.#client.service.StructuralNavigator.ExecuteCommand(
-          "NextHeading",
-          true,
-        );
-
-      debug(
-        "result of StructuralNavigator.ExecuteCommand('NextHeading', true)",
-        result,
-      );
+      await this.#client.service.StructuralNavigator.commands.NextHeading.execute();
     });
   }
 
@@ -470,17 +434,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `Shift-K`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the previous link.
-   *   await orca.previousLink();
+   *   await unstable_orca.previousLink();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
@@ -491,7 +455,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.StructuralNavigator.commands.PreviousLink.execute();
+    });
   }
 
   /**
@@ -500,17 +466,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `K`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the next link.
-   *   await orca.nextLink();
+   *   await unstable_orca.nextLink();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
@@ -521,7 +487,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.StructuralNavigator.commands.NextLink.execute();
+    });
   }
 
   /**
@@ -530,17 +498,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `Shift-D`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the previous landmark.
-   *   await orca.previousLandmark();
+   *   await unstable_orca.previousLandmark();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
@@ -551,7 +519,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.StructuralNavigator.commands.PreviousLandmark.execute();
+    });
   }
 
   /**
@@ -560,17 +530,17 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `D`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the next landmark.
-   *   await orca.nextLandmark();
+   *   await unstable_orca.nextLandmark();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
@@ -581,7 +551,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.StructuralNavigator.commands.NextLandmark.execute();
+    });
   }
 
   /**
@@ -590,20 +562,20 @@ export class Orca implements IScreenReader {
    * Equivalent of executing `Enter`.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the next item.
-   *   await orca.next();
+   *   await unstable_orca.next();
    *
    *   // Perform the default action for the item.
-   *   await orca.act();
+   *   await unstable_orca.act();
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    */
@@ -612,7 +584,9 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.ObjectNavigator.commands.PerformAction.execute();
+    });
   }
 
   /**
@@ -626,7 +600,7 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    return Promise.resolve();
   }
 
   /**
@@ -640,49 +614,12 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    return Promise.resolve();
   }
 
+  // TODO: implementation.
   /**
-   * Press a key on the focused item.
-   *
-   * `key` can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the `key` values can be found
-   * [on the MDN key values page](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
-   *
-   * `F1` - `F20`, `Digit0` - `Digit9`, `KeyA` - `KeyZ`, `Backquote`, `Minus`, `Equal`, `Backslash`, `Backspace`, `Tab`,
-   * `Delete`, `Escape`, `ArrowDown`, `End`, `Enter`, `Home`, `Insert`, `PageDown`, `PageUp`, `ArrowRight`, `ArrowUp`, etc.
-   *
-   * See [WindowsKeyCodes](https://www.guidepup.dev/docs/api/class-windows-key-codes) for the full range of available keys.
-   *
-   * Following modification shortcuts are also supported: `Shift`, `Control`, `Alt`.
-   *
-   * See [WindowsModifiers](https://www.guidepup.dev/docs/api/class-windows-modifiers) for the full range of available modifiers.
-   *
-   * Holding down `Shift` will type the text that corresponds to the `key` in the upper case.
-   *
-   * If `key` is a single character, it is case-sensitive, so the values `a` and `A` will generate different respective
-   * texts.
-   *
-   * Shortcuts such as `key: "Control+f"` or `key: "Control+Shift+f"` are supported as well. When specified with the
-   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Open a find text modal.
-   *   await orca.press("Control+f");
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
+   * Not implemented.
    */
   async press(): Promise<void> {
     if (!this.#started || this.#stopping) {
@@ -692,34 +629,9 @@ export class Orca implements IScreenReader {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Type text into the focused item.
-   *
-   * To press a special key, like `Control` or `ArrowDown`, use `orca.press(key[, options])`.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Type a username and key Enter.
-   *   await orca.type("my-username");
-   *   await orca.press("Enter");
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * Note: Each character is typed separately for this command. This means
-   * calling `await orca.lastSpokenPhrase()` will yield the last spoken phrase
-   * for the last character in the typed string. If you need access to the
-   * spoken phrase(s) for the entire typed string then use
-   * `await orca.spokenPhraseLog()`.
-   *
-   * @param {string} text Text to type into the focused item.
+   * Not implemented.
    */
   async type(): Promise<void> {
     if (!this.#started || this.#stopping) {
@@ -730,95 +642,87 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * Perform a Orca command.
+   * Perform an Orca command.
    *
-   * The command can be a [WindowsKeyCodeCommand](https://www.guidepup.dev/docs/api/class-windows-key-code-command) or [WindowsKeystrokeCommand](https://www.guidepup.dev/docs/api/class-windows-keystroke-command).
+   * The command can be any `OrcaKeyCodeCommand`.
    *
    * ```ts
-   * import { orca, OrcaKeyCodeCommands } from "@guidepup/guidepup";
+   * import { unstable_orca, orcaKeyCodeCommands } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Type using a custom keystroke command.
-   *   await orca.perform({ characters: "my-username" });
+   *   await unstable_orca.start();
    *
    *   // Keyboard commands available on the Orca instance.
-   *   await orca.perform(orca.keyboardCommands.performDefaultActionForItem);
+   *   await unstable_orca.perform(unstable_orca.keyboardCommands.MoveToNextSibling);
    *
-   *   // Stop Orca.
-   *   await orca.stop();
+   *   // Stop NVDA.
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
    * @param {any} command Orca keyboard command to execute.
    */
-  async perform(): Promise<void> {
+  async perform(command: KeyCodeCommand): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service[command.service].commands[
+        command.command
+      ].execute();
+    });
   }
 
   /**
    * Click the mouse.
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Left-click the mouse.
-   *   await orca.click();
+   *   await unstable_orca.click();
    *
    *   // Left-click the mouse using specific options.
-   *   await orca.click({ button: "left", clickCount: 1 });
+   *   await unstable_orca.click({ button: "left", clickCount: 1 });
    *
    *   // Double-right-click the mouse.
-   *   await orca.click({ button: "right", clickCount: 2 });
+   *   await unstable_orca.click({ button: "right", clickCount: 2 });
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    *
    * @param {object} [options] Click options.
    */
-  async click(): Promise<void> {
+  async click(options?: ClickOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    const command =
+      options?.button === "right"
+        ? this.#client.service.FlatReviewPresenter.commands.RightClickOnObject
+        : this.#client.service.FlatReviewPresenter.commands.LeftClickOnObject;
+
+    const clickCount = options.clickCount ?? 1;
+
+    await this.#client.enqueueAndTap(async () => {
+      for (let i = 0; i < clickCount; i++) {
+        await command.execute();
+      }
+    });
   }
 
+  // TODO: implementation.
   /**
-   * Get the last spoken phrase.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Move to the next item.
-   *   await orca.next();
-   *
-   *   // Get the phrase spoken by Orca from moving to the next item above.
-   *   const lastSpokenPhrase = await orca.lastSpokenPhrase();
-   *   console.log(lastSpokenPhrase);
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @returns {string} The last spoken phrase.
+   * Not implemented
    */
   async lastSpokenPhrase(): Promise<string> {
     if (!this.#started || this.#stopping) {
@@ -828,34 +732,9 @@ export class Orca implements IScreenReader {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Get the last spoken phrase.
-   *
-   * For Orca this is the same as `lastSpokenPhrase`.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Move to the next item.
-   *   await orca.next();
-   *
-   *   // Get the text (if any) for the item currently in focus by the Orca
-   *   // cursor.
-   *   const itemText = await orca.itemText();
-   *   console.log(itemText);
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @alias lastSpokenPhrase
-   *
-   * @returns {Promise<string>} The last spoken phrase.
+   * Not implemented
    */
   async itemText(): Promise<string> {
     if (!this.#started || this.#stopping) {
@@ -865,31 +744,9 @@ export class Orca implements IScreenReader {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Get the log of all spoken phrases for this Orca instance.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Move through several items.
-   *   for (let i = 0; i < 10; i++) {
-   *     await orca.next();
-   *   }
-   *
-   *   // Get the phrase spoken by Orca from moving through the items above.
-   *   const spokenPhraseLog = await orca.spokenPhraseLog();
-   *   console.log(spokenPhraseLog);
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @returns {Promise<string[]>} The spoken phrase log.
+   * Not implemented
    */
   async spokenPhraseLog(): Promise<string[]> {
     if (!this.#started || this.#stopping) {
@@ -899,25 +756,9 @@ export class Orca implements IScreenReader {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Clear the log of all spoken phrases for this Orca instance.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // ... perform some commands.
-   *
-   *   // Clear the spoken phrase log.
-   *   await orca.clearSpokenPhraseLog();
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
+   * Not implemented
    */
   async clearSpokenPhraseLog(): Promise<void> {
     if (!this.#started || this.#stopping) {
@@ -927,35 +768,9 @@ export class Orca implements IScreenReader {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Get the log of all spoken phrases for this Orca instance.
-   *
-   * For Orca this is the same as `spokenPhraseLog`.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Move through several items.
-   *   for (let i = 0; i < 10; i++) {
-   *     await orca.next();
-   *   }
-   *
-   *   // Get the text (if any) for all the items visited by the Orca cursor.
-   *   const itemTextLog = await orca.itemTextLog();
-   *   console.log(itemTextLog);
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @alias lastSpokenPhrase
-   *
-   * @returns {Promise<string[]>} The spoken phrase log.
+   * Not implemented
    */
   async itemTextLog(): Promise<string[]> {
     if (!this.#started || this.#stopping) {
@@ -965,29 +780,9 @@ export class Orca implements IScreenReader {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Clear the log of all spoken phrases for this Orca instance.
-   *
-   * For Orca this is the same as `clearSpokenPhraseLog`.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // ... perform some commands.
-   *
-   *   // Clear the spoken phrase log.
-   *   await orca.clearItemTextLog();
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @alias clearSpokenPhraseLog
+   * Not implemented
    */
   async clearItemTextLog(): Promise<void> {
     if (!this.#started || this.#stopping) {
@@ -997,50 +792,17 @@ export class Orca implements IScreenReader {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Returns all the current settings for this Orca instance.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Log current settings.
-   *   console.log(orca.getSettings());
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @returns {Record<string, unknown>} Current settings values.
+   * Not implemented
    */
   getSettings(): Record<string, unknown> {
     notImplemented();
   }
 
+  // TODO: implementation.
   /**
-   * Returns the value of a setting for this Orca instance.
-   *
-   * ```ts
-   * import { orca } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start Orca.
-   *   await orca.start();
-   *
-   *   // Log the value for the 'virtualBuffers.autoSayAllOnPageLoad' setting.
-   *   console.log(orca.getSetting('virtualBuffers.autoSayAllOnPageLoad'));
-   *
-   *   // Stop Orca.
-   *   await orca.stop();
-   * })();
-   * ```
-   *
-   * @param key The setting name.
-   * @returns {unknown} The setting value.
+   * Not implemented
    */
   getSetting(): unknown {
     notImplemented();
@@ -1054,14 +816,13 @@ export class Orca implements IScreenReader {
    * the action and returns it together with the action's result.
    *
    * @param {() => Promise<T>} action The action to perform while capturing Orca output.
-   * @param {object} [options] Additional options.
    * @returns {Promise<Capture<T>>} The action's result and captured Orca output.
    */
-  async capture<T>(): Promise<Capture<T>> {
+  async capture<T>(action: () => Promise<T> | T): Promise<Capture<T>> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    return await this.#client.enqueueAndTap(async () => action());
   }
 }

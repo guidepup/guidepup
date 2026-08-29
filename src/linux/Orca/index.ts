@@ -1,51 +1,49 @@
 import { Orca } from "./Orca";
 
 /**
- * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
- *
  * This object can be used to launch and control Orca.
  *
  * Here's a typical example:
  *
  * ```ts
- * import { orca } from "@guidepup/guidepup";
+ * import { unstable_orca } from "@guidepup/guidepup";
  *
  * (async () => {
  *   // Start Orca.
- *   await orca.start();
+ *   await unstable_orca.start();
  *
  *   // Move to the next item.
- *   await orca.next();
+ *   await unstable_orca.next();
  *
  *   // Stop Orca.
- *   await orca.stop();
+ *   await unstable_orca.stop();
  * })();
  * ```
  */
-export const orca = new Orca();
+export const unstable_orca = new Orca();
 
 /**
- * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
- *
  * This object can be used to launch and control Orca.
  *
  * Here's a typical example:
  *
  * ```ts
- * import { orca } from "@guidepup/guidepup";
+ * import { unstable_orca } from "@guidepup/guidepup";
  *
  * (async () => {
  *   // Start Orca.
- *   await orca.start();
+ *   await unstable_orca.start();
  *
  *   // Move to the next item.
- *   await orca.next();
+ *   await unstable_orca.next();
  *
  *   // Stop Orca.
- *   await orca.stop();
+ *   await unstable_orca.stop();
  * })();
  * ```
  */
-type _Orca = typeof orca;
+type _Orca = typeof unstable_orca;
 
 export { _Orca as Orca };
+export { keyCodeCommands as orcaKeyCodeCommands } from "./keyCodeCommands";
+export type { KeyCodeCommand as OrcaKeyCodeCommand } from "./keyCodeCommands";

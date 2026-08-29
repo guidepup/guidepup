@@ -1,47 +1,126 @@
 import { ChildProcess, spawn } from "node:child_process";
 import { type DBusPromise, type MessageBus, sessionBus } from "dbus-native";
+import {
+  ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
+  ERR_ORCA_CANNOT_BE_STARTED,
+  ERR_ORCA_DBUS_ADDRESS_NOT_SET,
+  ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
+  ERR_ORCA_NOT_RUNNING,
+  ERR_ORCA_SERVICE_TIMEOUT,
+  ERR_ORCA_X_SERVER_DISPLAY_NOT_SET,
+} from "../errors";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
-import { ERR_ORCA_NOT_RUNNING } from "../errors";
+import { serviceDefinition } from "./serviceDefinition";
 
 const debug = base.extend("OrcaClient");
 
 const POLL_INTERVAL = 500;
+const MAX_POLL_TIMEOUT = 30_000;
 
-const DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
+const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
+const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
 
-const DBUS_ORCA_COMMANDS = {
-  // TODO: generate all
-  CaretNavigator: {
-    objectPath: "/org/gnome/Orca/Service/CaretNavigator",
-  },
-  FlatReviewPresenter: {
-    objectPath: "/org/gnome/Orca/Service/FlatReviewPresenter",
-  },
-  ObjectNavigator: {
-    objectPath: "/org/gnome/Orca/Service/ObjectNavigator",
-  },
-  StructuralNavigator: {
-    objectPath: "/org/gnome/Orca/Service/StructuralNavigator",
-  },
-  WhereAmIPresenter: {
-    objectPath: "/org/gnome/Orca/Service/WhereAmIPresenter",
-  },
-} as const;
+type OrcaTypeMap = {
+  str: string;
+  bool: boolean;
+};
 
-interface OrcaModule {
-  ExecuteCommand(command: string, notifyUser: boolean): DBusPromise<void>;
+type ParameterValue<P> = P extends { type: infer T extends keyof OrcaTypeMap }
+  ? OrcaTypeMap[T]
+  : never;
+
+type ParameterTuple<P extends readonly { type: keyof OrcaTypeMap }[]> = {
+  [K in keyof P]: ParameterValue<P[K]>;
+};
+
+type DBusCommand<
+  Definition extends {
+    description: string;
+    representation?: string;
+  },
+> = Definition & {
+  execute(notifyUser?: boolean): DBusPromise<void>;
+};
+
+type DBusParameterizedCommand<
+  Definition extends {
+    description: string;
+    representation?: string;
+  },
+  Parameters extends readonly { type: keyof OrcaTypeMap }[],
+> = Definition & {
+  execute(...parameters: ParameterTuple<Parameters>): DBusPromise<unknown>;
+};
+
+type DBusRuntimeGetter<
+  Definition extends {
+    description: string;
+  },
+> = Definition & {
+  get(): DBusPromise<unknown>;
+};
+
+type DBusRuntimeSetter<
+  Definition extends {
+    description: string;
+  },
+> = Definition & {
+  set(value: unknown): DBusPromise<void>;
+};
+
+type OrcaModule<M> = M extends {
+  commands: infer C;
+  parameterizedCommands: infer PC;
+  runtimeGetters: infer RG;
+  runtimeSetters: infer RS;
 }
+  ? {
+      commands: {
+        [K in keyof C]: C[K] extends {
+          description: string;
+          representation?: string;
+        }
+          ? DBusCommand<C[K]>
+          : never;
+      };
 
-interface OrcaService {
-  // TODO: generate all
-  CaretNavigator: OrcaModule;
-  FlatReviewPresenter: OrcaModule;
-  ObjectNavigator: OrcaModule;
-  StructuralNavigator: OrcaModule;
-  WhereAmIPresenter: OrcaModule;
-}
+      parameterizedCommands: {
+        [K in keyof PC]: PC[K] extends {
+          description: string;
+          representation?: string;
+          parameters: infer P extends readonly {
+            type: keyof OrcaTypeMap;
+          }[];
+        }
+          ? DBusParameterizedCommand<PC[K], P>
+          : never;
+      };
+
+      runtimeGetters: {
+        [K in keyof RG]: RG[K] extends {
+          description: string;
+        }
+          ? DBusRuntimeGetter<RG[K]>
+          : never;
+      };
+
+      runtimeSetters: {
+        [K in keyof RS]: RS[K] extends {
+          description: string;
+        }
+          ? DBusRuntimeSetter<RS[K]>
+          : never;
+      };
+    }
+  : never;
+
+type OrcaService = {
+  [K in keyof typeof serviceDefinition.modules]: OrcaModule<
+    (typeof serviceDefinition.modules)[K]
+  >;
+};
 
 type ActionOptions = Pick<CommandOptions, "capture">;
 
@@ -95,7 +174,7 @@ export class OrcaClient {
     this.#sessionDisplay = process.env.DISPLAY;
 
     if (!this.#sessionDisplay) {
-      throw new Error("TODO: X Server must be running and DISPLAY set");
+      throw new Error(ERR_ORCA_X_SERVER_DISPLAY_NOT_SET);
     }
 
     debug(`DISPLAY=${this.#sessionDisplay}`);
@@ -107,9 +186,7 @@ export class OrcaClient {
     this.#sessionDBusAddress = process.env.DBUS_SESSION_BUS_ADDRESS;
 
     if (!this.#sessionDBusAddress) {
-      throw new Error(
-        "TODO: D-Bus must be running and DBUS_SESSION_BUS_ADDRESS set",
-      );
+      throw new Error(ERR_ORCA_DBUS_ADDRESS_NOT_SET);
     }
 
     debug(`DBUS_SESSION_BUS_ADDRESS=${this.#sessionDBusAddress}`);
@@ -122,8 +199,8 @@ export class OrcaClient {
 
     return new Promise((resolve, reject) => {
       const poll = async () => {
-        if (Date.now() - startTime >= 30_000) {
-          reject(new Error("TODO: Timed out waiting for D-Bus"));
+        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
+          reject(new Error(ERR_ORCA_DBUS_CONNECTION_TIMEOUT));
 
           return;
         }
@@ -154,18 +231,22 @@ export class OrcaClient {
 
     return new Promise<void>((resolve, reject) => {
       const poll = async () => {
-        if (Date.now() - startTime >= 30_000) {
-          reject(new Error("TODO: Timed out waiting for AT-SPI D-Bus service"));
+        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
+          reject(new Error(ERR_ORCA_AT_SPI_SERVICE_TIMEOUT));
 
           return;
         }
 
         try {
-          const names = await this.#sessionDBus.listNames();
+          debug(
+            `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
+          );
 
-          debug("Polling for 'org.a11y.Bus' registration", names);
+          const hasOwner = await this.#sessionDBus.nameHasOwner(
+            AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
+          );
 
-          if (names.includes("org.a11y.Bus")) {
+          if (hasOwner) {
             resolve();
 
             return;
@@ -196,23 +277,19 @@ export class OrcaClient {
 
     return new Promise<void>((resolve, reject) => {
       const poll = async () => {
-        if (Date.now() - startTime >= 30_000) {
-          reject(
-            new Error(
-              `TODO: Timed out waiting for '${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' D-Bus service`,
-            ),
-          );
+        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
+          reject(new Error(ERR_ORCA_SERVICE_TIMEOUT));
 
           return;
         }
 
         try {
           debug(
-            `Polling for '${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
+            `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
           );
 
           const hasOwner = await this.#sessionDBus.nameHasOwner(
-            DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
+            SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
           );
 
           if (hasOwner) {
@@ -231,31 +308,100 @@ export class OrcaClient {
     });
   }
 
-  async #mapOrcaDBusService() {
+  async #mapOrcaDBusService(): Promise<void> {
     debug("[4/4] Connecting to Orca D-Bus service...");
 
     const sessionDBusOrcaService = this.#sessionDBus.getService(
-      DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
+      SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
     );
 
-    const entries = await Promise.all(
-      Object.entries(DBUS_ORCA_COMMANDS).map(async ([name, { objectPath }]) => {
-        const service = await sessionDBusOrcaService.getInterface(
-          objectPath,
-          "org.gnome.Orca.Module",
-        );
+    const mapModule = async <K extends keyof typeof serviceDefinition.modules>(
+      name: K,
+    ): Promise<OrcaService[K]> => {
+      const moduleDefinition = serviceDefinition.modules[name];
 
-        debug(objectPath, "org.gnome.Orca.Module", service);
+      const dbusInterface = await sessionDBusOrcaService.getInterface(
+        moduleDefinition.objectPath,
+        "org.gnome.Orca.Module",
+      );
 
-        return [name, service] as const;
-      }),
-    );
+      debug(
+        moduleDefinition.objectPath,
+        "org.gnome.Orca.Module",
+        dbusInterface,
+      );
 
-    this.#orcaService = Object.fromEntries(entries) as unknown as OrcaService;
+      return {
+        commands: Object.fromEntries(
+          Object.keys(moduleDefinition.commands).map((key) => [
+            key,
+            {
+              ...moduleDefinition.commands[key],
+              execute: (notifyUser: boolean = true) =>
+                dbusInterface.ExecuteCommand(key, notifyUser),
+            },
+          ]),
+        ),
+
+        parameterizedCommands: Object.fromEntries(
+          Object.entries(moduleDefinition.parameterizedCommands ?? {}).map(
+            ([key]) => [
+              key,
+              {
+                ...moduleDefinition.parameterizedCommands[key],
+                execute: (...parameters: unknown[]) =>
+                  dbusInterface.ExecuteParameterizedCommand(key, parameters),
+              },
+            ],
+          ),
+        ),
+
+        runtimeGetters: Object.fromEntries(
+          Object.keys(moduleDefinition.runtimeGetters ?? {}).map((key) => [
+            key,
+            {
+              ...moduleDefinition.runtimeGetters[key],
+              get: () => dbusInterface.ExecuteRuntimeGetter(key),
+            },
+          ]),
+        ),
+
+        runtimeSetters: Object.fromEntries(
+          Object.keys(moduleDefinition.runtimeSetters ?? {}).map((key) => [
+            key,
+            {
+              ...moduleDefinition.runtimeSetters[key],
+              set: (value: unknown) =>
+                dbusInterface.ExecuteRuntimeSetter(key, value),
+            },
+          ]),
+        ),
+      } as OrcaService[K];
+    };
+
+    const service = {} as OrcaService;
+
+    for (const name of Object.keys(serviceDefinition.modules) as Array<
+      keyof typeof serviceDefinition.modules
+    >) {
+      await this.#assignOrcaModule(service, name, mapModule(name));
+    }
+
+    this.#orcaService = service;
 
     debug(
-      `Ready: Successfully mapped interface ${DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}.`,
+      `Ready: Successfully mapped interface ${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}.`,
     );
+  }
+
+  #assignOrcaModule<K extends keyof OrcaService>(
+    service: OrcaService,
+    name: K,
+    module: Promise<OrcaService[K]>,
+  ): void {
+    void module.then((value) => {
+      (service as Record<K, OrcaService[K]>)[name] = value;
+    });
   }
 
   async start() {
@@ -274,7 +420,7 @@ export class OrcaClient {
 
       this.#started = true;
     } catch (cause) {
-      throw new Error("TODO: start error", { cause });
+      throw new Error(ERR_ORCA_CANNOT_BE_STARTED, { cause });
     } finally {
       if (!this.#started) {
         await this.stop();

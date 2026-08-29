@@ -1,29 +1,27 @@
 import type { CommandOptions, Orca } from "../../src";
-import { orca } from "../../src";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
+import { unstable_orca } from "../../src";
 
 /**
- * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
- *
  * This object can be used to launch and control Orca.
  *
  * Here's a typical example:
  *
  * ```ts
- * import { orca } from "@guidepup/guidepup";
+ * import { unstable_orca } from "@guidepup/guidepup";
  *
  * (async () => {
  *   // Start Orca.
- *   await orca.start();
+ *   await unstable_orca.start();
  *
  *   // Move to the next item.
- *   await orca.next();
+ *   await unstable_orca.next();
  *
  *   // ... perform some commands.
  *
  *   // Stop Orca.
- *   await orca.stop();
+ *   await unstable_orca.stop();
  * })();
  * ```
  */
@@ -39,7 +37,7 @@ export interface OrcaPlaywright extends Orca {
   ): Promise<void>;
 }
 
-const orcaPlaywright: OrcaPlaywright = orca as OrcaPlaywright;
+const orcaPlaywright: OrcaPlaywright = unstable_orca as OrcaPlaywright;
 
 /**
  * These tests extend the default Playwright environment that launches the
@@ -49,34 +47,31 @@ const orcaPlaywright: OrcaPlaywright = orca as OrcaPlaywright;
  */
 export const orcaTest = test.extend<{
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
-   *
    * This object can be used to launch and control Orca.
    *
    * Here's a typical example:
    *
    * ```ts
-   * import { orca } from "@guidepup/guidepup";
+   * import { unstable_orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await orca.start();
+   *   await unstable_orca.start();
    *
    *   // Move to the next item.
-   *   await orca.next();
+   *   await unstable_orca.next();
    *
    *   // ... perform some commands.
    *
    *   // Stop Orca.
-   *   await orca.stop();
+   *   await unstable_orca.stop();
    * })();
    * ```
    */
   orca: OrcaPlaywright;
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-start-options)
    *
-   * Options to start Orca with, see also [orca.start([options])](https://www.guidepup.dev/docs/api/class-orca#orca-start).
+   * Options to start Orca with.
    */
   orcaStartOptions: StartOptions;
 }>({
@@ -84,6 +79,7 @@ export const orcaTest = test.extend<{
   orca: async ({ orcaStartOptions, page }, use) => {
     try {
       orcaPlaywright.navigateToWebContent = async () => {
+        // TODO: implement stable way to navigate to main web content
         await page.bringToFront();
       };
 
