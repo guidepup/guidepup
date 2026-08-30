@@ -282,21 +282,30 @@ export class OrcaClient {
 
     const socketPath = `${SPEECHD_DIR}/run/speechd.sock`;
 
-    this.#speechdProcess = spawn("speech-dispatcher", [
-      "--run-single",
-      "--config-dir",
-      SPEECHD_DIR,
-      "--module-dir",
-      `${SPEECHD_DIR}/modules`,
-      "--communication-method",
-      "unix_socket",
-      "--socket-path",
-      socketPath,
-      "--log-dir",
-      `${SPEECHD_DIR}/logs`,
-      "--timeout",
-      "0",
-    ]);
+    this.#speechdProcess = spawn(
+      "speech-dispatcher",
+      [
+        "--run-single",
+        "--config-dir",
+        SPEECHD_DIR,
+        "--module-dir",
+        `${SPEECHD_DIR}/modules`,
+        "--communication-method",
+        "unix_socket",
+        "--socket-path",
+        socketPath,
+        "--log-dir",
+        `${SPEECHD_DIR}/logs`,
+        "--timeout",
+        "0",
+      ],
+      {
+        env: {
+          ...process.env,
+          GUIDEPUP_ORCA_SPEECH_SOCKET: `${SPEECHD_DIR}/out/guidepup-orca-speech.sock`,
+        },
+      },
+    );
 
     this.#speechdProcess.stdout.on("data", (data: Buffer) => {
       debug(`[speechd] ${data.toString().trimEnd()}`);
@@ -357,6 +366,22 @@ export class OrcaClient {
         DISPLAY: this.#sessionDisplay,
         SPEECHD_ADDRESS: this.#speechdAddress,
       },
+    });
+
+    this.#orcaProcess.stdout.on("data", (data: Buffer) => {
+      debug(`[orca] ${data.toString().trimEnd()}`);
+    });
+
+    this.#orcaProcess.stderr.on("data", (data: Buffer) => {
+      debug(`[orca] ${data.toString().trimEnd()}`);
+    });
+
+    this.#orcaProcess.on("error", (error) => {
+      debug(`[orca] process error: ${error.message}`);
+    });
+
+    this.#orcaProcess.on("exit", (code, signal) => {
+      debug(`[orca] exited with code=${code}, signal=${signal}`);
     });
 
     const startTime = Date.now();
@@ -485,6 +510,8 @@ export class OrcaClient {
       await this.#startSpeechd();
       await this.#startOrca();
       await this.#mapOrcaDBusService();
+
+      // TODO: connect to the Guidepup speech socket
 
       this.#started = true;
     } catch (cause) {

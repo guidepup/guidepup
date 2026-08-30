@@ -1,17 +1,80 @@
 #!/usr/bin/env node
 
 import fs from "node:fs";
+import net from "node:net";
 import readline from "node:readline";
 
-const logFile = "/tmp/guidepup-orca-speech.log";
+const socketPath = process.env.GUIDEPUP_ORCA_SPEECH_SOCKET;
 
-function log(text) {
-  fs.appendFileSync(logFile, `${text}\n`);
+if (!socketPath) {
+  throw new Error("GUIDEPUP_ORCA_SPEECH_SOCKET must be set");
 }
 
-function send(text) {
+fs.mkdirSync(path.dirname(socketPath), { recursive: true });
+
+function replyToSpeechDispatcher(text) {
   process.stdout.write(`${text}\n`);
 }
+
+const clients = new Set();
+
+function broadcast(message) {
+  const data = `${JSON.stringify(message)}\n`;
+
+  for (const socket of clients) {
+    if (!socket.destroyed) {
+      socket.write(data);
+    }
+  }
+}
+
+function startSocketServer() {
+  try {
+    fs.unlinkSync(socketPath);
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      throw error;
+    }
+  }
+
+  const server = net.createServer((socket) => {
+    clients.add(socket);
+
+    // TODO: acknowledge the connection
+    // TODO: send when connection closing/errored and closing
+
+    socket.on("close", () => {
+      clients.delete(socket);
+    });
+
+    socket.on("error", () => {
+      clients.delete(socket);
+    });
+  });
+
+  server.listen(socketPath);
+
+  return server;
+}
+
+function stopSocketServer(server) {
+  for (const socket of clients) {
+    socket.destroy();
+  }
+
+  clients.clear();
+  server.close();
+
+  try {
+    fs.unlinkSync(socketPath);
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      throw error;
+    }
+  }
+}
+
+const socketServer = startSocketServer();
 
 const input = readline.createInterface({
   input: process.stdin,
@@ -40,73 +103,92 @@ async function receiveData() {
   return lines.join("\n");
 }
 
-while (true) {
-  const { value: line, done } = await iterator.next();
+try {
+  while (true) {
+    const { value: line, done } = await iterator.next();
 
-  if (done) {
-    break;
+    if (done) {
+      break;
+    }
+
+    if (line === "INIT") {
+      replyToSpeechDispatcher("299 OK LOADED");
+    } else if (line === "AUDIO") {
+      replyToSpeechDispatcher("207 OK RECEIVING AUDIO SETTINGS");
+
+      const data = await receiveData();
+
+      if (data === null) {
+        break;
+      }
+
+      replyToSpeechDispatcher("203 OK AUDIO SETTINGS RECEIVED");
+    } else if (line === "LOGLEVEL") {
+      replyToSpeechDispatcher("200 OK RECEIVING LOGLEVEL");
+
+      const data = await receiveData();
+
+      if (data === null) {
+        break;
+      }
+
+      replyToSpeechDispatcher("200 OK");
+    } else if (line === "LIST VOICES") {
+      replyToSpeechDispatcher("200 OK");
+    } else if (line === "SET") {
+      replyToSpeechDispatcher("203 OK RECEIVING SETTINGS");
+
+      const data = await receiveData();
+
+      if (data === null) {
+        break;
+      }
+
+      replyToSpeechDispatcher("203 OK SETTINGS RECEIVED");
+    } else if (line === "SPEAK") {
+      replyToSpeechDispatcher("202 OK SEND DATA");
+
+      const data = await receiveData();
+
+      if (data === null) {
+        break;
+      }
+
+      broadcast({
+        type: "speech",
+        data,
+      });
+
+      replyToSpeechDispatcher("200 OK SPEAKING");
+      replyToSpeechDispatcher("701 BEGIN");
+      replyToSpeechDispatcher("702 END");
+    } else if (line === "STOP") {
+      broadcast({
+        type: "stop",
+      });
+
+      replyToSpeechDispatcher("703 STOP");
+    } else if (line === "PAUSE") {
+      broadcast({
+        type: "pause",
+      });
+
+      replyToSpeechDispatcher("704 PAUSE");
+    } else if (line === "CANCEL") {
+      broadcast({
+        type: "cancel",
+      });
+
+      replyToSpeechDispatcher("703 STOP");
+    } else if (line === "QUIT" || line === "END") {
+      replyToSpeechDispatcher("210 OK QUIT");
+
+      break;
+    } else {
+      replyToSpeechDispatcher("200 OK");
+    }
   }
-
-  if (line === "INIT") {
-    send("299 OK LOADED");
-  } else if (line === "AUDIO") {
-    send("207 OK RECEIVING AUDIO SETTINGS");
-
-    const data = await receiveData();
-
-    if (data === null) {
-      break;
-    }
-
-    send("203 OK AUDIO SETTINGS RECEIVED");
-  } else if (line === "LOGLEVEL") {
-    send("200 OK RECEIVING LOGLEVEL");
-
-    const data = await receiveData();
-
-    if (data === null) {
-      break;
-    }
-
-    send("200 OK");
-  } else if (line === "LIST VOICES") {
-    send("200 OK");
-  } else if (line === "SET") {
-    send("203 OK RECEIVING SETTINGS");
-
-    const data = await receiveData();
-
-    if (data === null) {
-      break;
-    }
-
-    send("203 OK SETTINGS RECEIVED");
-  } else if (line === "SPEAK") {
-    send("202 OK SEND DATA");
-
-    const data = await receiveData();
-
-    if (data === null) {
-      break;
-    }
-
-    log(`SPEECH: ${data}`);
-
-    send("200 OK SPEAKING");
-    send("701 BEGIN");
-    send("702 END");
-  } else if (line === "STOP") {
-    send("703 STOP");
-  } else if (line === "PAUSE") {
-    send("704 PAUSE");
-  } else if (line === "CANCEL") {
-    send("703 STOP");
-  } else if (line === "QUIT" || line === "END") {
-    send("210 OK QUIT");
-    break;
-  } else {
-    send("200 OK");
-  }
+} finally {
+  input.close();
+  stopSocketServer(socketServer);
 }
-
-input.close();

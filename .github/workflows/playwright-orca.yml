@@ -69,8 +69,6 @@ jobs:
           sleep 5
 
           DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
-
-          cat /tmp/guidepup-orca-speech.log
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
