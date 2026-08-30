@@ -13,6 +13,7 @@ import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
 import { serviceDefinition } from "./serviceDefinition";
+import { statSync } from "node:fs";
 
 const debug = base.extend("OrcaClient");
 
@@ -21,6 +22,9 @@ const MAX_POLL_TIMEOUT = 30_000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
+
+// TODO: move to the Guidepup cache directory
+const SPEECHD_DIR = "/tmp/guidepup-speechd";
 
 type OrcaTypeMap = {
   str: string;
@@ -132,10 +136,20 @@ interface QueueAction {
   reject: (reason?: unknown) => void;
 }
 
+function isUnixSocket(path: string): boolean {
+  try {
+    return statSync(path).isSocket();
+  } catch {
+    return false;
+  }
+}
+
 export class OrcaClient {
   #sessionDisplay = null;
-  #sessionDBusAddress = null;
+  #sessionDBusAddress: string = null;
   #sessionDBus: MessageBus = null;
+  #speechdProcess: ChildProcess = null;
+  #speechdAddress: string = null;
   #orcaProcess: ChildProcess = null;
   #orcaService: OrcaService = null;
 
@@ -262,14 +276,61 @@ export class OrcaClient {
     });
   }
 
+  #startSpeechd() {
+    debug("Starting Speech Dispatcher");
+
+    const socketPath = `${SPEECHD_DIR}/run/speechd.sock`;
+
+    this.#speechdProcess = spawn("speech-dispatcher", [
+      "--run-single",
+      "--config-dir",
+      SPEECHD_DIR,
+      "--module-dir",
+      `${SPEECHD_DIR}/modules`,
+      "--communication-method",
+      "unix_socket",
+      "--socket-path",
+      socketPath,
+      "--log-dir",
+      `${SPEECHD_DIR}/logs`,
+      "--timeout",
+      "0",
+    ]);
+
+    this.#speechdAddress = `unix_socket:${socketPath}`;
+
+    const startTime = Date.now();
+
+    return new Promise<void>((resolve, reject) => {
+      const poll = () => {
+        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
+          reject(new Error("TBD"));
+
+          return;
+        }
+
+        if (isUnixSocket(socketPath)) {
+          resolve();
+
+          return;
+        }
+
+        setTimeout(poll, POLL_INTERVAL);
+      };
+
+      poll();
+    });
+  }
+
   #startOrca() {
-    debug("[3/4] Starting Orca");
+    debug("Starting Orca");
 
     this.#orcaProcess = spawn("orca", ["--replace"], {
       env: {
         ...process.env,
-        DISPLAY: this.#sessionDisplay,
         DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
+        DISPLAY: this.#sessionDisplay,
+        SPEECHD_ADDRESS: this.#speechdAddress,
       },
     });
 
@@ -309,7 +370,7 @@ export class OrcaClient {
   }
 
   async #mapOrcaDBusService(): Promise<void> {
-    debug("[4/4] Connecting to Orca D-Bus service...");
+    debug("Connecting to Orca D-Bus service...");
 
     const sessionDBusOrcaService = this.#sessionDBus.getService(
       SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
@@ -325,12 +386,6 @@ export class OrcaClient {
         "org.gnome.Orca.Module",
       );
 
-      debug(
-        moduleDefinition.objectPath,
-        "org.gnome.Orca.Module",
-        dbusInterface,
-      );
-
       return {
         commands: Object.fromEntries(
           Object.keys(moduleDefinition.commands).map((key) => [
@@ -342,10 +397,9 @@ export class OrcaClient {
             },
           ]),
         ),
-
         parameterizedCommands: Object.fromEntries(
-          Object.entries(moduleDefinition.parameterizedCommands ?? {}).map(
-            ([key]) => [
+          Object.keys(moduleDefinition.parameterizedCommands ?? {}).map(
+            (key) => [
               key,
               {
                 ...moduleDefinition.parameterizedCommands[key],
@@ -355,7 +409,6 @@ export class OrcaClient {
             ],
           ),
         ),
-
         runtimeGetters: Object.fromEntries(
           Object.keys(moduleDefinition.runtimeGetters ?? {}).map((key) => [
             key,
@@ -365,7 +418,6 @@ export class OrcaClient {
             },
           ]),
         ),
-
         runtimeSetters: Object.fromEntries(
           Object.keys(moduleDefinition.runtimeSetters ?? {}).map((key) => [
             key,
@@ -379,29 +431,19 @@ export class OrcaClient {
       } as OrcaService[K];
     };
 
-    const service = {} as OrcaService;
+    const entries = await Promise.all(
+      (
+        Object.keys(serviceDefinition.modules) as Array<
+          keyof typeof serviceDefinition.modules
+        >
+      ).map(async (name) => [name, await mapModule(name)] as const),
+    );
 
-    for (const name of Object.keys(serviceDefinition.modules) as Array<
-      keyof typeof serviceDefinition.modules
-    >) {
-      await this.#assignOrcaModule(service, name, mapModule(name));
-    }
-
-    this.#orcaService = service;
+    this.#orcaService = Object.fromEntries(entries) as OrcaService;
 
     debug(
       `Ready: Successfully mapped interface ${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}.`,
     );
-  }
-
-  #assignOrcaModule<K extends keyof OrcaService>(
-    service: OrcaService,
-    name: K,
-    module: Promise<OrcaService[K]>,
-  ): void {
-    void module.then((value) => {
-      (service as Record<K, OrcaService[K]>)[name] = value;
-    });
   }
 
   async start() {
@@ -415,6 +457,7 @@ export class OrcaClient {
       await this.#verifyXServer();
       await this.#verifyDBus();
       await this.#verifyAtSpi();
+      await this.#startSpeechd();
       await this.#startOrca();
       await this.#mapOrcaDBusService();
 
@@ -443,9 +486,17 @@ export class OrcaClient {
       this.#orcaProcess.kill("SIGTERM");
     }
 
+    if (this.#speechdProcess && this.#speechdProcess.exitCode === null) {
+      debug("Terminating Speech Dispatcher...");
+
+      this.#speechdProcess.kill("SIGTERM");
+    }
+
     this.#sessionDisplay = null;
     this.#sessionDBusAddress = null;
     this.#sessionDBus = null;
+    this.#speechdProcess = null;
+    this.#speechdAddress = null;
     this.#orcaProcess = null;
     this.#orcaService = null;
 

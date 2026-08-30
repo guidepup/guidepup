@@ -55,34 +55,6 @@ jobs:
 
           cp -r ./.github/tmp-orca-speechd/. "${SPEECHD_DIR}/"
 
-          speech-dispatcher \
-            --run-single \
-            --config-dir "${SPEECHD_DIR}" \
-            --module-dir "${SPEECHD_DIR}/modules" \
-            --communication-method unix_socket \
-            --socket-path "${SPEECHD_DIR}/run/speechd.sock" \
-            --log-dir "${SPEECHD_DIR}/logs" \
-            --timeout 0 >/dev/null 2>&1 &
-
-          SPEECHD_PID=$!
-
-          export SPEECHD_ADDRESS="unix_socket:${SPEECHD_DIR}/run/speechd.sock"
-
-          for i in $(seq 1 50); do
-            if [ -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
-              break
-            fi
-
-            sleep 0.1
-          done
-
-          if [ ! -S "${SPEECHD_DIR}/run/speechd.sock" ]; then
-            echo "Speech Dispatcher failed to create socket"
-            cat "${SPEECHD_DIR}/logs/"* 2>/dev/null || true
-
-            exit 1
-          fi
-
           Xvfb :99 >/dev/null 2>&1 &
           export DISPLAY=:99
 
