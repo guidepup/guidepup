@@ -7,6 +7,7 @@ import {
   ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
+  ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_X_SERVER_DISPLAY_NOT_SET,
 } from "../errors";
 import { base } from "../../debug";
@@ -253,7 +254,7 @@ export class OrcaClient {
 
         try {
           debug(
-            `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
+            `Polling for '${AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME}' name ownership`,
           );
 
           const hasOwner = await this.#sessionDBus.nameHasOwner(
@@ -299,20 +300,28 @@ export class OrcaClient {
 
     this.#speechdAddress = `unix_socket:${socketPath}`;
 
+    debug(`SPEECHD_ADDRESS=${this.#speechdAddress}`);
+
     const startTime = Date.now();
 
     return new Promise<void>((resolve, reject) => {
       const poll = () => {
         if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
-          reject(new Error("TBD"));
+          reject(new Error(ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT));
 
           return;
         }
 
-        if (isUnixSocket(socketPath)) {
-          resolve();
+        try {
+          debug(`Polling for '${socketPath}' unix socket existence`);
 
-          return;
+          if (isUnixSocket(socketPath)) {
+            resolve();
+
+            return;
+          }
+        } catch {
+          // Swallow
         }
 
         setTimeout(poll, POLL_INTERVAL);

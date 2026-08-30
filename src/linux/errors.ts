@@ -11,5 +11,7 @@ export const ERR_ORCA_DBUS_CONNECTION_TIMEOUT =
   "Timed out waiting to connect to the session D-Bus";
 export const ERR_ORCA_AT_SPI_SERVICE_TIMEOUT =
   "Timed out waiting to discover the 'org.a11y.Bus' service on the AT-SPI D-Bus";
+export const ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT =
+  "Timed out waiting to discover the speech dispatcher unix socket";
 export const ERR_ORCA_SERVICE_TIMEOUT =
   "Timed out waiting to discover the 'org.gnome.Orca.Service' service on the service D-Bus";
