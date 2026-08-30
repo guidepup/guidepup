@@ -108,3 +108,5 @@ while (true) {
     send("200 OK");
   }
 }
+
+input.close();

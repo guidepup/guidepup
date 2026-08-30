@@ -19,7 +19,7 @@ import { statSync } from "node:fs";
 const debug = base.extend("OrcaClient");
 
 const POLL_INTERVAL = 500;
-const MAX_POLL_TIMEOUT = 30_000;
+const MAX_POLL_TIMEOUT = 5_000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
@@ -297,6 +297,22 @@ export class OrcaClient {
       "--timeout",
       "0",
     ]);
+
+    this.#speechdProcess.stdout.on("data", (data: Buffer) => {
+      debug(`[speechd] ${data.toString().trimEnd()}`);
+    });
+
+    this.#speechdProcess.stderr.on("data", (data: Buffer) => {
+      debug(`[speechd] ${data.toString().trimEnd()}`);
+    });
+
+    this.#speechdProcess.on("error", (error) => {
+      debug(`[speechd] process error: ${error.message}`);
+    });
+
+    this.#speechdProcess.on("exit", (code, signal) => {
+      debug(`[speechd] exited with code=${code}, signal=${signal}`);
+    });
 
     this.#speechdAddress = `unix_socket:${socketPath}`;
 
