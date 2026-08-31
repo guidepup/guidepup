@@ -45,8 +45,6 @@ jobs:
             --exit-idle-time=-1 \
             --log-target=stderr >/dev/null 2>&1 &
 
-          # TODO: move speechd logic into OrcaClient.ts
-
           export SPEECHD_DIR=/tmp/guidepup-speechd
 
           mkdir -p \

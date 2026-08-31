@@ -8,10 +8,11 @@
       "defaultDownload": true,
       "assets": [
         {
-          "version": "TBD",
-          "repository": "TBD",
-          "asset": "TBD",
-          "sha256": "TBD"
+          "version": "0.1.1-50.2",
+          "platformVersion": "6",
+          "repository": "guidepup/orca",
+          "asset": "guidepup-orca-0.1.1-50.2.tar.gz",
+          "sha256": "36e87abb0fc7fca178128a95c245a81644aae73109e8dd2beb7c84b05b878494"
         }
       ]
     },
