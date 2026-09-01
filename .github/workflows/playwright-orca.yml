@@ -1,0 +1,41 @@
+name: Playwright Orca
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  playwright-orca:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-26.04]
+        browser: [firefox]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.2 setup --ci
+      - run: npm ci --no-audit --no-fund --no-progress
+      - run: npm ci --prefix ./examples/playwright-orca --no-audit --no-fund --no-progress
+      - run: npm --prefix ./examples/playwright-orca rebuild ffmpeg-static --ignore-scripts=false
+      - run: npm --prefix ./examples/playwright-orca run browsers
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.2 install
+      - run: xvfb-run dbus-run-session -- npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
+        env:
+          DEBUG: guidepup:*
+      - uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: artifacts-${{ matrix.os }}-${{ matrix.browser }}
+          path: |
+            **/test-results/**/*
+            **/recordings/**/*

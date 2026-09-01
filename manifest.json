@@ -2,6 +2,21 @@
   "version": 1,
   "screenReaders": [
     {
+      "id": "orca",
+      "name": "Orca",
+      "platforms": ["linux"],
+      "defaultDownload": true,
+      "assets": [
+        {
+          "version": "0.2.1-50.2",
+          "platformVersion": "7",
+          "repository": "guidepup/orca",
+          "asset": "guidepup-orca-0.2.1-50.2.tar.gz",
+          "sha256": "ed2436d62d635d862130bed66f784ea09c1677c435f751b784b9e403eadaf25e"
+        }
+      ]
+    },
+    {
       "id": "nvda",
       "name": "NVDA",
       "platforms": ["win32"],
