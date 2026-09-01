@@ -152,7 +152,8 @@ function findAvailableDisplay(): string {
 
 function isAtSpiRunning(): boolean {
   try {
-    execFileSync("pgrep", ["-x", "at-spi-bus-launcher"]);
+    execFileSync("pgrep", ["-f", "(^|/)at-spi-bus-launcher(\\s|$)"]);
+
     return true;
   } catch {
     return false;
