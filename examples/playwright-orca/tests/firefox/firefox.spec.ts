@@ -4,6 +4,8 @@ import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases"
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { orcaTest as test } from "../../orca-test";
 
+test.use({ orcaStartOptions: { capture: true } });
+
 test.describe("Firefox Playwright Orca", () => {
   test("I can navigate the Guidepup Github page", async ({
     browser,
