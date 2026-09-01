@@ -22,12 +22,12 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - run: npx -y @guidepup/setup@0.25.1 setup --ci
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.1 setup --ci
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm ci --prefix ./examples/playwright-orca --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-orca rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-orca run browsers
-      - run: npx -y @guidepup/setup@0.25.1 install
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.1 install
       - run: |
           # TODO: migrate all process running / validation / setup to Guidepup runtime
 
