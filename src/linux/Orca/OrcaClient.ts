@@ -302,7 +302,7 @@ export class OrcaClient {
       {
         env: {
           ...process.env,
-          GUIDEPUP_ORCA_SPEECH_SOCKET: `${SPEECHD_DIR}/out/guidepup-orca-speech.sock`,
+          GUIDEPUP_ORCA_SPEECH_SOCKET: `${SPEECHD_DIR}/run/guidepup-orca-speech.sock`,
         },
       },
     );
