@@ -28,28 +28,9 @@ jobs:
       - run: npm --prefix ./examples/playwright-orca rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-orca run browsers
       - run: npx -y --min-release-age=0 @guidepup/setup@0.25.1 install
-      - run: |
-          # TODO: migrate all process running / validation / setup to Guidepup runtime
-
-          pulseaudio \
-            --start \
-            --exit-idle-time=-1 \
-            --log-target=stderr >/dev/null 2>&1 &
-
-          Xvfb :99 >/dev/null 2>&1 &
-          export DISPLAY=:99
-
-          sleep 1
-
-          eval "$(dbus-launch --sh-syntax --exit-with-session)"
-
-          sleep 5
-
-          /usr/libexec/at-spi-bus-launcher --launch-immediately >/dev/null 2>&1 &
-
-          sleep 5
-
-          DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
+      - run: xvfb-run dbus-run-session -- npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
+        env:
+          DEBUG: guidepup:*
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true

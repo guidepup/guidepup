@@ -1,17 +1,19 @@
-import { ChildProcess, spawn } from "node:child_process";
+import { ChildProcess, execFileSync, spawn } from "node:child_process";
 import { type DBusPromise, type MessageBus, sessionBus } from "dbus-native";
 import { dirname, join } from "node:path";
 import {
+  ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
   ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
   ERR_ORCA_CANNOT_BE_STARTED,
-  ERR_ORCA_DBUS_ADDRESS_NOT_SET,
   ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
+  ERR_ORCA_DBUS_START_FAILURE,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
-  ERR_ORCA_X_SERVER_DISPLAY_NOT_SET,
+  ERR_ORCA_X_SERVER_DISPLAYS_NOT_AVAILABLE,
+  ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
-import { mkdirSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, statSync } from "node:fs";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
@@ -21,7 +23,7 @@ import { serviceDefinition } from "./serviceDefinition";
 const debug = base.extend("OrcaClient");
 
 const POLL_INTERVAL = 500;
-const MAX_POLL_TIMEOUT = 10_000;
+const MAX_POLL_TIMEOUT = 5_000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
@@ -136,6 +138,27 @@ interface QueueAction {
   reject: (reason?: unknown) => void;
 }
 
+function findAvailableDisplay(): string {
+  for (let display = 99; display < 200; display++) {
+    try {
+      execFileSync("xdpyinfo", ["-display", `:${display}`]);
+    } catch {
+      return `:${display}`;
+    }
+  }
+
+  throw new Error(ERR_ORCA_X_SERVER_DISPLAYS_NOT_AVAILABLE);
+}
+
+function isAtSpiRunning(): boolean {
+  try {
+    execFileSync("pgrep", ["-x", "at-spi-bus-launcher"]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function isUnixSocket(path: string): boolean {
   try {
     return statSync(path).isSocket();
@@ -145,12 +168,19 @@ function isUnixSocket(path: string): boolean {
 }
 
 export class OrcaClient {
-  #sessionDisplay = null;
+  #xvfbDisplay = null;
+  #xvfbProcess = null;
+
   #sessionDBusAddress: string = null;
+  #sessionDBusProcess: ChildProcess = null;
   #sessionDBus: MessageBus = null;
+
+  #atSpiProcess: ChildProcess = null;
+
   #speechdProcess: ChildProcess = null;
   #speechdAddress: string = null;
   #speechdOutSocket: string = null;
+
   #orcaProcess: ChildProcess = null;
   #orcaService: OrcaService = null;
 
@@ -183,25 +213,115 @@ export class OrcaClient {
     this.#spokenPhrases = [];
   }
 
-  async #verifyXServer(): Promise<void> {
-    debug("Verifying X Server running...");
+  async #ensureXServer(): Promise<void> {
+    debug("Ensuring X Server is running...");
 
-    this.#sessionDisplay = process.env.DISPLAY;
+    this.#xvfbDisplay = process.env.DISPLAY;
 
-    if (!this.#sessionDisplay) {
-      throw new Error(ERR_ORCA_X_SERVER_DISPLAY_NOT_SET);
+    if (!this.#xvfbDisplay) {
+      this.#xvfbDisplay = findAvailableDisplay();
+
+      debug(`Starting Xvfb on DISPLAY=${this.#xvfbDisplay}`);
+
+      this.#xvfbProcess = spawn("Xvfb", [
+        this.#xvfbDisplay,
+        "-screen",
+        "0",
+        "1280x720x24",
+      ]);
+
+      this.#xvfbProcess.stdout.on("data", (data: Buffer) => {
+        debug(`[xvfb] ${data.toString().trimEnd()}`);
+      });
+
+      this.#xvfbProcess.stderr.on("data", (data: Buffer) => {
+        debug(`[xvfb] ${data.toString().trimEnd()}`);
+      });
+
+      this.#xvfbProcess.on("error", (error) => {
+        debug(`[xvfb] process error: ${error.message}`);
+      });
+
+      this.#xvfbProcess.on("exit", (code, signal) => {
+        debug(`[xvfb] exited with code=${code}, signal=${signal}`);
+      });
     }
 
-    debug(`DISPLAY=${this.#sessionDisplay}`);
+    debug(`DISPLAY=${this.#xvfbDisplay}`);
+
+    const startTime = Date.now();
+
+    return new Promise((resolve, reject) => {
+      const poll = async () => {
+        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
+          reject(new Error(ERR_ORCA_X_SERVER_TIMEOUT));
+
+          return;
+        }
+
+        debug("Polling for X Server running");
+
+        try {
+          execFileSync("xdpyinfo", ["-display", this.#xvfbDisplay]);
+          resolve();
+
+          return;
+        } catch {
+          // Swallow
+        }
+
+        setTimeout(poll, POLL_INTERVAL);
+      };
+
+      poll();
+    });
   }
 
-  async #verifyDBus(): Promise<void> {
-    debug("Verifying session D-Bus running...");
+  async #ensureDBus(): Promise<void> {
+    debug("Ensuring session D-Bus running...");
 
     this.#sessionDBusAddress = process.env.DBUS_SESSION_BUS_ADDRESS;
 
     if (!this.#sessionDBusAddress) {
-      throw new Error(ERR_ORCA_DBUS_ADDRESS_NOT_SET);
+      this.#sessionDBusProcess = spawn(
+        "dbus-daemon",
+        ["--session", "--nofork", "--print-address"],
+        {
+          env: {
+            ...process.env,
+            DISPLAY: this.#xvfbDisplay,
+          },
+        },
+      );
+
+      this.#sessionDBusProcess.stdout.on("data", (data: Buffer) => {
+        debug(`[dbus] ${data.toString().trimEnd()}`);
+      });
+
+      this.#sessionDBusProcess.stderr.on("data", (data: Buffer) => {
+        debug(`[dbus] ${data.toString().trimEnd()}`);
+      });
+
+      this.#sessionDBusProcess.on("error", (error) => {
+        debug(`[dbus] process error: ${error.message}`);
+      });
+
+      this.#sessionDBusProcess.on("exit", (code, signal) => {
+        debug(`[dbus] exited with code=${code}, signal=${signal}`);
+      });
+
+      this.#sessionDBusAddress = await new Promise<string>((resolve) => {
+        this.#sessionDBusProcess.stdout.once("data", (data: Buffer) => {
+          resolve(data.toString().trim());
+        });
+
+        this.#sessionDBusProcess.once("error", () => resolve(""));
+        this.#sessionDBusProcess.once("exit", () => resolve(""));
+      });
+
+      if (!this.#sessionDBusAddress) {
+        throw new Error(ERR_ORCA_DBUS_START_FAILURE);
+      }
     }
 
     debug(`DBUS_SESSION_BUS_ADDRESS=${this.#sessionDBusAddress}`);
@@ -239,8 +359,45 @@ export class OrcaClient {
     });
   }
 
-  #verifyAtSpi() {
-    debug("Verifying AT-SPI D-Bus running...");
+  #ensureAtSpi() {
+    debug("Ensuring AT-SPI D-Bus running...");
+
+    if (!isAtSpiRunning()) {
+      debug("Starting AT-SPI D-Bus...");
+
+      const atSpiLauncher = [
+        "/usr/libexec/at-spi-bus-launcher",
+        "/usr/lib/at-spi2-core/at-spi-bus-launcher",
+      ].find((command) => existsSync(command));
+
+      if (!atSpiLauncher) {
+        throw new Error(ERR_ORCA_AT_SPI_LAUNCHER_MISSING);
+      }
+
+      this.#atSpiProcess = spawn(atSpiLauncher, ["--launch-immediately"], {
+        env: {
+          ...process.env,
+          DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
+          DISPLAY: this.#xvfbDisplay,
+        },
+      });
+
+      this.#atSpiProcess.stdout.on("data", (data: Buffer) => {
+        debug(`[at-spi] ${data.toString().trimEnd()}`);
+      });
+
+      this.#atSpiProcess.stderr.on("data", (data: Buffer) => {
+        debug(`[at-spi] ${data.toString().trimEnd()}`);
+      });
+
+      this.#atSpiProcess.on("error", (error) => {
+        debug(`[at-spi] process error: ${error.message}`);
+      });
+
+      this.#atSpiProcess.on("exit", (code, signal) => {
+        debug(`[at-spi] exited with code=${code}, signal=${signal}`);
+      });
+    }
 
     const startTime = Date.now();
 
@@ -378,7 +535,7 @@ export class OrcaClient {
         env: {
           ...process.env,
           DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
-          DISPLAY: this.#sessionDisplay,
+          DISPLAY: this.#xvfbDisplay,
           SPEECHD_ADDRESS: this.#speechdAddress,
         },
       },
@@ -520,9 +677,9 @@ export class OrcaClient {
     this.#starting = true;
 
     try {
-      await this.#verifyXServer();
-      await this.#verifyDBus();
-      await this.#verifyAtSpi();
+      await this.#ensureXServer();
+      await this.#ensureDBus();
+      await this.#ensureAtSpi();
       await this.#startSpeechd();
       await this.#startOrca();
       await this.#mapOrcaDBusService();
@@ -560,11 +717,39 @@ export class OrcaClient {
       this.#speechdProcess.kill("SIGTERM");
     }
 
-    this.#sessionDisplay = null;
+    if (
+      this.#sessionDBusProcess &&
+      this.#sessionDBusProcess.exitCode === null
+    ) {
+      debug("Terminating session D-Bus...");
+
+      this.#sessionDBusProcess.kill("SIGTERM");
+    }
+
+    if (this.#atSpiProcess && this.#atSpiProcess.exitCode === null) {
+      debug("Terminating AT-SPI...");
+
+      this.#atSpiProcess.kill("SIGTERM");
+    }
+
+    if (this.#xvfbProcess && this.#xvfbProcess.exitCode === null) {
+      debug("Terminating X Server...");
+
+      this.#xvfbProcess.kill("SIGTERM");
+    }
+
+    this.#xvfbDisplay = null;
+    this.#xvfbProcess = null;
+
     this.#sessionDBusAddress = null;
     this.#sessionDBus = null;
+
+    this.#atSpiProcess = null;
+
     this.#speechdProcess = null;
     this.#speechdAddress = null;
+    this.#speechdOutSocket = null;
+
     this.#orcaProcess = null;
     this.#orcaService = null;
 
