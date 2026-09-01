@@ -22,13 +22,12 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.1 setup --ci
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.2 setup --ci
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm ci --prefix ./examples/playwright-orca --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-orca rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-orca run browsers
-      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.1 install
-      - run: sudo apt-get install -y x11-utils
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.25.2 install
       - run: xvfb-run dbus-run-session -- npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
         env:
           DEBUG: guidepup:*
