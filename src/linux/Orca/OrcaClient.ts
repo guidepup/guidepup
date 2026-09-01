@@ -19,7 +19,7 @@ import { statSync } from "node:fs";
 const debug = base.extend("OrcaClient");
 
 const POLL_INTERVAL = 500;
-const MAX_POLL_TIMEOUT = 5_000;
+const MAX_POLL_TIMEOUT = 10_000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
@@ -296,6 +296,8 @@ export class OrcaClient {
         socketPath,
         "--log-dir",
         `${SPEECHD_DIR}/logs`,
+        "--log-level",
+        "5",
         "--timeout",
         "0",
       ],
