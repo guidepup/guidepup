@@ -28,6 +28,7 @@ jobs:
       - run: npm --prefix ./examples/playwright-orca rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-orca run browsers
       - run: npx -y --min-release-age=0 @guidepup/setup@0.25.1 install
+      - run: sudo apt-get install -y x11-utils
       - run: xvfb-run dbus-run-session -- npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }}
         env:
           DEBUG: guidepup:*
