@@ -1,20 +1,15 @@
 import { platform, release } from "os";
-import { delay } from "../../../../src/delay";
-import { log } from "console";
+import { headerNavigation } from "../headerNavigation";
+import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
+import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { orcaTest as test } from "../../orca-test";
-
-test.use({
-  orcaStartOptions: {
-    capture: "initial",
-  },
-});
 
 test.describe("Firefox Playwright Orca", () => {
   test("I can navigate the Guidepup Github page", async ({
     browser,
     browserName,
-    orca,
     page,
+    orca,
   }) => {
     const osName = platform();
     const osVersion = release();
@@ -33,22 +28,15 @@ test.describe("Firefox Playwright Orca", () => {
       retry,
     });
 
-    log("Navigating to URL: https://www.guidepup.dev.");
-    await page.goto("https://www.guidepup.dev", {
-      waitUntil: "load",
-    });
+    await headerNavigation({ page, orca });
 
-    const header = page.locator("h1");
-    await header.waitFor();
-    await delay(500);
+    // Assert that we've ended up where we expected and what we were told on
+    // the way there is as expected.
 
-    await orca.navigateToWebContent();
+    const spokenPhraseLog = await orca.spokenPhraseLog();
 
-    // TODO: flesh out to full example
+    console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
-    await orca.next();
-    await orca.next();
-    await orca.nextHeading();
-    await orca.nextHeading();
+    logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
   });
 });

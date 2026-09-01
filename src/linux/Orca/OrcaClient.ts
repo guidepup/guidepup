@@ -36,13 +36,14 @@ const debug = base.extend("OrcaClient");
 const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
+const SPEECH_DEBOUNCE_TIMEOUT = 1000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
 
 const READY = "ready";
 const CANCEL = "cancel";
-const SPEAK = "speak";
+const SPEECH = "speech";
 
 export class OrcaClient extends EventEmitter {
   #xvfbDisplay = null;
@@ -495,7 +496,7 @@ export class OrcaClient extends EventEmitter {
           case "speech": {
             debug("speech", message.data ?? "");
             // TODO: parse the data to strip XML
-            this.emit(SPEAK, message.data ?? "");
+            this.emit(SPEECH, message.data ?? "");
 
             break;
           }
@@ -813,14 +814,45 @@ export class OrcaClient extends EventEmitter {
       let result: unknown;
 
       if (options?.capture ?? this.#capture) {
-        // TODO: handle different capture options
-        // TODO: wrap with speech capture logic and push to `spokenPhrases`
+        // TODO: execute a "stop reading" like command
+
+        let speechPromiseResolver: () => void;
+
+        const speechPromise = new Promise<void>((resolve) => {
+          speechPromiseResolver = resolve;
+        });
+
+        let timeoutId: NodeJS.Timeout = null;
+
+        const speechHandler = (spokenPhrase: string) => {
+          spokenPhrases.push(spokenPhrase);
+
+          if ((options?.capture ?? this.#capture) === "initial") {
+            clearTimeout(timeoutId);
+            this.removeListener(SPEECH, speechHandler);
+            speechPromiseResolver();
+          } else if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(timeoutHandler, SPEECH_DEBOUNCE_TIMEOUT);
+          }
+        };
+
+        const timeoutHandler = () => {
+          this.removeListener(SPEECH, speechHandler);
+          speechPromiseResolver();
+        };
+
+        this.addListener(SPEECH, speechHandler);
 
         debug("executing action");
         result = await action();
         debug("action completed");
 
-        spokenPhrases.push("Spoken phrase capture not implemented");
+        timeoutId = setTimeout(timeoutHandler, SPEECH_DEBOUNCE_TIMEOUT);
+
+        await speechPromise;
+
+        timeoutId = null;
       } else {
         result = await action();
       }

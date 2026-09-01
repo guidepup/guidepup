@@ -656,7 +656,7 @@ export class Orca implements IScreenReader {
    *   // Keyboard commands available on the Orca instance.
    *   await unstable_orca.perform(unstable_orca.keyboardCommands.MoveToNextSibling);
    *
-   *   // Stop NVDA.
+   *   // Stop Orca.
    *   await unstable_orca.stop();
    * })();
    * ```
@@ -720,76 +720,205 @@ export class Orca implements IScreenReader {
     });
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Get the last spoken phrase.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Move to the next item.
+   *   await unstable_orca.next();
+   *
+   *   // Get the phrase spoken by Orca from moving to the next item above.
+   *   const lastSpokenPhrase = await unstable_orca.lastSpokenPhrase();
+   *   console.log(lastSpokenPhrase);
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @returns {string} The last spoken phrase.
    */
   async lastSpokenPhrase(): Promise<string> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    return (await this.#client.spokenPhraseLog()).at(-1) ?? "";
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Get the last spoken phrase.
+   *
+   * For Orca this is the same as `lastSpokenPhrase`.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Move to the next item.
+   *   await unstable_orca.next();
+   *
+   *   // Get the text (if any) for the item currently in focus by the Orca
+   *   // cursor.
+   *   const itemText = await unstable_orca.itemText();
+   *   console.log(itemText);
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @alias lastSpokenPhrase
+   *
+   * @returns {Promise<string>} The last spoken phrase.
    */
   async itemText(): Promise<string> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    return this.lastSpokenPhrase();
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Get the log of all spoken phrases for this Orca instance.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Move through several items.
+   *   for (let i = 0; i < 10; i++) {
+   *     await unstable_orca.next();
+   *   }
+   *
+   *   // Get the phrase spoken by Orca from moving through the items above.
+   *   const spokenPhraseLog = await unstable_orca.spokenPhraseLog();
+   *   console.log(spokenPhraseLog);
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
   async spokenPhraseLog(): Promise<string[]> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    return this.#client.spokenPhraseLog();
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Clear the log of all spoken phrases for this Orca instance.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // ... perform some commands.
+   *
+   *   // Clear the spoken phrase log.
+   *   await unstable_orca.clearSpokenPhraseLog();
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
    */
   async clearSpokenPhraseLog(): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.clearSpokenPhraseLog();
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Get the log of all spoken phrases for this Orca instance.
+   *
+   * For Orca this is the same as `spokenPhraseLog`.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Move through several items.
+   *   for (let i = 0; i < 10; i++) {
+   *     await unstable_orca.next();
+   *   }
+   *
+   *   // Get the text (if any) for all the items visited by the Orca cursor.
+   *   const itemTextLog = await unstable_orca.itemTextLog();
+   *   console.log(itemTextLog);
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @alias lastSpokenPhrase
+   *
+   * @returns {Promise<string[]>} The spoken phrase log.
    */
   async itemTextLog(): Promise<string[]> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    return this.spokenPhraseLog();
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Clear the log of all spoken phrases for this Orca instance.
+   *
+   * For Orca this is the same as `clearSpokenPhraseLog`.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // ... perform some commands.
+   *
+   *   // Clear the spoken phrase log.
+   *   await unstable_orca.clearItemTextLog();
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @alias clearSpokenPhraseLog
    */
   async clearItemTextLog(): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.clearSpokenPhraseLog();
   }
 
   // TODO: implementation.
