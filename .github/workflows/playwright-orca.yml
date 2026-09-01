@@ -22,23 +22,14 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      # TODO: update @guidepup/setup to support linux + orca
-      # - run: npx -y @guidepup/setup@0.24.1 setup --ci
+      - run: npx -y @guidepup/setup@0.25.1 setup --ci
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm ci --prefix ./examples/playwright-orca --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-orca rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-orca run browsers
-      # TODO: update @guidepup/setup to support linux + orca
-      # - run: npx -y @guidepup/setup@0.24.1 install
+      - run: npx -y @guidepup/setup@0.25.1 install
       - run: |
-          sudo apt-get update
-
-          sudo apt-get install -y \
-            orca \
-            xvfb \
-            dbus-x11 \
-            libglib2.0-bin \
-            pulseaudio
+          # TODO: migrate all process running / validation / setup to Guidepup runtime
 
           pulseaudio \
             --start \
@@ -51,7 +42,7 @@ jobs:
             "${SPEECHD_DIR}/logs" \
             "${SPEECHD_DIR}/run"
 
-          cp -r ./.github/tmp-orca-speechd/. "${SPEECHD_DIR}/"
+          cp -r ~/.cache/guidepup/orca/7/0.2.0-50.2/extracted/speechd/. "${SPEECHD_DIR}/"
 
           Xvfb :99 >/dev/null 2>&1 &
           export DISPLAY=:99
