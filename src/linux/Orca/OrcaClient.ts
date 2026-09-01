@@ -1,5 +1,6 @@
 import type { ActionOptions, OrcaService, QueueAction } from "./types";
 import { type ChildProcess, execFileSync, spawn } from "node:child_process";
+import { connect, type Socket } from "node:net";
 import { dirname, join } from "node:path";
 import {
   ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
@@ -17,6 +18,7 @@ import { type MessageBus, sessionBus } from "dbus-native";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
+import EventEmitter from "node:events";
 import { findAvailableDisplay } from "./findAvailableDisplay";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isAtSpiRunning } from "./isAtSpiRunning";
@@ -31,7 +33,11 @@ const MAX_POLL_TIMEOUT = 5_000;
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
 
-export class OrcaClient {
+const READY = "ready";
+const CANCEL = "cancel";
+const SPEAK = "speak";
+
+export class OrcaClient extends EventEmitter {
   #xvfbDisplay = null;
   #xvfbProcess = null;
 
@@ -43,7 +49,8 @@ export class OrcaClient {
 
   #speechdProcess: ChildProcess = null;
   #speechdAddress: string = null;
-  #speechdOutSocket: string = null;
+  #speechdSocketPath: string = null;
+  #speechdSocket: Socket = null;
 
   #orcaProcess: ChildProcess = null;
   #orcaService: OrcaService = null;
@@ -310,7 +317,7 @@ export class OrcaClient {
     mkdirSync(speechdLogsDirectory, { recursive: true });
     mkdirSync(dirname(speechdSocketPath), { recursive: true });
 
-    this.#speechdOutSocket = join(speechdDirectory, "out", "guidepup.sock");
+    this.#speechdSocketPath = join(speechdDirectory, "out", "guidepup.sock");
 
     this.#speechdProcess = spawn(
       "speech-dispatcher",
@@ -332,7 +339,7 @@ export class OrcaClient {
       {
         env: {
           ...process.env,
-          GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdOutSocket,
+          GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
         },
       },
     );
@@ -383,6 +390,72 @@ export class OrcaClient {
       };
 
       poll();
+    });
+  }
+
+  #connectSpeechdSocket(): void {
+    let speechdSocketBuffer = "";
+
+    // TODO: connection retry logic
+
+    this.#speechdSocket = connect(this.#speechdSocketPath);
+    this.#speechdSocket.setEncoding("utf8");
+
+    this.#speechdSocket.on("error", (error) => {
+      debug("Speech Dispatcher socket error", error);
+
+      this.#speechdSocket?.destroy();
+      this.#speechdSocket = null;
+    });
+
+    this.#speechdSocket.on("data", (data: string) => {
+      speechdSocketBuffer += data;
+
+      let newlineIndex: number;
+
+      while ((newlineIndex = speechdSocketBuffer.indexOf("\n")) !== -1) {
+        const line = speechdSocketBuffer.slice(0, newlineIndex);
+
+        speechdSocketBuffer = speechdSocketBuffer.slice(newlineIndex + 1);
+
+        if (!line.trim().length) {
+          continue;
+        }
+
+        let message: {
+          type: string;
+          data?: string;
+        };
+
+        try {
+          message = JSON.parse(line);
+        } catch {
+          continue;
+        }
+
+        switch (message.type) {
+          case "ready": {
+            debug("ready");
+            this.emit(READY);
+
+            break;
+          }
+          case "speech": {
+            debug("speech", message.data ?? "");
+            // TODO: parse the data to strip XML
+            this.emit(SPEAK, message.data ?? "");
+
+            break;
+          }
+          case "stop":
+          case "cancel": {
+            debug("cancel");
+            this.emit(CANCEL);
+
+            break;
+          }
+        }
+      }
     });
   }
 
@@ -545,6 +618,7 @@ export class OrcaClient {
       await this.#ensureDBus();
       await this.#ensureAtSpi();
       await this.#startSpeechd();
+      await this.#connectSpeechdSocket();
       await this.#startOrca();
       await this.#mapOrcaDBusService();
 
@@ -612,7 +686,7 @@ export class OrcaClient {
 
     this.#speechdProcess = null;
     this.#speechdAddress = null;
-    this.#speechdOutSocket = null;
+    this.#speechdSocketPath = null;
 
     this.#orcaProcess = null;
     this.#orcaService = null;

@@ -11,7 +11,7 @@ import type { Capture } from "../../Capture";
 import { CommandOptions } from "../../CommandOptions";
 import { DEFAULT_CAPTURE } from "../../constants";
 import { delay } from "../../delay";
-import { EventEmitter } from "events";
+import { EventEmitter } from "node:events";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
