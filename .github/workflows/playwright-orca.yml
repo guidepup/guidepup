@@ -38,18 +38,11 @@ jobs:
 
           export SPEECHD_DIR=/tmp/guidepup-speechd
 
-          ls -laR /home/runner/.cache/guidepup/orca/7/0.2.0-50.2/extracted/speechd
-
           cp -r /home/runner/.cache/guidepup/orca/7/0.2.0-50.2/extracted/speechd/. "${SPEECHD_DIR}/"
 
           mkdir -p \
             "${SPEECHD_DIR}/logs" \
             "${SPEECHD_DIR}/run"
-
-          ls -laR ${SPEECHD_DIR}
-
-          file /tmp/guidepup-speechd/modules/guidepup || true
-          cat /tmp/guidepup-speechd/modules/guidepup || true
 
           Xvfb :99 >/dev/null 2>&1 &
           export DISPLAY=:99
@@ -65,10 +58,6 @@ jobs:
           sleep 5
 
           DEBUG=guidepup:* npm --prefix ./examples/playwright-orca run test:${{ matrix.browser }} || true
-
-          ls -laR /tmp/guidepup-speechd/logs/
-
-          cat /tmp/guidepup-speechd/logs/guidepup.log || true
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
