@@ -38,7 +38,7 @@ jobs:
 
           export SPEECHD_DIR=/tmp/guidepup-speechd
 
-          cp -r /home/runner/.cache/guidepup/orca/7/0.2.0-50.2/extracted/speechd/. "${SPEECHD_DIR}/"
+          cp -r /home/runner/.cache/guidepup/orca/7/0.2.1-50.2/extracted/speechd/. "${SPEECHD_DIR}/"
 
           mkdir -p \
             "${SPEECHD_DIR}/logs" \
