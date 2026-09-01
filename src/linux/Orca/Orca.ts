@@ -8,12 +8,16 @@ import {
 import { type KeyCodeCommand, keyCodeCommands } from "./keyCodeCommands";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
+import type { CommandOptions } from "../../CommandOptions";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
 import { notImplemented } from "../../notImplemented";
 import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
 import type { StartOptions } from "../../StartOptions";
+
+type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
+type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 
 // REF: https://man.archlinux.org/man/orca.1.en
 // REF: https://gitlab.gnome.org/GNOME/orca
@@ -231,7 +235,7 @@ export class Orca implements IScreenReader {
    * `{ capture: false }`.
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async start(_options?: StartOptions): Promise<void> {
+  async start(options?: CaptureStartOptions): Promise<void> {
     if (!this.detect()) {
       throw new Error(ERR_ORCA_NOT_SUPPORTED);
     }
@@ -248,7 +252,7 @@ export class Orca implements IScreenReader {
       // TODO: configure settings
 
       this.#client = new OrcaClient();
-      await this.#client.start();
+      await this.#client.start(options);
 
       this.#started = true;
     } catch (cause) {
@@ -324,14 +328,14 @@ export class Orca implements IScreenReader {
    * })();
    * ```
    */
-  async previous(): Promise<void> {
+  async previous(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.ObjectNavigator.commands.MoveToPreviousSibling.execute();
-    });
+    }, options);
   }
 
   /**
@@ -354,14 +358,14 @@ export class Orca implements IScreenReader {
    * })();
    * ```
    */
-  async next(): Promise<void> {
+  async next(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
-      await this.#client.service.ObjectNavigator.commands.MoveToNextSibling;
-    });
+      await this.#client.service.ObjectNavigator.commands.MoveToNextSibling.execute();
+    }, options);
   }
 
   /**
@@ -386,14 +390,14 @@ export class Orca implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async previousHeading(): Promise<void> {
+  async previousHeading(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.StructuralNavigator.commands.PreviousHeading.execute();
-    });
+    }, options);
   }
 
   /**
@@ -418,14 +422,14 @@ export class Orca implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async nextHeading(): Promise<void> {
+  async nextHeading(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.StructuralNavigator.commands.NextHeading.execute();
-    });
+    }, options);
   }
 
   /**
@@ -450,14 +454,14 @@ export class Orca implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async previousLink(): Promise<void> {
+  async previousLink(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.StructuralNavigator.commands.PreviousLink.execute();
-    });
+    }, options);
   }
 
   /**
@@ -482,14 +486,14 @@ export class Orca implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async nextLink(): Promise<void> {
+  async nextLink(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.StructuralNavigator.commands.NextLink.execute();
-    });
+    }, options);
   }
 
   /**
@@ -514,14 +518,14 @@ export class Orca implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async previousLandmark(): Promise<void> {
+  async previousLandmark(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.StructuralNavigator.commands.PreviousLandmark.execute();
-    });
+    }, options);
   }
 
   /**
@@ -546,14 +550,14 @@ export class Orca implements IScreenReader {
    *
    * @param {object} [options] Additional options.
    */
-  async nextLandmark(): Promise<void> {
+  async nextLandmark(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.StructuralNavigator.commands.NextLandmark.execute();
-    });
+    }, options);
   }
 
   /**
@@ -579,14 +583,14 @@ export class Orca implements IScreenReader {
    * })();
    * ```
    */
-  async act(): Promise<void> {
+  async act(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     await this.#client.enqueueAndTap(async () => {
       await this.#client.service.ObjectNavigator.commands.PerformAction.execute();
-    });
+    }, options);
   }
 
   /**
@@ -663,7 +667,10 @@ export class Orca implements IScreenReader {
    *
    * @param {any} command Orca keyboard command to execute.
    */
-  async perform(command: KeyCodeCommand): Promise<void> {
+  async perform(
+    command: KeyCodeCommand,
+    options?: CaptureCommandOptions,
+  ): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
@@ -672,7 +679,7 @@ export class Orca implements IScreenReader {
       await this.#client.service[command.service].commands[
         command.command
       ].execute();
-    });
+    }, options);
   }
 
   /**
@@ -717,7 +724,7 @@ export class Orca implements IScreenReader {
       for (let i = 0; i < clickCount; i++) {
         await command.execute();
       }
-    });
+    }, options);
   }
 
   /**
@@ -947,11 +954,14 @@ export class Orca implements IScreenReader {
    * @param {() => Promise<T>} action The action to perform while capturing Orca output.
    * @returns {Promise<Capture<T>>} The action's result and captured Orca output.
    */
-  async capture<T>(action: () => Promise<T> | T): Promise<Capture<T>> {
+  async capture<T>(
+    action: () => Promise<T> | T,
+    options?: CaptureCommandOptions,
+  ): Promise<Capture<T>> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    return await this.#client.enqueueAndTap(async () => action());
+    return await this.#client.enqueueAndTap(async () => action(), options);
   }
 }

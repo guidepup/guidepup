@@ -662,12 +662,13 @@ export class OrcaClient extends EventEmitter {
     );
   }
 
-  async start() {
+  async start(options?: Pick<CommandOptions, "capture">) {
     if (this.#started || this.#starting) {
       return;
     }
 
     this.#starting = true;
+    this.#capture = options?.capture;
 
     try {
       await this.#ensureXServer();
@@ -815,6 +816,8 @@ export class OrcaClient extends EventEmitter {
 
       const spokenPhrases: string[] = [];
       let result: unknown;
+
+      debug(`capture=${options?.capture ?? this.#capture}`);
 
       if (options?.capture ?? this.#capture) {
         // TODO: execute a "stop reading" like command
