@@ -38,11 +38,15 @@ jobs:
 
           export SPEECHD_DIR=/tmp/guidepup-speechd
 
+          ls -laR /home/runner/.cache/guidepup/orca/7/0.2.0-50.2/extracted
+
+          cp -r /home/runner/.cache/guidepup/orca/7/0.2.0-50.2/extracted/speechd/. "${SPEECHD_DIR}/"
+
           mkdir -p \
             "${SPEECHD_DIR}/logs" \
             "${SPEECHD_DIR}/run"
 
-          cp -r ~/.cache/guidepup/orca/7/0.2.0-50.2/extracted/speechd/. "${SPEECHD_DIR}/"
+          ls -laR ${SPEECHD_DIR}
 
           Xvfb :99 >/dev/null 2>&1 &
           export DISPLAY=:99
