@@ -23,6 +23,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { type MessageBus, sessionBus } from "dbus-native";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
+import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import EventEmitter from "node:events";
 import { findAvailableDisplay } from "./findAvailableDisplay";
@@ -492,20 +493,24 @@ export class OrcaClient extends EventEmitter {
         switch (message.type) {
           case "ready": {
             debug("ready");
+
             this.emit(READY);
 
             break;
           }
           case "speech": {
-            debug("speech", message);
-            // TODO: parse the data to strip XML
-            this.emit(SPEECH, message.data);
+            const cleanedSpokenPhrase = cleanSpokenPhrase(message.data);
+
+            debug("speech", cleanedSpokenPhrase);
+
+            this.emit(SPEECH, cleanedSpokenPhrase);
 
             break;
           }
           case "stop":
           case "cancel": {
             debug("cancel");
+
             this.emit(CANCEL);
 
             break;
@@ -831,8 +836,6 @@ export class OrcaClient extends EventEmitter {
         let timeoutId: NodeJS.Timeout = null;
 
         const speechHandler = (spokenPhrase: string) => {
-          debug(`CAPTURE HANDLER received: "${spokenPhrase}"`);
-
           spokenPhrases.push(spokenPhrase);
 
           if ((options?.capture ?? this.#capture) === "initial") {

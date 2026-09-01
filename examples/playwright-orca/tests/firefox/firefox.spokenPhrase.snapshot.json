@@ -1,10 +1,10 @@
 [
-  "Guidepup, heading, level 1",
+  "Guidepup",
   "Reliable Automation",
-  "Full Control, heading, level 3",
-  "Mirrors Real User Experience, heading, level 3",
-  "Framework Agnostic, heading, level 3",
+  "Full Control",
+  "Mirrors Real User Experience",
+  "Framework Agnostic",
   "Run with Jest, with Playwright, as an independent script, no vendor lock-in.",
-  "link, Get Started",
-  "link, Git Hub"
+  "Get Started",
+  "GitHub"
 ]
