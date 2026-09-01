@@ -1,5 +1,5 @@
-import { ChildProcess, execFileSync, spawn } from "node:child_process";
-import { type DBusPromise, type MessageBus, sessionBus } from "dbus-native";
+import type { ActionOptions, OrcaService, QueueAction } from "./types";
+import { type ChildProcess, execFileSync, spawn } from "node:child_process";
 import { dirname, join } from "node:path";
 import {
   ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
@@ -10,14 +10,17 @@ import {
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
-  ERR_ORCA_X_SERVER_DISPLAYS_NOT_AVAILABLE,
   ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
-import { existsSync, mkdirSync, statSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
+import { type MessageBus, sessionBus } from "dbus-native";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
+import { findAvailableDisplay } from "./findAvailableDisplay";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
+import { isAtSpiRunning } from "./isAtSpiRunning";
+import { isUnixSocket } from "./isUnixSocket";
 import { serviceDefinition } from "./serviceDefinition";
 
 const debug = base.extend("OrcaClient");
@@ -27,146 +30,6 @@ const MAX_POLL_TIMEOUT = 5_000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
-
-type OrcaTypeMap = {
-  str: string;
-  bool: boolean;
-};
-
-type ParameterValue<P> = P extends { type: infer T extends keyof OrcaTypeMap }
-  ? OrcaTypeMap[T]
-  : never;
-
-type ParameterTuple<P extends readonly { type: keyof OrcaTypeMap }[]> = {
-  [K in keyof P]: ParameterValue<P[K]>;
-};
-
-type DBusCommand<
-  Definition extends {
-    description: string;
-    representation?: string;
-  },
-> = Definition & {
-  execute(notifyUser?: boolean): DBusPromise<void>;
-};
-
-type DBusParameterizedCommand<
-  Definition extends {
-    description: string;
-    representation?: string;
-  },
-  Parameters extends readonly { type: keyof OrcaTypeMap }[],
-> = Definition & {
-  execute(...parameters: ParameterTuple<Parameters>): DBusPromise<unknown>;
-};
-
-type DBusRuntimeGetter<
-  Definition extends {
-    description: string;
-  },
-> = Definition & {
-  get(): DBusPromise<unknown>;
-};
-
-type DBusRuntimeSetter<
-  Definition extends {
-    description: string;
-  },
-> = Definition & {
-  set(value: unknown): DBusPromise<void>;
-};
-
-type OrcaModule<M> = M extends {
-  commands: infer C;
-  parameterizedCommands: infer PC;
-  runtimeGetters: infer RG;
-  runtimeSetters: infer RS;
-}
-  ? {
-      commands: {
-        [K in keyof C]: C[K] extends {
-          description: string;
-          representation?: string;
-        }
-          ? DBusCommand<C[K]>
-          : never;
-      };
-
-      parameterizedCommands: {
-        [K in keyof PC]: PC[K] extends {
-          description: string;
-          representation?: string;
-          parameters: infer P extends readonly {
-            type: keyof OrcaTypeMap;
-          }[];
-        }
-          ? DBusParameterizedCommand<PC[K], P>
-          : never;
-      };
-
-      runtimeGetters: {
-        [K in keyof RG]: RG[K] extends {
-          description: string;
-        }
-          ? DBusRuntimeGetter<RG[K]>
-          : never;
-      };
-
-      runtimeSetters: {
-        [K in keyof RS]: RS[K] extends {
-          description: string;
-        }
-          ? DBusRuntimeSetter<RS[K]>
-          : never;
-      };
-    }
-  : never;
-
-type OrcaService = {
-  [K in keyof typeof serviceDefinition.modules]: OrcaModule<
-    (typeof serviceDefinition.modules)[K]
-  >;
-};
-
-type ActionOptions = Pick<CommandOptions, "capture">;
-
-interface QueueAction {
-  action: () => Promise<unknown>;
-  options: ActionOptions;
-  promise: Promise<unknown>;
-  resolve: (value: unknown) => void;
-  reject: (reason?: unknown) => void;
-}
-
-function findAvailableDisplay(): string {
-  for (let display = 99; display < 200; display++) {
-    try {
-      execFileSync("xdpyinfo", ["-display", `:${display}`]);
-    } catch {
-      return `:${display}`;
-    }
-  }
-
-  throw new Error(ERR_ORCA_X_SERVER_DISPLAYS_NOT_AVAILABLE);
-}
-
-function isAtSpiRunning(): boolean {
-  try {
-    execFileSync("pgrep", ["-f", "(^|/)at-spi-bus-launcher(\\s|$)"]);
-
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function isUnixSocket(path: string): boolean {
-  try {
-    return statSync(path).isSocket();
-  } catch {
-    return false;
-  }
-}
 
 export class OrcaClient {
   #xvfbDisplay = null;
