@@ -1,5 +1,6 @@
 import { ChildProcess, spawn } from "node:child_process";
 import { type DBusPromise, type MessageBus, sessionBus } from "dbus-native";
+import { dirname, join } from "node:path";
 import {
   ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
   ERR_ORCA_CANNOT_BE_STARTED,
@@ -10,11 +11,12 @@ import {
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_X_SERVER_DISPLAY_NOT_SET,
 } from "../errors";
+import { mkdirSync, statSync } from "node:fs";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { CommandOptions } from "../../CommandOptions";
+import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { serviceDefinition } from "./serviceDefinition";
-import { statSync } from "node:fs";
 
 const debug = base.extend("OrcaClient");
 
@@ -23,9 +25,6 @@ const MAX_POLL_TIMEOUT = 10_000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
-
-// TODO: move to the Guidepup cache directory
-const SPEECHD_DIR = "/tmp/guidepup-speechd";
 
 type OrcaTypeMap = {
   str: string;
@@ -151,6 +150,7 @@ export class OrcaClient {
   #sessionDBus: MessageBus = null;
   #speechdProcess: ChildProcess = null;
   #speechdAddress: string = null;
+  #speechdOutSocket: string = null;
   #orcaProcess: ChildProcess = null;
   #orcaService: OrcaService = null;
 
@@ -280,31 +280,38 @@ export class OrcaClient {
   #startSpeechd() {
     debug("Starting Speech Dispatcher");
 
-    const socketPath = `${SPEECHD_DIR}/run/speechd.sock`;
+    const installationPath = getOrcaInstallationPath();
+    const speechdDirectory = join(installationPath, "speechd");
+    const speechdModulesDirectory = join(speechdDirectory, "modules");
+    const speechdLogsDirectory = join(speechdDirectory, "logs");
+    const speechdSocketPath = join(speechdDirectory, "run", "speechd.sock");
+
+    mkdirSync(speechdLogsDirectory, { recursive: true });
+    mkdirSync(dirname(speechdSocketPath), { recursive: true });
+
+    this.#speechdOutSocket = join(speechdDirectory, "out", "guidepup.sock");
 
     this.#speechdProcess = spawn(
       "speech-dispatcher",
       [
         "--run-single",
         "--config-dir",
-        SPEECHD_DIR,
+        speechdDirectory,
         "--module-dir",
-        `${SPEECHD_DIR}/modules`,
+        speechdModulesDirectory,
+        "--log-dir",
+        speechdLogsDirectory,
         "--communication-method",
         "unix_socket",
         "--socket-path",
-        socketPath,
-        "--log-dir",
-        `${SPEECHD_DIR}/logs`,
-        "--log-level",
-        "5",
+        speechdSocketPath,
         "--timeout",
         "0",
       ],
       {
         env: {
           ...process.env,
-          GUIDEPUP_ORCA_SPEECH_SOCKET: `${SPEECHD_DIR}/out/guidepup-orca-speech.sock`,
+          GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdOutSocket,
         },
       },
     );
@@ -325,7 +332,7 @@ export class OrcaClient {
       debug(`[speechd] exited with code=${code}, signal=${signal}`);
     });
 
-    this.#speechdAddress = `unix_socket:${socketPath}`;
+    this.#speechdAddress = `unix_socket:${speechdSocketPath}`;
 
     debug(`SPEECHD_ADDRESS=${this.#speechdAddress}`);
 
@@ -340,9 +347,9 @@ export class OrcaClient {
         }
 
         try {
-          debug(`Polling for '${socketPath}' unix socket existence`);
+          debug(`Polling for '${speechdSocketPath}' unix socket existence`);
 
-          if (isUnixSocket(socketPath)) {
+          if (isUnixSocket(speechdSocketPath)) {
             resolve();
 
             return;
@@ -361,14 +368,21 @@ export class OrcaClient {
   #startOrca() {
     debug("Starting Orca");
 
-    this.#orcaProcess = spawn("orca", ["--replace"], {
-      env: {
-        ...process.env,
-        DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
-        DISPLAY: this.#sessionDisplay,
-        SPEECHD_ADDRESS: this.#speechdAddress,
+    const installationPath = getOrcaInstallationPath();
+    const orcaExecutable = join(installationPath, "bin", "orca");
+
+    this.#orcaProcess = spawn(
+      orcaExecutable,
+      ["--profile", "guidepup", "--replace"],
+      {
+        env: {
+          ...process.env,
+          DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
+          DISPLAY: this.#sessionDisplay,
+          SPEECHD_ADDRESS: this.#speechdAddress,
+        },
       },
-    });
+    );
 
     this.#orcaProcess.stdout.on("data", (data: Buffer) => {
       debug(`[orca] ${data.toString().trimEnd()}`);

@@ -1,5 +1,8 @@
+export const ERR_LINUX_VERSION_NOT_SUPPORTED = "Linux version not supported";
 export const ERR_ORCA_NOT_SUPPORTED = "Orca is not supported";
 export const ERR_ORCA_ALREADY_RUNNING = "Orca is already running";
+export const ERR_ORCA_FAILED_TO_LOAD_GUIDEPUP_SETTINGS =
+  "Failed to load Guidepup settings\n\nPlease ensure you have run:\n\n\t- `npx @guidepup/setup setup` at least once on your machine to configure the OS\n\t- `npx @guidepup/setup install` at least once for this project to install screen reader assets";
 export const ERR_ORCA_NOT_RUNNING = "Orca is not running";
 export const ERR_ORCA_CANNOT_BE_STARTED = "Orca cannot be started";
 

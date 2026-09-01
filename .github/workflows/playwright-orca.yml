@@ -36,14 +36,6 @@ jobs:
             --exit-idle-time=-1 \
             --log-target=stderr >/dev/null 2>&1 &
 
-          export SPEECHD_DIR=/tmp/guidepup-speechd
-
-          cp -r /home/runner/.cache/guidepup/orca/7/0.2.1-50.2/extracted/speechd/. "${SPEECHD_DIR}/"
-
-          mkdir -p \
-            "${SPEECHD_DIR}/logs" \
-            "${SPEECHD_DIR}/run"
-
           Xvfb :99 >/dev/null 2>&1 &
           export DISPLAY=:99
 
