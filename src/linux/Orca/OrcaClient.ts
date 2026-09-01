@@ -336,6 +336,8 @@ export class OrcaClient extends EventEmitter {
         speechdDirectory,
         "--module-dir",
         speechdModulesDirectory,
+        "--log-level",
+        "5",
         "--log-dir",
         speechdLogsDirectory,
         "--communication-method",
@@ -350,6 +352,7 @@ export class OrcaClient extends EventEmitter {
           ...process.env,
           GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
         },
+        stdio: ["ignore", "pipe", "pipe"],
       },
     );
 
