@@ -497,9 +497,9 @@ export class OrcaClient extends EventEmitter {
             break;
           }
           case "speech": {
-            debug("speech", message.data ?? "");
+            debug("speech", message);
             // TODO: parse the data to strip XML
-            this.emit(SPEECH, message.data ?? "");
+            this.emit(SPEECH, message.data);
 
             break;
           }
@@ -828,6 +828,8 @@ export class OrcaClient extends EventEmitter {
         let timeoutId: NodeJS.Timeout = null;
 
         const speechHandler = (spokenPhrase: string) => {
+          debug(`CAPTURE HANDLER received: "${spokenPhrase}"`);
+
           spokenPhrases.push(spokenPhrase);
 
           if ((options?.capture ?? this.#capture) === "initial") {
@@ -861,13 +863,14 @@ export class OrcaClient extends EventEmitter {
       }
 
       const spokenPhrase = spokenPhrases.join(". ");
-
       this.#spokenPhrases.push(spokenPhrase);
 
+      debug({ spokenPhrase });
+
       resolve({
-        itemText: spokenPhrase ?? "",
+        itemText: spokenPhrase,
         result,
-        spokenPhrase: spokenPhrase ?? "",
+        spokenPhrase,
       });
     } catch (error) {
       reject(error);
