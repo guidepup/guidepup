@@ -111,3 +111,10 @@ export interface QueueAction {
   resolve: (value: unknown) => void;
   reject: (reason?: unknown) => void;
 }
+
+export type GuidepupSpeechdMessage =
+  | { type: "ready" }
+  | { type: "speech"; data: string }
+  | { type: "stop" }
+  | { type: "pause" }
+  | { type: "cancel" };

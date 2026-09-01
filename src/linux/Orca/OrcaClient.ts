@@ -1,4 +1,9 @@
-import type { ActionOptions, OrcaService, QueueAction } from "./types";
+import type {
+  ActionOptions,
+  GuidepupSpeechdMessage,
+  OrcaService,
+  QueueAction,
+} from "./types";
 import { type ChildProcess, execFileSync, spawn } from "node:child_process";
 import { connect, type Socket } from "node:net";
 import { dirname, join } from "node:path";
@@ -11,6 +16,7 @@ import {
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
+  ERR_ORCA_SPEECHD_CANNOT_CONNECT,
   ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
 import { existsSync, mkdirSync } from "node:fs";
@@ -29,6 +35,7 @@ const debug = base.extend("OrcaClient");
 
 const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
+const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
@@ -51,11 +58,12 @@ export class OrcaClient extends EventEmitter {
   #speechdAddress: string = null;
   #speechdSocketPath: string = null;
   #speechdSocket: Socket = null;
+  #speechdConsecutiveConnectionFailures = 0;
 
   #orcaProcess: ChildProcess = null;
   #orcaService: OrcaService = null;
 
-  #capture: CommandOptions["capture"];
+  #capture: CommandOptions["capture"] = null;
   #inFlight: Promise<unknown> | null = null;
   #queue: QueueAction[] = [];
   #spokenPhrases = [];
@@ -393,19 +401,66 @@ export class OrcaClient extends EventEmitter {
     });
   }
 
-  #connectSpeechdSocket(): void {
+  #speechdDisconnect() {
+    try {
+      this.#speechdSocket?.destroy();
+    } catch {
+      // Swallow
+    }
+
+    this.#speechdSocket = null;
+  }
+
+  async #connectSpeechdSocket() {
+    return await new Promise<void>((resolve, reject) =>
+      this.#connectSpeechdSocketInner(resolve, reject),
+    );
+  }
+
+  #connectSpeechdSocketInner(
+    onSuccess: () => void,
+    onError: (error: Error) => void,
+  ): void {
+    debug(`Connecting to Speech Dispatcher socket: ${this.#speechdSocketPath}`);
+
     let speechdSocketBuffer = "";
+    let onSuccessCalled = false;
 
-    // TODO: connection retry logic
+    const onReady = () => {
+      this.#speechdConsecutiveConnectionFailures = 0;
 
-    this.#speechdSocket = connect(this.#speechdSocketPath);
+      onSuccessCalled = true;
+      onSuccess();
+    };
+
+    this.#speechdSocket = connect(this.#speechdSocketPath, () => {
+      this.once(READY, onReady);
+    });
+
     this.#speechdSocket.setEncoding("utf8");
 
-    this.#speechdSocket.on("error", (error) => {
-      debug("Speech Dispatcher socket error", error);
+    this.#speechdSocket.on("error", (cause) => {
+      debug("Speech Dispatcher socket error", cause);
 
-      this.#speechdSocket?.destroy();
-      this.#speechdSocket = null;
+      this.off(READY, onReady);
+      this.#speechdDisconnect();
+
+      if (onSuccessCalled) {
+        return;
+      }
+
+      this.#speechdConsecutiveConnectionFailures++;
+
+      if (
+        this.#speechdConsecutiveConnectionFailures <
+        MAX_CONSECUTIVE_CONNECTION_FAILURES
+      ) {
+        this.#connectSpeechdSocketInner(onSuccess, onError);
+
+        return;
+      }
+
+      onError(new Error(ERR_ORCA_SPEECHD_CANNOT_CONNECT, { cause }));
     });
 
     this.#speechdSocket.on("data", (data: string) => {
@@ -422,10 +477,7 @@ export class OrcaClient extends EventEmitter {
           continue;
         }
 
-        let message: {
-          type: string;
-          data?: string;
-        };
+        let message: GuidepupSpeechdMessage;
 
         try {
           message = JSON.parse(line);
@@ -622,8 +674,6 @@ export class OrcaClient extends EventEmitter {
       await this.#startOrca();
       await this.#mapOrcaDBusService();
 
-      // TODO: connect to the Guidepup speech socket
-
       this.#started = true;
     } catch (cause) {
       throw new Error(ERR_ORCA_CANNOT_BE_STARTED, { cause });
@@ -643,35 +693,37 @@ export class OrcaClient extends EventEmitter {
 
     await this.#waitForAllActions();
 
+    this.#speechdDisconnect();
+
     if (this.#orcaProcess && this.#orcaProcess.exitCode === null) {
-      debug("Terminating Orca...");
+      debug("Terminating Orca process...");
 
       this.#orcaProcess.kill("SIGTERM");
     }
 
     if (this.#speechdProcess && this.#speechdProcess.exitCode === null) {
-      debug("Terminating Speech Dispatcher...");
+      debug("Terminating Speech Dispatcher process...");
 
       this.#speechdProcess.kill("SIGTERM");
+    }
+
+    if (this.#atSpiProcess && this.#atSpiProcess.exitCode === null) {
+      debug("Terminating AT-SPI process...");
+
+      this.#atSpiProcess.kill("SIGTERM");
     }
 
     if (
       this.#sessionDBusProcess &&
       this.#sessionDBusProcess.exitCode === null
     ) {
-      debug("Terminating session D-Bus...");
+      debug("Terminating session D-Bus process...");
 
       this.#sessionDBusProcess.kill("SIGTERM");
     }
 
-    if (this.#atSpiProcess && this.#atSpiProcess.exitCode === null) {
-      debug("Terminating AT-SPI...");
-
-      this.#atSpiProcess.kill("SIGTERM");
-    }
-
     if (this.#xvfbProcess && this.#xvfbProcess.exitCode === null) {
-      debug("Terminating X Server...");
+      debug("Terminating X Server process...");
 
       this.#xvfbProcess.kill("SIGTERM");
     }
@@ -680,6 +732,7 @@ export class OrcaClient extends EventEmitter {
     this.#xvfbProcess = null;
 
     this.#sessionDBusAddress = null;
+    this.#sessionDBusProcess = null;
     this.#sessionDBus = null;
 
     this.#atSpiProcess = null;
@@ -687,9 +740,15 @@ export class OrcaClient extends EventEmitter {
     this.#speechdProcess = null;
     this.#speechdAddress = null;
     this.#speechdSocketPath = null;
+    this.#speechdSocket = null;
+    this.#speechdConsecutiveConnectionFailures = 0;
 
     this.#orcaProcess = null;
     this.#orcaService = null;
+
+    this.#capture = null;
+    this.#inFlight = null;
+    this.#queue = [];
 
     this.#stopping = false;
     this.#started = false;

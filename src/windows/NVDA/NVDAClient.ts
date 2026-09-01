@@ -87,7 +87,7 @@ export class NVDAClient extends EventEmitter {
   #inFlight: Promise<unknown> | null = null;
   #queue: QueueAction[] = [];
   #stopped = false;
-  #socket: TLSSocket;
+  #socket: TLSSocket = null;
   #spokenPhrases = [];
   #consecutiveConnectionFailures = 0;
   #capture: CommandOptions["capture"];
@@ -163,6 +163,14 @@ export class NVDAClient extends EventEmitter {
   ): Promise<void> {
     let onSuccessCalled = false;
 
+    const onReady = () => {
+      this.#consecutiveConnectionFailures = 0;
+      this.#capture = capture;
+
+      onSuccessCalled = true;
+      onSuccess?.();
+    };
+
     this.#socket = connect(
       NVDA_PORT,
       NVDA_HOST,
@@ -171,12 +179,7 @@ export class NVDAClient extends EventEmitter {
         checkServerIdentity: () => null,
       },
       async () => {
-        this.once(CHANNEL_JOINED, () => {
-          this.#consecutiveConnectionFailures = 0;
-          this.#capture = capture;
-          onSuccessCalled = true;
-          onSuccess?.();
-        });
+        this.once(CHANNEL_JOINED, onReady);
 
         await this.#send(connectionMessage);
         await this.#send(protocolMessage);
@@ -186,8 +189,14 @@ export class NVDAClient extends EventEmitter {
     this.#socket.setEncoding("utf8");
 
     this.#socket.on("error", (e) => {
-      this.#consecutiveConnectionFailures++;
+      this.off(CHANNEL_JOINED, onReady);
       this.disconnect();
+
+      if (onSuccessCalled) {
+        return;
+      }
+
+      this.#consecutiveConnectionFailures++;
 
       if (
         this.#consecutiveConnectionFailures <
@@ -198,9 +207,7 @@ export class NVDAClient extends EventEmitter {
         return;
       }
 
-      if (!onSuccessCalled) {
-        onError(new Error(`${ERR_NVDA_CANNOT_CONNECT}\n${e.message}`));
-      }
+      onError(new Error(`${ERR_NVDA_CANNOT_CONNECT}\n${e.message}`));
     });
 
     this.#socket.on("data", (data: string) => {
