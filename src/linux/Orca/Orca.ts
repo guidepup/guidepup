@@ -132,9 +132,9 @@ export class Orca implements IScreenReader {
   /**
    * Detect whether Orca is supported for the current OS:
    *
-   * - `true` for Windows
+   * - `false` for Windows
    * - `false` for MacOS
-   * - `false` for Linux
+   * - `true` for Linux
    *
    * ```ts
    * import { Orca } from "@guidepup/guidepup";
@@ -155,9 +155,9 @@ export class Orca implements IScreenReader {
   /**
    * Detect whether Orca is supported for the current OS:
    *
-   * - `true` for Windows
+   * - `false` for Windows
    * - `false` for MacOS
-   * - `false` for Linux
+   * - `true` for Linux
    *
    * ```ts
    * import { unstable_orca } from "@guidepup/guidepup";
@@ -178,9 +178,9 @@ export class Orca implements IScreenReader {
   /**
    * Detect whether Orca is the default screen reader for the current OS:
    *
-   * - `true` for Windows
+   * - `false` for Windows
    * - `false` for MacOS
-   * - `false` for Linux
+   * - `true` for Linux
    *
    * ```ts
    * import { Orca } from "@guidepup/guidepup";
@@ -201,9 +201,9 @@ export class Orca implements IScreenReader {
   /**
    * Detect whether Orca is the default screen reader for the current OS:
    *
-   * - `true` for Windows
+   * - `false` for Windows
    * - `false` for MacOS
-   * - `false` for Linux
+   * - `true` for Linux
    *
    * ```ts
    * import { unstable_orca } from "@guidepup/guidepup";

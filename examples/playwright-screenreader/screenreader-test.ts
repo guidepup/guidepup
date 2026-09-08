@@ -1,10 +1,10 @@
 import type { CommandOptions, ScreenReader } from "../../src";
 import {
-  macOSActivate,
   MacOSKeyCodes,
   nvda,
   NVDAKeyCodeCommands,
   screenReader,
+  unstable_orca,
   voiceOver,
   voiceOverKeyCodeCommands,
   WindowsKeyCodes,
@@ -179,7 +179,7 @@ export const screenReaderTest = test.extend<{
       const applicationName = applicationNameMap[browserName];
 
       if (!applicationName) {
-        throw new Error(`Browser ${browserName} is not installed.`);
+        throw new Error(`Browser ${browserName} is not recognised.`);
       }
 
       if (nvda.default()) {
@@ -260,9 +260,6 @@ export const screenReaderTest = test.extend<{
         screenReaderPlaywright.navigateToWebContent = async ({
           capture,
         } = {}) => {
-          // Ensure application is brought to front and focused.
-          await macOSActivate(applicationName);
-
           // Cancel auto navigation.
           await screenReaderPlaywright.perform(
             { keyCode: MacOSKeyCodes.Control },
@@ -361,6 +358,11 @@ export const screenReaderTest = test.extend<{
               }
             });
           }
+        };
+      } else if (unstable_orca.default()) {
+        screenReaderPlaywright.navigateToWebContent = async () => {
+          // TODO: implement stable way to navigate to main web content
+          await page.bringToFront();
         };
       } else {
         throw new Error("No supported screen reader");
