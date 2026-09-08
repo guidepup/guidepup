@@ -1,7 +1,7 @@
+import { expect, type Page } from "@playwright/test";
 import { delay } from "../../../src/delay";
 import { log } from "../../log";
-import { OrcaPlaywright } from "../orca-test";
-import { Page } from "@playwright/test";
+import type { OrcaPlaywright } from "../orca-test";
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -36,8 +36,12 @@ export async function headerNavigation({
   ) {
     headingCount++;
 
-    log(`Performing command: "H"`);
+    log(`Performing command: "H" - "Find the next heading"`);
     await orca.nextHeading();
+    log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
+
+    log(`Performing command: "Orca+Return" - "Where am I basic"`);
+    await orca.perform(orca.keyboardCommands.WhereAmIBasic);
     log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
   }
 
@@ -50,16 +54,26 @@ export async function headerNavigation({
   ) {
     tabCount++;
 
-    log(`Performing command: "Down Arrow"`);
+    log(`Performing command: "Orca+Ctrl+Right Arrow"`);
     await orca.next();
+    log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
+
+    log(`Performing command: "Orca+Return" - "Where am I basic"`);
+    await orca.perform(orca.keyboardCommands.WhereAmIBasic);
     log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
   }
 
-  log(`Performing command: "Up Arrow"`);
+  log(`Performing command: "Orca+Ctrl+Left Arrow"`);
   await orca.previous();
   log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
 
-  log(`Performing command: "Enter"`);
+  log(`Performing command: "Orca+Return" - "Where am I basic"`);
+  await orca.perform(orca.keyboardCommands.WhereAmIBasic);
+  log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
+
+  log(`Performing command: "Orca+Ctrl+Enter"`);
   await orca.act();
   log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
+
+  await expect(page).toHaveURL("https://www.guidepup.dev/docs/getting-started");
 }
