@@ -50,6 +50,7 @@ const protocolMessage = JSON.stringify({
   version: 2,
 });
 
+const POLL_INTERVAL = 500;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const CANCEL_DEBOUNCE_TIMEOUT = 250;
 const CANCEL_NOT_FIRE_TIMEOUT = 1000;
@@ -202,7 +203,9 @@ export class NVDAClient extends EventEmitter {
         this.#consecutiveConnectionFailures <
         MAX_CONSECUTIVE_CONNECTION_FAILURES
       ) {
-        this.#connect(ca, capture, onSuccess, onError);
+        setTimeout(() => {
+          this.#connect(ca, capture, onSuccess, onError);
+        }, POLL_INTERVAL);
 
         return;
       }

@@ -460,7 +460,9 @@ export class OrcaClient extends EventEmitter {
         this.#speechdConsecutiveConnectionFailures <
         MAX_CONSECUTIVE_CONNECTION_FAILURES
       ) {
-        this.#connectSpeechdSocketInner(onSuccess, onError);
+        setTimeout(() => {
+          this.#connectSpeechdSocketInner(onSuccess, onError);
+        }, POLL_INTERVAL);
 
         return;
       }
