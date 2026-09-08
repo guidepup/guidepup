@@ -71,7 +71,7 @@ function createKeyCodeCommands<
   return Object.fromEntries(
     Object.entries(modules).flatMap(([service, module]) =>
       Object.entries(module.commands)
-        .filter(([, command]) => command.representation !== undefined)
+        .filter(([, definition]) => definition.representation !== undefined)
         .map(([command, definition]) => [
           command,
           {

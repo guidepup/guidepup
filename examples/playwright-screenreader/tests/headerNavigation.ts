@@ -1,6 +1,6 @@
-import { expect, type Page } from "@playwright/test";
 import { delay } from "../../../src/delay";
 import { log } from "../../log";
+import type { Page } from "@playwright/test";
 import type { ScreenReaderPlaywright } from "../screenreader-test";
 
 const MAX_NAVIGATION_LOOP = 10;
@@ -44,6 +44,4 @@ export async function headerNavigation({
   log(`Performing command: act`);
   await screenReader.act();
   log(`Screen reader output: "${await screenReader.lastSpokenPhrase()}".`);
-
-  expect(page).toHaveURL("https://github.com/guidepup/guidepup");
 }

@@ -28,38 +28,42 @@ export async function headerNavigation({
   await delay(500);
 
   let headingCount = 0;
+  let lastSpokenPhrase = "";
 
   // Move across the headings using VoiceOver 🔎
   while (
-    !(await orca.lastSpokenPhrase()).includes("Framework Agnostic") &&
+    lastSpokenPhrase.includes("Framework Agnostic") &&
     headingCount <= MAX_NAVIGATION_LOOP
   ) {
     headingCount++;
 
     log(`Performing command: "H" - "Find the next heading"`);
     await orca.nextHeading();
-    log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
+    lastSpokenPhrase = await orca.lastSpokenPhrase();
+    log(`Screen reader output: "${lastSpokenPhrase}".`);
 
-    log(`Performing command: "Orca+Return" - "Where am I basic"`);
-    await orca.perform(orca.keyboardCommands.WhereAmIBasic);
+    log(`Performing command: "Orca+Return" - "Where am I detailed"`);
+    await orca.perform(orca.keyboardCommands.WhereAmIDetailed);
     log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
   }
 
   let tabCount = 0;
+  lastSpokenPhrase = "";
 
   // Move across text and buttons using Orca
   while (
-    !(await orca.lastSpokenPhrase()).replaceAll(/\s/g, "").includes("GitHub") &&
+    !lastSpokenPhrase.replaceAll(/\s/g, "").includes("GitHub") &&
     tabCount <= MAX_NAVIGATION_LOOP
   ) {
     tabCount++;
 
     log(`Performing command: "Orca+Ctrl+Right Arrow"`);
     await orca.next();
-    log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
+    lastSpokenPhrase = await orca.lastSpokenPhrase();
+    log(`Screen reader output: "${lastSpokenPhrase}".`);
 
-    log(`Performing command: "Orca+Return" - "Where am I basic"`);
-    await orca.perform(orca.keyboardCommands.WhereAmIBasic);
+    log(`Performing command: "Orca+Return" - "Where am I detailed"`);
+    await orca.perform(orca.keyboardCommands.WhereAmIDetailed);
     log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
   }
 
@@ -67,8 +71,8 @@ export async function headerNavigation({
   await orca.previous();
   log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
 
-  log(`Performing command: "Orca+Return" - "Where am I basic"`);
-  await orca.perform(orca.keyboardCommands.WhereAmIBasic);
+  log(`Performing command: "Orca+Return" - "Where am I detailed"`);
+  await orca.perform(orca.keyboardCommands.WhereAmIDetailed);
   log(`Screen reader output: "${await orca.lastSpokenPhrase()}".`);
 
   log(`Performing command: "Orca+Ctrl+Enter"`);
