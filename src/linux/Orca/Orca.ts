@@ -14,7 +14,6 @@ import {
   setSettings,
 } from "./settings";
 import { type KeyCodeCommand, keyCodeCommands } from "./keyCodeCommands";
-import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommandOptions } from "../../CommandOptions";
@@ -25,8 +24,6 @@ import { notImplemented } from "../../notImplemented";
 import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
 import type { StartOptions } from "../../StartOptions";
-
-const debug = base.extend("Orca");
 
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
 type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
@@ -736,19 +733,9 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      const service = this.#client.service[command.service];
-      const commandDefinition = service?.commands[command.command];
-
-      debug({
-        command,
-        service: command.service,
-        commandName: command.command,
-        availableServices: Object.keys(this.#client.service),
-        availableCommands: service ? Object.keys(service.commands) : [],
-        commandDefinition,
-      });
-
-      await commandDefinition.execute();
+      await this.#client.service[command.service].commands[
+        command.command
+      ].execute();
     }, options);
   }
 

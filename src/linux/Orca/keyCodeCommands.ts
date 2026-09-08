@@ -75,6 +75,7 @@ function createKeyCodeCommands<
         .map(([command, definition]) => [
           command,
           {
+            command,
             description: definition.description,
             representation: definition.representation,
             service,
