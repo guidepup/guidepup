@@ -326,7 +326,7 @@ export class Orca implements IScreenReader {
   /**
    * Move the Orca cursor to the previous location.
    *
-   * Equivalent of executing `Orca-U`.
+   * Equivalent of executing `Orca-Ctrl-Left Arrow`.
    *
    * ```ts
    * import { unstable_orca } from "@guidepup/guidepup";
@@ -349,14 +349,14 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      await this.#client.service.FlatReviewPresenter.commands.GoPreviousLine.execute();
+      await this.#client.service.ObjectNavigator.commands.MoveToPreviousSibling.execute();
     }, options);
   }
 
   /**
    * Move the Orca cursor to the next location.
    *
-   * Equivalent of executing `Orca-O`.
+   * Equivalent of executing `Orca-Ctrl-Right Arrow`.
    *
    * ```ts
    * import { unstable_orca } from "@guidepup/guidepup";
@@ -379,7 +379,7 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      await this.#client.service.FlatReviewPresenter.commands.GoNextLine.execute();
+      await this.#client.service.ObjectNavigator.commands.MoveToNextSibling.execute();
     }, options);
   }
 
@@ -578,7 +578,7 @@ export class Orca implements IScreenReader {
   /**
    * Perform the default action for the item in the Orca cursor.
    *
-   * Equivalent of executing `Orca-Ctrl-Enter`.
+   * Equivalent of executing `Orca-Ctrl-Return`.
    *
    * ```ts
    * import { unstable_orca } from "@guidepup/guidepup";
@@ -609,31 +609,73 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * No-op to provide same API across screen-readers.
+   * Interact with the item under the Orca cursor.
    *
-   * Orca does not require users to perform an additional command to interact
-   * with the item in the Orca cursor.
+   * Equivalent of executing `Orca-Ctrl-Down Arrow`.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Move to the next item.
+   *   await unstable_orca.next();
+   *
+   *   // Interact with the item.
+   *   await unstable_orca.interact();
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
    */
-  async interact(): Promise<void> {
+  async interact(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    return Promise.resolve();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.ObjectNavigator.commands.MoveToFirstChild.execute();
+    }, options);
   }
 
   /**
-   * No-op to provide same API across screen-readers.
+   * Stop interacting with the current item under the Orca cursor.
    *
-   * Orca does not require users to perform an additional command to interact
-   * with the item in the Orca cursor.
+   * Equivalent of executing `Orca-Ctrl-Up Arrow`.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Move to the next item.
+   *   await unstable_orca.next();
+   *
+   *   // Stop interacting with the item.
+   *   await unstable_orca.stopInteracting();
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @param {object} [options] Additional options.
    */
-  async stopInteracting(): Promise<void> {
+  async stopInteracting(options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    return Promise.resolve();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.service.ObjectNavigator.commands.MoveToParent.execute();
+    }, options);
   }
 
   // TODO: implementation.
