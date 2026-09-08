@@ -335,7 +335,7 @@ export class Orca implements IScreenReader {
    *   // Start Orca.
    *   await unstable_orca.start();
    *
-   *   // Move to the previous item.
+   *   // Move to the previous location.
    *   await unstable_orca.previous();
    *
    *   // Stop Orca.
@@ -349,7 +349,7 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      await this.#client.service.ObjectNavigator.commands.MoveToPreviousSibling.execute();
+      await this.#client.service.CaretNavigator.commands.PreviousLine.execute();
     }, options);
   }
 
@@ -365,7 +365,7 @@ export class Orca implements IScreenReader {
    *   // Start Orca.
    *   await unstable_orca.start();
    *
-   *   // Move to the next item.
+   *   // Move to the next location.
    *   await unstable_orca.next();
    *
    *   // Stop Orca.
@@ -379,7 +379,7 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
-      await this.#client.service.ObjectNavigator.commands.MoveToNextSibling.execute();
+      await this.#client.service.CaretNavigator.commands.NextLine.execute();
     }, options);
   }
 
@@ -578,7 +578,7 @@ export class Orca implements IScreenReader {
   /**
    * Perform the default action for the item in the Orca cursor.
    *
-   * Equivalent of executing `Enter`.
+   * Equivalent of executing `Orca-Ctrl-Enter`.
    *
    * ```ts
    * import { unstable_orca } from "@guidepup/guidepup";
@@ -587,10 +587,10 @@ export class Orca implements IScreenReader {
    *   // Start Orca.
    *   await unstable_orca.start();
    *
-   *   // Move to the next item.
+   *   // Move to the next location.
    *   await unstable_orca.next();
    *
-   *   // Perform the default action for the item.
+   *   // Perform the default action for the item in the Orca cursor.
    *   await unstable_orca.act();
    *
    *   // Stop Orca.
