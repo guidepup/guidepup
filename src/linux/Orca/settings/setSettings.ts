@@ -26,7 +26,11 @@ const toGVariant = (value: unknown): string => {
 export const setSettings = (desiredConfig: Record<string, unknown>) => {
   try {
     Object.entries(desiredConfig).forEach(([key, value]) => {
-      execFileSync("dconf", ["write", key, toGVariant(value)]);
+      execFileSync("dconf", [
+        "write",
+        `/org/gnome/orca/guidepup/${key}`,
+        toGVariant(value),
+      ]);
     });
   } catch (cause) {
     throw new Error(ERR_ORCA_FAILED_TO_SET_SETTING, { cause });
