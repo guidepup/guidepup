@@ -1,3 +1,4 @@
+export * from "./linux";
 export * from "./macOS";
 export * from "./windows";
 export type { Capture } from "./Capture";

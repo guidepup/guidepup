@@ -1,7 +1,7 @@
+import { expect, type Page } from "@playwright/test";
 import { delay } from "../../../src/delay";
 import { log } from "../../log";
-import { Page } from "@playwright/test";
-import { VoiceOverPlaywright } from "../voiceover-test";
+import type { VoiceOverPlaywright } from "../voiceover-test";
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -82,8 +82,5 @@ export async function headerNavigation({
   await voiceOver.act();
   log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
-  // Prevent auto-navigation of group
-  log(`Performing command: "VO+Shift+Left Arrow"`);
-  await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+  await expect(page).toHaveURL("https://www.guidepup.dev/docs/getting-started");
 }

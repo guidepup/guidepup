@@ -6,6 +6,7 @@ import type { IScreenReader } from "./IScreenReader";
 import type { KeyboardOptions } from "./KeyboardOptions";
 import { nvda } from "./windows";
 import type { StartOptions } from "./StartOptions";
+import { unstable_orca } from "./linux";
 import { voiceOver } from "./macOS";
 
 export class ScreenReader implements IScreenReader {
@@ -22,6 +23,10 @@ export class ScreenReader implements IScreenReader {
 
     if (nvda.default()) {
       return nvda;
+    }
+
+    if (unstable_orca.default()) {
+      return unstable_orca;
     }
 
     throw new Error(ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS);

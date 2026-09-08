@@ -1,0 +1,34 @@
+# Playwright Orca
+
+An example demonstrating using Guidepup for testing Orca automation with [Playwright](https://playwright.dev/).
+
+Run this example's test with:
+
+```bash
+# Once on your machine
+npx @guidepup/setup setup
+
+# In the root directory:
+npm ci
+npx @guidepup/setup install
+
+# Then in the example directory:
+cd ./examples/playwright-orca
+npm ci
+npm rebuild ffmpeg-static --ignore-scripts=false
+npm run browsers
+npm run test
+```
+
+> Note: please ensure you have set up the [Orca prerequisites](https://www.guidepup.dev/docs/guides/environment) before running this example.
+
+## Test flow
+
+1. The test launches Firefox using Playwright
+2. Navigates to the GitHub website
+3. Moves through the website using Orca controlled by Guidepup
+4. Traverses headings until the Guidepup heading in the README.md is found
+
+## See also
+
+Check out the dedicated [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright) module for seamless Guidepup integration with Playwright.
