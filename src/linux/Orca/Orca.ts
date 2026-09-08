@@ -2,15 +2,24 @@ import { addTeardownHandler, removeTeardownHandler } from "../../teardown";
 import {
   ERR_ORCA_ALREADY_RUNNING,
   ERR_ORCA_CANNOT_BE_STARTED,
+  ERR_ORCA_NOT_INSTALLED,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_NOT_SUPPORTED,
 } from "../errors";
+import {
+  getSetting,
+  getSettings,
+  loadGuidepupSettings,
+  resetGuidepupSettings,
+  setSettings,
+} from "./settings";
 import { type KeyCodeCommand, keyCodeCommands } from "./keyCodeCommands";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommandOptions } from "../../CommandOptions";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
+import { isOrcaInstalled } from "./isOrcaInstalled";
 import { notImplemented } from "../../notImplemented";
 import { OrcaClient } from "./OrcaClient";
 import type { Prettify } from "../../typeHelpers";
@@ -62,7 +71,7 @@ export class Orca implements IScreenReader {
     this.#client = null;
 
     try {
-      // TODO: teardown settings
+      resetGuidepupSettings();
     } catch {
       // Best effort only.
     }
@@ -234,10 +243,13 @@ export class Orca implements IScreenReader {
    * capture set `{ capture: true }`, or to disable capture set
    * `{ capture: false }`.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async start(options?: CaptureStartOptions): Promise<void> {
     if (!this.detect()) {
       throw new Error(ERR_ORCA_NOT_SUPPORTED);
+    }
+
+    if (!isOrcaInstalled()) {
+      throw new Error(ERR_ORCA_NOT_INSTALLED);
     }
 
     if (this.#started || this.#starting) {
@@ -249,7 +261,11 @@ export class Orca implements IScreenReader {
     addTeardownHandler(this.#teardownHandler);
 
     try {
-      // TODO: configure settings
+      loadGuidepupSettings();
+
+      if (options?.settings) {
+        setSettings(options.settings);
+      }
 
       this.#client = new OrcaClient();
       await this.#client.start(options);
@@ -299,8 +315,7 @@ export class Orca implements IScreenReader {
 
       this.#client = null;
 
-      // TODO: teardown settings
-
+      resetGuidepupSettings();
       removeTeardownHandler(this.#teardownHandler);
     } finally {
       this.#started = false;
@@ -928,20 +943,53 @@ export class Orca implements IScreenReader {
     await this.#client.clearSpokenPhraseLog();
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Returns all the current settings for this Orca instance.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Log current settings.
+   *   console.log(unstable_orca.getSettings());
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @returns {Record<string, unknown>} Current settings values.
    */
   getSettings(): Record<string, unknown> {
-    notImplemented();
+    return getSettings();
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented
+   * Returns the value of a setting for this Orca instance.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Log the value for the '/org/gnome/orca/default/speech/enable' setting.
+   *   console.log(unstable_orca.getSetting('/org/gnome/orca/default/speech/enable'));
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @param key The setting name.
+   * @returns {unknown} The setting value.
    */
-  getSetting(): unknown {
-    notImplemented();
+  getSetting(key: string): unknown {
+    return getSetting(key);
   }
 
   /**

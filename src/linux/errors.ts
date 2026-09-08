@@ -1,8 +1,12 @@
 export const ERR_LINUX_VERSION_NOT_SUPPORTED = "Linux version not supported";
 export const ERR_ORCA_NOT_SUPPORTED = "Orca is not supported";
+export const ERR_ORCA_NOT_INSTALLED =
+  "Orca is not installed\n\nPlease ensure you have run:\n\n\t- `npx @guidepup/setup setup` at least once on your machine to configure the OS\n\t- `npx @guidepup/setup install` at least once for this project to install screen reader assets";
 export const ERR_ORCA_ALREADY_RUNNING = "Orca is already running";
 export const ERR_ORCA_FAILED_TO_LOAD_GUIDEPUP_SETTINGS =
   "Failed to load Guidepup settings\n\nPlease ensure you have run:\n\n\t- `npx @guidepup/setup setup` at least once on your machine to configure the OS\n\t- `npx @guidepup/setup install` at least once for this project to install screen reader assets";
+export const ERR_ORCA_FAILED_TO_RESET_GUIDEPUP_SETTINGS =
+  "Failed to reset Guidepup settings\n\nPlease ensure you have run:\n\n\t- `npx @guidepup/setup setup` at least once on your machine to configure the OS\n\t- `npx @guidepup/setup install` at least once for this project to install screen reader assets";
 export const ERR_ORCA_NOT_RUNNING = "Orca is not running";
 export const ERR_ORCA_CANNOT_BE_STARTED = "Orca cannot be started";
 
@@ -28,3 +32,8 @@ export const ERR_ORCA_SERVICE_TIMEOUT =
 
 export const ERR_ORCA_SPEECHD_CANNOT_CONNECT =
   "Cannot connect to Guidepup Speech Dispatcher socket";
+
+export const ERR_ORCA_FAILED_TO_GET_SETTINGS = "Failed to get Orca settings";
+export const ERR_ORCA_FAILED_TO_GET_SETTING = "Failed to get Orca setting";
+export const ERR_ORCA_FAILED_TO_SET_SETTING = "Failed to set Orca setting";
+export const ERR_ORCA_UNSUPPORTED_SETTING = "Unsupported Orca setting: ";
