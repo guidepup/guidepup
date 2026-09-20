@@ -1,6 +1,5 @@
 import { addTeardownHandler, removeTeardownHandler } from "../../teardown";
 import {
-  ERR_MACOS_VERSION_NOT_SUPPORTED,
   ERR_VOICE_OVER_ALREADY_RUNNING,
   ERR_VOICE_OVER_CANNOT_BE_STARTED,
   ERR_VOICE_OVER_NOT_RUNNING,
@@ -15,6 +14,7 @@ import {
 } from "./preferences";
 import { CommanderCommands } from "./CommanderCommands";
 import { delay } from "../../delay";
+import { getManifestAsset } from "./getManifestAsset";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { keyCodeCommands } from "./keyCodeCommands";
@@ -31,19 +31,6 @@ import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
 
-jest.mock("../../../manifest.json", () => ({
-  screenReaders: [
-    {
-      id: "voiceover",
-      assets: [
-        {
-          version: "test-version",
-          platformVersion: "123",
-        },
-      ],
-    },
-  ],
-}));
 jest.mock("../../teardown", () => ({
   addTeardownHandler: jest.fn(),
   removeTeardownHandler: jest.fn(),
@@ -53,6 +40,9 @@ jest.mock("node:os", () => ({
 }));
 jest.mock("../activate", () => ({
   activate: jest.fn(),
+}));
+jest.mock("./getManifestAsset", () => ({
+  getManifestAsset: jest.fn(),
 }));
 jest.mock("../../isKeyboard", () => ({
   isKeyboard: jest.fn(),
@@ -169,6 +159,10 @@ describe("VoiceOver", () => {
     jest.mocked(isMacOS).mockReturnValue(true);
     jest.mocked(getPreferences).mockReturnValue({});
     jest.mocked(getPreference).mockReturnValue(undefined);
+    jest.mocked(getManifestAsset).mockReturnValue({
+      version: "test-version",
+      platformVersion: "123",
+    });
 
     jest.mocked(release).mockReturnValue("123.0.0");
 
@@ -188,12 +182,16 @@ describe("VoiceOver", () => {
     });
 
     it("should throw an error for unsupported versions of macOS", () => {
+      const mockError = new Error("test-manifest-asset-error");
+
       jest.clearAllMocks();
-      jest.mocked(release).mockReturnValue("321.0.0");
+      jest.mocked(getManifestAsset).mockImplementation(() => {
+        throw mockError;
+      });
 
       vo = new VoiceOver();
 
-      expect(() => vo.version).toThrow(ERR_MACOS_VERSION_NOT_SUPPORTED);
+      expect(() => vo.version).toThrow(mockError);
     });
   });
 
@@ -279,6 +277,19 @@ describe("VoiceOver", () => {
         await expect(vo.start.bind(vo)).rejects.toThrow(
           ERR_VOICE_OVER_NOT_SUPPORTED,
         );
+      });
+    });
+
+    describe("when the version of macOS is not supported", () => {
+      it("should throw", async () => {
+        const mockError = new Error("test-manifest-asset-error");
+
+        jest.clearAllMocks();
+        jest.mocked(getManifestAsset).mockImplementation(() => {
+          throw mockError;
+        });
+
+        await expect(vo.start.bind(vo)).rejects.toThrow(mockError);
       });
     });
 
