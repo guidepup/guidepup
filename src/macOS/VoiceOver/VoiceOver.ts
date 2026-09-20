@@ -1,6 +1,5 @@
 import { addTeardownHandler, removeTeardownHandler } from "../../teardown";
 import {
-  ERR_MACOS_VERSION_NOT_SUPPORTED,
   ERR_VOICE_OVER_ALREADY_RUNNING,
   ERR_VOICE_OVER_CANNOT_BE_STARTED,
   ERR_VOICE_OVER_NOT_RUNNING,
@@ -17,6 +16,7 @@ import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommanderCommands } from "./CommanderCommands";
 import type { CommandOptions } from "../../CommandOptions";
+import { getManifestAsset } from "./getManifestAsset";
 import type { IScreenReader } from "../../IScreenReader";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
@@ -24,7 +24,6 @@ import type { KeyboardCommand } from "../KeyboardCommand";
 import type { KeyboardOptions } from "../../KeyboardOptions";
 import { keyCodeCommands } from "./keyCodeCommands";
 import type { Prettify } from "../../typeHelpers";
-import { release } from "node:os";
 import { start } from "./start";
 import type { StartOptions } from "../../StartOptions";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
@@ -36,9 +35,6 @@ import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const manifest = require("../../../manifest.json");
 
 type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
 
@@ -153,15 +149,7 @@ export class VoiceOver implements IScreenReader {
    * The screen reader version.
    */
   get version(): string {
-    const osVersion = release().split(".", 1)[0];
-
-    const asset = manifest.screenReaders
-      .find(({ id }) => id === "voiceover")
-      .assets.find(({ platformVersion }) => platformVersion === osVersion);
-
-    if (!asset) {
-      throw new Error(ERR_MACOS_VERSION_NOT_SUPPORTED);
-    }
+    const asset = getManifestAsset();
 
     return asset.version;
   }
@@ -359,6 +347,8 @@ export class VoiceOver implements IScreenReader {
     if (!this.detect()) {
       throw new Error(ERR_VOICE_OVER_NOT_SUPPORTED);
     }
+
+    getManifestAsset();
 
     if (this.#started || this.#starting) {
       throw new Error(ERR_VOICE_OVER_ALREADY_RUNNING);
