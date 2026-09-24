@@ -28,7 +28,7 @@ export async function start(): Promise<void> {
     try {
       await waitForRunning();
       return;
-    } catch (e) {
+    } catch (cause) {
       try {
         nvdaProcess.kill("SIGKILL");
       } catch {
@@ -36,8 +36,8 @@ export async function start(): Promise<void> {
       }
 
       if (attempt === MAX_START_ATTEMPTS - 1) {
-        throw new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`, {
-          cause: e,
+        throw new Error(ERR_NVDA_CANNOT_BE_STARTED, {
+          cause,
         });
       }
     }

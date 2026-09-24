@@ -14,7 +14,7 @@ export function quit(): void {
       shell: true,
       stdio: "ignore",
     });
-  } catch (e) {
-    throw new Error(`${ERR_NVDA_QUIT}\n${e.message}`, { cause: e });
+  } catch (cause) {
+    throw new Error(ERR_NVDA_QUIT, { cause });
   }
 }

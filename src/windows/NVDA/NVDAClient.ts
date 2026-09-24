@@ -189,7 +189,7 @@ export class NVDAClient extends EventEmitter {
 
     this.#socket.setEncoding("utf8");
 
-    this.#socket.on("error", (e) => {
+    this.#socket.on("error", (cause) => {
       this.off(CHANNEL_JOINED, onReady);
       this.disconnect();
 
@@ -210,7 +210,7 @@ export class NVDAClient extends EventEmitter {
         return;
       }
 
-      onError(new Error(`${ERR_NVDA_CANNOT_CONNECT}\n${e.message}`));
+      onError(new Error(ERR_NVDA_CANNOT_CONNECT, { cause }));
     });
 
     this.#socket.on("data", (data: string) => {

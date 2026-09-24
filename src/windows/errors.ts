@@ -11,6 +11,8 @@ export const ERR_NVDA_QUIT = "NVDA cannot be quit";
 export const ERR_NVDA_RUNNING_TIMEOUT =
   "Timed out waiting for NVDA to be running";
 
+export const ERR_ACTIVATE = "Unable to activate application";
+export const ERR_QUIT = "Unable to quit application";
 export const ERR_SEND_KEYS = "Unable to send keys";
 
 export const ERR_NVDA_FAILED_TO_GET_SETTINGS = "Failed to get NVDA settings";

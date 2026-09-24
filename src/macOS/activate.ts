@@ -39,9 +39,9 @@ export async function activate(
       () => runAppleScript(script, options),
       options,
     );
-  } catch (e) {
-    throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}\n${e.message}`, {
-      cause: e,
+  } catch (cause) {
+    throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}`, {
+      cause,
     });
   }
 }
