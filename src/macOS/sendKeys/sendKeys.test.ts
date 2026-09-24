@@ -1,9 +1,12 @@
 import { activate } from "../activate";
+import type { CommandOptions } from "../../CommandOptions";
 import { ERR_PREFIX_SEND_KEYS } from "../errors";
 import { isKeyCode } from "../../isKeyCode";
 import { keyCode } from "../keyCode";
+import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { KeyCodes } from "../KeyCodes";
 import { keystroke } from "./keystroke";
+import type { KeystrokeCommand } from "../KeystrokeCommand";
 import { sendKeys } from "./sendKeys";
 
 jest.mock("../activate", () => ({
@@ -25,7 +28,10 @@ describe("sendKeys", () => {
     jest.resetAllMocks();
   });
 
-  const commonAssertions = (keyCommand, applicationName) => {
+  const commonAssertions = (
+    keyCommand: KeyCodeCommand | KeystrokeCommand,
+    applicationName: string,
+  ) => {
     if (applicationName) {
       it("should activate the application", () => {
         expect(activate).toHaveBeenCalledWith(applicationName);
@@ -41,13 +47,19 @@ describe("sendKeys", () => {
     });
   };
 
-  const commonKeyCodeCommandAssertions = (keyCommand, options) => {
+  const commonKeyCodeCommandAssertions = (
+    keyCommand: KeyCodeCommand | KeystrokeCommand,
+    options: CommandOptions,
+  ) => {
     it("should execute the key code command", () => {
       expect(keyCode).toHaveBeenCalledWith(keyCommand, options);
     });
   };
 
-  const commonKeystrokeCommandAssertions = (keyCommand, options) => {
+  const commonKeystrokeCommandAssertions = (
+    keyCommand: KeyCodeCommand | KeystrokeCommand,
+    options: CommandOptions,
+  ) => {
     it("should execute the keystroke command", () => {
       expect(keystroke).toHaveBeenCalledWith(keyCommand, options);
     });
@@ -78,7 +90,7 @@ describe("sendKeys", () => {
       });
 
       describe("when passing a key code command that throws", () => {
-        let error;
+        let error: Error;
 
         const keyCommand = {
           keyCode: KeyCodes.Enter,
@@ -92,8 +104,8 @@ describe("sendKeys", () => {
 
           try {
             await sendKeys(keyCommand, applicationName, options);
-          } catch (e) {
-            error = e;
+          } catch (cause) {
+            error = cause as Error;
           }
         });
 
@@ -102,7 +114,7 @@ describe("sendKeys", () => {
 
         it("should throw a wrapped error", () => {
           expect(error).toEqual(
-            new Error(`${expectedErrorPrefix}\n${errorStub.message}`)
+            new Error(expectedErrorPrefix, { cause: errorStub }),
           );
         });
       });
@@ -123,7 +135,7 @@ describe("sendKeys", () => {
       });
 
       describe("when passing a key code command that throws", () => {
-        let error;
+        let error: Error;
 
         const keyCommand = {
           characters: "test-characters",
@@ -137,8 +149,8 @@ describe("sendKeys", () => {
 
           try {
             await sendKeys(keyCommand, applicationName, options);
-          } catch (e) {
-            error = e;
+          } catch (cause) {
+            error = cause as Error;
           }
         });
 
@@ -147,10 +159,10 @@ describe("sendKeys", () => {
 
         it("should throw a wrapped error", () => {
           expect(error).toEqual(
-            new Error(`${expectedErrorPrefix}\n${errorStub.message}`)
+            new Error(expectedErrorPrefix, { cause: errorStub }),
           );
         });
       });
-    }
+    },
   );
 });

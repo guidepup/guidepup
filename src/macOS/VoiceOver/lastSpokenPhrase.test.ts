@@ -35,7 +35,7 @@ describe("lastSpokenPhrase", () => {
 
     it("should wrap the lastSpokenPhrase command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith(
-        "return content of last phrase"
+        "return content of last phrase",
       );
     });
 
@@ -53,7 +53,7 @@ describe("lastSpokenPhrase", () => {
       it("should construct a lastSpokenPhrase script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -68,9 +68,7 @@ describe("lastSpokenPhrase", () => {
 
     it("should throw an error with the lastSpokenPhrase prefix, application name, and underlying error message", async () => {
       await expect(() => lastSpokenPhrase()).rejects.toEqual(
-        new Error(
-          `${ERR_VOICE_OVER_GET_LAST_SPOKEN_PHRASE}\n${stubError.message}`
-        )
+        new Error(ERR_VOICE_OVER_GET_LAST_SPOKEN_PHRASE, { cause: stubError }),
       );
     });
   });

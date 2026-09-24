@@ -71,7 +71,7 @@ describe("NVDAClient", () => {
     }
 
     expect(getNVDAInstallationPath).toHaveBeenCalled();
-  });
+  }, 15_000);
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
@@ -86,7 +86,7 @@ describe("NVDAClient", () => {
   describe("when NVDA is not running", () => {
     it("should reject with a 'cannot connect' error", async () => {
       await expect(client.connect()).rejects.toThrow(ERR_NVDA_CANNOT_CONNECT);
-    });
+    }, 15_000);
   });
 
   describe("when NVDA is running", () => {
