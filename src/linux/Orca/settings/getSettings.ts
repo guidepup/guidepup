@@ -1,5 +1,6 @@
 import { ERR_ORCA_FAILED_TO_GET_SETTINGS } from "../../errors";
 import { execFileSync } from "node:child_process";
+import { ORCA_GUIDEPUP_DCONF_PATH_PREFIX } from "./constants";
 
 const parseGVariant = (value: string): unknown => {
   const trimmed = value.trim();
@@ -41,7 +42,7 @@ export const getSettings = (): Record<string, unknown> => {
   let output: string;
 
   try {
-    output = execFileSync("dconf", ["dump", "/org/gnome/orca/guidepup/"], {
+    output = execFileSync("dconf", ["dump", ORCA_GUIDEPUP_DCONF_PATH_PREFIX], {
       encoding: "utf8",
     });
   } catch (cause) {

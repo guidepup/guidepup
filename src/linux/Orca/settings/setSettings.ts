@@ -1,5 +1,6 @@
 import { ERR_ORCA_FAILED_TO_SET_SETTING } from "../../errors";
 import { execFileSync } from "node:child_process";
+import { ORCA_GUIDEPUP_DCONF_PATH_PREFIX } from "./constants";
 
 const toGVariant = (value: unknown): string => {
   if (typeof value === "boolean" || typeof value === "number") {
@@ -28,7 +29,7 @@ export const setSettings = (desiredConfig: Record<string, unknown>) => {
     Object.entries(desiredConfig).forEach(([key, value]) => {
       execFileSync("dconf", [
         "write",
-        `/org/gnome/orca/guidepup/${key}`,
+        `${ORCA_GUIDEPUP_DCONF_PATH_PREFIX}${key}`,
         toGVariant(value),
       ]);
     });

@@ -2,6 +2,7 @@ import { ERR_ORCA_FAILED_TO_LOAD_GUIDEPUP_SETTINGS } from "../../errors";
 import { execFileSync } from "node:child_process";
 import { getOrcaInstallationPath } from "../getOrcaInstallationPath";
 import { join } from "node:path";
+import { ORCA_GUIDEPUP_DCONF_PATH_PREFIX } from "./constants";
 import { readFileSync } from "node:fs";
 import { resetGuidepupSettings } from "./resetGuidepupSettings";
 
@@ -32,7 +33,7 @@ export const loadGuidepupSettings = () => {
   resetGuidepupSettings();
 
   try {
-    execFileSync("dconf", ["load", "/org/gnome/orca/guidepup/"], {
+    execFileSync("dconf", ["load", ORCA_GUIDEPUP_DCONF_PATH_PREFIX], {
       input: defaultSettings,
     });
   } catch (cause) {
@@ -40,7 +41,7 @@ export const loadGuidepupSettings = () => {
   }
 
   try {
-    execFileSync("dconf", ["load", "/org/gnome/orca/guidepup/"], {
+    execFileSync("dconf", ["load", ORCA_GUIDEPUP_DCONF_PATH_PREFIX], {
       input: guidepupSettings,
     });
   } catch (cause) {
