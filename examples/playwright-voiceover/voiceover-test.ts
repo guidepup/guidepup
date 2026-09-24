@@ -1,11 +1,11 @@
 import type { CommandOptions, VoiceOver } from "../../src";
 import {
-  macOSActivate,
+  macOSActivateId,
   MacOSKeyCodes,
   voiceOver,
   voiceOverKeyCodeCommands,
 } from "../../src";
-import { applicationNameMap } from "../applicationNameMap";
+import { applicationIdMap } from "../applicationIdMap";
 import { delay } from "../../src/delay";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
@@ -91,15 +91,15 @@ export const voiceOverTest = test.extend<{
   voiceOverStartOptions: { capture: "initial" },
   voiceOver: async ({ browserName, page, voiceOverStartOptions }, use) => {
     try {
-      const applicationName = applicationNameMap[browserName];
+      const applicationId = applicationIdMap[browserName];
 
-      if (!applicationName) {
+      if (!applicationId) {
         throw new Error(`Browser ${browserName} is not recognised.`);
       }
 
       voiceOverPlaywright.navigateToWebContent = async ({ capture } = {}) => {
+        await macOSActivateId(applicationId);
         // Ensure application is brought to front and focused.
-        await macOSActivate(applicationName);
 
         // Cancel auto navigation.
         await voiceOverPlaywright.perform(

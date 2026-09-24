@@ -1,6 +1,6 @@
 import type { CommandOptions, ScreenReader } from "../../src";
 import {
-  macOSActivate,
+  macOSActivateId,
   MacOSKeyCodes,
   nvda,
   NVDAKeyCodeCommands,
@@ -11,6 +11,7 @@ import {
   WindowsKeyCodes,
   WindowsModifiers,
 } from "../../src";
+import { applicationIdMap } from "../applicationIdMap";
 import { applicationNameMap } from "../applicationNameMap";
 import { delay } from "../../src/delay";
 import type { StartOptions } from "../../src/StartOptions";
@@ -178,8 +179,9 @@ export const screenReaderTest = test.extend<{
   ) => {
     try {
       const applicationName = applicationNameMap[browserName];
+      const applicationId = applicationIdMap[browserName];
 
-      if (!applicationName) {
+      if (!applicationName || !applicationId) {
         throw new Error(`Browser ${browserName} is not recognised.`);
       }
 
@@ -262,7 +264,7 @@ export const screenReaderTest = test.extend<{
           capture,
         } = {}) => {
           // Ensure application is brought to front and focused.
-          await macOSActivate(applicationName);
+          await macOSActivateId(applicationId);
 
           // Cancel auto navigation.
           await screenReaderPlaywright.perform(

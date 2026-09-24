@@ -1,4 +1,4 @@
-import { activate } from "./activate";
+import { activateId } from "./activateId";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
 import { withTransaction } from "./withTransaction";
@@ -13,11 +13,11 @@ jest.mock("./withTransaction", () => ({
   withTransaction: jest.fn(),
 }));
 
-const applicationName = "test-application-name";
+const applicationId = "test-application-id";
 
 const stubTransactionBlock = "test-transaction-block";
 
-describe("activate", () => {
+describe("activateId", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -30,14 +30,14 @@ describe("activate", () => {
     ${"with options"}    | ${{}}
   `("when called $description", ({ options }) => {
     beforeEach(async () => {
-      await activate(applicationName, options);
+      await activateId(applicationId, options);
     });
 
-    it("should wrap the activate command with a transaction block", () => {
+    it("should wrap the activateId command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith("activate");
     });
 
-    it("should pass the activate script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
+    it("should pass the activateId script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
       expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
         expect.any(Function),
         options,
@@ -51,9 +51,9 @@ describe("activate", () => {
         delegate();
       });
 
-      it("should construct an activate script executor", () => {
+      it("should construct an activate id script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${applicationName}"\n${stubTransactionBlock}\nend tell`,
+          `tell application id "${applicationId}"\n${stubTransactionBlock}\nend tell`,
           options,
         );
       });
@@ -67,9 +67,9 @@ describe("activate", () => {
       jest.mocked(retryIfAppleEventTimeout).mockRejectedValue(stubError);
     });
 
-    it("should throw an error with the activate prefix, application name, and underlying error message", async () => {
-      await expect(() => activate(applicationName)).rejects.toEqual(
-        new Error(`Unable to activate application: ${applicationName}`, {
+    it("should throw an error with the activateId prefix, application name, and underlying error message", async () => {
+      await expect(() => activateId(applicationId)).rejects.toEqual(
+        new Error(`Unable to activate application by ID: ${applicationId}`, {
           cause: stubError,
         }),
       );
