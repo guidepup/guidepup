@@ -1,5 +1,6 @@
 import type { CommandOptions, ScreenReader } from "../../src";
 import {
+  macOSActivate,
   MacOSKeyCodes,
   nvda,
   NVDAKeyCodeCommands,
@@ -260,6 +261,9 @@ export const screenReaderTest = test.extend<{
         screenReaderPlaywright.navigateToWebContent = async ({
           capture,
         } = {}) => {
+          // Ensure application is brought to front and focused.
+          await macOSActivate(applicationName);
+
           // Cancel auto navigation.
           await screenReaderPlaywright.perform(
             { keyCode: MacOSKeyCodes.Control },
