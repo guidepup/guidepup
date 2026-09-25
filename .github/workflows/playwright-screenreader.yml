@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-15, macos-26, xcode-27, windows-2022, windows-2025]
+        os: [macos-15, macos-26, xcode-27, windows-2022, windows-2025]
         browser: [chromium]
     steps:
       - uses: actions/checkout@v6
