@@ -15,19 +15,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-15, macos-26]
+        os: [macos-15, macos-26, xcode-27]
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.6 setup --ci --macos-record
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.28.0 setup --ci --macos-record
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm ci --prefix ./examples/playwright-voiceover --no-audit --no-fund --no-progress
       - run: npm --prefix ./examples/playwright-voiceover rebuild ffmpeg-static --ignore-scripts=false
       - run: npm --prefix ./examples/playwright-voiceover run browsers
-      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.6 install
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.28.0 install
       - run: npm --prefix ./examples/playwright-voiceover run test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()
