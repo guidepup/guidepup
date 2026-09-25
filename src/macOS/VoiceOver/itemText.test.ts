@@ -35,7 +35,7 @@ describe("itemText", () => {
 
     it("should wrap the itemText command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith(
-        "return text under cursor of vo cursor"
+        "return text under cursor of vo cursor",
       );
     });
 
@@ -53,7 +53,7 @@ describe("itemText", () => {
       it("should construct a itemText script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -68,7 +68,7 @@ describe("itemText", () => {
 
     it("should throw an error with the itemText prefix, application name, and underlying error message", async () => {
       await expect(() => itemText()).rejects.toEqual(
-        new Error(`${ERR_VOICE_OVER_GET_ITEM_TEXT}\n${stubError.message}`)
+        new Error(ERR_VOICE_OVER_GET_ITEM_TEXT, { cause: stubError }),
       );
     });
   });

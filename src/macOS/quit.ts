@@ -48,9 +48,9 @@ export async function quit(
       () => runAppleScript(script, options),
       options,
     );
-  } catch (e) {
-    throw new Error(`${ERR_PREFIX_QUIT}${applicationName}\n${e.message}`, {
-      cause: e,
+  } catch (cause) {
+    throw new Error(`${ERR_PREFIX_QUIT}${applicationName}`, {
+      cause,
     });
   }
 }

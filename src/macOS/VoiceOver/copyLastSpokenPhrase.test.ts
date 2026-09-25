@@ -35,7 +35,7 @@ describe("copyLastSpokenPhrase", () => {
 
     it("should wrap the copyLastSpokenPhrase command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith(
-        "tell last phrase to copy to pasteboard"
+        "tell last phrase to copy to pasteboard",
       );
     });
 
@@ -53,7 +53,7 @@ describe("copyLastSpokenPhrase", () => {
       it("should construct a copyLastSpokenPhrase script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -68,9 +68,7 @@ describe("copyLastSpokenPhrase", () => {
 
     it("should throw an error with the copyLastSpokenPhrase prefix, application name, and underlying error message", async () => {
       await expect(() => copyLastSpokenPhrase()).rejects.toEqual(
-        new Error(
-          `${ERR_VOICE_OVER_COPY_LAST_SPOKEN_PHRASE}\n${stubError.message}`
-        )
+        new Error(ERR_VOICE_OVER_COPY_LAST_SPOKEN_PHRASE, { cause: stubError }),
       );
     });
   });

@@ -1,3 +1,4 @@
+import { ERR_QUIT } from "./errors";
 import { quit } from "./quit";
 import { runVbsScript } from "./runVbsScript";
 
@@ -16,7 +17,7 @@ describe("quit", () => {
     await quit(mockApplication);
 
     expect(runVbsScript).toHaveBeenCalledWith(
-      `set WshShell = CreateObject("WScript.Shell")\nWshShell.Run "taskkill /im ""${mockApplication}""",0,False\nset WshShell = Nothing`
+      `set WshShell = CreateObject("WScript.Shell")\nWshShell.Run "taskkill /im ""${mockApplication}""",0,False\nset WshShell = Nothing`,
     );
   });
 
@@ -35,9 +36,7 @@ describe("quit", () => {
       } catch (e) {
         error = e;
       }
-      expect(error).toEqual(
-        new Error(`Unable to quit application\n${mockError.message}`)
-      );
+      expect(error).toEqual(new Error(ERR_QUIT, { cause: mockError }));
     });
   });
 });

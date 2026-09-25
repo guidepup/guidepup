@@ -48,7 +48,7 @@ export async function click(
       () => runAppleScript(script, options),
       options,
     );
-  } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_CLICK}\n${e.message}`, { cause: e });
+  } catch (cause) {
+    throw new Error(ERR_VOICE_OVER_CLICK, { cause });
   }
 }

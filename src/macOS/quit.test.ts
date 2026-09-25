@@ -40,7 +40,7 @@ describe("quit", () => {
     it("should pass the quit script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
       expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
         expect.any(Function),
-        options
+        options,
       );
     });
 
@@ -54,7 +54,7 @@ describe("quit", () => {
       it("should construct a quit script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${applicationName}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -69,9 +69,9 @@ describe("quit", () => {
 
     it("should throw an error with the quit prefix, application name, and underlying error message", async () => {
       await expect(() => quit(applicationName)).rejects.toEqual(
-        new Error(
-          `Unable to quit application: ${applicationName}\n${stubError.message}`
-        )
+        new Error(`Unable to quit application: ${applicationName}`, {
+          cause: stubError,
+        }),
       );
     });
   });

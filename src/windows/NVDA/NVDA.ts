@@ -66,7 +66,7 @@ export class NVDA implements IScreenReader {
    */
   #teardownAfterTermination = async (): Promise<void> => {
     try {
-      await this.#client.stop();
+      await this.#client?.stop();
     } catch {
       // Best effort only.
     }

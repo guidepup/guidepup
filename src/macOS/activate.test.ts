@@ -40,7 +40,7 @@ describe("activate", () => {
     it("should pass the activate script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
       expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
         expect.any(Function),
-        options
+        options,
       );
     });
 
@@ -51,10 +51,10 @@ describe("activate", () => {
         delegate();
       });
 
-      it("should construct a activate script executor", () => {
+      it("should construct an activate script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${applicationName}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -69,9 +69,9 @@ describe("activate", () => {
 
     it("should throw an error with the activate prefix, application name, and underlying error message", async () => {
       await expect(() => activate(applicationName)).rejects.toEqual(
-        new Error(
-          `Unable to activate application: ${applicationName}\n${stubError.message}`
-        )
+        new Error(`Unable to activate application: ${applicationName}`, {
+          cause: stubError,
+        }),
       );
     });
   });

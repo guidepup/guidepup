@@ -36,5 +36,6 @@ export const ERR_VOICE_OVER_FAILED_TO_SET_SETTING =
   "Failed to set VoiceOver setting";
 
 export const ERR_PREFIX_ACTIVATE = "Unable to activate application: ";
+export const ERR_PREFIX_ACTIVATE_ID = "Unable to activate application by ID: ";
 export const ERR_PREFIX_SEND_KEYS = "Unable to send keys: ";
 export const ERR_PREFIX_QUIT = "Unable to quit application: ";

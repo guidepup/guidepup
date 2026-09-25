@@ -161,7 +161,7 @@ export const nvdaTest = test.extend<{
       const applicationName = applicationNameMap[browserName];
 
       if (!applicationName) {
-        throw new Error(`Browser ${browserName} is not installed.`);
+        throw new Error(`Browser ${browserName} is not recognised.`);
       }
 
       nvdaPlaywright.navigateToWebContent = async ({ capture } = {}) => {

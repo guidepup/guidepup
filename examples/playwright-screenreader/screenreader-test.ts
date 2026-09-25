@@ -1,15 +1,17 @@
 import type { CommandOptions, ScreenReader } from "../../src";
 import {
-  macOSActivate,
+  macOSActivateId,
   MacOSKeyCodes,
   nvda,
   NVDAKeyCodeCommands,
   screenReader,
+  unstable_orca,
   voiceOver,
   voiceOverKeyCodeCommands,
   WindowsKeyCodes,
   WindowsModifiers,
 } from "../../src";
+import { applicationIdMap } from "../applicationIdMap";
 import { applicationNameMap } from "../applicationNameMap";
 import { delay } from "../../src/delay";
 import type { StartOptions } from "../../src/StartOptions";
@@ -177,9 +179,10 @@ export const screenReaderTest = test.extend<{
   ) => {
     try {
       const applicationName = applicationNameMap[browserName];
+      const applicationId = applicationIdMap[browserName];
 
-      if (!applicationName) {
-        throw new Error(`Browser ${browserName} is not installed.`);
+      if (!applicationName || !applicationId) {
+        throw new Error(`Browser ${browserName} is not recognised.`);
       }
 
       if (nvda.default()) {
@@ -261,7 +264,7 @@ export const screenReaderTest = test.extend<{
           capture,
         } = {}) => {
           // Ensure application is brought to front and focused.
-          await macOSActivate(applicationName);
+          await macOSActivateId(applicationId);
 
           // Cancel auto navigation.
           await screenReaderPlaywright.perform(
@@ -361,6 +364,11 @@ export const screenReaderTest = test.extend<{
               }
             });
           }
+        };
+      } else if (unstable_orca.default()) {
+        screenReaderPlaywright.navigateToWebContent = async () => {
+          // TODO: implement stable way to navigate to main web content
+          await page.bringToFront();
         };
       } else {
         throw new Error("No supported screen reader");
