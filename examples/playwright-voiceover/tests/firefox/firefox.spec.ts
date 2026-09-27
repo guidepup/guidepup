@@ -52,7 +52,7 @@ test.describe("Firefox Playwright VoiceOver", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
       stopRecording = await record(recordingFilePath);
@@ -71,7 +71,7 @@ test.describe("Firefox Playwright VoiceOver", () => {
       logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 });

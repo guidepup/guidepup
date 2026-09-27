@@ -67,7 +67,7 @@ test.describe("Chromium Playwright NVDA", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
       stopRecording = await record(recordingFilePath);
@@ -83,7 +83,7 @@ test.describe("Chromium Playwright NVDA", () => {
 
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotDocs);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 
@@ -111,7 +111,7 @@ test.describe("Chromium Playwright NVDA", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
       stopRecording = await record(recordingFilePath);
@@ -146,7 +146,7 @@ test.describe("Chromium Playwright NVDA", () => {
 
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotTextarea);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 });

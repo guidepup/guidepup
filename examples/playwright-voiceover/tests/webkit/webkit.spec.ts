@@ -45,7 +45,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
       stopRecording = await record(recordingFilePath);
@@ -64,7 +64,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
       logIncludesExpectedPhrases(itemTextLog, itemTextSnapshotDocs);
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotDocs);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 
@@ -92,7 +92,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
       stopRecording = await record(recordingFilePath);
@@ -139,7 +139,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
 
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotTextarea);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 });

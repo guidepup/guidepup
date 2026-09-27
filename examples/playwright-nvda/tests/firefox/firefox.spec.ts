@@ -41,7 +41,7 @@ test.describe("Firefox Playwright NVDA", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
       stopRecording = await record(recordingFilePath);
@@ -57,7 +57,7 @@ test.describe("Firefox Playwright NVDA", () => {
 
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 });
