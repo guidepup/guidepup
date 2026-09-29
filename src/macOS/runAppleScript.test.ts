@@ -59,9 +59,19 @@ describe("runAppleScript", () => {
         [],
         {
           maxBuffer: DEFAULT_MAX_BUFFER,
-          timeout: expectedTimeout,
+          timeout: expect.any(Number),
         },
         expect.any(Function)
+      );
+    });
+
+    it("should let osascript report its own AppleEvent timeout before the process is killed", () => {
+      const { timeout: processTimeout } = mockExecFile.mock.calls[0][2] as {
+        timeout: number;
+      };
+
+      expect(processTimeout).toBeGreaterThanOrEqual(
+        Math.ceil(expectedTimeout / 1000) * 1000 + 1000
       );
     });
 

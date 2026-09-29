@@ -2,15 +2,19 @@ import { DEFAULT_MAX_BUFFER, DEFAULT_TIMEOUT } from "../constants";
 import { base } from "../debug";
 import { execFile } from "child_process";
 
+// Give osascript time to report its own AppleEvent timeout before the process
+// is killed, so callers can recognise and retry the timeout.
+const PROCESS_TIMEOUT_GRACE = 1000;
+
 const debug = base.extend("osascript");
 
 export async function runAppleScript<T = string | void>(
   script: string,
   { timeout = DEFAULT_TIMEOUT } = { timeout: DEFAULT_TIMEOUT },
 ): Promise<T> {
-  const appleScriptTimeoutMs = Math.max(1, Math.ceil(timeout / 1000));
+  const appleScriptTimeoutSeconds = Math.max(1, Math.ceil(timeout / 1000));
 
-  const scriptWithTimeout = `with timeout of ${appleScriptTimeoutMs} seconds\n${script}\nend timeout`;
+  const scriptWithTimeout = `with timeout of ${appleScriptTimeoutSeconds} seconds\n${script}\nend timeout`;
 
   debug("execute", { scriptWithTimeout });
 
@@ -20,7 +24,7 @@ export async function runAppleScript<T = string | void>(
       [],
       {
         maxBuffer: DEFAULT_MAX_BUFFER,
-        timeout,
+        timeout: appleScriptTimeoutSeconds * 1000 + PROCESS_TIMEOUT_GRACE,
       },
       (error, stdout) => {
         if (error) {
