@@ -1,4 +1,5 @@
 import { activate } from "./activate";
+import { DEFAULT_RETRY_COUNT } from "../constants";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
 import { withTransaction } from "./withTransaction";
@@ -25,10 +26,12 @@ describe("activate", () => {
   });
 
   describe.each`
-    description          | options
-    ${"without options"} | ${undefined}
-    ${"with options"}    | ${{}}
-  `("when called $description", ({ options }) => {
+    description                    | options              | expectedRetryOptions
+    ${"without options"}           | ${undefined}         | ${{ retries: DEFAULT_RETRY_COUNT }}
+    ${"with options"}              | ${{}}                | ${{ retries: DEFAULT_RETRY_COUNT }}
+    ${"with a timeout"}            | ${{ timeout: 1000 }} | ${{ timeout: 1000, retries: DEFAULT_RETRY_COUNT }}
+    ${"with an explicit retries"}  | ${{ retries: 5 }}    | ${{ retries: 5 }}
+  `("when called $description", ({ options, expectedRetryOptions }) => {
     beforeEach(async () => {
       await activate(applicationName, options);
     });
@@ -37,10 +40,10 @@ describe("activate", () => {
       expect(withTransaction).toHaveBeenCalledWith("activate");
     });
 
-    it("should pass the activate script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
+    it("should pass the activate script delegate to a runner that retries if an apple event timeout is thrown, defaulting to the standard retry count", () => {
       expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
         expect.any(Function),
-        options
+        expectedRetryOptions
       );
     });
 

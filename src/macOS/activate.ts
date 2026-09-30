@@ -1,5 +1,6 @@
 import { base } from "../debug";
 import type { CommandOptions } from "../CommandOptions";
+import { DEFAULT_RETRY_COUNT } from "../constants";
 import { ERR_PREFIX_ACTIVATE } from "./errors";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
@@ -35,9 +36,12 @@ export async function activate(
   )}\nend tell`;
 
   try {
+    // Activating is idempotent, so unlike most AppleScript commands it is safe
+    // to retry on AppleEvent timeout by default. VoiceOver, for one, can take
+    // ~10s to answer its first AppleEvent after launch (seen on macOS 27).
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
-      options,
+      { ...options, retries: options?.retries ?? DEFAULT_RETRY_COUNT },
     );
   } catch (e) {
     throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}\n${e.message}`, {
