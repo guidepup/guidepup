@@ -1,3 +1,4 @@
+import { DEFAULT_RUNNING_TIMEOUT } from "../../constants";
 import { ERR_NVDA_RUNNING_TIMEOUT } from "../errors";
 import { isRunning } from "./isRunning";
 import { waitForCondition } from "../../waitForCondition";
@@ -17,7 +18,7 @@ describe("waitForRunning", () => {
 
   it("should wait for the condition of NVDA running with a 30s timeout", () => {
     expect(waitForCondition).toHaveBeenCalledWith(expect.any(Function), {
-      pollTimeout: 30000,
+      pollTimeout: DEFAULT_RUNNING_TIMEOUT,
       timeoutErrorMessage: ERR_NVDA_RUNNING_TIMEOUT,
     });
 

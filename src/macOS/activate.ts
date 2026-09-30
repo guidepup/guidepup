@@ -40,7 +40,7 @@ export async function activate(
     // to retry on AppleEvent timeout by default.
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
-      { ...options, retries: options?.retries ?? DEFAULT_RETRY_COUNT },
+      { retries: DEFAULT_RETRY_COUNT, ...options },
     );
   } catch (e) {
     throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}\n${e.message}`, {
