@@ -1,7 +1,6 @@
 import { exec, ExecException } from "child_process";
 import { activate } from "../activate";
 import { Applications } from "../Applications";
-import { DEFAULT_RETRY_COUNT } from "../../constants";
 import { delay } from "../../delay";
 import { ERR_VOICE_OVER_CANNOT_BE_STARTED } from "../errors";
 import { start } from "./start";
@@ -57,10 +56,7 @@ describe('when starting VoiceOver', () => {
       await resultPromise;
 
       expect(delay).toHaveBeenCalledWith(500);
-      expect(activate).toHaveBeenCalledWith(Applications.VoiceOver, {
-        retries: DEFAULT_RETRY_COUNT,
-        ...options,
-      });
+      expect(activate).toHaveBeenCalledWith(Applications.VoiceOver, options);
     });
   });
 
