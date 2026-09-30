@@ -1,13 +1,15 @@
 import {
   DEFAULT_MUTATING_ACTION_RETRY_COUNT,
+  DEFAULT_POLL_INTERVAL,
   ERR_APPLE_SCRIPT_TIMED_OUT,
 } from "../constants";
+import { delay } from "../delay";
 
 export async function retryIfAppleEventTimeout<T>(
   delegate: () => T | Promise<T>,
   { retries = DEFAULT_MUTATING_ACTION_RETRY_COUNT } = {
     retries: DEFAULT_MUTATING_ACTION_RETRY_COUNT,
-  }
+  },
 ): Promise<T> {
   let error: Error;
 
@@ -21,6 +23,8 @@ export async function retryIfAppleEventTimeout<T>(
         break;
       }
     }
+
+    await delay(DEFAULT_POLL_INTERVAL);
   }
 
   throw error;

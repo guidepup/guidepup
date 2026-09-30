@@ -1,3 +1,4 @@
+import { DEFAULT_RUNNING_TIMEOUT } from "../../constants";
 import { ERR_VOICE_OVER_RUNNING_TIMEOUT } from "../errors";
 import { isRunning } from "./isRunning";
 import { waitForCondition } from "../../waitForCondition";
@@ -26,6 +27,7 @@ describe("waitForRunning", () => {
 
     it("should set up a condition wrapper with a custom timeout error message", () => {
       expect(waitForCondition).toHaveBeenCalledWith(expect.any(Function), {
+        pollTimeout: DEFAULT_RUNNING_TIMEOUT,
         timeoutErrorMessage: ERR_VOICE_OVER_RUNNING_TIMEOUT,
       });
     });
