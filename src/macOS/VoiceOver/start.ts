@@ -3,6 +3,7 @@ import { activate } from "../activate";
 import { Applications } from "../Applications";
 import { base } from "../../debug";
 import type { CommandOptions } from "../../CommandOptions";
+import { DEFAULT_TIMEOUT } from "../../constants";
 import { delay } from "../../delay";
 import { ERR_VOICE_OVER_CANNOT_BE_STARTED } from "../errors";
 import { release } from "node:os";
@@ -27,7 +28,7 @@ export async function start(options?: CommandOptions): Promise<void> {
     try {
       execFileSync("/usr/bin/open", ["-a", VOICE_OVER_APP], {
         stdio: "ignore",
-        timeout: 2000,
+        timeout: DEFAULT_TIMEOUT,
       });
     } catch (cause) {
       debug("opening VoiceOver app failed", cause);

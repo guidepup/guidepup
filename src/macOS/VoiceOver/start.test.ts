@@ -1,6 +1,7 @@
 import { exec, ExecException, execFileSync } from "child_process";
 import { activate } from "../activate";
 import { Applications } from "../Applications";
+import { DEFAULT_TIMEOUT } from "../../constants";
 import { delay } from "../../delay";
 import { ERR_VOICE_OVER_CANNOT_BE_STARTED } from "../errors";
 import { release } from "node:os";
@@ -68,7 +69,7 @@ describe("when starting VoiceOver", () => {
     expect(execFileSync).toHaveBeenCalledWith(
       "/usr/bin/open",
       ["-a", "/System/Library/CoreServices/VoiceOver.app"],
-      { stdio: "ignore", timeout: 2000 },
+      { stdio: "ignore", timeout: DEFAULT_TIMEOUT },
     );
     expect(exec).not.toHaveBeenCalled();
   });
