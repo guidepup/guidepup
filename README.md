@@ -24,31 +24,10 @@ It enables testing for <a href="https://www.guidepup.dev/docs/api/class-voiceove
 ## Capabilities
 
 - **Full Control** - If a screen reader has a keyboard command, then Guidepup supports it.
-- **Mirrors Real User Experience** - Assert on what users really do and hear when using screen readers.
+- **Mirrors Real User Experience** - Assert on what users really do and hear when using screen readers. While DOM scanners and synthetic tree mocks verify markup, they cannot validate spoken output, dynamic announcements, or assistive cursor navigation. Guidepup drives the real screen reader engine and OS accessibility APIs to test the actual end-user experience.
 - **Framework Agnostic** - Run with Jest, with Playwright, as an independent script, no vendor lock-in.
 
-## Why Screen Reader Automation?
-
-Traditional automated accessibility tools (such as linters, `axe-core`, or browser accessibility tree assertions in Playwright) inspect the **DOM** or the **browser's internal accessibility tree**. While essential for catching static violations, they stop at the browser boundary.
-
-Guidepup tests the entire end-to-end user experience by automating the **OS Accessibility API layer** (macOS Accessibility API for VoiceOver, Windows UI Automation / IAccessible2 for NVDA) and the **screen reader engine**, enabling you to assert directly on spoken output and assistive technology navigation.
-
-### The Accessibility Testing Pyramid
-
-| Layer | Tools | What It Validates | When to Use |
-| :--- | :--- | :--- | :--- |
-| **Static Analysis** | `eslint-plugin-jsx-a11y` | Syntax, static ARIA attributes, missing basic props | Pre-commit / build time linting |
-| **Automated Rule Scanners** | `axe-core`, IBM Equal Access | Static WCAG rule compliance, contrast, missing labels | Fast CI smoke checks for known rule violations |
-| **Browser A11y Tree** | Playwright accessibility snapshot | Computed role, name, states in the browser tree | Component-level structure verification |
-| **End-to-End Screen Reader** | **Guidepup** (VoiceOver, NVDA) | Spoken phrases, screen reader virtual cursor navigation, dynamic announcements | Critical user workflows and assistive technology regressions |
-
-### Problems Only Screen Reader Automation Can Catch
-
-- **Live regions injected dynamically**: Adding `<div aria-live="polite">` after an action passes DOM and static audits, but is frequently ignored by real screen readers unless the region is pre-established in the DOM. Guidepup lets you assert that `screenReader.lastSpokenPhrase()` actually includes the status message.
-- **Screen reader virtual cursor navigation**: Browsers only dispatch `Tab` and `Shift+Tab` focus events. Screen reader users navigate static text, headings, and landmarks using dedicated screen reader keyboard cursors (e.g. VoiceOver rotor/VO-arrows, NVDA Browse Mode). Guidepup simulates these real assistive cursor movements.
-- **Browser and screen reader translation quirks**: Valid WAI-ARIA markup can still fail to announce or misbehave due to differences in how specific OS screen readers parse browser accessibility trees (e.g. historical `aria-activedescendant` inconsistencies or Unicode symbol pronunciations).
-
-For a deeper dive into these patterns, read the [Guidepup vs Other Accessibility Testing](https://www.guidepup.dev/docs/introduction/guidepup-vs-other-accessibility-testing) guide and [Accessibility Testing Gotchas](https://www.guidepup.dev/docs/introduction/accessibility-testing-gotchas).
+For comprehensive documentation, guides on screen reader automation versus DOM testing, and API references, visit [guidepup.dev](https://www.guidepup.dev/).
 
 ## Getting Started
 
