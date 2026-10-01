@@ -25,7 +25,7 @@ jobs:
       - run: npx -y --min-release-age=0 --ignore-scripts=false @guidepup/setup@0.29.1 setup --ci
       - run: npm ci --no-audit --no-fund --no-progress
       - run: npm ci --prefix ./examples/playwright-nvda --no-audit --no-fund --no-progress
-      - run: npm --prefix ./examples/playwright-nvda rebuild ffmpeg-static
+      - run: npm --prefix ./examples/playwright-nvda rebuild ffmpeg-static --ignore-scripts=false
       - run: npx -y --min-release-age=0 --ignore-scripts=false @guidepup/setup@0.29.1 install
       - run: npm --prefix ./examples/playwright-nvda run browsers
       - run: npm --prefix ./examples/playwright-nvda run test:${{ matrix.browser }}
