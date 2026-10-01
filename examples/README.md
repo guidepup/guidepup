@@ -12,3 +12,5 @@ projects:
 | [Playwright Voiceover](./playwright-voiceover)         | An example demonstrating using Guidepup for VoiceOver automation with [Playwright](https://playwright.dev/). |
 | [GitHub Actions VoiceOver](./github-actions-voiceover) | An example GitHub Actions workflow file to use for VoiceOver testing with Guidepup.                          |
 | [CircleCI VoiceOver](./circleci-voiceover)             | An example CircleCI configuration file to use for VoiceOver testing with Guidepup.                           |
+
+For more examples and documentation, visit [guidepup.dev](https://www.guidepup.dev/).

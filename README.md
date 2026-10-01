@@ -25,8 +25,10 @@ It enables testing for <a href="https://www.guidepup.dev/docs/api/class-voiceove
 ## Capabilities
 
 - **Full Control** - If a screen reader has a keyboard command, then Guidepup supports it.
-- **Mirrors Real User Experience** - Assert on what users really do and hear when using screen readers.
+- **Mirrors Real User Experience** - Assert on what users really do and hear when using screen readers. While DOM scanners and synthetic tree mocks verify markup, they cannot validate spoken output, dynamic announcements, or assistive cursor navigation. Guidepup drives the real screen reader engine and OS accessibility APIs to test the actual end-user experience.
 - **Framework Agnostic** - Run with Jest, with Playwright, as an independent script, no vendor lock-in.
+
+For comprehensive documentation, guides on screen reader automation versus DOM testing, and API references, visit [guidepup.dev](https://www.guidepup.dev/).
 
 ## Getting Started
 
