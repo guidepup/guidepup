@@ -55,6 +55,13 @@
           "repository": "guidepup/voiceover",
           "asset": "guidepup-voiceover-preferences-macos-26.dmg",
           "sha256": "c46e353d4f2d4a717d3362211de638ee55fcb58dbec9cf9abd0170c35d41b225"
+        },
+        {
+          "version": "0.1.0-VoiceOver4",
+          "platformVersion": "27",
+          "repository": "guidepup/voiceover",
+          "asset": "guidepup-voiceover-preferences-xcode-27.dmg",
+          "sha256": "3ea13925dc75bf42df0ffe981814efc2a6d822b13321e2d5b0cb77593d15cee2"
         }
       ]
     }
