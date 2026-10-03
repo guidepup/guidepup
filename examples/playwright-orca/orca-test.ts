@@ -78,9 +78,17 @@ export const orcaTest = test.extend<{
   orcaStartOptions: { capture: "initial" },
   orca: async ({ orcaStartOptions, page }, use) => {
     try {
-      orcaPlaywright.navigateToWebContent = async () => {
-        // TODO: implement stable way to navigate to main web content
+      orcaPlaywright.navigateToWebContent = async ({ capture } = {}) => {
+        // Ensure the document is ready and focused.
         await page.bringToFront();
+        await page.locator("body").waitFor();
+
+        // Navigate to the beginning of the web content, using chosen capture
+        // settings, so don't miss announcing the first item on the page.
+        await orcaPlaywright.perform(
+          orcaPlaywright.keyboardCommands.StartOfFile,
+          { capture },
+        );
       };
 
       await orcaPlaywright.start(orcaStartOptions);
