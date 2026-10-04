@@ -380,6 +380,8 @@ export class VoiceOver implements IScreenReader {
 
       for (let attempt = 0; attempt < VoiceOver.#START_ATTEMPTS; attempt++) {
         try {
+          // Also catches VoiceOver starting while the preferences were being
+          // mounted. Only costs a couple of `pgrep` calls when it isn't.
           await terminateVoiceOverProcess(options);
           await waitForNotRunning(options);
 
