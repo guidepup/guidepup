@@ -43,6 +43,33 @@ const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const SPEECH_DEBOUNCE_TIMEOUT = 1000;
+const PROCESS_EXIT_TIMEOUT = 5_000;
+
+/**
+ * Send SIGTERM and wait for the process to exit, falling back to SIGKILL.
+ */
+async function terminate(
+  child: ChildProcess | null,
+  name: string,
+): Promise<void> {
+  if (!child || child.exitCode !== null || child.signalCode !== null) {
+    return;
+  }
+
+  debug(`Terminating ${name} process...`);
+
+  const exited = new Promise((resolve) => child.once("exit", resolve));
+
+  child.kill("SIGTERM");
+
+  const timer = setTimeout(() => {
+    debug(`${name} did not exit after SIGTERM, sending SIGKILL`);
+    child.kill("SIGKILL");
+  }, PROCESS_EXIT_TIMEOUT);
+
+  await exited;
+  clearTimeout(timer);
+}
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
@@ -743,38 +770,13 @@ export class OrcaClient extends EventEmitter {
 
     this.#speechdDisconnect();
 
-    if (this.#orcaProcess && this.#orcaProcess.exitCode === null) {
-      debug("Terminating Orca process...");
-
-      this.#orcaProcess.kill("SIGTERM");
-    }
-
-    if (this.#speechdProcess && this.#speechdProcess.exitCode === null) {
-      debug("Terminating Speech Dispatcher process...");
-
-      this.#speechdProcess.kill("SIGTERM");
-    }
-
-    if (this.#atSpiProcess && this.#atSpiProcess.exitCode === null) {
-      debug("Terminating AT-SPI process...");
-
-      this.#atSpiProcess.kill("SIGTERM");
-    }
-
-    if (
-      this.#sessionDBusProcess &&
-      this.#sessionDBusProcess.exitCode === null
-    ) {
-      debug("Terminating session D-Bus process...");
-
-      this.#sessionDBusProcess.kill("SIGTERM");
-    }
-
-    if (this.#xvfbProcess && this.#xvfbProcess.exitCode === null) {
-      debug("Terminating X Server process...");
-
-      this.#xvfbProcess.kill("SIGTERM");
-    }
+    // One at a time, waiting for each to exit, so that Orca can shut down
+    // cleanly while the services it depends on are still running.
+    await terminate(this.#orcaProcess, "Orca");
+    await terminate(this.#speechdProcess, "Speech Dispatcher");
+    await terminate(this.#atSpiProcess, "AT-SPI");
+    await terminate(this.#sessionDBusProcess, "session D-Bus");
+    await terminate(this.#xvfbProcess, "X Server");
 
     this.#xvfbDisplay = null;
     this.#xvfbProcess = null;
