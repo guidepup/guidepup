@@ -40,7 +40,7 @@ const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const SPEECH_DEBOUNCE_TIMEOUT = 1000;
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
-const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca.Service";
+const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
 
 const READY = "ready";
 const CANCEL = "cancel";
@@ -606,7 +606,7 @@ export class OrcaClient extends EventEmitter {
 
       const dbusInterface = await sessionDBusOrcaService.getInterface(
         moduleDefinition.objectPath,
-        "org.gnome.Orca.Module",
+        "org.gnome.Orca1.Module",
       );
 
       return {

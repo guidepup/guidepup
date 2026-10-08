@@ -7,7 +7,7 @@ export const serviceDefinition = {
             "Shows a list of all the accessible actions exposed by the focused object.",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/ActionPresenter",
+      objectPath: "/org/gnome/Orca1/Service/ActionPresenter",
       parameterizedCommands: {},
       runtimeGetters: {},
       runtimeSetters: {},
@@ -18,7 +18,7 @@ export const serviceDefinition = {
           description: "Toggles the braille monitor on and off.",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/BraillePresenter",
+      objectPath: "/org/gnome/Orca1/Service/BraillePresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         AvailableContractionTables: {
@@ -250,7 +250,7 @@ export const serviceDefinition = {
             "Switches between object mode and layout mode for line presentation.",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/CaretNavigator",
+      objectPath: "/org/gnome/Orca1/Service/CaretNavigator",
       parameterizedCommands: {},
       runtimeGetters: {
         IsEnabled: {
@@ -303,7 +303,7 @@ export const serviceDefinition = {
           representation: "ORCA-Alt-F10",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/ChatPresenter",
+      objectPath: "/org/gnome/Orca1/Service/ChatPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         AnnounceBuddyTyping: {
@@ -351,7 +351,7 @@ export const serviceDefinition = {
           representation: "ORCA-C",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/ClipboardPresenter",
+      objectPath: "/org/gnome/Orca1/Service/ClipboardPresenter",
       parameterizedCommands: {},
       runtimeGetters: {},
       runtimeSetters: {},
@@ -363,7 +363,7 @@ export const serviceDefinition = {
           representation: "ORCA-Shift-F12",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/CommandManager",
+      objectPath: "/org/gnome/Orca1/Service/CommandManager",
       parameterizedCommands: {},
       runtimeGetters: {
         DesktopModifierKeys: {
@@ -408,7 +408,7 @@ export const serviceDefinition = {
           representation: "ORCA-Space",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/DocumentPresenter",
+      objectPath: "/org/gnome/Orca1/Service/DocumentPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         AutoStickyFocusModeForWebApps: {
@@ -605,7 +605,7 @@ export const serviceDefinition = {
           description: "Presents the current character's unicode value.",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/FlatReviewPresenter",
+      objectPath: "/org/gnome/Orca1/Service/FlatReviewPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         IsRestricted: {
@@ -627,7 +627,7 @@ export const serviceDefinition = {
           representation: "ORCA-M",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/MouseReviewer",
+      objectPath: "/org/gnome/Orca1/Service/MouseReviewer",
       parameterizedCommands: {},
       runtimeGetters: {
         IsEnabled: {
@@ -668,7 +668,7 @@ export const serviceDefinition = {
           representation: "ORCA-Alt-N",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/NotificationPresenter",
+      objectPath: "/org/gnome/Orca1/Service/NotificationPresenter",
       parameterizedCommands: {},
       runtimeGetters: {},
       runtimeSetters: {},
@@ -703,7 +703,7 @@ export const serviceDefinition = {
           description: "Toggles simplified navigation.",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/ObjectNavigator",
+      objectPath: "/org/gnome/Orca1/Service/ObjectNavigator",
       parameterizedCommands: {},
       runtimeGetters: {},
       runtimeSetters: {},
@@ -719,7 +719,7 @@ export const serviceDefinition = {
           representation: "ORCA-Ctrl-P",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/ProfileManager",
+      objectPath: "/org/gnome/Orca1/Service/ProfileManager",
       parameterizedCommands: {},
       runtimeGetters: {
         ActiveProfile: {
@@ -760,7 +760,7 @@ export const serviceDefinition = {
           representation: "ORCA-KP+",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/SayAllPresenter",
+      objectPath: "/org/gnome/Orca1/Service/SayAllPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         AnnounceBlockquote: {
@@ -839,14 +839,14 @@ export const serviceDefinition = {
           representation: "ORCA-Shift-S",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/SleepModeManager",
+      objectPath: "/org/gnome/Orca1/Service/SleepModeManager",
       parameterizedCommands: {},
       runtimeGetters: {},
       runtimeSetters: {},
     },
     SoundPresenter: {
       commands: {},
-      objectPath: "/org/gnome/Orca/Service/SoundPresenter",
+      objectPath: "/org/gnome/Orca1/Service/SoundPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         BeepProgressBarUpdates: {
@@ -941,7 +941,7 @@ export const serviceDefinition = {
           representation: "ORCA-S",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/SpeechManager",
+      objectPath: "/org/gnome/Orca1/Service/SpeechManager",
       parameterizedCommands: {
         GetVoicesForLanguage: {
           description:
@@ -1101,7 +1101,7 @@ export const serviceDefinition = {
             "Toggles speech verbosity level between verbose and brief.",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/SpeechPresenter",
+      objectPath: "/org/gnome/Orca1/Service/SpeechPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         AlwaysAnnounceSelectedRangeInSpreadsheet: {
@@ -1340,7 +1340,7 @@ export const serviceDefinition = {
     },
     SpellCheckPresenter: {
       commands: {},
-      objectPath: "/org/gnome/Orca/Service/SpellCheckPresenter",
+      objectPath: "/org/gnome/Orca1/Service/SpellCheckPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         PresentContext: {
@@ -1706,7 +1706,7 @@ export const serviceDefinition = {
           representation: "Shift-V",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/StructuralNavigator",
+      objectPath: "/org/gnome/Orca1/Service/StructuralNavigator",
       parameterizedCommands: {},
       runtimeGetters: {
         IsEnabled: {
@@ -1762,7 +1762,7 @@ export const serviceDefinition = {
           representation: "ORCA-T",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/SystemInformationPresenter",
+      objectPath: "/org/gnome/Orca1/Service/SystemInformationPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         AvailableDateFormats: {
@@ -1852,7 +1852,7 @@ export const serviceDefinition = {
           representation: "ORCA-Shift-T",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/TableNavigator",
+      objectPath: "/org/gnome/Orca1/Service/TableNavigator",
       parameterizedCommands: {},
       runtimeGetters: {
         IsEnabled: {
@@ -1872,7 +1872,7 @@ export const serviceDefinition = {
     },
     TextAttributeManager: {
       commands: {},
-      objectPath: "/org/gnome/Orca/Service/TextAttributeManager",
+      objectPath: "/org/gnome/Orca1/Service/TextAttributeManager",
       parameterizedCommands: {},
       runtimeGetters: {
         AttributesToBraille: {
@@ -1899,7 +1899,7 @@ export const serviceDefinition = {
           representation: "ORCA-Shift-K",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/TypingEchoPresenter",
+      objectPath: "/org/gnome/Orca1/Service/TypingEchoPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         ActionKeysEnabled: {
@@ -2062,15 +2062,15 @@ export const serviceDefinition = {
           representation: "ORCA-KP_Enter",
         },
       },
-      objectPath: "/org/gnome/Orca/Service/WhereAmIPresenter",
+      objectPath: "/org/gnome/Orca1/Service/WhereAmIPresenter",
       parameterizedCommands: {},
       runtimeGetters: {},
       runtimeSetters: {},
     },
   },
   service: {
-    name: "org.gnome.Orca.Service",
-    objectPath: "/org/gnome/Orca/Service",
+    name: "org.gnome.Orca1.Service",
+    objectPath: "/org/gnome/Orca1/Service",
   },
-  version: "50.2",
+  version: "51.0",
 } as const;
