@@ -42,7 +42,7 @@ test.describe("Chromium Playwright VoiceOver", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
       stopRecording = await record(recordingFilePath);
@@ -61,7 +61,7 @@ test.describe("Chromium Playwright VoiceOver", () => {
       logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 });

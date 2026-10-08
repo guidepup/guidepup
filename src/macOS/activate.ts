@@ -1,5 +1,6 @@
 import { base } from "../debug";
 import type { CommandOptions } from "../CommandOptions";
+import { DEFAULT_RETRY_COUNT } from "../constants";
 import { ERR_PREFIX_ACTIVATE } from "./errors";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
@@ -35,9 +36,11 @@ export async function activate(
   )}\nend tell`;
 
   try {
+    // Activating is idempotent, so unlike most AppleScript commands it is safe
+    // to retry on AppleEvent timeout by default.
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
-      options,
+      { retries: DEFAULT_RETRY_COUNT, ...options },
     );
   } catch (cause) {
     throw new Error(`${ERR_PREFIX_ACTIVATE}${applicationName}`, {
