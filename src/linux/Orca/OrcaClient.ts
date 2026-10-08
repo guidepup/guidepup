@@ -606,7 +606,7 @@ export class OrcaClient extends EventEmitter {
 
       const dbusInterface = await sessionDBusOrcaService.getInterface(
         moduleDefinition.objectPath,
-        "org.gnome.Orca1.Module",
+        `org.gnome.Orca1.${name}`,
       );
 
       return {
@@ -616,7 +616,7 @@ export class OrcaClient extends EventEmitter {
             {
               ...moduleDefinition.commands[key],
               execute: (notifyUser: boolean = true) =>
-                dbusInterface.ExecuteCommand(key, notifyUser),
+                dbusInterface[key](notifyUser),
             },
           ]),
         ),
@@ -627,7 +627,7 @@ export class OrcaClient extends EventEmitter {
               {
                 ...moduleDefinition.parameterizedCommands[key],
                 execute: (...parameters: unknown[]) =>
-                  dbusInterface.ExecuteParameterizedCommand(key, parameters),
+                  dbusInterface[key](...parameters),
               },
             ],
           ),
@@ -637,7 +637,7 @@ export class OrcaClient extends EventEmitter {
             key,
             {
               ...moduleDefinition.runtimeGetters[key],
-              get: () => dbusInterface.ExecuteRuntimeGetter(key),
+              get: () => dbusInterface.$readProp(key),
             },
           ]),
         ),
@@ -646,8 +646,7 @@ export class OrcaClient extends EventEmitter {
             key,
             {
               ...moduleDefinition.runtimeSetters[key],
-              set: (value: unknown) =>
-                dbusInterface.ExecuteRuntimeSetter(key, value),
+              set: (value: unknown) => dbusInterface.$writeProp(key, value),
             },
           ]),
         ),
