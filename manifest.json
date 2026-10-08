@@ -8,11 +8,11 @@
       "defaultDownload": true,
       "assets": [
         {
-          "version": "0.2.3-50.2",
+          "version": "0.2.4-51.0",
           "platformVersion": "7",
           "repository": "guidepup/orca",
-          "asset": "guidepup-orca-0.2.3-50.2.tar.gz",
-          "sha256": "dd8d005e7ff323cb7082700470bc12b24e5d50f52dd1cb0e231b19bc402f9161"
+          "asset": "guidepup-orca-0.2.4-51.0.tar.gz ",
+          "sha256": "142c5a660f8234f37b8e0037f2d8ee3376e364760dc46081bf5c1bbdbb30fe7d"
         }
       ]
     },
