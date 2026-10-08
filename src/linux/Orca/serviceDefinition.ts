@@ -620,14 +620,23 @@ export const serviceDefinition = {
         },
       },
     },
-    MouseReviewer: {
+    MousePresenter: {
       commands: {
-        Toggle: {
+        LeftClickItem: {
+          description: "Performs a left mouse button click on the current item.",
+        },
+        RightClickItem: {
+          description: "Performs a right mouse button click on the current item.",
+        },
+        RoutePointerToItem: {
+          description: "Moves the mouse pointer to the current item.",
+        },
+        ToggleMouseReview: {
           description: "Toggle mouse reviewing on or off (requires Wnck).",
           representation: "ORCA-M",
         },
       },
-      objectPath: "/org/gnome/Orca1/Service/MouseReviewer",
+      objectPath: "/org/gnome/Orca1/Service/MousePresenter",
       parameterizedCommands: {},
       runtimeGetters: {
         IsEnabled: {
