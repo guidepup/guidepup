@@ -484,9 +484,6 @@ export const serviceDefinition = {
         CopyToClipboard: {
           description: "Copies the string just presented to the clipboard.",
         },
-        GetCurrentObject: {
-          description: "Returns the current accessible object.",
-        },
         GoAbove: {
           description: "Moves to the character above.",
           representation: "ORCA-KP4",
@@ -542,6 +539,13 @@ export const serviceDefinition = {
           description:
             "Attempts to synthesize a left click on the current accessible.",
           representation: "ORCA-KP/",
+        },
+        MoveFocusToReview: {
+          description:
+            "Attempts to move focus to the object at the flat review location.",
+        },
+        MoveReviewToFocus: {
+          description: "Moves the flat review location to the object with focus.",
         },
         PhoneticItem: {
           description:
@@ -608,15 +612,128 @@ export const serviceDefinition = {
       objectPath: "/org/gnome/Orca1/Service/FlatReviewPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
+        DisplaysUpdates: {
+          description:
+            "Returns whether review location changes update braille.",
+        },
+        FocusTracking: {
+          description: "Returns the flat review focus-tracking mode.",
+        },
         IsRestricted: {
           description:
             "Returns whether flat review is restricted to the current object.",
         },
+        SpeaksUpdates: {
+          description:
+            "Returns whether changes at the review location are spoken automatically.",
+        },
       },
       runtimeSetters: {
+        DisplaysUpdates: {
+          description:
+            "Sets whether review location changes update braille.",
+        },
+        FocusTracking: {
+          description: "Sets the flat review focus-tracking mode.",
+        },
         IsRestricted: {
           description:
             "Sets whether flat review is restricted to the current object.",
+        },
+        SpeaksUpdates: {
+          description:
+            "Sets whether changes at the review location are spoken automatically.",
+        },
+      },
+    },
+    MathNavigator: {
+      commands: {
+        CopyToClipboard: {
+          description: "Copies the current math navigation node to the clipboard.",
+        },
+        EnterMathModeCommand: {
+          description: "Enters math navigation mode if the current focus is on math.",
+        },
+        ExitMathMode: {
+          description: "Exits math navigation mode.",
+        },
+      },
+      objectPath: "/org/gnome/Orca1/Service/MathNavigator",
+      parameterizedCommands: {
+        ExecuteMathcatCommand: {
+          description: "Executes a MathCAT navigation command.",
+          parameters: [
+            {
+              name: "mathcat_command",
+              type: "str",
+            },
+          ],
+        },
+      },
+      runtimeGetters: {
+        IsActive: {
+          description: "Returns whether math navigation is active.",
+        },
+        SupportedCommands: {
+          description: "Returns the supported MathCAT navigation commands.",
+        },
+      },
+      runtimeSetters: {},
+    },
+    MathPresenter: {
+      commands: {},
+      objectPath: "/org/gnome/Orca1/Service/MathPresenter",
+      parameterizedCommands: {},
+      runtimeGetters: {
+        AutoZoomOut: {
+          description: "Returns whether auto zoom out is enabled.",
+        },
+        BrailleCode: {
+          description: "Returns the math braille code.",
+        },
+        BrailleNavHighlight: {
+          description: "Returns the braille navigation highlight style.",
+        },
+        CopyFormat: {
+          description: "Returns the format used when copying math content.",
+        },
+        Language: {
+          description: "Returns the math language.",
+        },
+        NavMode: {
+          description: "Returns the math navigation mode.",
+        },
+        SpeechStyle: {
+          description: "Returns the math speech style.",
+        },
+        Verbosity: {
+          description: "Returns the math speech verbosity.",
+        },
+      },
+      runtimeSetters: {
+        AutoZoomOut: {
+          description: "Sets whether auto zoom out is enabled.",
+        },
+        BrailleCode: {
+          description: "Sets the math braille code.",
+        },
+        BrailleNavHighlight: {
+          description: "Sets the braille navigation highlight style.",
+        },
+        CopyFormat: {
+          description: "Sets the format used when copying math content.",
+        },
+        Language: {
+          description: "Sets the math language.",
+        },
+        NavMode: {
+          description: "Sets the math navigation mode.",
+        },
+        SpeechStyle: {
+          description: "Sets the math speech style.",
+        },
+        Verbosity: {
+          description: "Sets the math speech verbosity.",
         },
       },
     },
@@ -772,9 +889,19 @@ export const serviceDefinition = {
       objectPath: "/org/gnome/Orca1/Service/SayAllPresenter",
       parameterizedCommands: {},
       runtimeGetters: {
+        AnnounceArticle: {
+          description: "Returns whether articles are announced when entered.",
+        },
         AnnounceBlockquote: {
           description:
             "Returns whether blockquotes are announced when entered.",
+        },
+        AnnounceCodeBlock: {
+          description: "Returns whether code blocks are announced when entered.",
+        },
+        AnnounceDocument: {
+          description:
+            "Returns whether embedded documents are announced when entered and left.",
         },
         AnnounceForm: {
           description:
@@ -792,11 +919,15 @@ export const serviceDefinition = {
         AnnounceTable: {
           description: "Returns whether tables are announced when entered.",
         },
+        AnnounceTrackedChanges: {
+          description:
+            "Returns whether tracked changes are announced when entered.",
+        },
         OnlySpeakDisplayedText: {
           description: "Returns whether Say All only speaks displayed text.",
         },
         RewindAndFastForwardEnabled: {
-          description: "Returns whether Up and Down can be used in Say All.",
+          description: "Sets whether Up and Down can be used in Say All.",
         },
         StructuralNavigationEnabled: {
           description:
@@ -805,10 +936,24 @@ export const serviceDefinition = {
         Style: {
           description: "Returns the current Say All style.",
         },
+        TextAttributeChangeModeAsString: {
+          description:
+            "Returns when text attribute changes are spoken during Say All.",
+        },
       },
       runtimeSetters: {
+        AnnounceArticle: {
+          description: "Sets whether articles are announced when entered.",
+        },
         AnnounceBlockquote: {
           description: "Sets whether blockquotes are announced when entered.",
+        },
+        AnnounceCodeBlock: {
+          description: "Sets whether code blocks are announced when entered.",
+        },
+        AnnounceDocument: {
+          description:
+            "Sets whether embedded documents are announced when entered and left.",
         },
         AnnounceForm: {
           description:
@@ -826,6 +971,10 @@ export const serviceDefinition = {
         AnnounceTable: {
           description: "Sets whether tables are announced when entered.",
         },
+        AnnounceTrackedChanges: {
+          description:
+            "Sets whether tracked changes are announced when entered.",
+        },
         OnlySpeakDisplayedText: {
           description: "Sets whether Say All only speaks displayed text.",
         },
@@ -839,6 +988,10 @@ export const serviceDefinition = {
         Style: {
           description: "Sets the current Say All style.",
         },
+        TextAttributeChangeModeAsString: {
+          description:
+            "Sets when text attribute changes are spoken during Say All.",
+        },
       },
     },
     SleepModeManager: {
@@ -850,8 +1003,18 @@ export const serviceDefinition = {
       },
       objectPath: "/org/gnome/Orca1/Service/SleepModeManager",
       parameterizedCommands: {},
-      runtimeGetters: {},
-      runtimeSetters: {},
+      runtimeGetters: {
+        SleepModeApps: {
+          description:
+            "Returns the list of apps that should automatically use sleep mode.",
+        },
+      },
+      runtimeSetters: {
+        SleepModeApps: {
+          description:
+            "Sets the list of apps that should automatically use sleep mode.",
+        },
+      },
     },
     SoundPresenter: {
       commands: {},
@@ -908,9 +1071,16 @@ export const serviceDefinition = {
           description: "Cycles through available speech synthesizers.",
           representation: "ORCA-Ctrl-S",
         },
+        CycleVoiceSet: {
+          description:
+            "Switches to the next available voice set, wrapping after the last.",
+        },
         DecreasePitch: {
           description: "Decreases the speech pitch",
           representation: "ORCA-Alt-Left",
+        },
+        DecreasePitchRange: {
+          description: "Decreases the speech inflection (pitch range).",
         },
         DecreaseRate: {
           description: "Decreases the speech rate.",
@@ -923,6 +1093,9 @@ export const serviceDefinition = {
         IncreasePitch: {
           description: "Increase the speech pitch",
           representation: "ORCA-Alt-Right",
+        },
+        IncreasePitchRange: {
+          description: "Increases the speech inflection (pitch range).",
         },
         IncreaseRate: {
           description: "Increases the speech rate.",
@@ -952,6 +1125,16 @@ export const serviceDefinition = {
       },
       objectPath: "/org/gnome/Orca1/Service/SpeechManager",
       parameterizedCommands: {
+        ActivateVoiceSet: {
+          description:
+            "Makes a voice set the active voice set and announces the change.",
+          parameters: [
+            {
+              name: "set_id",
+              type: "str",
+            },
+          ],
+        },
         GetVoicesForLanguage: {
           description:
             "Returns a list of available voices for the specified language.",
@@ -964,17 +1147,20 @@ export const serviceDefinition = {
               name: "variant",
               type: "str",
             },
-            {
-              name: "notify_user",
-              type: "bool",
-            },
           ],
         },
       },
       runtimeGetters: {
+        ActiveVoiceSet: {
+          description: "Returns the active voice set used for speech output.",
+        },
         AutoLanguageSwitching: {
           description:
             "Returns whether automatic language switching is enabled.",
+        },
+        AutoLanguageSwitchingUi: {
+          description:
+            "Returns whether automatic language switching for UI elements is enabled.",
         },
         AvailableServers: {
           description: "Returns a list of available servers.",
@@ -982,6 +1168,9 @@ export const serviceDefinition = {
         AvailableSynthesizers: {
           description:
             "Returns a list of available synthesizers of the speech server.",
+        },
+        AvailableVoiceSets: {
+          description: "Returns the valid values for the active voice set.",
         },
         AvailableVoices: {
           description:
@@ -1004,8 +1193,15 @@ export const serviceDefinition = {
           description:
             "Returns whether pauses are inserted between utterances, e.g. between name and role.",
         },
+        OnlySwitchConfiguredLanguages: {
+          description:
+            "Returns whether language switching is limited to configured voice sets.",
+        },
         Pitch: {
           description: "Returns the current speech pitch.",
+        },
+        PitchRange: {
+          description: "Returns the current speech inflection / pitch range.",
         },
         PunctuationLevel: {
           description: "Returns the current punctuation level.",
@@ -1036,8 +1232,15 @@ export const serviceDefinition = {
         },
       },
       runtimeSetters: {
+        ActiveVoiceSet: {
+          description: "Sets the active voice set used for speech output.",
+        },
         AutoLanguageSwitching: {
           description: "Sets whether automatic language switching is enabled.",
+        },
+        AutoLanguageSwitchingUi: {
+          description:
+            "Sets whether automatic language switching for UI elements is enabled.",
         },
         CapitalizationStyle: {
           description: "Sets the capitalization style.",
@@ -1057,9 +1260,17 @@ export const serviceDefinition = {
           description:
             "Sets whether pauses are inserted between utterances, e.g. between name and role.",
         },
+        OnlySwitchConfiguredLanguages: {
+          description:
+            "Sets whether language switching is limited to configured voice sets.",
+        },
         Pitch: {
           description:
             "Sets the current speech pitch (0.0-10.0, default: 5.0).",
+        },
+        PitchRange: {
+          description:
+            "Sets the speech inflection range (0.0-10.0, default: 5.0).",
         },
         PunctuationLevel: {
           description: "Sets the punctuation level.",
@@ -1096,8 +1307,12 @@ export const serviceDefinition = {
         ChangeNumberStyle: {
           description: "Changes spoken number style between digits and words.",
         },
-        ToggleIndentationAndJustification: {
-          description: "Toggles the speaking of indentation and justification.",
+        CycleTextAttributeChangeMode: {
+          description:
+            "Cycles through text attribute change announcement modes.",
+        },
+        ToggleIndentation: {
+          description: "Toggles spoken indentation.",
         },
         ToggleMonitor: {
           description: "Toggles the speech monitor on and off.",
@@ -1117,6 +1332,9 @@ export const serviceDefinition = {
           description:
             "Returns whether the selected range in spreadsheets is always announced.",
         },
+        AnnounceArticle: {
+          description: "Returns whether articles are announced when entered.",
+        },
         AnnounceBlockquote: {
           description:
             "Returns whether blockquotes are announced when entered.",
@@ -1131,6 +1349,13 @@ export const serviceDefinition = {
         AnnounceCellSpan: {
           description:
             "Returns whether cell spans are announced when greater than 1.",
+        },
+        AnnounceCodeBlock: {
+          description: "Returns whether code blocks are announced when entered.",
+        },
+        AnnounceDocument: {
+          description:
+            "Returns whether embedded documents are announced when entered and left.",
         },
         AnnounceForm: {
           description:
@@ -1151,6 +1376,10 @@ export const serviceDefinition = {
         },
         AnnounceTable: {
           description: "Returns whether tables are announced when entered.",
+        },
+        AnnounceTrackedChanges: {
+          description:
+            "Returns whether tracked changes are announced when entered.",
         },
         MessagesAreDetailed: {
           description:
@@ -1188,9 +1417,9 @@ export const serviceDefinition = {
         SpeakDescription: {
           description: "Returns whether object descriptions are spoken.",
         },
-        SpeakIndentationAndJustification: {
+        SpeakIndentation: {
           description:
-            "Returns whether speaking of indentation and justification is enabled.",
+            "Returns whether spoken indentation is enabled.",
         },
         SpeakIndentationOnlyIfChanged: {
           description:
@@ -1222,6 +1451,10 @@ export const serviceDefinition = {
         SpeakTutorialMessages: {
           description: "Returns whether tutorial messages are spoken.",
         },
+        SpeakTextAttributeChanges: {
+          description:
+            "Returns when text attribute changes are spoken during navigation.",
+        },
         SpeakWidgetMnemonic: {
           description: "Returns whether widget mnemonics are spoken.",
         },
@@ -1234,6 +1467,9 @@ export const serviceDefinition = {
         AlwaysAnnounceSelectedRangeInSpreadsheet: {
           description:
             "Sets whether the selected range in spreadsheets is always announced.",
+        },
+        AnnounceArticle: {
+          description: "Sets whether articles are announced when entered.",
         },
         AnnounceBlockquote: {
           description: "Sets whether blockquotes are announced when entered.",
@@ -1248,6 +1484,13 @@ export const serviceDefinition = {
         AnnounceCellSpan: {
           description:
             "Sets whether cell spans are announced when greater than 1.",
+        },
+        AnnounceCodeBlock: {
+          description: "Sets whether code blocks are announced when entered.",
+        },
+        AnnounceDocument: {
+          description:
+            "Sets whether embedded documents are announced when entered and left.",
         },
         AnnounceForm: {
           description:
@@ -1268,6 +1511,10 @@ export const serviceDefinition = {
         },
         AnnounceTable: {
           description: "Sets whether tables are announced when entered.",
+        },
+        AnnounceTrackedChanges: {
+          description:
+            "Sets whether tracked changes are announced when entered.",
         },
         MessagesAreDetailed: {
           description:
@@ -1305,9 +1552,9 @@ export const serviceDefinition = {
         SpeakDescription: {
           description: "Sets whether object descriptions are spoken.",
         },
-        SpeakIndentationAndJustification: {
+        SpeakIndentation: {
           description:
-            "Sets whether speaking of indentation and justification is enabled.",
+            "Sets whether spoken indentation is enabled.",
         },
         SpeakIndentationOnlyIfChanged: {
           description:
@@ -1337,6 +1584,10 @@ export const serviceDefinition = {
         },
         SpeakTutorialMessages: {
           description: "Sets whether tutorial messages are spoken.",
+        },
+        SpeakTextAttributeChanges: {
+          description:
+            "Sets when text attribute changes are spoken during navigation.",
         },
         SpeakWidgetMnemonic: {
           description: "Sets whether widget mnemonics are spoken.",
@@ -1390,6 +1641,9 @@ export const serviceDefinition = {
         },
         CycleMode: {
           description: "Cycles among the structural navigation modes.",
+        },
+        ListAnnotations: {
+          description: "Displays a list of annotations.",
         },
         ListBlockquotes: {
           description: "Displays a list of blockquotes.",
@@ -1474,6 +1728,9 @@ export const serviceDefinition = {
           description: "Displays a list of lists.",
           representation: "Alt-Shift-L",
         },
+        ListMath: {
+          description: "Displays a list of math expressions.",
+        },
         ListParagraphs: {
           description: "Displays a list of paragraphs.",
           representation: "Alt-Shift-P",
@@ -1497,6 +1754,9 @@ export const serviceDefinition = {
         NextBlockquote: {
           description: "Goes to the next blockquote.",
           representation: "Q",
+        },
+        NextAnnotation: {
+          description: "Goes to the next annotation.",
         },
         NextButton: {
           description: "Goes to the next button.",
@@ -1580,6 +1840,9 @@ export const serviceDefinition = {
         NextLiveRegion: {
           description: "Goes to the next live region.",
         },
+        NextMath: {
+          description: "Goes to the next math expression.",
+        },
         NextParagraph: {
           description: "Goes to the next paragraph.",
           representation: "P",
@@ -1607,6 +1870,9 @@ export const serviceDefinition = {
         PreviousBlockquote: {
           description: "Goes to the previous blockquote.",
           representation: "Shift-Q",
+        },
+        PreviousAnnotation: {
+          description: "Goes to the previous annotation.",
         },
         PreviousButton: {
           description: "Goes to the previous button.",
@@ -1690,6 +1956,9 @@ export const serviceDefinition = {
         PreviousLiveRegion: {
           description: "Goes to the previous live region.",
         },
+        PreviousMath: {
+          description: "Goes to the previous math expression.",
+        },
         PreviousParagraph: {
           description: "Goes to the previous paragraph.",
           representation: "Shift-P",
@@ -1729,6 +1998,9 @@ export const serviceDefinition = {
           description:
             "Returns whether navigation wraps when reaching the top/bottom of the document.",
         },
+        SkipUnlabeledImages: {
+          description: "Returns whether unlabeled images are skipped.",
+        },
         TriggersFocusMode: {
           description:
             "Returns whether structural navigation triggers focus mode.",
@@ -1745,6 +2017,9 @@ export const serviceDefinition = {
         NavigationWraps: {
           description:
             "Sets whether navigation wraps when reaching the top/bottom of the document.",
+        },
+        SkipUnlabeledImages: {
+          description: "Sets whether unlabeled images are skipped.",
         },
         TriggersFocusMode: {
           description:
@@ -1765,6 +2040,9 @@ export const serviceDefinition = {
         PresentDate: {
           description: "Presents the current date.",
           representation: "ORCA-Shift-T",
+        },
+        PresentModifierKeysState: {
+          description: "Presents the state of modifier keys.",
         },
         PresentTime: {
           description: "Presents the current time.",
@@ -1874,6 +2152,10 @@ export const serviceDefinition = {
       },
       runtimeSetters: {
         IsEnabled: {
+          description:
+            "Sets whether blank cells should be skipped during navigation.",
+        },
+        SkipBlankCells: {
           description:
             "Sets whether blank cells should be skipped during navigation.",
         },
@@ -2060,6 +2342,10 @@ export const serviceDefinition = {
         PresentTitle: {
           description: "Presents the title of the current window.",
           representation: "ORCA-Ctrl-T",
+        },
+        ShowCharacterAttributes: {
+          description:
+            "Shows the font and formatting details for the current character.",
         },
         WhereAmIBasic: {
           description: "Presents basic information about the current location.",

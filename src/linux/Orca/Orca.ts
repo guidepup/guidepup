@@ -733,6 +733,20 @@ export class Orca implements IScreenReader {
     }
 
     await this.#client.enqueueAndTap(async () => {
+      if (command.service === "MousePresenter") {
+        const service = this.#client.service.MousePresenter;
+
+        if (!service) {
+          throw new Error(
+            `Orca command module '${command.service}' is not available.`,
+          );
+        }
+
+        await service.commands[command.command].execute();
+
+        return;
+      }
+
       await this.#client.service[command.service].commands[
         command.command
       ].execute();

@@ -6,6 +6,12 @@ import type {
 } from "./types";
 import { type ChildProcess, execFileSync, spawn } from "node:child_process";
 import { connect, type Socket } from "node:net";
+import {
+  DBusInterface,
+  type MessageBus,
+  sessionBus,
+  UnknownInterfaceError,
+} from "dbus-native";
 import { dirname, join } from "node:path";
 import {
   ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
@@ -20,7 +26,6 @@ import {
   ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
 import { existsSync, mkdirSync } from "node:fs";
-import { type MessageBus, sessionBus } from "dbus-native";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
@@ -45,6 +50,9 @@ const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
 const READY = "ready";
 const CANCEL = "cancel";
 const SPEECH = "speech";
+
+const isUnknownOrcaInterfaceError = (cause: unknown): cause is Error =>
+  cause instanceof UnknownInterfaceError;
 
 export class OrcaClient extends EventEmitter {
   #xvfbDisplay = null;
@@ -601,13 +609,42 @@ export class OrcaClient extends EventEmitter {
 
     const mapModule = async <K extends keyof typeof serviceDefinition.modules>(
       name: K,
-    ): Promise<OrcaService[K]> => {
+    ): Promise<OrcaService[K] | undefined> => {
       const moduleDefinition = serviceDefinition.modules[name];
 
-      const dbusInterface = await sessionDBusOrcaService.getInterface(
-        moduleDefinition.objectPath,
-        `org.gnome.Orca1.${name}`,
-      );
+      const interfaceName = `org.gnome.Orca1.${name}`;
+      const startTime = Date.now();
+      let dbusInterface: DBusInterface | undefined;
+
+      while (!dbusInterface) {
+        try {
+          dbusInterface = await sessionDBusOrcaService.getInterface(
+            moduleDefinition.objectPath,
+            interfaceName,
+          );
+        } catch (cause) {
+          if (!isUnknownOrcaInterfaceError(cause)) {
+            throw cause;
+          }
+
+          if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
+            if (name === "MousePresenter") {
+              debug(
+                `Optional Orca interface '${interfaceName}' is unavailable.`,
+              );
+
+              return undefined;
+            }
+
+            throw new Error(
+              `Timed out waiting for Orca D-Bus interface '${interfaceName}'.`,
+              { cause },
+            );
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+        }
+      }
 
       return {
         commands: Object.fromEntries(

@@ -97,8 +97,13 @@ type OrcaModule<M> = M extends {
   : never;
 
 export type OrcaService = {
-  [K in keyof typeof serviceDefinition.modules]: OrcaModule<
-    (typeof serviceDefinition.modules)[K]
+  [K in Exclude<
+    keyof typeof serviceDefinition.modules,
+    "MousePresenter"
+  >]: OrcaModule<(typeof serviceDefinition.modules)[K]>;
+} & {
+  MousePresenter?: OrcaModule<
+    (typeof serviceDefinition.modules)["MousePresenter"]
   >;
 };
 
