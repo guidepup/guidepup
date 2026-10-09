@@ -290,7 +290,10 @@ export class OrcaClient extends EventEmitter {
         throw new Error(ERR_ORCA_AT_SPI_LAUNCHER_MISSING);
       }
 
+      // In its own process group, so that stop() also reaches the a11y bus
+      // and at-spi2-registryd that the launcher starts, which outlive it.
       this.#atSpiProcess = spawn(atSpiLauncher, ["--launch-immediately"], {
+        detached: true,
         env: {
           ...process.env,
           DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
@@ -774,6 +777,13 @@ export class OrcaClient extends EventEmitter {
     // cleanly while the services it depends on are still running.
     await terminate(this.#orcaProcess, "Orca");
     await terminate(this.#speechdProcess, "Speech Dispatcher");
+    if (this.#atSpiProcess?.pid) {
+      try {
+        process.kill(-this.#atSpiProcess.pid, "SIGTERM");
+      } catch {
+        // Already gone.
+      }
+    }
     await terminate(this.#atSpiProcess, "AT-SPI");
     await terminate(this.#sessionDBusProcess, "session D-Bus");
     await terminate(this.#xvfbProcess, "X Server");
