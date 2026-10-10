@@ -4,6 +4,7 @@ import {
   MacOSKeyCodes,
   nvda,
   NVDAKeyCodeCommands,
+  orcaKeyCodeCommands,
   screenReader,
   unstable_orca,
   voiceOver,
@@ -366,9 +367,19 @@ export const screenReaderTest = test.extend<{
           }
         };
       } else if (unstable_orca.default()) {
-        screenReaderPlaywright.navigateToWebContent = async () => {
-          // TODO: implement stable way to navigate to main web content
+        screenReaderPlaywright.navigateToWebContent = async ({
+          capture,
+        } = {}) => {
+          // Ensure the document is ready and focused.
           await page.bringToFront();
+          await page.locator("body").waitFor();
+
+          // Navigate to the beginning of the web content, using chosen capture
+          // settings, so don't miss announcing the first item on the page.
+          await screenReaderPlaywright.perform(
+            orcaKeyCodeCommands.StartOfFile,
+            { capture },
+          );
         };
       } else {
         throw new Error("No supported screen reader");
