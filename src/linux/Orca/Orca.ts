@@ -275,11 +275,7 @@ export class Orca implements IScreenReader {
       throw new Error(ERR_ORCA_CANNOT_BE_STARTED, { cause });
     } finally {
       if (!this.#started) {
-        try {
-          await this.#client.stop();
-        } catch {
-          // Swallow
-        }
+        await this.#teardownHandler();
       }
 
       this.#starting = false;
