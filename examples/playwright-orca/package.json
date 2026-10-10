@@ -17,6 +17,6 @@
     "typescript": "^5.9.3"
   },
   "optionalDependencies": {
-    "@guidepup/record": "^0.1.0"
+    "@guidepup/record": "^0.3.0"
   }
 }

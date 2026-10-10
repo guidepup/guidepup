@@ -4,6 +4,18 @@ import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases"
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
 import { screenReaderTest as test } from "../../screenreader-test";
 
+const record = async (filepath: string) => {
+  try {
+    const { record: guidepupRecord } = await import("@guidepup/record");
+
+    return guidepupRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
+
 test.describe("Chromium Playwright Screen Reader", () => {
   test("I can navigate the Guidepup Github page", async ({
     browser,
@@ -17,6 +29,7 @@ test.describe("Chromium Playwright Screen Reader", () => {
     const screenReaderName = screenReader.name;
     const screenReaderVersion = screenReader.version;
     const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-screenreader-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,
@@ -28,17 +41,25 @@ test.describe("Chromium Playwright Screen Reader", () => {
       retry,
     });
 
-    await headerNavigation({ page, screenReader });
+    let stopRecording: (() => Promise<void>) | undefined;
 
-    // Assert that we've ended up where we expected and what we were told on
-    // the way there is as expected.
+    try {
+      stopRecording = await record(recordingFilePath);
 
-    const itemTextLog = await screenReader.itemTextLog();
-    const spokenPhraseLog = await screenReader.spokenPhraseLog();
+      await headerNavigation({ page, screenReader });
 
-    console.log(JSON.stringify(itemTextLog, undefined, 2));
-    console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+      // Assert that we've ended up where we expected and what we were told on
+      // the way there is as expected.
 
-    logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      const itemTextLog = await screenReader.itemTextLog();
+      const spokenPhraseLog = await screenReader.spokenPhraseLog();
+
+      console.log(JSON.stringify(itemTextLog, undefined, 2));
+      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+    } finally {
+      await stopRecording?.();
+    }
   });
 });

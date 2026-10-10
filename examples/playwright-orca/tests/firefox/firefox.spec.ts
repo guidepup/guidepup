@@ -4,6 +4,18 @@ import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases"
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { orcaTest as test } from "../../orca-test";
 
+const record = async (filepath: string) => {
+  try {
+    const { linuxRecord } = await import("@guidepup/record");
+
+    return linuxRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
+
 test.use({ orcaStartOptions: { capture: true } });
 
 test.describe("Firefox Playwright Orca", () => {
@@ -19,6 +31,7 @@ test.describe("Firefox Playwright Orca", () => {
     const screenReaderName = orca.name;
     const screenReaderVersion = orca.version;
     const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-orca-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,
@@ -30,15 +43,23 @@ test.describe("Firefox Playwright Orca", () => {
       retry,
     });
 
-    await headerNavigation({ page, orca });
+    let stopRecording: (() => Promise<void>) | undefined;
 
-    // Assert that we've ended up where we expected and what we were told on
-    // the way there is as expected.
+    try {
+      stopRecording = await record(recordingFilePath);
 
-    const spokenPhraseLog = await orca.spokenPhraseLog();
+      await headerNavigation({ page, orca });
 
-    console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+      // Assert that we've ended up where we expected and what we were told on
+      // the way there is as expected.
 
-    logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      const spokenPhraseLog = await orca.spokenPhraseLog();
+
+      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+    } finally {
+      await stopRecording?.();
+    }
   });
 });
