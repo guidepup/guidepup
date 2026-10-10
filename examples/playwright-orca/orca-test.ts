@@ -1,4 +1,5 @@
 import type { CommandOptions, Orca } from "../../src";
+import { focusOrcaBrowser } from "../focusOrcaBrowser";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
 import { unstable_orca } from "../../src";
@@ -79,15 +80,28 @@ export const orcaTest = test.extend<{
   orca: async ({ orcaStartOptions, page }, use) => {
     try {
       orcaPlaywright.navigateToWebContent = async ({ capture } = {}) => {
+        // Ensure application is brought to front and focused.
+        const pageTitle = await page.title();
+        await focusOrcaBrowser({
+          orca: orcaPlaywright,
+          pageTitle,
+          presentTitleCommand: orcaPlaywright.keyboardCommands.PresentTitle,
+        });
+
         // Ensure the document is ready and focused.
         await page.bringToFront();
         await page.locator("body").waitFor();
+        await page.locator("body").focus();
+        await page.locator("body").click();
+        await page.locator("body").blur();
 
         // Navigate to the beginning of the web content, using chosen capture
         // settings, so don't miss announcing the first item on the page.
         await orcaPlaywright.perform(
           orcaPlaywright.keyboardCommands.StartOfFile,
-          { capture },
+          {
+            capture,
+          },
         );
       };
 
