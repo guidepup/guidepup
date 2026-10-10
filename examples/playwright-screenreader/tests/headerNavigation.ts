@@ -1,7 +1,7 @@
 import { delay } from "../../../src/delay";
 import { log } from "../../log";
-import { Page } from "@playwright/test";
-import { ScreenReaderPlaywright } from "../screenreader-test";
+import type { Page } from "@playwright/test";
+import type { ScreenReaderPlaywright } from "../screenreader-test";
 
 const MAX_NAVIGATION_LOOP = 10;
 

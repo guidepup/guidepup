@@ -21,9 +21,9 @@ export async function performCommand(
       () => runAppleScript(script, options),
       options,
     );
-  } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_PERFORM_COMMAND}\n${e.message}`, {
-      cause: e,
+  } catch (cause) {
+    throw new Error(ERR_VOICE_OVER_PERFORM_COMMAND, {
+      cause,
     });
   }
 }

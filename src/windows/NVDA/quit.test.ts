@@ -92,9 +92,7 @@ describe("quit", () => {
       });
 
       it("should throw a wrapped error", () => {
-        expect(error).toEqual(
-          new Error(`${ERR_NVDA_QUIT}\n${mockError.message}`),
-        );
+        expect(error).toEqual(new Error(ERR_NVDA_QUIT, { cause: mockError }));
       });
     });
   });

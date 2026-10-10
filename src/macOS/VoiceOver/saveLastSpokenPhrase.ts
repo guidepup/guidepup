@@ -15,9 +15,9 @@ export async function saveLastSpokenPhrase(
 
   try {
     await retry(() => runAppleScript(script, options), options);
-  } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE}\n${e.message}`, {
-      cause: e,
+  } catch (cause) {
+    throw new Error(ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE, {
+      cause,
     });
   }
 

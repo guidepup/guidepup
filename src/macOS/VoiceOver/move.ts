@@ -26,7 +26,7 @@ export async function move(
       () => runAppleScript(script, options),
       options,
     );
-  } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_MOVE}\n${e.message}`, { cause: e });
+  } catch (cause) {
+    throw new Error(ERR_VOICE_OVER_MOVE, { cause });
   }
 }

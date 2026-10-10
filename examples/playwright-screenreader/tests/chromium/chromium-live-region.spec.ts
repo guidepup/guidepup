@@ -4,6 +4,18 @@ import { expect } from "@playwright/test";
 import { log } from "../../../log";
 import { screenReaderTest as test } from "../../screenreader-test";
 
+const record = async (filepath: string) => {
+  try {
+    const { record: guidepupRecord } = await import("@guidepup/record");
+
+    return guidepupRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
+
 test.describe("Chromium Playwright Screen Reader", () => {
   test("I can capture screen reader output from Playwright commands", async ({
     browser,
@@ -17,6 +29,7 @@ test.describe("Chromium Playwright Screen Reader", () => {
     const screenReaderName = screenReader.name;
     const screenReaderVersion = screenReader.version;
     const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-screenreader-live-region-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,
@@ -28,55 +41,71 @@ test.describe("Chromium Playwright Screen Reader", () => {
       retry,
     });
 
-    log("Navigating to live region test page.");
+    let stopRecording: (() => Promise<void>) | undefined;
 
-    await page.goto("about:blank", {
-      waitUntil: "load",
-    });
+    try {
+      stopRecording = await record(recordingFilePath);
 
-    await page.setContent(`
-      <main>
-        <h1>Example 1</h1>
-        <button id="trigger">Update</button>
-      </main>
+      log("Navigating to live region test page.");
 
-      <div role="alert" id="live"></div>
+      await page.goto("about:blank", {
+        waitUntil: "load",
+      });
 
-      <script>
-        document.querySelector("#trigger").addEventListener("click", () => {
-          document.querySelector("#live").textContent = "testing testing 123"
-        });
-      </script>
+      await page.setContent(`
+<!doctype html>
+<html>
+  <head>
+    <title>Guidepup Live Region Test</title>
+  </head>
+  <body>
+    <main>
+      <h1>Example 1</h1>
+      <button id="trigger">Update</button>
+    </main>
+
+    <div role="alert" id="live"></div>
+
+    <script>
+      document.querySelector("#trigger").addEventListener("click", () => {
+        document.querySelector("#live").textContent = "testing testing 123"
+      });
+    </script>
+  </body>
+</html>
     `);
 
-    const button = page.locator("#trigger");
-    await button.waitFor();
-    await delay(500);
+      const button = page.locator("#trigger");
+      await button.waitFor();
+      await delay(500);
 
-    await screenReader.navigateToWebContent();
-    await delay(500);
+      await screenReader.navigateToWebContent();
+      await delay(500);
 
-    log(`Performing capture: Playwright focus`);
-    const { spokenPhrase: focusSpokenPhrase } = await screenReader.capture(() =>
-      button.focus(),
-    );
-    log(`Screen reader output: "${focusSpokenPhrase}".`);
+      log(`Performing capture: Playwright focus`);
+      const { spokenPhrase: focusSpokenPhrase } = await screenReader.capture(
+        () => button.focus(),
+      );
+      log(`Screen reader output: "${focusSpokenPhrase}".`);
 
-    log(`Performing capture: Playwright click`);
-    const { spokenPhrase: clickSpokenPhrase } = await screenReader.capture(
-      () => button.click(),
-      {
-        // Capture full output as there is potential for multiple phrases:
-        //
-        // 1. The button itself
-        // 2. And the live region announcement
-        //
-        // And the default capture of "initial" will cut off the announcement.
-        capture: true,
-      },
-    );
-    log(`Screen reader output: "${clickSpokenPhrase}".`);
+      log(`Performing capture: Playwright click`);
+      const { spokenPhrase: clickSpokenPhrase } = await screenReader.capture(
+        () => button.click(),
+        {
+          // Capture full output as there is potential for multiple phrases:
+          //
+          // 1. The button itself
+          // 2. And the live region announcement
+          //
+          // And the default capture of "initial" will cut off the announcement.
+          capture: true,
+        },
+      );
+      log(`Screen reader output: "${clickSpokenPhrase}".`);
 
-    expect(clickSpokenPhrase).toContain("testing testing 123");
+      expect(clickSpokenPhrase).toContain("testing testing 123");
+    } finally {
+      await stopRecording?.();
+    }
   });
 });

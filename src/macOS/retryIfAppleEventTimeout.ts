@@ -16,10 +16,10 @@ export async function retryIfAppleEventTimeout<T>(
   for (let i = 0; i < retries; i++) {
     try {
       return await delegate();
-    } catch (e) {
-      error = e;
+    } catch (cause) {
+      error = cause;
 
-      if (!e.message.includes(ERR_APPLE_SCRIPT_TIMED_OUT)) {
+      if (!cause.message.includes(ERR_APPLE_SCRIPT_TIMED_OUT)) {
         break;
       }
     }

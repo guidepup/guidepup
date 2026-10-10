@@ -32,7 +32,7 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsScript).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.keyCode.symbol}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.keyCode.symbol}"`,
       );
     });
   });
@@ -57,7 +57,7 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsScript).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.keyCode[0].symbol}${mockCommand.keyCode[1].symbol}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.keyCode[0].symbol}${mockCommand.keyCode[1].symbol}"`,
       );
     });
   });
@@ -80,7 +80,7 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsScript).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.keyCode.symbol}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.keyCode.symbol}"`,
       );
     });
   });
@@ -106,7 +106,7 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsScript).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.keyCode[0].symbol}${mockCommand.keyCode[1].symbol}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.keyCode[0].symbol}${mockCommand.keyCode[1].symbol}"`,
       );
     });
   });
@@ -126,7 +126,7 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsScript).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.characters}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.characters}"`,
       );
     });
   });
@@ -149,7 +149,7 @@ describe("sendKeys", () => {
 
     it("should run a vbs script to send the keys", () => {
       expect(runVbsScript).toHaveBeenCalledWith(
-        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.characters}"`
+        `set WshShell = CreateObject("WScript.Shell")\nWshShell.SendKeys "${mockCommand.modifiers[0].symbol}${mockCommand.characters}"`,
       );
     });
   });
@@ -171,9 +171,7 @@ describe("sendKeys", () => {
       } catch (e) {
         error = e;
       }
-      expect(error).toEqual(
-        new Error(`${ERR_SEND_KEYS}\n${mockError.message}`)
-      );
+      expect(error).toEqual(new Error(ERR_SEND_KEYS, { cause: mockError }));
     });
   });
 });

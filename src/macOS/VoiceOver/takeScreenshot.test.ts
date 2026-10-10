@@ -35,7 +35,7 @@ describe("takeScreenshot", () => {
 
     it("should wrap the takeScreenshot command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith(
-        "tell vo cursor to grab screenshot"
+        "tell vo cursor to grab screenshot",
       );
     });
 
@@ -53,7 +53,7 @@ describe("takeScreenshot", () => {
       it("should construct a takeScreenshot script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -68,7 +68,7 @@ describe("takeScreenshot", () => {
 
     it("should throw an error with the takeScreenshot prefix, application name, and underlying error message", async () => {
       await expect(() => takeScreenshot()).rejects.toEqual(
-        new Error(`${ERR_VOICE_OVER_TAKE_SCREENSHOT}\n${stubError.message}`)
+        new Error(ERR_VOICE_OVER_TAKE_SCREENSHOT, { cause: stubError }),
       );
     });
   });

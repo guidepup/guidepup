@@ -38,14 +38,14 @@ describe("performCommand", () => {
 
     it("should wrap the performCommand command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith(
-        `tell commander to perform command "${command}"`
+        `tell commander to perform command "${command}"`,
       );
     });
 
     it("should pass the performCommand script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
       expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
         expect.any(Function),
-        options
+        options,
       );
     });
 
@@ -59,7 +59,7 @@ describe("performCommand", () => {
       it("should construct a performCommand script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -74,7 +74,7 @@ describe("performCommand", () => {
 
     it("should throw an error with the performCommand prefix, application name, and underlying error message", async () => {
       await expect(() => performCommand(command)).rejects.toEqual(
-        new Error(`${ERR_VOICE_OVER_PERFORM_COMMAND}\n${stubError.message}`)
+        new Error(ERR_VOICE_OVER_PERFORM_COMMAND, { cause: stubError }),
       );
     });
   });

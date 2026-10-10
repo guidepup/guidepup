@@ -27,7 +27,7 @@ export async function sendKeys(
 
   try {
     await runVbsScript(script);
-  } catch (e) {
-    throw new Error(`${ERR_SEND_KEYS}\n${e.message}`, { cause: e });
+  } catch (cause) {
+    throw new Error(ERR_SEND_KEYS, { cause });
   }
 }

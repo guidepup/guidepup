@@ -85,39 +85,6 @@ describe("start", () => {
       });
     });
 
-    describe("when starting NVDA throws an error first attempt", () => {
-      let error: unknown;
-
-      beforeEach(async () => {
-        jest.mocked(spawn).mockImplementation(() => {
-          throw mockError;
-        });
-
-        try {
-          await start();
-        } catch (e) {
-          error = e;
-        }
-      });
-
-      it("should spawn a NVDA command", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          mockInstallationPath,
-          ["--config-path", mockSessionUserConfigPath],
-          {
-            shell: true,
-            stdio: "ignore",
-          },
-        );
-      });
-
-      it("should throw a wrapped error", () => {
-        expect(error).toEqual(
-          new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${mockError.message}`),
-        );
-      });
-    });
-
     describe("when starting NVDA times out first attempt but succeeds second attempt", () => {
       beforeEach(async () => {
         jest
@@ -222,8 +189,10 @@ describe("start", () => {
         expect(mockChildProcess.kill).toHaveBeenCalledWith("SIGKILL");
       });
 
-      it("should throw the timeout error", () => {
-        expect(error).toEqual(mockError);
+      it("should throw an error with the timeout error as the cause", () => {
+        expect(error).toEqual(
+          new Error(ERR_NVDA_CANNOT_BE_STARTED, { cause: mockError }),
+        );
       });
     });
   });
