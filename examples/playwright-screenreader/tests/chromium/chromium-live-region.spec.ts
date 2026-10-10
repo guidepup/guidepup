@@ -53,18 +53,26 @@ test.describe("Chromium Playwright Screen Reader", () => {
       });
 
       await page.setContent(`
-      <main>
-        <h1>Example 1</h1>
-        <button id="trigger">Update</button>
-      </main>
+<!doctype html>
+<html>
+  <head>
+    <title>Guidepup Live Region Test</title>
+  </head>
+  <body>
+    <main>
+      <h1>Example 1</h1>
+      <button id="trigger">Update</button>
+    </main>
 
-      <div role="alert" id="live"></div>
+    <div role="alert" id="live"></div>
 
-      <script>
-        document.querySelector("#trigger").addEventListener("click", () => {
-          document.querySelector("#live").textContent = "testing testing 123"
-        });
-      </script>
+    <script>
+      document.querySelector("#trigger").addEventListener("click", () => {
+        document.querySelector("#live").textContent = "testing testing 123"
+      });
+    </script>
+  </body>
+</html>
     `);
 
       const button = page.locator("#trigger");
