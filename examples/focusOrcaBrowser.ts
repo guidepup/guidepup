@@ -2,6 +2,8 @@ import type { CommandOptions } from "../src/CommandOptions";
 import { delay } from "../src/delay";
 import { execFileSync } from "node:child_process";
 
+const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
+
 const cleanString = (str: string): string =>
   str
     .toLowerCase()
@@ -34,21 +36,13 @@ export const focusOrcaBrowser = async <Command>({
     throw new Error("Cannot focus a browser window with an empty page title.");
   }
   const currentSpokenPhraseLog = [...(await orca.spokenPhraseLog())];
-  const visitedWindowIds = new Set<string>();
 
   try {
-    while (true) {
-      const windowId = execFileSync("xdotool", ["getactivewindow"], {
-        encoding: "utf8",
-      }).trim();
-
-      if (visitedWindowIds.has(windowId)) {
-        throw new Error(
-          `Unable to focus browser window with title "${pageTitle}": Alt+Tab cycled through all active windows.`,
-        );
-      }
-
-      visitedWindowIds.add(windowId);
+    for (
+      let retryCount = 0;
+      retryCount <= MAX_APPLICATION_SWITCH_RETRY_COUNT;
+      retryCount++
+    ) {
       await orca.clearSpokenPhraseLog();
       await orca.perform(presentTitleCommand, { capture: "initial" });
 
@@ -58,9 +52,15 @@ export const focusOrcaBrowser = async <Command>({
         return;
       }
 
-      execFileSync("xdotool", ["key", "--clearmodifiers", "alt+Tab"]);
-      await delay(100);
+      if (retryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
+        execFileSync("xdotool", ["key", "--clearmodifiers", "alt+Tab"]);
+        await delay(100);
+      }
     }
+
+    throw new Error(
+      `Unable to focus browser window with title "${pageTitle}" after ${MAX_APPLICATION_SWITCH_RETRY_COUNT} Alt+Tab attempts.`,
+    );
   } finally {
     await orca.clearSpokenPhraseLog();
 
