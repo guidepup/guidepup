@@ -12,7 +12,6 @@ import {
   sessionBus,
   UnknownInterfaceError,
 } from "dbus-native";
-import { dirname, join } from "node:path";
 import {
   ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
   ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
@@ -25,7 +24,7 @@ import {
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
   ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
@@ -35,7 +34,9 @@ import { findAvailableDisplay } from "./findAvailableDisplay";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
+import { join } from "node:path";
 import { serviceDefinition } from "./serviceDefinition";
+import { tmpdir } from "node:os";
 
 const debug = base.extend("OrcaClient");
 
@@ -90,6 +91,8 @@ export class OrcaClient extends EventEmitter {
   #sessionDBus: MessageBus = null;
 
   #atSpiProcess: ChildProcess = null;
+
+  #runtimeDirectory: string = null;
 
   #speechdProcess: ChildProcess = null;
   #speechdAddress: string = null;
@@ -360,12 +363,17 @@ export class OrcaClient extends EventEmitter {
     const speechdDirectory = join(installationPath, "speechd");
     const speechdModulesDirectory = join(speechdDirectory, "modules");
     const speechdLogsDirectory = join(speechdDirectory, "logs");
-    const speechdSocketPath = join(speechdDirectory, "run", "speechd.sock");
+
+    // Each session gets its own directory for its sockets. With shared paths,
+    // a previous session's speech-dispatcher module could still be exiting
+    // and remove the new session's socket. Keep it short: Unix socket paths
+    // are limited to 108 bytes.
+    this.#runtimeDirectory = mkdtempSync(join(tmpdir(), "guidepup-orca-"));
+    const speechdSocketPath = join(this.#runtimeDirectory, "speechd.sock");
 
     mkdirSync(speechdLogsDirectory, { recursive: true });
-    mkdirSync(dirname(speechdSocketPath), { recursive: true });
 
-    this.#speechdSocketPath = join(speechdDirectory, "out", "guidepup.sock");
+    this.#speechdSocketPath = join(this.#runtimeDirectory, "guidepup.sock");
 
     this.#speechdProcess = spawn(
       "speech-dispatcher",
@@ -792,6 +800,10 @@ export class OrcaClient extends EventEmitter {
     await terminate(this.#sessionDBusProcess, "session D-Bus");
     await terminate(this.#xvfbProcess, "X Server");
 
+    if (this.#runtimeDirectory) {
+      rmSync(this.#runtimeDirectory, { force: true, recursive: true });
+    }
+
     this.#xvfbDisplay = null;
     this.#xvfbProcess = null;
 
@@ -806,6 +818,7 @@ export class OrcaClient extends EventEmitter {
     this.#speechdProcess = null;
     this.#speechdAddress = null;
     this.#speechdSocketPath = null;
+    this.#runtimeDirectory = null;
     this.#speechdSocket = null;
     this.#speechdConsecutiveConnectionFailures = 0;
 
