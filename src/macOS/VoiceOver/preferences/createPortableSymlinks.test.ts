@@ -1,6 +1,9 @@
+import {
+  ERR_PREFIX_VOICE_OVER_PORTABLE_PREFERENCES_NOT_REPLACED,
+  ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES,
+} from "../../errors";
 import { lstatSync, readlinkSync, rmSync, symlinkSync } from "node:fs";
 import { createPortableSymlinks } from "./createPortableSymlinks";
-import { ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES } from "../../errors";
 import { join } from "node:path";
 import { PREFERENCES_PATH } from "./constants";
 
@@ -135,24 +138,36 @@ describe("createPortableSymlinks", () => {
   });
 
   describe("when the portable preference file is not a symlink", () => {
+    let thrownError: Error;
+
     beforeEach(() => {
       jest.mocked(lstatSync).mockReturnValue({
         isSymbolicLink: () => false,
       } as ReturnType<typeof lstatSync>);
 
-      createPortableSymlinks("test-preferences-directory");
+      try {
+        createPortableSymlinks("test-preferences-directory");
+      } catch (error) {
+        thrownError = error as Error;
+      }
     });
 
-    it("should remove the existing file", () => {
-      expect(rmSync).toHaveBeenCalledTimes(4);
+    it("should throw an error naming the file or folder it won't replace", () => {
+      expect(thrownError).toEqual(
+        new Error(ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES, {
+          cause: new Error(
+            `${ERR_PREFIX_VOICE_OVER_PORTABLE_PREFERENCES_NOT_REPLACED}test-preferences-directory/com.apple.VoiceOver4.portable.scrd`,
+          ),
+        }),
+      );
     });
 
-    it("should create the symlink", () => {
-      expect(symlinkSync).toHaveBeenCalledTimes(4);
+    it("should not remove the existing file or folder", () => {
+      expect(rmSync).not.toHaveBeenCalled();
     });
 
-    it("should not check the target", () => {
-      expect(readlinkSync).not.toHaveBeenCalled();
+    it("should not create the symlink", () => {
+      expect(symlinkSync).not.toHaveBeenCalled();
     });
   });
 
