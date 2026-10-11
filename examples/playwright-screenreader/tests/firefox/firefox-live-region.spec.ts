@@ -4,6 +4,8 @@ import { expect } from "@playwright/test";
 import { log } from "../../../log";
 import { screenReaderTest as test } from "../../screenreader-test";
 
+const MAX_NAVIGATION_LOOP = 10;
+
 const record = async (filepath: string) => {
   try {
     const { record: guidepupRecord } = await import("@guidepup/record");
@@ -16,8 +18,8 @@ const record = async (filepath: string) => {
   }
 };
 
-test.describe("Firefox Playwright Screen Reader", () => {
-  test("I can capture screen reader output from Playwright commands", async ({
+test.describe("Firefox Playwright Screen Reader: Orca", () => {
+  test("I can capture live region screen reader output from Orca commands", async ({
     browser,
     browserName,
     page,
@@ -29,7 +31,105 @@ test.describe("Firefox Playwright Screen Reader", () => {
     const screenReaderName = screenReader.name;
     const screenReaderVersion = screenReader.version;
     const { retry } = test.info();
-    const recordingFilePath = `./recordings/playwright-screenreader-live-region-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+    const recordingFilePath = `./recordings/playwright-screenreader-live-region-orca-commands-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+
+    console.table({
+      osName,
+      osVersion,
+      browserName,
+      browserVersion,
+      screenReaderName,
+      screenReaderVersion,
+      retry,
+    });
+
+    let stopRecording: (() => Promise<void>) | undefined;
+
+    try {
+      stopRecording = await record(recordingFilePath);
+
+      log("Navigating to live region test page.");
+
+      await page.goto("about:blank", {
+        waitUntil: "load",
+      });
+
+      await page.setContent(`
+<!doctype html>
+<html>
+  <head>
+    <title>Guidepup Live Region Test</title>
+  </head>
+  <body>
+    <main>
+      <h1>Example 1</h1>
+      <button id="trigger">Update</button>
+    </main>
+
+    <div role="alert" id="live"></div>
+
+    <script>
+      document.querySelector("#trigger").addEventListener("click", () => {
+        document.querySelector("#live").textContent = "testing testing 123"
+      });
+    </script>
+  </body>
+</html>
+    `);
+
+      await page.locator("#trigger").waitFor();
+      await delay(500);
+
+      await screenReader.navigateToWebContent();
+      await delay(500);
+
+      let navigationCount = 0;
+
+      while (
+        !(await screenReader.itemText())
+          .replaceAll(/\s/g, "")
+          .includes("Update") &&
+        navigationCount <= MAX_NAVIGATION_LOOP
+      ) {
+        navigationCount++;
+
+        log(`Performing command: "Orca+Ctrl+Right Arrow"`);
+        await screenReader.next();
+        log(
+          `Screen reader output: "${await screenReader.lastSpokenPhrase()}".`,
+        );
+      }
+
+      // TODO: potential bug in Orca - using object navigator to place Orca on
+      // a button and then `Orca+Ctrl+Enter` to activate it does not announce a
+      // live region _unless_ focus is first place on the button.
+      // REF: https://github.com/guidepup/guidepup/pull/143#issuecomment-6106014653
+      await page.locator("#trigger").focus();
+
+      log(`Performing command: "Orca+Ctrl+Enter"`);
+      await screenReader.act();
+      const clickSpokenPhrase = await screenReader.lastSpokenPhrase();
+      log(`Screen reader output: "${clickSpokenPhrase}".`);
+
+      expect(clickSpokenPhrase).toContain("testing testing 123");
+    } finally {
+      await stopRecording?.();
+    }
+  });
+
+  test("I can capture live region screen reader output from Playwright commands", async ({
+    browser,
+    browserName,
+    page,
+    screenReader,
+  }) => {
+    const osName = platform();
+    const osVersion = release();
+    const browserVersion = browser.version();
+    const screenReaderName = screenReader.name;
+    const screenReaderVersion = screenReader.version;
+    const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-screenreader-live-region-capture-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,
@@ -103,6 +203,7 @@ test.describe("Firefox Playwright Screen Reader", () => {
       );
       log(`Screen reader output: "${clickSpokenPhrase}".`);
 
+      // TODO: support capture from Playwright interactions.
       expect(clickSpokenPhrase).toContain("testing testing 123");
     } finally {
       await stopRecording?.();
