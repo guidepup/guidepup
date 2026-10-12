@@ -17,13 +17,13 @@ export async function start(): Promise<void> {
 
   for (let attempt = 0; attempt < MAX_START_ATTEMPTS; attempt++) {
     let nvdaProcess: ChildProcess;
+    let processError: Error | undefined;
 
     try {
       nvdaProcess = spawn(
         executablePath,
         ["--config-path", sessionUserConfigPath],
         {
-          shell: true,
           stdio: "ignore",
         },
       );
@@ -32,6 +32,12 @@ export async function start(): Promise<void> {
         cause: e,
       });
     }
+
+    // Without a shell, a failed spawn (e.g. ENOENT) is emitted as an "error"
+    // event rather than thrown. Unhandled, it would crash the host process.
+    nvdaProcess.on("error", (e) => {
+      processError = e;
+    });
 
     try {
       await waitForRunning();
@@ -44,9 +50,18 @@ export async function start(): Promise<void> {
         // swallow
       }
 
-      if (attempt === MAX_START_ATTEMPTS - 1) {
+      if (attempt === MAX_START_ATTEMPTS - 1 && !processError) {
         throw e;
       }
+    }
+
+    if (attempt === MAX_START_ATTEMPTS - 1 && processError) {
+      throw new Error(
+        `${ERR_NVDA_CANNOT_BE_STARTED}\n${processError.message}`,
+        {
+          cause: processError,
+        },
+      );
     }
   }
 }

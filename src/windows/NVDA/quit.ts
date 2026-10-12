@@ -10,8 +10,7 @@ export function quit(): void {
   }
 
   try {
-    spawnSync(`"${executablePath}"`, ["--quit"], {
-      shell: true,
+    spawnSync(executablePath, ["--quit"], {
       stdio: "ignore",
     });
   } catch (e) {

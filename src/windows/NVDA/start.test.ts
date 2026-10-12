@@ -22,6 +22,7 @@ const mockInstallationPath = "test-installation-path";
 const mockSessionUserConfigPath = "test-session-user-config-path";
 const mockChildProcess = {
   kill: jest.fn(),
+  on: jest.fn(),
 };
 const mockError = new Error("test-error");
 
@@ -60,6 +61,10 @@ describe("start", () => {
       jest
         .mocked(resolveSessionUserConfigPath)
         .mockReturnValue(mockSessionUserConfigPath);
+
+      jest
+        .mocked(spawn)
+        .mockReturnValue(mockChildProcess as unknown as ChildProcess);
     });
 
     describe("when starting NVDA is successful first attempt", () => {
@@ -74,14 +79,57 @@ describe("start", () => {
           mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
-            shell: true,
             stdio: "ignore",
           },
         );
       });
 
+      it("should not spawn NVDA through a shell", () => {
+        expect(jest.mocked(spawn).mock.calls[0][2]).not.toHaveProperty("shell");
+      });
+
+      it("should listen for NVDA process errors", () => {
+        expect(mockChildProcess.on).toHaveBeenCalledWith(
+          "error",
+          expect.any(Function),
+        );
+      });
+
       it("should wait for NVDA to be running", () => {
         expect(waitForRunning).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the NVDA installation path contains a space", () => {
+      const mockInstallationPathWithSpace =
+        "C:\\Users\\Test User\\AppData\\Local\\guidepup\\nvda\\all\\0.0.0\\extracted\\nvda.exe";
+      const mockSessionUserConfigPathWithSpace =
+        "C:\\Users\\Test User\\AppData\\Local\\guidepup\\nvda\\all\\0.0.0\\sessionUserConfig";
+
+      beforeEach(async () => {
+        jest
+          .mocked(getNVDAInstallationPath)
+          .mockReturnValue(mockInstallationPathWithSpace);
+        jest
+          .mocked(resolveSessionUserConfigPath)
+          .mockReturnValue(mockSessionUserConfigPathWithSpace);
+        jest.mocked(waitForRunning).mockResolvedValue();
+
+        await start();
+      });
+
+      it("should pass each path through as a single unquoted argument", () => {
+        expect(spawn).toHaveBeenCalledWith(
+          mockInstallationPathWithSpace,
+          ["--config-path", mockSessionUserConfigPathWithSpace],
+          {
+            stdio: "ignore",
+          },
+        );
+      });
+
+      it("should not spawn NVDA through a shell", () => {
+        expect(jest.mocked(spawn).mock.calls[0][2]).not.toHaveProperty("shell");
       });
     });
 
@@ -105,7 +153,6 @@ describe("start", () => {
           mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
-            shell: true,
             stdio: "ignore",
           },
         );
@@ -135,7 +182,6 @@ describe("start", () => {
           mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
-            shell: true,
             stdio: "ignore",
           },
         );
@@ -155,7 +201,6 @@ describe("start", () => {
           mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
-            shell: true,
             stdio: "ignore",
           },
         );
@@ -188,7 +233,6 @@ describe("start", () => {
           mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
-            shell: true,
             stdio: "ignore",
           },
         );
@@ -208,7 +252,6 @@ describe("start", () => {
           mockInstallationPath,
           ["--config-path", mockSessionUserConfigPath],
           {
-            shell: true,
             stdio: "ignore",
           },
         );
@@ -224,6 +267,52 @@ describe("start", () => {
 
       it("should throw the timeout error", () => {
         expect(error).toEqual(mockError);
+      });
+    });
+
+    describe("when the NVDA process emits an error on both attempts", () => {
+      const mockProcessError = new Error("spawn test-installation-path ENOENT");
+      const mockErroringChildProcess = {
+        kill: jest.fn(),
+        on: jest.fn((event: string, listener: (e: Error) => void) => {
+          if (event === "error") {
+            listener(mockProcessError);
+          }
+        }),
+      };
+      let error: unknown;
+
+      beforeEach(async () => {
+        jest
+          .mocked(spawn)
+          .mockReturnValue(mockErroringChildProcess as unknown as ChildProcess);
+        jest.mocked(waitForRunning).mockRejectedValue(mockError);
+
+        try {
+          await start();
+        } catch (e) {
+          error = e;
+        }
+      });
+
+      it("should attempt to spawn a NVDA command twice", () => {
+        expect(spawn).toHaveBeenCalledTimes(2);
+      });
+
+      it("should kill the child process", () => {
+        expect(mockErroringChildProcess.kill).toHaveBeenCalledWith("SIGKILL");
+      });
+
+      it("should throw a wrapped process error", () => {
+        expect(error).toEqual(
+          new Error(
+            `${ERR_NVDA_CANNOT_BE_STARTED}\n${mockProcessError.message}`,
+          ),
+        );
+      });
+
+      it("should keep the process error as the cause", () => {
+        expect((error as Error).cause).toBe(mockProcessError);
       });
     });
   });
