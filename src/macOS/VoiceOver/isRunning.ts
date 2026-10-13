@@ -14,7 +14,7 @@ export async function isRunning(
 
   try {
     processRunning =
-      execFileSync("pgrep", ["-f", "VoiceOver launchd -s"], {
+      execFileSync("pgrep", ["-x", "VoiceOver"], {
         encoding: "utf8",
         timeout: 2000,
       }).length > 0;
