@@ -1,6 +1,5 @@
 import { platform, release } from "os";
 import { delay } from "../../../../src/delay";
-import { execFileSync } from "node:child_process";
 import { expect } from "@playwright/test";
 import { log } from "../../../log";
 import { screenReaderTest as test } from "../../screenreader-test";
@@ -55,6 +54,8 @@ test.describe("Firefox Playwright Screen Reader: Orca", () => {
         waitUntil: "load",
       });
 
+      // NOTE: Orca does not support `role="alert"` etc.correctly.
+      // Authors are required to implement `aria-live` explicitly.
       await page.setContent(`
 <!doctype html>
 <html>
@@ -154,6 +155,8 @@ test.describe("Firefox Playwright Screen Reader: Orca", () => {
         waitUntil: "load",
       });
 
+      // NOTE: Orca does not support `role="alert"` etc.correctly.
+      // Authors are required to implement `aria-live` explicitly.
       await page.setContent(`
 <!doctype html>
 <html>
@@ -264,6 +267,8 @@ test.describe("Firefox Playwright Screen Reader: Orca", () => {
         waitUntil: "load",
       });
 
+      // NOTE: Orca does not support `role="alert"` etc.correctly.
+      // Authors are required to implement `aria-live` explicitly.
       await page.setContent(`
 <!doctype html>
 <html>

@@ -26,9 +26,9 @@ export async function start(): Promise<void> {
           stdio: "ignore",
         },
       );
-    } catch (e) {
-      throw new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`, {
-        cause: e,
+    } catch (cause) {
+      throw new Error(ERR_NVDA_CANNOT_BE_STARTED, {
+        cause,
       });
     }
 
