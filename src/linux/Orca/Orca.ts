@@ -786,7 +786,7 @@ export class Orca implements IScreenReader {
         ? this.#client.service.FlatReviewPresenter.commands.RightClickOnObject
         : this.#client.service.FlatReviewPresenter.commands.LeftClickOnObject;
 
-    const clickCount = options.clickCount ?? 1;
+    const clickCount = options?.clickCount ?? 1;
 
     await this.#client.enqueueAndTap(async () => {
       for (let i = 0; i < clickCount; i++) {
