@@ -1,10 +1,5 @@
 import type { CommandOptions, VoiceOver } from "../../src";
-import {
-  macOSActivateId,
-  MacOSKeyCodes,
-  voiceOver,
-  voiceOverKeyCodeCommands,
-} from "../../src";
+import { macOSActivateId, MacOSKeyCodes, voiceOver } from "../../src";
 import { applicationIdMap } from "../applicationIdMap";
 import { delay } from "../../src/delay";
 import type { StartOptions } from "../../src/StartOptions";
@@ -44,6 +39,90 @@ export interface VoiceOverPlaywright extends VoiceOver {
   navigateToWebContent(
     options?: Pick<CommandOptions, "capture">,
   ): Promise<void>;
+}
+
+const closeMenus = async ({
+  voiceOverPlaywright,
+}: {
+  voiceOverPlaywright: VoiceOverPlaywright;
+}) => {
+  await voiceOverPlaywright.perform(
+    { keyCode: MacOSKeyCodes.Escape },
+    { capture: false },
+  );
+};
+
+const cancelCurrentInteraction = async ({
+  voiceOverPlaywright,
+}: {
+  voiceOverPlaywright: VoiceOverPlaywright;
+}) => {
+  await voiceOverPlaywright.perform(
+    { keyCode: MacOSKeyCodes.Control },
+    { capture: false },
+  );
+};
+
+const openItemChooser = async ({
+  voiceOverPlaywright,
+}: {
+  voiceOverPlaywright: VoiceOverPlaywright;
+}) => {
+  let lastSpokenPhrase = "";
+
+  while (!lastSpokenPhrase.toLowerCase().includes("item chooser")) {
+    await cancelCurrentInteraction({ voiceOverPlaywright });
+    await delay(100);
+    await closeMenus({ voiceOverPlaywright });
+    await delay(100);
+
+    await voiceOverPlaywright.perform(
+      voiceOverPlaywright.keyboardCommands.openItemChooser,
+      { capture: true },
+    );
+
+    lastSpokenPhrase = await voiceOverPlaywright.lastSpokenPhrase();
+  }
+};
+
+async function selectWebContentItem({
+  voiceOverPlaywright,
+}: {
+  voiceOverPlaywright: VoiceOverPlaywright;
+}) {
+  while (true) {
+    let matched = false;
+
+    for (const character of "web content") {
+      await cancelCurrentInteraction({ voiceOverPlaywright });
+      await delay(100);
+
+      await voiceOverPlaywright.type(character, { capture: "initial" });
+      const lastSpokenPhrase = await voiceOverPlaywright.lastSpokenPhrase();
+
+      if (lastSpokenPhrase.toLowerCase().includes("web content")) {
+        matched = true;
+
+        break;
+      }
+    }
+
+    if (matched) {
+      break;
+    }
+
+    // Clear the entire Item Chooser search.
+    await voiceOverPlaywright.perform(
+      { keyCode: MacOSKeyCodes.Backspace },
+      { capture: false },
+    );
+    await delay(100);
+  }
+
+  await voiceOverPlaywright.perform(
+    { keyCode: MacOSKeyCodes.Enter },
+    { capture: false },
+  );
 }
 
 const voiceOverPlaywright: VoiceOverPlaywright =
@@ -98,14 +177,18 @@ export const voiceOverTest = test.extend<{
       }
 
       voiceOverPlaywright.navigateToWebContent = async ({ capture } = {}) => {
-        await macOSActivateId(applicationId);
-        // Ensure application is brought to front and focused.
+        const currentSpokenPhraseLog = [
+          ...(await voiceOverPlaywright.spokenPhraseLog()),
+        ];
+        const currentItemTextLog = [
+          ...(await voiceOverPlaywright.itemTextLog()),
+        ];
 
-        // Cancel auto navigation.
-        await voiceOverPlaywright.perform(
-          { keyCode: MacOSKeyCodes.Control },
-          { capture: false },
-        );
+        // Ensure application is brought to front and focused.
+        await macOSActivateId(applicationId);
+
+        // Cancel automatic behaviours/previous commands.
+        await cancelCurrentInteraction({ voiceOverPlaywright });
         await delay(100);
 
         // Ensure the document is ready and focused.
@@ -138,52 +221,22 @@ export const voiceOverTest = test.extend<{
             document.body.prepend(marker);
           });
 
-          // Open the web item chooser.
-          await voiceOverPlaywright.perform(
-            voiceOverKeyCodeCommands.openItemChooser,
-            { capture: false },
-          );
-          await delay(500);
-
-          // Filter by "web content" - currently web content items for all browsers
-          // are suffixed by "web content".
-          for (const character of "web content") {
-            await voiceOverPlaywright.type(character, { capture: false });
-            await delay(100);
-          }
-
-          // Select the web content window spot.
-          await voiceOverPlaywright.perform(
-            { keyCode: MacOSKeyCodes.Enter },
-            { capture: false },
-          );
-          await delay(100);
+          // Open item chooser and select web content.
+          await openItemChooser({ voiceOverPlaywright });
+          await selectWebContentItem({ voiceOverPlaywright });
 
           // Navigate into web content.
           await voiceOverPlaywright.interact({ capture: false });
           await delay(100);
 
-          // Navigate to the beginning of the web content.
-          await voiceOverPlaywright.perform(
-            voiceOverKeyCodeCommands.moveToBeginningOfText,
-            { capture: false },
-          );
-          await delay(100);
+          await voiceOverPlaywright.clearSpokenPhraseLog();
+          await voiceOverPlaywright.clearItemTextLog();
 
-          // Cancel auto navigation
-          await voiceOverPlaywright.perform(
-            { keyCode: MacOSKeyCodes.Control },
-            { capture: false },
-          );
-          await delay(100);
+          const spokenPhraseLog = await voiceOverPlaywright.spokenPhraseLog();
+          const itemTextLog = await voiceOverPlaywright.itemTextLog();
 
-          // Navigate to the Guidepup marker element at beginning of the web
-          // content.
-          await voiceOverPlaywright.perform(
-            voiceOverKeyCodeCommands.moveToBeginningOfText,
-            { capture: false },
-          );
-          await delay(100);
+          spokenPhraseLog.push(...currentSpokenPhraseLog);
+          itemTextLog.push(...currentItemTextLog);
 
           // Navigate to the first element of the page using the provided
           // capture settings.

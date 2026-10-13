@@ -133,6 +133,90 @@ export interface ScreenReaderPlaywright extends ScreenReader {
   navigateToWebContent(options?: CaptureCommandOptions): Promise<void>;
 }
 
+const closeMenus = async ({
+  screenReaderPlaywright,
+}: {
+  screenReaderPlaywright: ScreenReaderPlaywright;
+}) => {
+  await screenReaderPlaywright.perform(
+    { keyCode: MacOSKeyCodes.Escape },
+    { capture: false },
+  );
+};
+
+const cancelCurrentInteraction = async ({
+  screenReaderPlaywright,
+}: {
+  screenReaderPlaywright: ScreenReaderPlaywright;
+}) => {
+  await screenReaderPlaywright.perform(
+    { keyCode: MacOSKeyCodes.Control },
+    { capture: false },
+  );
+};
+
+const openItemChooser = async ({
+  screenReaderPlaywright,
+}: {
+  screenReaderPlaywright: ScreenReaderPlaywright;
+}) => {
+  let lastSpokenPhrase = "";
+
+  while (!lastSpokenPhrase.toLowerCase().includes("item chooser")) {
+    await cancelCurrentInteraction({ screenReaderPlaywright });
+    await delay(100);
+    await closeMenus({ screenReaderPlaywright });
+    await delay(100);
+
+    await screenReaderPlaywright.perform(
+      voiceOverKeyCodeCommands.openItemChooser,
+      { capture: true },
+    );
+
+    lastSpokenPhrase = await screenReaderPlaywright.lastSpokenPhrase();
+  }
+};
+
+async function selectWebContentItem({
+  screenReaderPlaywright,
+}: {
+  screenReaderPlaywright: ScreenReaderPlaywright;
+}) {
+  while (true) {
+    let matched = false;
+
+    for (const character of "web content") {
+      await cancelCurrentInteraction({ screenReaderPlaywright });
+      await delay(100);
+
+      await screenReaderPlaywright.type(character, { capture: "initial" });
+      const lastSpokenPhrase = await screenReaderPlaywright.lastSpokenPhrase();
+
+      if (lastSpokenPhrase.toLowerCase().includes("web content")) {
+        matched = true;
+
+        break;
+      }
+    }
+
+    if (matched) {
+      break;
+    }
+
+    // Clear the entire Item Chooser search.
+    await screenReaderPlaywright.perform(
+      { keyCode: MacOSKeyCodes.Backspace },
+      { capture: false },
+    );
+    await delay(100);
+  }
+
+  await screenReaderPlaywright.perform(
+    { keyCode: MacOSKeyCodes.Enter },
+    { capture: false },
+  );
+}
+
 const screenReaderPlaywright: ScreenReaderPlaywright =
   screenReader as ScreenReaderPlaywright;
 
@@ -265,14 +349,18 @@ export const screenReaderTest = test.extend<{
         screenReaderPlaywright.navigateToWebContent = async ({
           capture,
         } = {}) => {
+          const currentSpokenPhraseLog = [
+            ...(await screenReaderPlaywright.spokenPhraseLog()),
+          ];
+          const currentItemTextLog = [
+            ...(await screenReaderPlaywright.itemTextLog()),
+          ];
+
           // Ensure application is brought to front and focused.
           await macOSActivateId(applicationId);
 
-          // Cancel auto navigation.
-          await screenReaderPlaywright.perform(
-            { keyCode: MacOSKeyCodes.Control },
-            { capture: false },
-          );
+          // Cancel automatic behaviours/previous commands.
+          await cancelCurrentInteraction({ screenReaderPlaywright });
           await delay(100);
 
           // Ensure the document is ready and focused.
@@ -294,63 +382,34 @@ export const screenReaderTest = test.extend<{
               marker.autocomplete = "off";
               marker.setAttribute("aria-label", "Guidepup Marker");
               marker.style.cssText = `
-              position: absolute;
-              width: 1px;
-              height: 1px;
-              overflow: hidden;
-              clip: rect(0 0 0 0);
-              white-space: nowrap;
-            `;
+                      position: absolute;
+                      width: 1px;
+                      height: 1px;
+                      overflow: hidden;
+                      clip: rect(0 0 0 0);
+                      white-space: nowrap;
+                    `;
 
               document.body.prepend(marker);
             });
 
-            // Open the web item chooser.
-            await screenReaderPlaywright.perform(
-              voiceOverKeyCodeCommands.openItemChooser,
-              { capture: false },
-            );
-            await delay(500);
-
-            // Filter by "web content" - currently web content items for all browsers
-            // are suffixed by "web content".
-            for (const character of "web content") {
-              await screenReaderPlaywright.type(character, { capture: false });
-              await delay(100);
-            }
-
-            // Select the web content window spot.
-            await screenReaderPlaywright.perform(
-              { keyCode: MacOSKeyCodes.Enter },
-              { capture: false },
-            );
-            await delay(100);
+            // Open item chooser and select web content.
+            await openItemChooser({ screenReaderPlaywright });
+            await selectWebContentItem({ screenReaderPlaywright });
 
             // Navigate into web content.
             await screenReaderPlaywright.interact({ capture: false });
             await delay(100);
 
-            // Navigate to the beginning of the web content.
-            await screenReaderPlaywright.perform(
-              voiceOverKeyCodeCommands.moveToBeginningOfText,
-              { capture: false },
-            );
-            await delay(100);
+            await screenReaderPlaywright.clearSpokenPhraseLog();
+            await screenReaderPlaywright.clearItemTextLog();
 
-            // Cancel auto navigation
-            await screenReaderPlaywright.perform(
-              { keyCode: MacOSKeyCodes.Control },
-              { capture: false },
-            );
-            await delay(100);
+            const spokenPhraseLog =
+              await screenReaderPlaywright.spokenPhraseLog();
+            const itemTextLog = await screenReaderPlaywright.itemTextLog();
 
-            // Navigate to the Guidepup marker element at beginning of the web
-            // content.
-            await screenReaderPlaywright.perform(
-              voiceOverKeyCodeCommands.moveToBeginningOfText,
-              { capture: false },
-            );
-            await delay(100);
+            spokenPhraseLog.push(...currentSpokenPhraseLog);
+            itemTextLog.push(...currentItemTextLog);
 
             // Navigate to the first element of the page using the provided
             // capture settings.
