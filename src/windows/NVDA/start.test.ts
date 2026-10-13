@@ -22,7 +22,9 @@ const mockInstallationPath = "test-installation-path";
 const mockSessionUserConfigPath = "test-session-user-config-path";
 const mockChildProcess = {
   kill: jest.fn(),
+  off: jest.fn(),
   on: jest.fn(),
+  once: jest.fn(),
 };
 const mockError = new Error("test-error");
 
@@ -88,8 +90,8 @@ describe("start", () => {
         expect(jest.mocked(spawn).mock.calls[0][2]).not.toHaveProperty("shell");
       });
 
-      it("should listen for NVDA process errors", () => {
-        expect(mockChildProcess.on).toHaveBeenCalledWith(
+      it("should listen for a spawn error while NVDA starts", () => {
+        expect(mockChildProcess.once).toHaveBeenCalledWith(
           "error",
           expect.any(Function),
         );
@@ -97,6 +99,24 @@ describe("start", () => {
 
       it("should wait for NVDA to be running", () => {
         expect(waitForRunning).toHaveBeenCalled();
+      });
+
+      it("should stop listening for a spawn error once NVDA has started", () => {
+        expect(mockChildProcess.off).toHaveBeenCalledWith(
+          "error",
+          jest.mocked(mockChildProcess.once).mock.calls[0][1],
+        );
+      });
+
+      it("should keep a no-op listener for later NVDA process errors", () => {
+        expect(mockChildProcess.on).toHaveBeenCalledWith(
+          "error",
+          expect.any(Function),
+        );
+
+        const [, listener] = jest.mocked(mockChildProcess.on).mock.calls[0];
+
+        expect(() => listener(new Error("later-error"))).not.toThrow();
       });
     });
 
@@ -270,13 +290,15 @@ describe("start", () => {
       });
     });
 
-    describe("when the NVDA process emits an error on both attempts", () => {
-      const mockProcessError = new Error("spawn test-installation-path ENOENT");
-      const mockErroringChildProcess = {
+    describe("when the NVDA process fails to spawn on both attempts", () => {
+      const mockSpawnError = new Error("spawn test-installation-path ENOENT");
+      const mockFailingChildProcess = {
         kill: jest.fn(),
-        on: jest.fn((event: string, listener: (e: Error) => void) => {
+        off: jest.fn(),
+        on: jest.fn(),
+        once: jest.fn((event: string, listener: (e: Error) => void) => {
           if (event === "error") {
-            listener(mockProcessError);
+            listener(mockSpawnError);
           }
         }),
       };
@@ -285,8 +307,9 @@ describe("start", () => {
       beforeEach(async () => {
         jest
           .mocked(spawn)
-          .mockReturnValue(mockErroringChildProcess as unknown as ChildProcess);
-        jest.mocked(waitForRunning).mockRejectedValue(mockError);
+          .mockReturnValue(mockFailingChildProcess as unknown as ChildProcess);
+        // NVDA never starts, so only the spawn error can end the wait.
+        jest.mocked(waitForRunning).mockReturnValue(new Promise(() => {}));
 
         try {
           await start();
@@ -300,19 +323,18 @@ describe("start", () => {
       });
 
       it("should kill the child process", () => {
-        expect(mockErroringChildProcess.kill).toHaveBeenCalledWith("SIGKILL");
+        expect(mockFailingChildProcess.kill).toHaveBeenCalledWith("SIGKILL");
       });
 
-      it("should throw a wrapped process error", () => {
-        expect(error).toEqual(
-          new Error(
-            `${ERR_NVDA_CANNOT_BE_STARTED}\n${mockProcessError.message}`,
-          ),
+      it("should keep a no-op listener for later NVDA process errors", () => {
+        expect(mockFailingChildProcess.on).toHaveBeenCalledWith(
+          "error",
+          expect.any(Function),
         );
       });
 
-      it("should keep the process error as the cause", () => {
-        expect((error as Error).cause).toBe(mockProcessError);
+      it("should throw the spawn error without waiting for the timeout", () => {
+        expect(error).toBe(mockSpawnError);
       });
     });
   });

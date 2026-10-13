@@ -17,7 +17,6 @@ export async function start(): Promise<void> {
 
   for (let attempt = 0; attempt < MAX_START_ATTEMPTS; attempt++) {
     let nvdaProcess: ChildProcess;
-    let processError: Error | undefined;
 
     try {
       nvdaProcess = spawn(
@@ -34,13 +33,16 @@ export async function start(): Promise<void> {
     }
 
     // Without a shell, a failed spawn (e.g. ENOENT) is emitted as an "error"
-    // event rather than thrown. Unhandled, it would crash the host process.
-    nvdaProcess.on("error", (e) => {
-      processError = e;
+    // event rather than thrown, so treat it as a failed start.
+    let onSpawnError: (error: Error) => void = () => {};
+    const spawnError = new Promise<never>((_, reject) => {
+      onSpawnError = reject;
     });
 
+    nvdaProcess.once("error", onSpawnError);
+
     try {
-      await waitForRunning();
+      await Promise.race([waitForRunning(), spawnError]);
 
       break;
     } catch (e) {
@@ -50,18 +52,14 @@ export async function start(): Promise<void> {
         // swallow
       }
 
-      if (attempt === MAX_START_ATTEMPTS - 1 && !processError) {
+      if (attempt === MAX_START_ATTEMPTS - 1) {
         throw e;
       }
-    }
-
-    if (attempt === MAX_START_ATTEMPTS - 1 && processError) {
-      throw new Error(
-        `${ERR_NVDA_CANNOT_BE_STARTED}\n${processError.message}`,
-        {
-          cause: processError,
-        },
-      );
+    } finally {
+      // Keep a no-op listener so a later "error" event cannot crash the host
+      // process.
+      nvdaProcess.off("error", onSpawnError);
+      nvdaProcess.on("error", () => {});
     }
   }
 }
