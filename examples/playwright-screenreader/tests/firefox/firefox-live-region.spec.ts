@@ -105,6 +105,7 @@ test.describe("Firefox Playwright Screen Reader: Orca", () => {
       // live region _unless_ focus is first place on the button.
       // REF: https://github.com/guidepup/guidepup/pull/143#issuecomment-6106014653
       await page.locator("#trigger").focus();
+      await delay(500);
 
       log(`Performing command: "Orca+Ctrl+Enter"`);
       await screenReader.act();
@@ -187,6 +188,8 @@ test.describe("Firefox Playwright Screen Reader: Orca", () => {
         () => button.focus(),
       );
       log(`Screen reader output: "${focusSpokenPhrase}".`);
+
+      await delay(500);
 
       log(`Performing capture: Playwright click`);
       const { spokenPhrase: clickSpokenPhrase } = await screenReader.capture(

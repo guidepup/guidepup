@@ -416,33 +416,33 @@ export class OrcaClient extends EventEmitter {
 
     this.#speechdSocketPath = join(this.#runtimeDirectory, "guidepup.sock");
 
-    this.#speechdProcess = spawn(
-      "speech-dispatcher",
-      [
-        "--run-single",
-        "--config-dir",
-        speechdDirectory,
-        "--module-dir",
-        speechdModulesDirectory,
-        "--log-level",
-        "5",
-        "--log-dir",
-        speechdLogsDirectory,
-        "--communication-method",
-        "unix_socket",
-        "--socket-path",
-        speechdSocketPath,
-        "--timeout",
-        "0",
-      ],
-      {
-        env: {
-          ...process.env,
-          GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
-        },
-        stdio: ["ignore", "pipe", "pipe"],
+    const args = [
+      "--run-single",
+      "--config-dir",
+      speechdDirectory,
+      "--module-dir",
+      speechdModulesDirectory,
+      "--log-dir",
+      speechdLogsDirectory,
+      "--communication-method",
+      "unix_socket",
+      "--socket-path",
+      speechdSocketPath,
+      "--timeout",
+      "0",
+    ];
+
+    if (debug.enabled) {
+      args.push("--log-level", "5");
+    }
+
+    this.#speechdProcess = spawn("speech-dispatcher", args, {
+      env: {
+        ...process.env,
+        GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
       },
-    );
+      stdio: ["ignore", "pipe", "pipe"],
+    });
 
     this.#speechdProcess.stdout.on("data", (data: Buffer) => {
       debug(`[speechd] ${data.toString().trimEnd()}`);
@@ -614,19 +614,20 @@ export class OrcaClient extends EventEmitter {
 
     const installationPath = getOrcaInstallationPath();
     const orcaExecutable = join(installationPath, "bin", "orca");
+    const args = ["--profile", "guidepup", "--replace"];
 
-    this.#orcaProcess = spawn(
-      orcaExecutable,
-      ["--profile", "guidepup", "--replace"],
-      {
-        env: {
-          ...process.env,
-          DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
-          DISPLAY: this.#xvfbDisplay,
-          SPEECHD_ADDRESS: this.#speechdAddress,
-        },
+    if (debug.enabled) {
+      args.push("--debug", "--debug-file=/dev/stdout");
+    }
+
+    this.#orcaProcess = spawn(orcaExecutable, args, {
+      env: {
+        ...process.env,
+        DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
+        DISPLAY: this.#xvfbDisplay,
+        SPEECHD_ADDRESS: this.#speechdAddress,
       },
-    );
+    });
 
     this.#orcaProcess.stdout.on("data", (data: Buffer) => {
       debug(`[orca] ${data.toString().trimEnd()}`);
