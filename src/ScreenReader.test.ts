@@ -1,6 +1,7 @@
 import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import { nvda } from "./windows";
 import { ScreenReader } from "./ScreenReader";
+import { unstable_orca } from "./linux";
 import { voiceOver } from "./macOS";
 
 jest.mock("./windows", () => ({
@@ -8,6 +9,14 @@ jest.mock("./windows", () => ({
     default: jest.fn(),
     name: "NVDA",
     version: "test-nvda-version",
+  },
+}));
+
+jest.mock("./linux", () => ({
+  unstable_orca: {
+    default: jest.fn(),
+    name: "Orca",
+    version: "test-orca-version",
   },
 }));
 
@@ -28,6 +37,7 @@ describe("ScreenReader", () => {
   describe("when VoiceOver is the default screen reader for the environment", () => {
     beforeEach(() => {
       jest.mocked(nvda.default).mockReturnValue(false);
+      jest.mocked(unstable_orca.default).mockReturnValue(false);
       jest.mocked(voiceOver.default).mockReturnValue(true);
     });
 
@@ -51,6 +61,7 @@ describe("ScreenReader", () => {
   describe("when NVDA is the default screen reader for the environment", () => {
     beforeEach(() => {
       jest.mocked(nvda.default).mockReturnValue(true);
+      jest.mocked(unstable_orca.default).mockReturnValue(false);
       jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 
@@ -71,9 +82,34 @@ describe("ScreenReader", () => {
     });
   });
 
-  describe("when neither VoiceOver nor NVDA is the default screen reader for the environment", () => {
+  describe("when Orca is the default screen reader for the environment", () => {
     beforeEach(() => {
       jest.mocked(nvda.default).mockReturnValue(false);
+      jest.mocked(unstable_orca.default).mockReturnValue(true);
+      jest.mocked(voiceOver.default).mockReturnValue(false);
+    });
+
+    describe("name", () => {
+      it("should return Orca", () => {
+        const screenReader = new ScreenReader();
+
+        expect(screenReader.name).toBe("Orca");
+      });
+    });
+
+    describe("version", () => {
+      it("should return the Orca version", () => {
+        const screenReader = new ScreenReader();
+
+        expect(screenReader.version).toBe("test-orca-version");
+      });
+    });
+  });
+
+  describe("when neither VoiceOver, Orca, nor NVDA is the default screen reader for the environment", () => {
+    beforeEach(() => {
+      jest.mocked(nvda.default).mockReturnValue(false);
+      jest.mocked(unstable_orca.default).mockReturnValue(false);
       jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 

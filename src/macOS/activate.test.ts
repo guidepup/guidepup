@@ -26,11 +26,11 @@ describe("activate", () => {
   });
 
   describe.each`
-    description                    | options              | expectedRetryOptions
-    ${"without options"}           | ${undefined}         | ${{ retries: DEFAULT_RETRY_COUNT }}
-    ${"with options"}              | ${{}}                | ${{ retries: DEFAULT_RETRY_COUNT }}
-    ${"with a timeout"}            | ${{ timeout: 1000 }} | ${{ timeout: 1000, retries: DEFAULT_RETRY_COUNT }}
-    ${"with an explicit retries"}  | ${{ retries: 5 }}    | ${{ retries: 5 }}
+    description                   | options              | expectedRetryOptions
+    ${"without options"}          | ${undefined}         | ${{ retries: DEFAULT_RETRY_COUNT }}
+    ${"with options"}             | ${{}}                | ${{ retries: DEFAULT_RETRY_COUNT }}
+    ${"with a timeout"}           | ${{ timeout: 1000 }} | ${{ timeout: 1000, retries: DEFAULT_RETRY_COUNT }}
+    ${"with an explicit retries"} | ${{ retries: 5 }}    | ${{ retries: 5 }}
   `("when called $description", ({ options, expectedRetryOptions }) => {
     beforeEach(async () => {
       await activate(applicationName, options);
@@ -43,7 +43,7 @@ describe("activate", () => {
     it("should pass the activate script delegate to a runner that retries if an apple event timeout is thrown, defaulting to the standard retry count", () => {
       expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
         expect.any(Function),
-        expectedRetryOptions
+        expectedRetryOptions,
       );
     });
 
@@ -54,10 +54,10 @@ describe("activate", () => {
         delegate();
       });
 
-      it("should construct a activate script executor", () => {
+      it("should construct an activate script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${applicationName}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -72,9 +72,9 @@ describe("activate", () => {
 
     it("should throw an error with the activate prefix, application name, and underlying error message", async () => {
       await expect(() => activate(applicationName)).rejects.toEqual(
-        new Error(
-          `Unable to activate application: ${applicationName}\n${stubError.message}`
-        )
+        new Error(`Unable to activate application: ${applicationName}`, {
+          cause: stubError,
+        }),
       );
     });
   });

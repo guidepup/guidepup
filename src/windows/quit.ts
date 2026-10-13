@@ -1,3 +1,4 @@
+import { ERR_QUIT } from "./errors";
 import { runVbsScript } from "./runVbsScript";
 
 /**
@@ -26,7 +27,7 @@ export async function quit(application: string): Promise<void> {
 
   try {
     await runVbsScript(script);
-  } catch (e) {
-    throw new Error(`Unable to quit application\n${e.message}`, { cause: e });
+  } catch (cause) {
+    throw new Error(ERR_QUIT, { cause });
   }
 }

@@ -1,4 +1,5 @@
 import { activate } from "./activate";
+import { ERR_ACTIVATE } from "./errors";
 import { runVbsScript } from "./runVbsScript";
 
 jest.mock("./runVbsScript", () => ({
@@ -34,9 +35,7 @@ describe("activate", () => {
       } catch (e) {
         error = e;
       }
-      expect(error).toEqual(
-        new Error(`Unable to activate application\n${mockError.message}`)
-      );
+      expect(error).toEqual(new Error(ERR_ACTIVATE, { cause: mockError }));
     });
   });
 });

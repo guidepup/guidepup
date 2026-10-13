@@ -1,7 +1,7 @@
+import { expect, type Page } from "@playwright/test";
 import { delay } from "../../../src/delay";
 import { log } from "../../log";
-import { NVDAPlaywright } from "../nvda-test";
-import { Page } from "@playwright/test";
+import type { NVDAPlaywright } from "../nvda-test";
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -36,7 +36,7 @@ export async function headerNavigation({
   ) {
     headingCount++;
 
-    log(`Performing command: "H"`);
+    log(`Performing command: "H" - "Find the next heading"`);
     await nvda.nextHeading();
     log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
   }
@@ -62,4 +62,6 @@ export async function headerNavigation({
   log(`Performing command: "Enter"`);
   await nvda.act();
   log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+
+  await expect(page).toHaveURL("https://www.guidepup.dev/docs/getting-started");
 }

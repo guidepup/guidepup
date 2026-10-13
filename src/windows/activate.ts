@@ -1,4 +1,5 @@
 import { basename } from "path";
+import { ERR_ACTIVATE } from "./errors";
 import { runVbsScript } from "./runVbsScript";
 
 /**
@@ -68,9 +69,9 @@ END FUNCTION
 
   try {
     await runVbsScript(script);
-  } catch (e) {
-    throw new Error(`Unable to activate application\n${e.message}`, {
-      cause: e,
+  } catch (cause) {
+    throw new Error(ERR_ACTIVATE, {
+      cause,
     });
   }
 }

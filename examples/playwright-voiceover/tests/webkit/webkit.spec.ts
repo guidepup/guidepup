@@ -80,7 +80,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
     const screenReaderName = voiceOver.name;
     const screenReaderVersion = voiceOver.version;
     const { retry } = test.info();
-    const recordingFilePath = `./recordings/playwright-voiceOver-textarea-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+    const recordingFilePath = `./recordings/playwright-voiceover-textarea-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
 
     console.table({
       osName,

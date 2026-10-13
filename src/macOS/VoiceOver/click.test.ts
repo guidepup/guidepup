@@ -50,14 +50,14 @@ describe("click", () => {
 
     it("should wrap the click command with a transaction block", () => {
       expect(withTransaction).toHaveBeenCalledWith(
-        `tell mouse cursor to click ${expectedCommandSuffix}`
+        `tell mouse cursor to click ${expectedCommandSuffix}`,
       );
     });
 
     it("should pass the click script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
       expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
         expect.any(Function),
-        options
+        options,
       );
     });
 
@@ -71,7 +71,7 @@ describe("click", () => {
       it("should construct a click script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -86,7 +86,7 @@ describe("click", () => {
 
     it("should throw an error with the click prefix, application name, and underlying error message", async () => {
       await expect(() => click()).rejects.toEqual(
-        new Error(`${ERR_VOICE_OVER_CLICK}\n${stubError.message}`)
+        new Error(ERR_VOICE_OVER_CLICK, { cause: stubError }),
       );
     });
   });

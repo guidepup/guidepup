@@ -1,5 +1,6 @@
 export * from "./VoiceOver";
 export { activate as macOSActivate } from "./activate";
+export { activateId as macOSActivateId } from "./activateId";
 export { Applications as MacOSApplications } from "./Applications";
 export type { KeyboardCommand as MacOSKeyboardCommand } from "./KeyboardCommand";
 export type { KeyCodeCommand as MacOSKeyCodeCommand } from "./KeyCodeCommand";

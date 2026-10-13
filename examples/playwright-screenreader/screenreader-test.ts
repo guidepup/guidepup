@@ -1,17 +1,21 @@
 import type { CommandOptions, ScreenReader } from "../../src";
 import {
-  macOSActivate,
+  macOSActivateId,
   MacOSKeyCodes,
   nvda,
   NVDAKeyCodeCommands,
+  orcaKeyCodeCommands,
   screenReader,
+  unstable_orca,
   voiceOver,
   voiceOverKeyCodeCommands,
   WindowsKeyCodes,
   WindowsModifiers,
 } from "../../src";
+import { applicationIdMap } from "../applicationIdMap";
 import { applicationNameMap } from "../applicationNameMap";
 import { delay } from "../../src/delay";
+import { focusOrcaBrowser } from "../focusOrcaBrowser";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
 
@@ -177,9 +181,10 @@ export const screenReaderTest = test.extend<{
   ) => {
     try {
       const applicationName = applicationNameMap[browserName];
+      const applicationId = applicationIdMap[browserName];
 
-      if (!applicationName) {
-        throw new Error(`Browser ${browserName} is not installed.`);
+      if (!applicationName || !applicationId) {
+        throw new Error(`Browser ${browserName} is not recognised.`);
       }
 
       if (nvda.default()) {
@@ -261,7 +266,7 @@ export const screenReaderTest = test.extend<{
           capture,
         } = {}) => {
           // Ensure application is brought to front and focused.
-          await macOSActivate(applicationName);
+          await macOSActivateId(applicationId);
 
           // Cancel auto navigation.
           await screenReaderPlaywright.perform(
@@ -361,6 +366,32 @@ export const screenReaderTest = test.extend<{
               }
             });
           }
+        };
+      } else if (unstable_orca.default()) {
+        screenReaderPlaywright.navigateToWebContent = async ({
+          capture,
+        } = {}) => {
+          // Ensure application is brought to front and focused.
+          const pageTitle = await page.title();
+          await focusOrcaBrowser({
+            orca: screenReaderPlaywright,
+            pageTitle,
+            presentTitleCommand: orcaKeyCodeCommands.PresentTitle,
+          });
+
+          // Ensure the document is ready and focused.
+          await page.bringToFront();
+          await page.locator("body").waitFor();
+          await page.locator("body").focus();
+          await page.locator("body").click();
+          await page.locator("body").blur();
+
+          // Navigate to the beginning of the web content, using chosen capture
+          // settings, so don't miss announcing the first item on the page.
+          await screenReaderPlaywright.perform(
+            orcaKeyCodeCommands.StartOfFile,
+            { capture },
+          );
         };
       } else {
         throw new Error("No supported screen reader");

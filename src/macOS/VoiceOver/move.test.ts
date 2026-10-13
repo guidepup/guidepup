@@ -44,14 +44,14 @@ describe("move", () => {
 
       it("should wrap the move command with a transaction block", () => {
         expect(withTransaction).toHaveBeenCalledWith(
-          `tell vo cursor to move ${expectedCommandSuffix}`
+          `tell vo cursor to move ${expectedCommandSuffix}`,
         );
       });
 
       it("should pass the move script delegate and options to an runner that retries if an apple event timeout is thrown", () => {
         expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
           expect.any(Function),
-          options
+          options,
         );
       });
 
@@ -66,11 +66,11 @@ describe("move", () => {
         it("should construct a move script executor", () => {
           expect(runAppleScript).toHaveBeenCalledWith(
             `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-            options
+            options,
           );
         });
       });
-    }
+    },
   );
 
   describe("when the script execution throws", () => {
@@ -82,7 +82,7 @@ describe("move", () => {
 
     it("should throw an error with the move prefix, application name, and underlying error message", async () => {
       await expect(() => move(Directions.Down)).rejects.toEqual(
-        new Error(`${ERR_VOICE_OVER_MOVE}\n${stubError.message}`)
+        new Error(ERR_VOICE_OVER_MOVE, { cause: stubError }),
       );
     });
   });

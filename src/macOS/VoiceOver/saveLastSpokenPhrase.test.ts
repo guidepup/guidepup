@@ -55,7 +55,7 @@ describe("saveLastSpokenPhrase", () => {
       it("should construct a saveLastSpokenPhrase script executor", () => {
         expect(runAppleScript).toHaveBeenCalledWith(
           `tell application "${Applications.VoiceOver}"\n${stubTransactionBlock}\nend tell`,
-          options
+          options,
         );
       });
     });
@@ -74,9 +74,7 @@ describe("saveLastSpokenPhrase", () => {
 
     it("should throw an error with the saveLastSpokenPhrase prefix, application name, and underlying error message", async () => {
       await expect(() => saveLastSpokenPhrase()).rejects.toEqual(
-        new Error(
-          `${ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE}\n${stubError.message}`
-        )
+        new Error(ERR_VOICE_OVER_SAVE_LAST_SPOKEN_PHRASE, { cause: stubError }),
       );
     });
   });

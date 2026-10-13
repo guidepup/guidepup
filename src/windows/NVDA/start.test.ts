@@ -180,7 +180,7 @@ describe("start", () => {
 
       it("should throw a wrapped error", () => {
         expect(error).toEqual(
-          new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${mockError.message}`),
+          new Error(ERR_NVDA_CANNOT_BE_STARTED, { cause: mockError }),
         );
       });
     });
@@ -285,8 +285,10 @@ describe("start", () => {
         expect(mockChildProcess.kill).toHaveBeenCalledWith("SIGKILL");
       });
 
-      it("should throw the timeout error", () => {
-        expect(error).toEqual(mockError);
+      it("should throw an error with the timeout error as the cause", () => {
+        expect(error).toEqual(
+          new Error(ERR_NVDA_CANNOT_BE_STARTED, { cause: mockError }),
+        );
       });
     });
 
@@ -334,7 +336,9 @@ describe("start", () => {
       });
 
       it("should throw the spawn error without waiting for the timeout", () => {
-        expect(error).toBe(mockSpawnError);
+        expect(error).toEqual(
+          new Error(ERR_NVDA_CANNOT_BE_STARTED, { cause: mockSpawnError }),
+        );
       });
     });
   });

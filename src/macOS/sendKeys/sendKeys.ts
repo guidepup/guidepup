@@ -25,12 +25,12 @@ export async function sendKeys(
     return isKeyCode(keyCommand)
       ? await keyCode(keyCommand, options)
       : await keystroke(keyCommand, options);
-  } catch (e) {
+  } catch (cause) {
     throw new Error(
       `${ERR_PREFIX_SEND_KEYS}${
         applicationName ? `to application: ${applicationName}` : ""
-      }\n${e.message}`,
-      { cause: e },
+      }`,
+      { cause },
     );
   }
 }

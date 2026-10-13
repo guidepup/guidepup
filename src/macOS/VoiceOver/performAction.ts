@@ -17,9 +17,9 @@ export async function performAction(options?: CommandOptions): Promise<void> {
       () => runAppleScript(script, options),
       options,
     );
-  } catch (e) {
-    throw new Error(`${ERR_VOICE_OVER_PERFORM_ACTION}\n${e.message}`, {
-      cause: e,
+  } catch (cause) {
+    throw new Error(ERR_VOICE_OVER_PERFORM_ACTION, {
+      cause,
     });
   }
 }

@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from "child_process";
+import { type ChildProcess, spawn } from "node:child_process";
 import { ERR_NVDA_CANNOT_BE_STARTED, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { resolveSessionUserConfigPath } from "./config";
@@ -26,9 +26,9 @@ export async function start(): Promise<void> {
           stdio: "ignore",
         },
       );
-    } catch (e) {
-      throw new Error(`${ERR_NVDA_CANNOT_BE_STARTED}\n${e.message}`, {
-        cause: e,
+    } catch (cause) {
+      throw new Error(ERR_NVDA_CANNOT_BE_STARTED, {
+        cause,
       });
     }
 
@@ -45,7 +45,7 @@ export async function start(): Promise<void> {
       await Promise.race([waitForRunning(), spawnError]);
 
       break;
-    } catch (e) {
+    } catch (cause) {
       try {
         nvdaProcess.kill("SIGKILL");
       } catch {
@@ -53,7 +53,9 @@ export async function start(): Promise<void> {
       }
 
       if (attempt === MAX_START_ATTEMPTS - 1) {
-        throw e;
+        throw new Error(ERR_NVDA_CANNOT_BE_STARTED, {
+          cause,
+        });
       }
     } finally {
       // Keep a no-op listener so a later "error" event cannot crash the host

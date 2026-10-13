@@ -13,7 +13,7 @@ export function quit(): void {
     spawnSync(executablePath, ["--quit"], {
       stdio: "ignore",
     });
-  } catch (e) {
-    throw new Error(`${ERR_NVDA_QUIT}\n${e.message}`, { cause: e });
+  } catch (cause) {
+    throw new Error(ERR_NVDA_QUIT, { cause });
   }
 }

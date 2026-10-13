@@ -66,7 +66,7 @@ export class NVDA implements IScreenReader {
    */
   #teardownAfterTermination = async (): Promise<void> => {
     try {
-      await this.#client.stop();
+      await this.#client?.stop();
     } catch {
       // Best effort only.
     }
@@ -313,24 +313,23 @@ export class NVDA implements IScreenReader {
    * ```
    */
   async stop(): Promise<void> {
-    if (!this.#started || this.#stopping) {
+    if (!this.#started) {
       throw new Error(ERR_NVDA_NOT_RUNNING);
     }
 
     this.#stopping = true;
 
     try {
-      await this.#client.stop();
+      await this.#client?.stop();
 
       this.#client = null;
 
       quit();
-
       deleteGuidepupConfig();
-
       removeTeardownHandler(this.#teardownHandler);
-    } finally {
+
       this.#started = false;
+    } finally {
       this.#stopping = false;
     }
   }
