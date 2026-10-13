@@ -17,10 +17,12 @@
 [![macOS Golden Gate Support](https://img.shields.io/badge/macos-Golden%20Gate-blue.svg?logo=apple)](https://support.apple.com/en-gb/127455)
 [![Windows Server 2022 Support](https://img.shields.io/badge/windows_server-2022-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022)
 [![Windows Server 2025 Support](https://img.shields.io/badge/windows_server-2025-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025)
+[![Ubuntu Resolute Support](https://img.shields.io/badge/ubuntu-26.04%2B-blue.svg?logo=ubuntu)](https://releases.ubuntu.com/resolute/)
+[![Debian Trixie Support](https://img.shields.io/badge/debian-13%2B-blue.svg?logo=debian)](https://www.debian.org/releases/trixie/)
 
 Guidepup is a screen reader automation library for testing.
 
-It enables testing for <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a> and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a> with a single API.
+It enables testing for <b>Orca on Linux</b>, <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on macOS</b></a>, and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a> with a single API.
 
 ## Capabilities
 
@@ -64,16 +66,40 @@ You can also check out these [examples](https://github.com/guidepup/guidepup/tre
 import { screenReader } from "@guidepup/guidepup";
 
 (async () => {
-  // On MacOS starts VoiceOver, on Windows starts NVDA.
+  // On Linux starts Orca, on MacOS starts VoiceOver, and on Windows starts NVDA.
   await screenReader.start();
-
   await screenReader.next();
+  await screenReader.nextHeading();
+
   console.log(await screenReader.spokenPhraseLog());
 
   await screenReader.stop();
 })();
 ```
 
+#### Orca
+
+> [!NOTE]
+> Orca support is currently in preview, not all features may be implemented.
+
+```ts
+import { unstable_orca } from "@guidepup/guidepup";
+
+(async () => {
+  await unstable_orca.start();
+  await unstable_orca.next();
+  await unstable_orca.nextHeading();
+
+  console.log(await unstable_orca.spokenPhraseLog());
+
+  await unstable_orca.perform(unstable_orca.keyboardCommands.NextFormField);
+
+  console.log(await unstable_orca.lastSpokenPhrase());
+
+  await unstable_orca.stop();
+})();
+```
+
 #### VoiceOver
 
 ```ts
@@ -81,43 +107,13 @@ import { voiceOver } from "@guidepup/guidepup";
 
 (async () => {
   await voiceOver.start();
-
   await voiceOver.next();
+  await voiceOver.nextHeading();
+
   console.log(await voiceOver.spokenPhraseLog());
 
-  await voiceOver.stop();
-})();
-```
-
-#### NVDA
-
-```ts
-import { nvda } from "@guidepup/guidepup";
-
-(async () => {
-  await nvda.start();
-
-  await nvda.next();
-  console.log(await nvda.spokenPhraseLog());
-
-  await nvda.stop();
-})();
-```
-
-### Complex Navigation
-
-#### VoiceOver
-
-```ts
-import { voiceOver } from "@guidepup/guidepup";
-
-(async () => {
-  await voiceOver.start();
-
-  await voiceOver.nextHeading();
-  console.log(await voiceOver.itemText());
-
   await voiceOver.perform(voiceOver.keyboardCommands.findNextControl);
+
   console.log(await voiceOver.lastSpokenPhrase());
 
   await voiceOver.stop();
@@ -131,11 +127,13 @@ import { nvda } from "@guidepup/guidepup";
 
 (async () => {
   await nvda.start();
-
+  await nvda.next();
   await nvda.nextHeading();
-  console.log(await nvda.itemText());
+
+  console.log(await nvda.spokenPhraseLog());
 
   await nvda.perform(nvda.keyboardCommands.moveToNextFormField);
+
   console.log(await nvda.lastSpokenPhrase());
 
   await nvda.stop();
@@ -150,19 +148,6 @@ Check out some of the other Guidepup modules:
 - [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/) - Seemless integration of Guidepup with Playwright.
 - [`@guidepup/virtual-screen-reader`](https://github.com/guidepup/virtual-screen-reader/) - Reliable unit testing for your screen reader a11y workflows.
 - [`@guidepup/jest`](https://github.com/guidepup/jest/) - Jest matchers for reliable unit testing of your screen reader a11y workflows.
-
-## Similar
-
-Here are some similar unaffiliated projects:
-
-- [`at-driver`](https://github.com/w3c/at-driver)
-- [`nvda-at-automation`](https://github.com/Prime-Access-Consulting/nvda-at-automation)
-- [`@accesslint/voiceover`](https://github.com/AccessLint/screenreaders)
-- [`screen-reader-reader`](https://github.com/phenomnomnominal/screen-reader-reader)
-- [`web-test-runner-voiceover`](https://github.com/coryrylan/web-test-runner-voiceover)
-- [`nvda-testing-driver`](https://github.com/kastwey/nvda-testing-driver)
-- [`assistive-webdriver`](https://github.com/AmadeusITGroup/Assistive-Webdriver)
-- [`screen-reader-testing-library`](https://github.com/eps1lon/screen-reader-testing-library)
 
 ## Resources
 
