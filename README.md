@@ -151,7 +151,7 @@ Check out some of the other Guidepup modules:
 
 ## Resources
 
-- [Documentation](https://www.guidepup.dev/docs/intro)
+- [Documentation](https://www.guidepup.dev/docs/introduction/what-is-guidepup)
 - [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
 - [Contributing](.github/CONTRIBUTING.md)
 - [Changelog](https://github.com/guidepup/guidepup/releases)
