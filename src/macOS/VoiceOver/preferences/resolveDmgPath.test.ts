@@ -3,6 +3,7 @@ import {
   ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES,
 } from "../../errors";
 import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { release } from "node:os";
 import { resolveDmgPath } from "./resolveDmgPath";
 
@@ -30,8 +31,13 @@ jest.mock("../../../../manifest.json", () => ({
 }));
 
 const cachePathDummy = "test-cache-path";
-const assetPathDummy =
-  "test-cache-path/voiceover/123/test-version/test-asset.dmg";
+const assetPathDummy = join(
+  cachePathDummy,
+  "voiceover",
+  "123",
+  "test-version",
+  "test-asset.dmg",
+);
 
 describe("resolveDmgPath", () => {
   beforeEach(() => {

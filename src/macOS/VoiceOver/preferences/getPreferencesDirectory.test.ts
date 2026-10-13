@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { getPreferencesDirectory } from "./getPreferencesDirectory";
 import { homedir } from "node:os";
+import { join } from "node:path";
 
 jest.mock("node:fs", () => ({
   existsSync: jest.fn(),
@@ -11,6 +12,19 @@ jest.mock("node:os", () => ({
 }));
 
 const homeDirectoryDummy = "test-home-directory";
+const voiceOverPreferencesDirectoryDummy = join(
+  homeDirectoryDummy,
+  "Library",
+  "Group Containers",
+  "group.com.apple.VoiceOver",
+  "Library",
+  "Preferences",
+);
+const legacyPreferencesDirectoryDummy = join(
+  homeDirectoryDummy,
+  "Library",
+  "Preferences",
+);
 
 describe("getPreferencesDirectory", () => {
   beforeEach(() => {
@@ -28,13 +42,13 @@ describe("getPreferencesDirectory", () => {
       getPreferencesDirectory();
 
       expect(existsSync).toHaveBeenCalledWith(
-        `${homeDirectoryDummy}/Library/Group Containers/group.com.apple.VoiceOver/Library/Preferences`,
+        voiceOverPreferencesDirectoryDummy,
       );
     });
 
     it("should return the VoiceOver group containers preferences directory", () => {
       expect(getPreferencesDirectory()).toBe(
-        `${homeDirectoryDummy}/Library/Group Containers/group.com.apple.VoiceOver/Library/Preferences`,
+        voiceOverPreferencesDirectoryDummy,
       );
     });
   });
@@ -48,14 +62,12 @@ describe("getPreferencesDirectory", () => {
       getPreferencesDirectory();
 
       expect(existsSync).toHaveBeenCalledWith(
-        `${homeDirectoryDummy}/Library/Group Containers/group.com.apple.VoiceOver/Library/Preferences`,
+        voiceOverPreferencesDirectoryDummy,
       );
     });
 
     it("should return the legacy preferences directory", () => {
-      expect(getPreferencesDirectory()).toBe(
-        `${homeDirectoryDummy}/Library/Preferences`,
-      );
+      expect(getPreferencesDirectory()).toBe(legacyPreferencesDirectoryDummy);
     });
   });
 });

@@ -1,6 +1,9 @@
+import { isAbsolute, resolve } from "node:path";
+
 const mockHomedir = "/test-homedir";
 const mockLocalAppDataOverride = "/test-local-app-data-override-path";
 const mockOverridePath = "/test-override-path";
+const mockRelativeOverridePath = "test-relative-override-path";
 
 describe("resolveCachePath", () => {
   let resolveCachePath: () => string;
@@ -32,13 +35,15 @@ describe("resolveCachePath", () => {
     });
 
     test("should resolve to home directory's library caches directory by default", () => {
-      expect(resolveCachePath()).toBe(`${mockHomedir}/Library/Caches/guidepup`);
+      expect(resolveCachePath()).toBe(
+        resolve(mockHomedir, "Library", "Caches", "guidepup"),
+      );
     });
 
     test("should resolve to override cache directory when provided", () => {
       process.env.GUIDEPUP_SCREEN_READERS_PATH = mockOverridePath;
 
-      expect(resolveCachePath()).toBe(mockOverridePath);
+      expect(resolveCachePath()).toBe(resolve(mockOverridePath));
     });
   });
 
@@ -50,7 +55,9 @@ describe("resolveCachePath", () => {
     test("should resolve to home directory's app data local directory by default", async () => {
       ({ resolveCachePath } = await import("./resolveCachePath"));
 
-      expect(resolveCachePath()).toBe(`${mockHomedir}/AppData/Local/guidepup`);
+      expect(resolveCachePath()).toBe(
+        resolve(mockHomedir, "AppData", "Local", "guidepup"),
+      );
     });
 
     test("should resolve to an env var set app data local directory when provided", async () => {
@@ -58,7 +65,9 @@ describe("resolveCachePath", () => {
 
       ({ resolveCachePath } = await import("./resolveCachePath"));
 
-      expect(resolveCachePath()).toBe(`${mockLocalAppDataOverride}/guidepup`);
+      expect(resolveCachePath()).toBe(
+        resolve(mockLocalAppDataOverride, "guidepup"),
+      );
     });
 
     test("should resolve to override cache directory when provided", async () => {
@@ -67,7 +76,7 @@ describe("resolveCachePath", () => {
 
       ({ resolveCachePath } = await import("./resolveCachePath"));
 
-      expect(resolveCachePath()).toBe(mockOverridePath);
+      expect(resolveCachePath()).toBe(resolve(mockOverridePath));
     });
   });
 
@@ -79,13 +88,24 @@ describe("resolveCachePath", () => {
     });
 
     test("should resolve to home directory's cache directory by default", () => {
-      expect(resolveCachePath()).toBe(`${mockHomedir}/.cache/guidepup`);
+      expect(resolveCachePath()).toBe(
+        resolve(mockHomedir, ".cache", "guidepup"),
+      );
     });
 
     test("should resolve to override cache directory when provided", () => {
       process.env.GUIDEPUP_SCREEN_READERS_PATH = mockOverridePath;
 
-      expect(resolveCachePath()).toBe(mockOverridePath);
+      expect(resolveCachePath()).toBe(resolve(mockOverridePath));
+    });
+
+    test("should resolve a relative override cache directory to an absolute path", () => {
+      process.env.GUIDEPUP_SCREEN_READERS_PATH = mockRelativeOverridePath;
+
+      const result = resolveCachePath();
+
+      expect(isAbsolute(result)).toBe(true);
+      expect(result).toBe(resolve(mockRelativeOverridePath));
     });
   });
 });

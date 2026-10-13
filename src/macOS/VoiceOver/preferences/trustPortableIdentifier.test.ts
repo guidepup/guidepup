@@ -1,6 +1,7 @@
 import { ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES } from "../../errors";
 import { execFileSync } from "node:child_process";
 import { GUIDEPUP_IDENTIFIER } from "./constants";
+import { join } from "node:path";
 import { trustPortableIdentifier } from "./trustPortableIdentifier";
 
 jest.mock("node:child_process", () => ({
@@ -8,8 +9,10 @@ jest.mock("node:child_process", () => ({
 }));
 
 const preferencesDirectoryDummy = "test-preferences-directory";
-const localPlistDummy =
-  "test-preferences-directory/com.apple.VoiceOver4.local.plist";
+const localPlistDummy = join(
+  preferencesDirectoryDummy,
+  "com.apple.VoiceOver4.local.plist",
+);
 
 const identifiersWithoutGuidepupDummy = `Array {
     Existing.Identifier
