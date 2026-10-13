@@ -53,11 +53,38 @@ describe("quit", () => {
         expect(getNVDAInstallationPath).toHaveBeenCalled();
       });
 
-      it("should spawn a shell to run the nvda --quit command without stdio", () => {
+      it("should run the nvda --quit command without a shell or stdio", () => {
         expect(spawnSync).toHaveBeenCalledWith(
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--quit"],
-          { shell: true, stdio: "ignore" },
+          { stdio: "ignore" },
+        );
+      });
+    });
+
+    describe("when the NVDA installation path contains a space", () => {
+      const mockInstallationPathWithSpace =
+        "C:\\Users\\Test User\\AppData\\Local\\guidepup\\nvda\\all\\0.0.0\\extracted\\nvda.exe";
+
+      beforeEach(async () => {
+        jest
+          .mocked(getNVDAInstallationPath)
+          .mockReturnValue(mockInstallationPathWithSpace);
+
+        await quit();
+      });
+
+      it("should pass the path through as a single unquoted argument", () => {
+        expect(spawnSync).toHaveBeenCalledWith(
+          mockInstallationPathWithSpace,
+          ["--quit"],
+          { stdio: "ignore" },
+        );
+      });
+
+      it("should not run the nvda --quit command through a shell", () => {
+        expect(jest.mocked(spawnSync).mock.calls[0][2]).not.toHaveProperty(
+          "shell",
         );
       });
     });
@@ -83,11 +110,11 @@ describe("quit", () => {
         expect(getNVDAInstallationPath).toHaveBeenCalled();
       });
 
-      it("should spawn a shell to run the nvda --quit command without stdio", () => {
+      it("should run the nvda --quit command without a shell or stdio", () => {
         expect(spawnSync).toHaveBeenCalledWith(
-          `"${mockInstallationPath}"`,
+          mockInstallationPath,
           ["--quit"],
-          { shell: true, stdio: "ignore" },
+          { stdio: "ignore" },
         );
       });
 

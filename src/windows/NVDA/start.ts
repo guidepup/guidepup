@@ -23,7 +23,6 @@ export async function start(): Promise<void> {
         executablePath,
         ["--config-path", sessionUserConfigPath],
         {
-          shell: true,
           stdio: "ignore",
         },
       );
@@ -33,8 +32,17 @@ export async function start(): Promise<void> {
       });
     }
 
+    // Without a shell, a failed spawn (e.g. ENOENT) is emitted as an "error"
+    // event rather than thrown, so treat it as a failed start.
+    let onSpawnError!: (error: Error) => void;
+    const spawnError = new Promise<never>((_, reject) => {
+      onSpawnError = reject;
+    });
+
+    nvdaProcess.once("error", onSpawnError);
+
     try {
-      await waitForRunning();
+      await Promise.race([waitForRunning(), spawnError]);
 
       break;
     } catch (e) {
@@ -47,6 +55,11 @@ export async function start(): Promise<void> {
       if (attempt === MAX_START_ATTEMPTS - 1) {
         throw e;
       }
+    } finally {
+      // Keep a no-op listener so a later "error" event cannot crash the host
+      // process.
+      nvdaProcess.off("error", onSpawnError);
+      nvdaProcess.on("error", () => {});
     }
   }
 }
