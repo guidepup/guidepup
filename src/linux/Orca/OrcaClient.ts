@@ -24,7 +24,13 @@ import {
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
   ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
-import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
@@ -142,6 +148,7 @@ export class OrcaClient extends EventEmitter {
   #speechdConsecutiveConnectionFailures = 0;
 
   #orcaProcess: ChildProcess = null;
+  #orcaDebugLogProcess: ChildProcess = null;
   #orcaService: OrcaService = null;
 
   #capture: CommandOptions["capture"] = null;
@@ -409,7 +416,6 @@ export class OrcaClient extends EventEmitter {
     // a previous session's speech-dispatcher module could still be exiting
     // and remove the new session's socket. Keep it short: Unix socket paths
     // are limited to 108 bytes.
-    this.#runtimeDirectory = mkdtempSync(join(tmpdir(), "guidepup-orca-"));
     const speechdSocketPath = join(this.#runtimeDirectory, "speechd.sock");
 
     mkdirSync(speechdLogsDirectory, { recursive: true });
@@ -617,7 +623,26 @@ export class OrcaClient extends EventEmitter {
     const args = ["--profile", "guidepup", "--replace"];
 
     if (debug.enabled) {
-      args.push("--debug", "--debug-file=/dev/stdout");
+      const orcaDebugLogPath = join(this.#runtimeDirectory, "orca-debug.log");
+
+      writeFileSync(orcaDebugLogPath, "");
+      args.push("--debug", `--debug-file=${orcaDebugLogPath}`);
+
+      this.#orcaDebugLogProcess = spawn("tail", ["-f", orcaDebugLogPath], {
+        stdio: ["ignore", "inherit", "pipe"],
+      });
+
+      this.#orcaDebugLogProcess.stderr.on("data", (data: Buffer) => {
+        debug(`[orca-debug-log] ${data.toString().trimEnd()}`);
+      });
+
+      this.#orcaDebugLogProcess.on("error", (error) => {
+        debug(`[orca-debug-log] process error: ${error.message}`);
+      });
+
+      this.#orcaDebugLogProcess.on("exit", (code, signal) => {
+        debug(`[orca-debug-log] exited with code=${code}, signal=${signal}`);
+      });
     }
 
     this.#orcaProcess = spawn(orcaExecutable, args, {
@@ -794,6 +819,8 @@ export class OrcaClient extends EventEmitter {
     this.#capture = options?.capture;
 
     try {
+      this.#runtimeDirectory = mkdtempSync(join(tmpdir(), "guidepup-orca-"));
+
       await this.#ensureXServer();
       await this.#ensureDBus();
       await this.#ensureAtSpi();
@@ -830,6 +857,7 @@ export class OrcaClient extends EventEmitter {
     // One at a time, waiting for each to exit, so that Orca can shut down
     // cleanly while the services it depends on are still running.
     await terminate(this.#orcaProcess, "Orca");
+    await terminate(this.#orcaDebugLogProcess, "Orca debug log");
     await terminate(this.#speechdProcess, "Speech Dispatcher");
     if (this.#atSpiProcess?.pid) {
       try {
@@ -865,6 +893,7 @@ export class OrcaClient extends EventEmitter {
     this.#speechdConsecutiveConnectionFailures = 0;
 
     this.#orcaProcess = null;
+    this.#orcaDebugLogProcess = null;
     this.#orcaService = null;
 
     this.#capture = null;
