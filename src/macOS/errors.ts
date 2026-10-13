@@ -39,3 +39,5 @@ export const ERR_PREFIX_ACTIVATE = "Unable to activate application: ";
 export const ERR_PREFIX_ACTIVATE_ID = "Unable to activate application by ID: ";
 export const ERR_PREFIX_SEND_KEYS = "Unable to send keys: ";
 export const ERR_PREFIX_QUIT = "Unable to quit application: ";
+export const ERR_PREFIX_VOICE_OVER_PORTABLE_PREFERENCES_NOT_REPLACED =
+  "Guidepup did not create this file or folder, so it won't replace it. Move it elsewhere and try again: ";
