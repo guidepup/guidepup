@@ -183,6 +183,41 @@ describe("NVDA", () => {
         expect(quit).toHaveBeenCalled();
       });
     });
+
+    describe("when quitting NVDA fails", () => {
+      const mockQuitError = new Error("test-quit-error");
+
+      let error: unknown;
+
+      beforeEach(async () => {
+        jest.mocked(start).mockResolvedValue(undefined);
+        jest.mocked(quit).mockReturnValue(undefined);
+
+        await nvda.start();
+
+        jest.clearAllMocks();
+
+        jest.mocked(quit).mockImplementationOnce(() => {
+          throw mockQuitError;
+        });
+
+        try {
+          await nvda.stop();
+        } catch (e) {
+          error = e;
+        }
+      });
+
+      it("should throw the quit error", () => {
+        expect(error).toBe(mockQuitError);
+      });
+
+      it("should allow stop to be retried", async () => {
+        await expect(nvda.stop()).resolves.toBeUndefined();
+
+        expect(quit).toHaveBeenCalledTimes(2);
+      });
+    });
   });
 
   describe("previous", () => {

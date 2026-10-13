@@ -1,7 +1,14 @@
-import { ERR_NVDA_NOT_INSTALLED, ERR_NVDA_QUIT } from "../errors";
+import {
+  ERR_NVDA_NOT_INSTALLED,
+  ERR_NVDA_QUIT,
+  ERR_NVDA_QUIT_TIMEOUT,
+} from "../errors";
+import { DEFAULT_RUNNING_TIMEOUT } from "../../constants";
 import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import { quit } from "./quit";
 import { spawnSync } from "child_process";
+
+type SpawnSyncResult = ReturnType<typeof spawnSync>;
 
 jest.mock("./getNVDAInstallationPath", () => ({
   getNVDAInstallationPath: jest.fn(),
@@ -11,6 +18,10 @@ jest.mock("child_process", () => ({
 }));
 
 const mockInstallationPath = "test-installation-path";
+const mockSpawnSyncOptions = {
+  stdio: "ignore",
+  timeout: DEFAULT_RUNNING_TIMEOUT,
+};
 
 describe("quit", () => {
   beforeEach(() => {
@@ -42,6 +53,8 @@ describe("quit", () => {
       jest
         .mocked(getNVDAInstallationPath)
         .mockReturnValue(mockInstallationPath);
+
+      jest.mocked(spawnSync).mockReturnValue({ status: 0 } as SpawnSyncResult);
     });
 
     describe("when no error is thrown", () => {
@@ -53,11 +66,11 @@ describe("quit", () => {
         expect(getNVDAInstallationPath).toHaveBeenCalled();
       });
 
-      it("should run the nvda --quit command without a shell or stdio", () => {
+      it("should run the nvda --quit command without a shell or stdio, with a timeout", () => {
         expect(spawnSync).toHaveBeenCalledWith(
           mockInstallationPath,
           ["--quit"],
-          { stdio: "ignore" },
+          mockSpawnSyncOptions,
         );
       });
     });
@@ -78,7 +91,7 @@ describe("quit", () => {
         expect(spawnSync).toHaveBeenCalledWith(
           mockInstallationPathWithSpace,
           ["--quit"],
-          { stdio: "ignore" },
+          mockSpawnSyncOptions,
         );
       });
 
@@ -86,6 +99,68 @@ describe("quit", () => {
         expect(jest.mocked(spawnSync).mock.calls[0][2]).not.toHaveProperty(
           "shell",
         );
+      });
+    });
+
+    describe("when the nvda --quit command times out", () => {
+      const mockTimeoutError = Object.assign(
+        new Error("spawnSync test-installation-path ETIMEDOUT"),
+        { code: "ETIMEDOUT" },
+      );
+
+      let error: unknown;
+
+      beforeEach(() => {
+        jest.mocked(spawnSync).mockReturnValue({
+          error: mockTimeoutError,
+        } as unknown as SpawnSyncResult);
+
+        try {
+          quit();
+        } catch (e) {
+          error = e;
+        }
+      });
+
+      it("should throw a timeout error", () => {
+        expect(error).toEqual(
+          new Error(ERR_NVDA_QUIT_TIMEOUT, { cause: mockTimeoutError }),
+        );
+      });
+
+      it("should keep the timeout error as the cause", () => {
+        expect((error as Error).cause).toBe(mockTimeoutError);
+      });
+    });
+
+    describe("when the nvda --quit command cannot be run", () => {
+      const mockSpawnError = Object.assign(
+        new Error("spawnSync test-installation-path ENOENT"),
+        { code: "ENOENT" },
+      );
+
+      let error: unknown;
+
+      beforeEach(() => {
+        jest.mocked(spawnSync).mockReturnValue({
+          error: mockSpawnError,
+        } as unknown as SpawnSyncResult);
+
+        try {
+          quit();
+        } catch (e) {
+          error = e;
+        }
+      });
+
+      it("should throw a wrapped error", () => {
+        expect(error).toEqual(
+          new Error(ERR_NVDA_QUIT, { cause: mockSpawnError }),
+        );
+      });
+
+      it("should keep the spawn error as the cause", () => {
+        expect((error as Error).cause).toBe(mockSpawnError);
       });
     });
 
@@ -110,11 +185,11 @@ describe("quit", () => {
         expect(getNVDAInstallationPath).toHaveBeenCalled();
       });
 
-      it("should run the nvda --quit command without a shell or stdio", () => {
+      it("should run the nvda --quit command without a shell or stdio, with a timeout", () => {
         expect(spawnSync).toHaveBeenCalledWith(
           mockInstallationPath,
           ["--quit"],
-          { stdio: "ignore" },
+          mockSpawnSyncOptions,
         );
       });
 
