@@ -34,7 +34,7 @@ export async function start(): Promise<void> {
 
     // Without a shell, a failed spawn (e.g. ENOENT) is emitted as an "error"
     // event rather than thrown, so treat it as a failed start.
-    let onSpawnError: (error: Error) => void = () => {};
+    let onSpawnError!: (error: Error) => void;
     const spawnError = new Promise<never>((_, reject) => {
       onSpawnError = reject;
     });
