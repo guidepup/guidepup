@@ -435,14 +435,14 @@ export class VoiceOver implements IScreenReader {
    * @param {object} [options] Additional options.
    */
   async stop(options?: CommandOptionsWithoutCapture): Promise<void> {
-    if (!this.#started || this.#stopping) {
+    if (!this.#started) {
       throw new Error(ERR_VOICE_OVER_NOT_RUNNING);
     }
 
     this.#stopping = true;
 
     try {
-      await this.#client.stop();
+      await this.#client?.stop();
 
       this.#client = null;
       this.#caption = null;
@@ -465,10 +465,10 @@ export class VoiceOver implements IScreenReader {
       }
 
       unmountGuidepupPreferences();
-
       removeTeardownHandler(this.#teardownHandler);
-    } finally {
+
       this.#started = false;
+    } finally {
       this.#stopping = false;
     }
   }

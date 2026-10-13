@@ -300,21 +300,22 @@ export class Orca implements IScreenReader {
    * ```
    */
   async stop(): Promise<void> {
-    if (!this.#started || this.#stopping) {
+    if (!this.#started) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
     this.#stopping = true;
 
     try {
-      await this.#client.stop();
+      await this.#client?.stop();
 
       this.#client = null;
 
       resetGuidepupSettings();
       removeTeardownHandler(this.#teardownHandler);
-    } finally {
+
       this.#started = false;
+    } finally {
       this.#stopping = false;
     }
   }

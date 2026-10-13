@@ -43,7 +43,7 @@ const debug = base.extend("OrcaClient");
 const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
-const SPEECH_DEBOUNCE_TIMEOUT = 1000;
+const SPEECH_DEBOUNCE_TIMEOUT = 1_000;
 const PROCESS_EXIT_TIMEOUT = 5_000;
 
 /**
@@ -59,17 +59,58 @@ async function terminate(
 
   debug(`Terminating ${name} process...`);
 
-  const exited = new Promise((resolve) => child.once("exit", resolve));
+  let onExit: (() => void) | undefined;
 
-  child.kill("SIGTERM");
+  const exited = new Promise<void>((resolve) => {
+    onExit = resolve;
 
-  const timer = setTimeout(() => {
-    debug(`${name} did not exit after SIGTERM, sending SIGKILL`);
-    child.kill("SIGKILL");
-  }, PROCESS_EXIT_TIMEOUT);
+    child.once("exit", onExit);
+  });
 
-  await exited;
-  clearTimeout(timer);
+  if (child.exitCode !== null || child.signalCode !== null) {
+    child.removeListener("exit", onExit);
+
+    return;
+  }
+
+  let timer: NodeJS.Timeout | undefined;
+
+  try {
+    if (!child.kill("SIGTERM")) {
+      debug(`Could not send SIGTERM to ${name} process`);
+    }
+
+    await Promise.race([
+      exited,
+      new Promise<void>((resolve) => {
+        timer = setTimeout(() => {
+          debug(`${name} did not exit after SIGTERM, sending SIGKILL`);
+
+          if (!child.kill("SIGKILL")) {
+            debug(`Could not send SIGKILL to ${name} process`);
+          }
+
+          timer = setTimeout(() => {
+            if (child.exitCode !== null || child.signalCode !== null) {
+              resolve();
+
+              return;
+            }
+
+            throw new Error(
+              `Failed to terminate ${name} process within ${PROCESS_EXIT_TIMEOUT * 2}ms`,
+            );
+          }, PROCESS_EXIT_TIMEOUT);
+        }, PROCESS_EXIT_TIMEOUT);
+      }),
+    ]);
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    child.removeListener("exit", onExit);
+  }
 }
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
