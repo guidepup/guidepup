@@ -44,7 +44,7 @@ const orcaPlaywright: OrcaPlaywright = unstable_orca as OrcaPlaywright;
 
 /**
  * These tests extend the default Playwright environment that launches the
- * browser with a running instance of the Orca screen reader for MacOS.
+ * browser with a running instance of the Orca screen reader for macOS.
  *
  * A fresh started Orca instance `orca` is provided to each test.
  */

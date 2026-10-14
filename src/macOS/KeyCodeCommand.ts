@@ -3,7 +3,7 @@ import { KeyCodes } from "./KeyCodes";
 import type { Modifiers } from "./Modifiers";
 
 /**
- * A MacOS key code command.
+ * A macOS key code command.
  */
 export interface KeyCodeCommand extends KeyCodeCommandBase {
   /**

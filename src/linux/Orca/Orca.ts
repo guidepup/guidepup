@@ -141,7 +141,7 @@ export class Orca implements IScreenReader {
    * Detect whether Orca is supported for the current OS:
    *
    * - `false` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `true` for Linux
    *
    * ```ts
@@ -166,7 +166,7 @@ export class Orca implements IScreenReader {
    * Detect whether Orca is supported for the current OS:
    *
    * - `false` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `true` for Linux
    *
    * ```ts
@@ -191,7 +191,7 @@ export class Orca implements IScreenReader {
    * Detect whether Orca is the default screen reader for the current OS:
    *
    * - `false` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `true` for Linux
    *
    * ```ts
@@ -216,7 +216,7 @@ export class Orca implements IScreenReader {
    * Detect whether Orca is the default screen reader for the current OS:
    *
    * - `false` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `true` for Linux
    *
    * ```ts

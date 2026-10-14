@@ -150,7 +150,7 @@ export class NVDA implements IScreenReader {
    * Detect whether NVDA is supported for the current OS:
    *
    * - `true` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `false` for Linux
    *
    * ```ts
@@ -175,7 +175,7 @@ export class NVDA implements IScreenReader {
    * Detect whether NVDA is supported for the current OS:
    *
    * - `true` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `false` for Linux
    *
    * ```ts
@@ -200,7 +200,7 @@ export class NVDA implements IScreenReader {
    * Detect whether NVDA is the default screen reader for the current OS:
    *
    * - `true` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `false` for Linux
    *
    * ```ts
@@ -225,7 +225,7 @@ export class NVDA implements IScreenReader {
    * Detect whether NVDA is the default screen reader for the current OS:
    *
    * - `true` for Windows
-   * - `false` for MacOS
+   * - `false` for macOS
    * - `false` for Linux
    *
    * ```ts

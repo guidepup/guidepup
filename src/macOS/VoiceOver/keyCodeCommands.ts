@@ -7,7 +7,7 @@ import { Modifiers } from "../Modifiers";
 const VO = [Modifiers.Control, Modifiers.Option];
 
 /**
- * Object of key code commands for the VoiceOver screen reader on MacOS.
+ * Object of key code commands for the VoiceOver screen reader on macOS.
  *
  * Reference: {@link https://www.apple.com/voiceover/info/guide/_1131.html}
  */

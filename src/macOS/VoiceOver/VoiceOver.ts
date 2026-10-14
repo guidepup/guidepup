@@ -39,7 +39,7 @@ import { waitForRunning } from "./waitForRunning";
 type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
 
 /**
- * Class for controlling the VoiceOver screen reader on MacOS.
+ * Class for controlling the VoiceOver screen reader on macOS.
  */
 export class VoiceOver implements IScreenReader {
   /**
@@ -226,7 +226,7 @@ export class VoiceOver implements IScreenReader {
    * Detect whether VoiceOver is supported for the current OS:
    *
    * - `false` for Windows
-   * - `true` for MacOS
+   * - `true` for macOS
    * - `false` for Linux
    *
    * ```ts
@@ -251,7 +251,7 @@ export class VoiceOver implements IScreenReader {
    * Detect whether VoiceOver is supported for the current OS:
    *
    * - `false` for Windows
-   * - `true` for MacOS
+   * - `true` for macOS
    * - `false` for Linux
    *
    * ```ts
@@ -276,7 +276,7 @@ export class VoiceOver implements IScreenReader {
    * Detect whether VoiceOver is the default screen reader for the current OS:
    *
    * - `false` for Windows
-   * - `true` for MacOS
+   * - `true` for macOS
    * - `false` for Linux
    *
    * ```ts
@@ -301,7 +301,7 @@ export class VoiceOver implements IScreenReader {
    * Detect whether VoiceOver is the default screen reader for the current OS:
    *
    * - `false` for Windows
-   * - `true` for MacOS
+   * - `true` for macOS
    * - `false` for Linux
    *
    * ```ts

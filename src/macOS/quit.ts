@@ -10,7 +10,7 @@ const debug = base.extend("quit");
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-macos-quit)
  *
- * Quits a MacOS application if running.
+ * Quits a macOS application if running.
  *
  * ```ts
  * import {

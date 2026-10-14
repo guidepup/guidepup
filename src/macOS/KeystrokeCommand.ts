@@ -2,7 +2,7 @@ import type { KeystrokeCommand as KeystrokeCommandBase } from "../KeystrokeComma
 import type { Modifiers } from "./Modifiers";
 
 /**
- * A MacOS keystroke command.
+ * A macOS keystroke command.
  */
 export interface KeystrokeCommand extends KeystrokeCommandBase {
   /**

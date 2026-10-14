@@ -8,7 +8,7 @@ import { withTransaction } from "./withTransaction";
 const debug = base.extend("activateId");
 
 /**
- * Opens a MacOS application by ID, if not already open, and focuses the application.
+ * Opens a macOS application by ID, if not already open, and focuses the application.
  *
  * ```ts
  * import { macOSActivateId } from "@guidepup/guidepup";

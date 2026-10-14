@@ -1,5 +1,5 @@
 /**
- * Default applications available on MacOS.
+ * Default applications available on macOS.
  */
 export enum Applications {
   AppleScriptUtility = "AppleScript Utility",

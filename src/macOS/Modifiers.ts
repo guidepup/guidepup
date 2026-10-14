@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 
 /**
- * MacOS modifier keys.
+ * macOS modifier keys.
  *
  * Reference: {@link https://eastmanreference.com/complete-list-of-applescript-key-codes}
  */

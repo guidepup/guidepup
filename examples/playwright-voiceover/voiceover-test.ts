@@ -46,7 +46,7 @@ const voiceOverPlaywright: VoiceOverPlaywright =
 
 /**
  * These tests extend the default Playwright environment that launches the
- * browser with a running instance of the VoiceOver screen reader for MacOS.
+ * browser with a running instance of the VoiceOver screen reader for macOS.
  *
  * A fresh started VoiceOver instance `voiceOver` is provided to each test.
  */

@@ -66,7 +66,7 @@ You can also check out these [examples](https://github.com/guidepup/guidepup/tre
 import { screenReader } from "@guidepup/guidepup";
 
 (async () => {
-  // On Linux starts Orca, on MacOS starts VoiceOver, and on Windows starts NVDA.
+  // On Linux starts Orca, on macOS starts VoiceOver, and on Windows starts NVDA.
   await screenReader.start();
 
   await screenReader.next();

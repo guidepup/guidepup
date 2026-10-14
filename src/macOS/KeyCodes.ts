@@ -203,7 +203,7 @@ export enum KeyCodes {
   /**
    * Return ↵
    *
-   * This is actually the "Return" key for MacOS.
+   * This is actually the "Return" key for macOS.
    */
   Enter = 36,
   Return = 36,
