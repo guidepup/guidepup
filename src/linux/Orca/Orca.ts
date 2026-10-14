@@ -91,6 +91,8 @@ export class Orca implements IScreenReader {
   };
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-name)
+   *
    * The screen reader name.
    */
   get name(): string {
@@ -98,6 +100,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-version)
+   *
    * The screen reader version.
    */
   get version(): string {
@@ -106,6 +110,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-keyboard-commands)
+   *
    * Getter for all Orca keyboard commands.
    *
    * Use with the Orca `perform` command to invoke a keyboard action:
@@ -130,6 +136,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-detect)
+   *
    * Detect whether Orca is supported for the current OS:
    *
    * - `false` for Windows
@@ -153,6 +161,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-detect)
+   *
    * Detect whether Orca is supported for the current OS:
    *
    * - `false` for Windows
@@ -176,6 +186,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-default)
+   *
    * Detect whether Orca is the default screen reader for the current OS:
    *
    * - `false` for Windows
@@ -199,6 +211,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-default)
+   *
    * Detect whether Orca is the default screen reader for the current OS:
    *
    * - `false` for Windows
@@ -222,6 +236,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-start)
+   *
    * Turn Orca on.
    *
    * ```ts
@@ -283,6 +299,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-stop)
+   *
    * Turn Orca off.
    *
    * ```ts
@@ -321,6 +339,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous)
+   *
    * Move the Orca cursor to the previous location.
    *
    * Equivalent of executing `Orca-Ctrl-Left Arrow`.
@@ -351,6 +371,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next)
+   *
    * Move the Orca cursor to the next location.
    *
    * Equivalent of executing `Orca-Ctrl-Right Arrow`.
@@ -381,6 +403,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous-heading)
+   *
    * Move the Orca cursor to the previous heading.
    *
    * Equivalent of executing `Shift-H`.
@@ -413,6 +437,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next-heading)
+   *
    * Move the Orca cursor to the next heading.
    *
    * Equivalent of executing `H`.
@@ -445,6 +471,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous-link)
+   *
    * Move the Orca cursor to the previous link.
    *
    * Equivalent of executing `Shift-K`.
@@ -477,6 +505,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next-link)
+   *
    * Move the Orca cursor to the next link.
    *
    * Equivalent of executing `K`.
@@ -509,6 +539,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous-landmark)
+   *
    * Move the Orca cursor to the previous landmark.
    *
    * Equivalent of executing `Shift-D`.
@@ -541,6 +573,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next-landmark)
+   *
    * Move the Orca cursor to the next landmark.
    *
    * Equivalent of executing `D`.
@@ -573,6 +607,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-act)
+   *
    * Perform the default action for the item in the Orca cursor.
    *
    * Equivalent of executing `Orca-Ctrl-Return`.
@@ -606,6 +642,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-interact)
+   *
    * Interact with the item under the Orca cursor.
    *
    * Equivalent of executing `Orca-Ctrl-Down Arrow`.
@@ -641,6 +679,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-stop-interacting)
+   *
    * Stop interacting with the current item under the Orca cursor.
    *
    * Equivalent of executing `Orca-Ctrl-Up Arrow`.
@@ -700,6 +740,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-perform)
+   *
    * Perform an Orca command.
    *
    * The command can be any `OrcaKeyCodeCommand`.
@@ -751,6 +793,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-click)
+   *
    * Click the mouse.
    *
    * ```ts
@@ -796,6 +840,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-last-spoken-phrase)
+   *
    * Get the last spoken phrase.
    *
    * ```ts
@@ -828,6 +874,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-item-text)
+   *
    * Get the last spoken phrase.
    *
    * For Orca this is the same as `lastSpokenPhrase`.
@@ -865,6 +913,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-spoken-phrase-log)
+   *
    * Get the log of all spoken phrases for this Orca instance.
    *
    * ```ts
@@ -899,6 +949,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-clear-spoken-phrase-log)
+   *
    * Clear the log of all spoken phrases for this Orca instance.
    *
    * ```ts
@@ -927,6 +979,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-item-text-log)
+   *
    * Get the log of all spoken phrases for this Orca instance.
    *
    * For Orca this is the same as `spokenPhraseLog`.
@@ -965,6 +1019,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-clear-item-text-log)
+   *
    * Clear the log of all spoken phrases for this Orca instance.
    *
    * For Orca this is the same as `clearSpokenPhraseLog`.
@@ -997,6 +1053,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-get-settings)
+   *
    * Returns all the current settings for this Orca instance.
    *
    * ```ts
@@ -1021,6 +1079,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-get-setting)
+   *
    * Returns the value of a setting for this Orca instance.
    *
    * ```ts
@@ -1046,6 +1106,8 @@ export class Orca implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-capture)
+   *
    * Capture Orca output produced by an action.
    *
    * The action can be performed using an external automation tool such as

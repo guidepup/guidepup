@@ -139,6 +139,8 @@ export class VoiceOver implements IScreenReader {
   };
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-name)
+   *
    * The screen reader name.
    */
   get name(): string {
@@ -146,6 +148,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-version)
+   *
    * The screen reader version.
    */
   get version(): string {
@@ -540,6 +544,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-previous-heading)
+   *
    * Move the VoiceOver cursor to the previous heading.
    *
    * Equivalent of executing `VO-Command-Shift-H`.
@@ -570,6 +576,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-next-heading)
+   *
    * Move the VoiceOver cursor to the next heading.
    *
    * Equivalent of executing `VO-Command-H`.
@@ -600,6 +608,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-previous-link)
+   *
    * Move the VoiceOver cursor to the previous link.
    *
    * Equivalent of executing `VO-Command-Shift-L`.
@@ -630,6 +640,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-next-link)
+   *
    * Move the VoiceOver cursor to the next link.
    *
    * Equivalent of executing `VO-Command-L`.
@@ -660,6 +672,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-previous-landmark)
+   *
    * Move the VoiceOver cursor to the previous landmark.
    *
    * Equivalent of executing `VO-Command-Shift-N`.
@@ -690,6 +704,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-next-landmark)
+   *
    * Move the VoiceOver cursor to the next landmark.
    *
    * Equivalent of executing `VO-Command-N`.
@@ -1374,6 +1390,8 @@ export class VoiceOver implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-capture)
+   *
    * Capture VoiceOver output produced by an action.
    *
    * The action can be performed using an external automation tool such as

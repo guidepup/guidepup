@@ -100,6 +100,8 @@ export class NVDA implements IScreenReader {
   };
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-name)
+   *
    * The screen reader name.
    */
   get name(): string {
@@ -107,6 +109,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-version)
+   *
    * The screen reader version.
    */
   get version(): string {
@@ -115,6 +119,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-keyboard-commands)
+   *
    * Getter for all NVDA keyboard commands.
    *
    * Use with the NVDA `perform` command to invoke a keyboard action:
@@ -139,6 +145,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-detect)
+   *
    * Detect whether NVDA is supported for the current OS:
    *
    * - `true` for Windows
@@ -162,6 +170,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-detect)
+   *
    * Detect whether NVDA is supported for the current OS:
    *
    * - `true` for Windows
@@ -185,6 +195,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-default)
+   *
    * Detect whether NVDA is the default screen reader for the current OS:
    *
    * - `true` for Windows
@@ -208,6 +220,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-default)
+   *
    * Detect whether NVDA is the default screen reader for the current OS:
    *
    * - `true` for Windows
@@ -231,6 +245,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-start)
+   *
    * Turn NVDA on.
    *
    * ```ts
@@ -296,6 +312,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-stop)
+   *
    * Turn NVDA off.
    *
    * ```ts
@@ -335,6 +353,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-previous)
+   *
    * Move the NVDA cursor to the previous location.
    *
    * Equivalent of executing `Up Arrow`.
@@ -366,6 +386,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-next)
+   *
    * Move the NVDA cursor to the next location.
    *
    * Equivalent of executing `Down Arrow`.
@@ -397,6 +419,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-previous-heading)
+   *
    * Move the NVDA cursor to the previous heading.
    *
    * Equivalent of executing `Shift-H`.
@@ -427,6 +451,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-next-heading)
+   *
    * Move the NVDA cursor to the next heading.
    *
    * Equivalent of executing `H`.
@@ -457,6 +483,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-previous-link)
+   *
    * Move the NVDA cursor to the previous link.
    *
    * Equivalent of executing `Shift-K`.
@@ -487,6 +515,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-next-link)
+   *
    * Move the NVDA cursor to the next link.
    *
    * Equivalent of executing `K`.
@@ -517,6 +547,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-previous-landmark)
+   *
    * Move the NVDA cursor to the previous landmark.
    *
    * Equivalent of executing `Shift-D`.
@@ -547,6 +579,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-next-landmark)
+   *
    * Move the NVDA cursor to the next landmark.
    *
    * Equivalent of executing `D`.
@@ -577,6 +611,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-act)
+   *
    * Perform the default action for the item in the NVDA cursor.
    *
    * Equivalent of executing `Enter`.
@@ -611,6 +647,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-interact)
+   *
    * No-op to provide same API across screen-readers.
    *
    * NVDA does not require users to perform an additional command to interact
@@ -625,6 +663,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-stop-interacting)
+   *
    * No-op to provide same API across screen-readers.
    *
    * NVDA does not require users to perform an additional command to interact
@@ -639,6 +679,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-press)
+   *
    * Press a key on the focused item.
    *
    * `key` can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
@@ -691,6 +733,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-type)
+   *
    * Type text into the focused item.
    *
    * To press a special key, like `Control` or `ArrowDown`, use `nvda.press(key[, options])`.
@@ -733,6 +777,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-perform)
+   *
    * Perform a NVDA command.
    *
    * The command can be a [WindowsKeyCodeCommand](https://www.guidepup.dev/docs/api/class-windows-key-code-command) or [WindowsKeystrokeCommand](https://www.guidepup.dev/docs/api/class-windows-keystroke-command).
@@ -772,6 +818,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-click)
+   *
    * Click the mouse.
    *
    * ```ts
@@ -819,6 +867,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-last-spoken-phrase)
+   *
    * Get the last spoken phrase.
    *
    * ```ts
@@ -851,6 +901,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-item-text)
+   *
    * Get the last spoken phrase.
    *
    * For NVDA this is the same as `lastSpokenPhrase`.
@@ -888,6 +940,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-spoken-phrase-log)
+   *
    * Get the log of all spoken phrases for this NVDA instance.
    *
    * ```ts
@@ -922,6 +976,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-clear-spoken-phrase-log)
+   *
    * Clear the log of all spoken phrases for this NVDA instance.
    *
    * ```ts
@@ -950,6 +1006,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-item-text-log)
+   *
    * Get the log of all spoken phrases for this NVDA instance.
    *
    * For NVDA this is the same as `spokenPhraseLog`.
@@ -988,6 +1046,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-clear-item-text-log)
+   *
    * Clear the log of all spoken phrases for this NVDA instance.
    *
    * For NVDA this is the same as `clearSpokenPhraseLog`.
@@ -1020,6 +1080,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-get-settings)
+   *
    * Returns all the current settings for this NVDA instance.
    *
    * ```ts
@@ -1044,6 +1106,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-get-setting)
+   *
    * Returns the value of a setting for this NVDA instance.
    *
    * ```ts
@@ -1069,6 +1133,8 @@ export class NVDA implements IScreenReader {
   }
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda#nvda-capture)
+   *
    * Capture NVDA output produced by an action.
    *
    * The action can be performed using an external automation tool such as

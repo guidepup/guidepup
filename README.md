@@ -22,7 +22,7 @@
 
 Guidepup is a screen reader automation library for testing.
 
-It enables testing for <b>Orca on Linux</b>, <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on macOS</b></a>, and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a> with a single API.
+It enables testing for <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>, <a href="https://www.guidepup.dev/docs/api/class-orca"><b>Orca on Linux</b></a>, and <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on macOS</b></a> with a single API.
 
 ## Capabilities
 
@@ -68,8 +68,13 @@ import { screenReader } from "@guidepup/guidepup";
 (async () => {
   // On Linux starts Orca, on MacOS starts VoiceOver, and on Windows starts NVDA.
   await screenReader.start();
+
   await screenReader.next();
   await screenReader.nextHeading();
+  await screenReader.nextLink();
+  await screenReader.nextLandmark();
+  await screenReader.previous();
+  await screenReader.act();
 
   console.log(await screenReader.spokenPhraseLog());
 
