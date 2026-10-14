@@ -19,7 +19,7 @@ const record = async (filepath: string) => {
 test.use({ orcaStartOptions: { capture: true } });
 
 test.describe("Firefox Playwright Orca", () => {
-  test("I can navigate the Guidepup Github page", async ({
+  test("I can navigate the Guidepup documentation site", async ({
     browser,
     browserName,
     page,

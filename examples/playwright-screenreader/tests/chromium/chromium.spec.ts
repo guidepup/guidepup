@@ -17,7 +17,7 @@ const record = async (filepath: string) => {
 };
 
 test.describe("Chromium Playwright Screen Reader", () => {
-  test("I can navigate the Guidepup Github page", async ({
+  test("I can navigate the Guidepup documentation site", async ({
     browser,
     browserName,
     page,

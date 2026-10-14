@@ -21,7 +21,7 @@ const record = async (filepath: string) => {
 };
 
 test.describe("Webkit Playwright VoiceOver", () => {
-  test("I can navigate the Guidepup Github page", async ({
+  test("I can navigate the Guidepup documentation site", async ({
     browser,
     browserName,
     page,
