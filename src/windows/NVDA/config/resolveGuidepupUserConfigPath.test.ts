@@ -11,6 +11,7 @@ jest.mock("../../../../manifest.json", () => ({
   ],
 }));
 
+import { join } from "node:path";
 import { resolveCachePath } from "../../../resolveCachePath";
 import { resolveGuidepupUserConfigPath } from "./resolveGuidepupUserConfigPath";
 
@@ -35,7 +36,14 @@ describe("resolveGuidepupUserConfigPath", () => {
 
   it("should resolve the Guidepup user config path", () => {
     expect(resolveGuidepupUserConfigPath()).toBe(
-      "test-cache-path/nvda/all/test-version/extracted/userConfig",
+      join(
+        cachePathDummy,
+        "nvda",
+        "all",
+        "test-version",
+        "extracted",
+        "userConfig",
+      ),
     );
   });
 });

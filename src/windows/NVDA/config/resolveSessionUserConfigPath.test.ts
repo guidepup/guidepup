@@ -11,6 +11,7 @@ jest.mock("../../../../manifest.json", () => ({
   ],
 }));
 
+import { join } from "node:path";
 import { resolveCachePath } from "../../../resolveCachePath";
 import { resolveSessionUserConfigPath } from "./resolveSessionUserConfigPath";
 
@@ -35,7 +36,7 @@ describe("resolveSessionUserConfigPath", () => {
 
   it("should resolve the session user config path", () => {
     expect(resolveSessionUserConfigPath()).toBe(
-      "test-cache-path/nvda/all/test-version/sessionUserConfig",
+      join(cachePathDummy, "nvda", "all", "test-version", "sessionUserConfig"),
     );
   });
 });

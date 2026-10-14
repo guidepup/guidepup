@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { ERR_NVDA_FAILED_TO_GET_SETTINGS } from "../../errors";
 import { getConfig } from "./getConfig";
+import { join } from "node:path";
 import { parseIni } from "./parseIni";
 import { resolveGuidepupUserConfigPath } from "./resolveGuidepupUserConfigPath";
 import { resolveSessionUserConfigPath } from "./resolveSessionUserConfigPath";
@@ -25,8 +26,8 @@ jest.mock("./resolveSessionUserConfigPath", () => ({
 const sessionUserConfigPathDummy = "test-session-user-config";
 const guidepupUserConfigPathDummy = "test-guidepup-user-config";
 
-const sessionConfigPathDummy = "test-session-user-config/nvda.ini";
-const guidepupConfigPathDummy = "test-guidepup-user-config/nvda.ini";
+const sessionConfigPathDummy = join(sessionUserConfigPathDummy, "nvda.ini");
+const guidepupConfigPathDummy = join(guidepupUserConfigPathDummy, "nvda.ini");
 
 const contentsDummy = "test-config";
 const configDummy = {

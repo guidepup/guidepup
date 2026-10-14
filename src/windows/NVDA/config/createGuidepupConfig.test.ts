@@ -4,6 +4,7 @@ import {
   ERR_NVDA_NOT_INSTALLED,
 } from "../../errors";
 import { createGuidepupConfig } from "./createGuidepupConfig";
+import { join } from "node:path";
 import { resolveGuidepupUserConfigPath } from "./resolveGuidepupUserConfigPath";
 import { resolveSessionUserConfigPath } from "./resolveSessionUserConfigPath";
 
@@ -84,8 +85,8 @@ describe("createGuidepupConfig", () => {
     it("should copy each Guidepup user config entry to the session user config", () => {
       expect(cpSync).toHaveBeenNthCalledWith(
         1,
-        "test-guidepup-user-config/config",
-        "test-session-user-config/config",
+        join(guidepupUserConfigPathDummy, "config"),
+        join(sessionUserConfigPathDummy, "config"),
         {
           recursive: true,
         },
@@ -93,8 +94,8 @@ describe("createGuidepupConfig", () => {
 
       expect(cpSync).toHaveBeenNthCalledWith(
         2,
-        "test-guidepup-user-config/state.ini",
-        "test-session-user-config/state.ini",
+        join(guidepupUserConfigPathDummy, "state.ini"),
+        join(sessionUserConfigPathDummy, "state.ini"),
         {
           recursive: true,
         },

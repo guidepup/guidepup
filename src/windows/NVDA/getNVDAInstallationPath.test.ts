@@ -1,9 +1,18 @@
 import type { existsSync as _existsSync } from "node:fs";
 import type { getNVDAInstallationPath as _getNVDAInstallationPath } from "./getNVDAInstallationPath";
 import type { resolveCachePath as _resolveCachePath } from "../../resolveCachePath";
+import { join } from "node:path";
 
 const mockResolvedCachePath = "test-cache-path";
 const mockNVDAVersion = "test-nvda-version";
+const mockInstallationPath = join(
+  mockResolvedCachePath,
+  "nvda",
+  "all",
+  mockNVDAVersion,
+  "extracted",
+  "nvda.exe",
+);
 const mockManifest = {
   screenReaders: [
     {
@@ -56,9 +65,7 @@ describe("getNVDAInstallationPath", () => {
       });
 
       it("should check if the cached asset exists", () => {
-        expect(existsSync).toHaveBeenCalledWith(
-          `${mockResolvedCachePath}/nvda/all/${mockNVDAVersion}/extracted/nvda.exe`,
-        );
+        expect(existsSync).toHaveBeenCalledWith(mockInstallationPath);
       });
 
       it("should return null", () => {
@@ -78,15 +85,11 @@ describe("getNVDAInstallationPath", () => {
       });
 
       it("should check if the cached asset exists", () => {
-        expect(existsSync).toHaveBeenCalledWith(
-          `${mockResolvedCachePath}/nvda/all/${mockNVDAVersion}/extracted/nvda.exe`,
-        );
+        expect(existsSync).toHaveBeenCalledWith(mockInstallationPath);
       });
 
       it("should return the installation path", () => {
-        expect(result).toBe(
-          `${mockResolvedCachePath}/nvda/all/${mockNVDAVersion}/extracted/nvda.exe`,
-        );
+        expect(result).toBe(mockInstallationPath);
       });
 
       describe("when called again", () => {
@@ -101,9 +104,7 @@ describe("getNVDAInstallationPath", () => {
         });
 
         it("should resolve to the same path", () => {
-          expect(result).toBe(
-            `${mockResolvedCachePath}/nvda/all/${mockNVDAVersion}/extracted/nvda.exe`,
-          );
+          expect(result).toBe(mockInstallationPath);
         });
       });
     });
