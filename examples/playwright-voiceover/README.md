@@ -24,10 +24,9 @@ npm run test
 
 ## Test flow
 
-1. The test launches Safari using Playwright
-2. Navigates to the GitHub website
+1. The test launches the browser using Playwright
+2. Navigates to the Guidepup website
 3. Moves through the website using VoiceOver controlled by Guidepup
-4. Traverses headings until the Guidepup heading in the README.md is found
 
 ## See also
 

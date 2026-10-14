@@ -24,10 +24,9 @@ npm run test
 
 ## Test flow
 
-1. The test launches Firefox using Playwright
+1. The test launches the browser using Playwright
 2. Navigates to the Guidepup website
 3. Moves through the website using Orca controlled by Guidepup
-4. Traverses headings until the Guidepup heading is found
 
 ## See also
 

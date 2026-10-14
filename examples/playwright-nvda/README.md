@@ -24,5 +24,10 @@ npm run test
 
 ## Test flow
 
-1. The test launches Chrome using Playwright
-2. Navigates to the Playwright website
+1. The test launches the browser using Playwright
+2. Navigates to the Guidepup website
+3. Moves through the website using NVDA controlled by Guidepup
+
+## See also
+
+Check out the dedicated [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright) module for seamless Guidepup integration with Playwright.
