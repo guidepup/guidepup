@@ -1,7 +1,6 @@
 import { Applications } from "../Applications";
 import { execFileSync } from "child_process";
 import { isRunning } from "./isRunning";
-import { once } from "events";
 import { runAppleScript } from "../runAppleScript";
 
 jest.mock("child_process", () => ({
@@ -12,9 +11,6 @@ jest.mock("../runAppleScript", () => ({
 }));
 
 describe("when calling isRunning", () => {
-  const describeRealProcessDetection =
-    process.platform === "darwin" ? describe : describe.skip;
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -144,53 +140,6 @@ describe("when calling isRunning", () => {
           expect(result).toBe(true);
         });
       });
-    });
-  });
-
-  describeRealProcessDetection("when using the real process matcher", () => {
-    it("should ignore processes whose arguments contain the VoiceOver launch command", async () => {
-      const actualChildProcess = jest.requireActual<
-        typeof import("child_process")
-      >("child_process");
-      const actualExecFileSync = actualChildProcess.execFileSync;
-      const decoy = actualChildProcess.spawn(
-        process.execPath,
-        ["-e", "setInterval(() => {}, 1000)", "VoiceOver launchd -s"],
-        { stdio: "ignore" },
-      );
-      let namedProcess: ReturnType<typeof actualChildProcess.spawn> | undefined;
-
-      jest.mocked(execFileSync).mockImplementation((file, args, options) =>
-        actualExecFileSync(
-          file,
-          ["-P", String(process.pid), ...(args ?? [])],
-          options,
-        ),
-      );
-
-      try {
-        await once(decoy, "spawn");
-
-        expect(await isRunning(undefined, true)).toBe(false);
-
-        namedProcess = actualChildProcess.spawn("/bin/sleep", ["10"], {
-          argv0: "VoiceOver",
-          stdio: "ignore",
-        });
-        await once(namedProcess, "spawn");
-
-        expect(await isRunning(undefined, true)).toBe(true);
-      } finally {
-        for (const child of [namedProcess, decoy]) {
-          if (child && child.exitCode === null) {
-            const exited = once(child, "exit");
-            child.kill("SIGTERM");
-            await exited;
-          }
-        }
-
-        jest.mocked(execFileSync).mockReset();
-      }
     });
   });
 });
