@@ -1,10 +1,12 @@
 import type { CommandOptions, Orca } from "../../src";
-import { focusOrcaBrowser } from "../focusOrcaBrowser";
+import { navigateOrcaToWebContent } from "./navigateToWebContent";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
 import { unstable_orca } from "../../src";
 
 /**
+ * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
+ *
  * This object can be used to launch and control Orca.
  *
  * Here's a typical example:
@@ -48,6 +50,8 @@ const orcaPlaywright: OrcaPlaywright = unstable_orca as OrcaPlaywright;
  */
 export const orcaTest = test.extend<{
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
+   *
    * This object can be used to launch and control Orca.
    *
    * Here's a typical example:
@@ -71,39 +75,21 @@ export const orcaTest = test.extend<{
    */
   orca: OrcaPlaywright;
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-start-options)
    *
-   * Options to start Orca with.
+   * Options to start Orca with, see also [unstable_orca.start([options])](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-start).
    */
   orcaStartOptions: StartOptions;
 }>({
   orcaStartOptions: { capture: "initial" },
   orca: async ({ orcaStartOptions, page }, use) => {
     try {
-      orcaPlaywright.navigateToWebContent = async ({ capture } = {}) => {
-        // Ensure application is brought to front and focused.
-        const pageTitle = await page.title();
-        await focusOrcaBrowser({
+      orcaPlaywright.navigateToWebContent = ({ capture } = {}) =>
+        navigateOrcaToWebContent({
           orca: orcaPlaywright,
-          pageTitle,
-          presentTitleCommand: orcaPlaywright.keyboardCommands.PresentTitle,
+          page,
+          capture,
         });
-
-        // Ensure the document is ready and focused.
-        await page.bringToFront();
-        await page.locator("body").waitFor();
-        await page.locator("body").focus();
-        await page.locator("body").click();
-        await page.locator("body").blur();
-
-        // Navigate to the beginning of the web content, using chosen capture
-        // settings, so don't miss announcing the first item on the page.
-        await orcaPlaywright.perform(
-          orcaPlaywright.keyboardCommands.StartOfFile,
-          {
-            capture,
-          },
-        );
-      };
 
       await orcaPlaywright.start(orcaStartOptions);
 

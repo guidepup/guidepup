@@ -1,40 +1,23 @@
-import type { CommandOptions } from "../src/CommandOptions";
-import { delay } from "../src/delay";
+import { cleanString } from "../cleanString";
+import { delay } from "../../src/delay";
 import { execFileSync } from "node:child_process";
+import type { Orca } from "../../src";
 
 const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
 
-const cleanString = (str: string): string =>
-  str
-    .toLowerCase()
-    .replace(/[|¦:;'"`\-‐–—·_()[\]{}\\^~]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-type OrcaFocusController<Command> = {
-  perform(
-    command: Command,
-    options?: Pick<CommandOptions, "capture">,
-  ): Promise<void>;
-  lastSpokenPhrase(): Promise<string>;
-  spokenPhraseLog(): Promise<string[]>;
-  clearSpokenPhraseLog(): Promise<void>;
-};
-
-export const focusOrcaBrowser = async <Command>({
+export const focusOrcaBrowser = async ({
   orca,
   pageTitle,
-  presentTitleCommand,
 }: {
-  orca: OrcaFocusController<Command>;
+  orca: Orca;
   pageTitle: string;
-  presentTitleCommand: Command;
 }): Promise<void> => {
   const cleanedPageTitle = cleanString(pageTitle);
 
   if (!cleanedPageTitle) {
     throw new Error("Cannot focus a browser window with an empty page title.");
   }
+
   const currentSpokenPhraseLog = [...(await orca.spokenPhraseLog())];
 
   try {
@@ -44,7 +27,9 @@ export const focusOrcaBrowser = async <Command>({
       retryCount++
     ) {
       await orca.clearSpokenPhraseLog();
-      await orca.perform(presentTitleCommand, { capture: "initial" });
+      await orca.perform(orca.keyboardCommands.PresentTitle, {
+        capture: "initial",
+      });
 
       const windowTitle = cleanString(await orca.lastSpokenPhrase());
 
@@ -54,6 +39,7 @@ export const focusOrcaBrowser = async <Command>({
 
       if (retryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
         execFileSync("xdotool", ["key", "--clearmodifiers", "alt+Tab"]);
+
         await delay(100);
       }
     }
