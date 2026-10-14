@@ -18,8 +18,8 @@ jobs:
         os: [macos-15, macos-26, xcode-27, windows-2022, windows-2025]
         browser: [chromium]
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
       - run: npx -y --min-release-age=0 --ignore-scripts=false @guidepup/setup@0.29.2 setup --ci --macos-record
@@ -29,7 +29,7 @@ jobs:
       - run: npm --prefix ./examples/playwright-screenreader run browsers
       - run: npx -y --min-release-age=0 --ignore-scripts=false @guidepup/setup@0.29.2 install
       - run: npm --prefix ./examples/playwright-screenreader run test:${{ matrix.browser }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         continue-on-error: true
         with:
@@ -46,8 +46,8 @@ jobs:
         os: [ubuntu-26.04]
         browser: [firefox]
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
       - run: npx -y --min-release-age=0 --ignore-scripts=false @guidepup/setup@0.29.2 setup --ci
@@ -57,7 +57,7 @@ jobs:
       - run: npm --prefix ./examples/playwright-screenreader run browsers
       - run: npx -y --min-release-age=0 --ignore-scripts=false @guidepup/setup@0.29.2 install
       - run: xvfb-run dbus-run-session -- npm --prefix ./examples/playwright-screenreader run test:${{ matrix.browser }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         continue-on-error: true
         with:
