@@ -6,16 +6,22 @@ import type { StartOptions } from "./StartOptions";
 
 export interface IScreenReader {
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-name)
+   *
    * The screen reader name.
    */
   name: string;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-version)
+   *
    * The screen reader version.
    */
   version: string;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-detect)
+   *
    * Detect whether the screen reader is supported for the current OS.
    *
    * @returns {boolean}
@@ -23,6 +29,8 @@ export interface IScreenReader {
   detect(): boolean;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-default)
+   *
    * Detect whether the screen reader is the default screen reader for the current OS.
    *
    * @returns {boolean}
@@ -30,6 +38,8 @@ export interface IScreenReader {
   default(): boolean;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-start)
+   *
    * Turn the screen reader on.
    *
    * @param {object} [options] Additional options.
@@ -37,6 +47,8 @@ export interface IScreenReader {
   start(options?: StartOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-stop)
+   *
    * Turn the screen reader off.
    *
    * @param {object} [options] Additional options.
@@ -44,6 +56,8 @@ export interface IScreenReader {
   stop(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-previous)
+   *
    * Move the screen reader cursor to the previous location.
    *
    * @param {object} [options] Additional options.
@@ -51,6 +65,8 @@ export interface IScreenReader {
   previous(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-next)
+   *
    * Move the screen reader cursor to the next location.
    *
    * @param {object} [options] Additional options.
@@ -58,6 +74,8 @@ export interface IScreenReader {
   next(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-previous-heading)
+   *
    * Move the screen reader cursor to the previous heading.
    *
    * @param {object} [options] Additional options.
@@ -65,6 +83,8 @@ export interface IScreenReader {
   previousHeading(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-next-heading)
+   *
    * Move the screen reader cursor to the next heading.
    *
    * @param {object} [options] Additional options.
@@ -72,6 +92,8 @@ export interface IScreenReader {
   nextHeading(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-previous-link)
+   *
    * Move the screen reader cursor to the previous link.
    *
    * @param {object} [options] Additional options.
@@ -79,6 +101,8 @@ export interface IScreenReader {
   previousLink(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-next-link)
+   *
    * Move the screen reader cursor to the next link.
    *
    * @param {object} [options] Additional options.
@@ -86,6 +110,8 @@ export interface IScreenReader {
   nextLink(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-previous-landmark)
+   *
    * Move the screen reader cursor to the previous landmark.
    *
    * @param {object} [options] Additional options.
@@ -93,6 +119,8 @@ export interface IScreenReader {
   previousLandmark(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-next-landmark)
+   *
    * Move the screen reader cursor to the next landmark.
    *
    * @param {object} [options] Additional options.
@@ -100,6 +128,8 @@ export interface IScreenReader {
   nextLandmark(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-act)
+   *
    * Perform the default action for the item in the screen reader cursor.
    *
    * @param {object} [options] Additional options.
@@ -107,6 +137,8 @@ export interface IScreenReader {
   act(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-interact)
+   *
    * Interact with the item under the screen reader cursor.
    *
    * @param {object} [options] Additional options.
@@ -114,6 +146,8 @@ export interface IScreenReader {
   interact(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-stop-interacting)
+   *
    * Stop interacting with the current item.
    *
    * @param {object} [options] Additional options.
@@ -121,6 +155,8 @@ export interface IScreenReader {
   stopInteracting(options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-press)
+   *
    * Press a key on the focused item.
    *
    * `key` can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
@@ -150,6 +186,8 @@ export interface IScreenReader {
   press(key: string, options?: KeyboardOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-type)
+   *
    * Type text into the focused item.
    *
    * To press a special key, like `Control` or `ArrowDown`, use `keyboard.press(key[, options])`.
@@ -165,6 +203,8 @@ export interface IScreenReader {
   type(text: string, options?: KeyboardOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-perform)
+   *
    * Perform a screen reader command.
    *
    * @param {any} command Screen reader keyboard command or commander command to execute.
@@ -173,6 +213,8 @@ export interface IScreenReader {
   perform(command: unknown, options?: CommandOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-click)
+   *
    * Click the mouse.
    *
    * @param {object} [options] Click options.
@@ -180,6 +222,8 @@ export interface IScreenReader {
   click(options?: ClickOptions): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-last-spoken-phrase)
+   *
    * Get the last spoken phrase.
    *
    * @returns {Promise<string>} The last spoken phrase.
@@ -187,6 +231,8 @@ export interface IScreenReader {
   lastSpokenPhrase(): Promise<string>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-item-text)
+   *
    * Get the text of the item in the screen reader cursor.
    *
    * @returns {Promise<string>} The item's text.
@@ -194,6 +240,8 @@ export interface IScreenReader {
   itemText(): Promise<string>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-spoken-phrase-log)
+   *
    * Get the log of all spoken phrases for this screen reader instance.
    *
    * @returns {Promise<string[]>} The spoken phrase log.
@@ -201,11 +249,15 @@ export interface IScreenReader {
   spokenPhraseLog(): Promise<string[]>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-clear-spoken-phrase-log)
+   *
    * Clear the log of all spoken phrases for this screen reader instance.
    */
   clearSpokenPhraseLog(): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-item-text-log)
+   *
    * Get the log of all visited item text for this screen reader instance.
    *
    * @returns {Promise<string[]>} The item text log.
@@ -213,11 +265,15 @@ export interface IScreenReader {
   itemTextLog(): Promise<string[]>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-clear-item-text-log)
+   *
    * Clear the log of all visited item text for this screen reader instance.
    */
   clearItemTextLog(): Promise<void>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-get-settings)
+   *
    * Returns all the current settings for this screen reader instance.
    *
    * @returns {Record<string, unknown>} Current settings values.
@@ -225,6 +281,8 @@ export interface IScreenReader {
   getSettings(): Record<string, unknown>;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-get-setting)
+   *
    * Returns the value of a setting for this screen reader instance.
    *
    * @param {string} key The setting name.
@@ -233,6 +291,8 @@ export interface IScreenReader {
   getSetting(key: string): unknown;
 
   /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-iscreenreader#screenreader-capture)
+   *
    * Capture screen reader output produced by an action.
    *
    * The action can be performed using an external automation tool such as
