@@ -26,7 +26,7 @@ describe("when calling isRunning", () => {
       it("should check whether the VoiceOver process is running", () => {
         expect(execFileSync).toHaveBeenCalledWith(
           "pgrep",
-          ["-f", "VoiceOver launchd -s"],
+          ["-x", "VoiceOver"],
           { encoding: "utf8", timeout: 2000 },
         );
       });
