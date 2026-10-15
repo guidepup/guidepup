@@ -147,10 +147,11 @@ import { nvda } from "@guidepup/guidepup";
 
 ## Powerful Tooling
 
-Check out some of the other Guidepup modules:
+Check out some of the other Guidepup tooling:
 
 - [`@guidepup/setup`](https://github.com/guidepup/setup/) - Set up your local or CI environment for screen reader test automation.
 - [`@guidepup/playwright`](https://github.com/guidepup/guidepup-playwright/) - Seemless integration of Guidepup with Playwright.
+- [`ghcr.io/guidepup/guidepup`](https://github.com/guidepup/guidepup-docker/pkgs/container/guidepup) - Seemless integration of Guidepup in Docker.
 - [`@guidepup/virtual-screen-reader`](https://github.com/guidepup/virtual-screen-reader/) - Reliable unit testing for your screen reader a11y workflows.
 - [`@guidepup/jest`](https://github.com/guidepup/jest/) - Jest matchers for reliable unit testing of your screen reader a11y workflows.
 
