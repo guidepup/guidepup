@@ -15,7 +15,7 @@ describe("retryIfAppleEventTimeout", () => {
 
       it("should return the return value of the delegate", async () => {
         await expect(retryIfAppleEventTimeout(delegate, options)).resolves.toBe(
-          expected
+          expected,
         );
       });
     });
@@ -29,7 +29,7 @@ describe("retryIfAppleEventTimeout", () => {
 
       it("should throw the delegate's error", async () => {
         await expect(retryIfAppleEventTimeout(delegate, options)).rejects.toBe(
-          expectedError
+          expectedError,
         );
       });
     });
@@ -43,7 +43,7 @@ describe("retryIfAppleEventTimeout", () => {
 
       it("should return the return value of the delegate", async () => {
         await expect(
-          retryIfAppleEventTimeout(delegate, { retries })
+          retryIfAppleEventTimeout(delegate, { retries }),
         ).resolves.toBe(expected);
       });
     });
@@ -57,7 +57,7 @@ describe("retryIfAppleEventTimeout", () => {
 
       it("should throw the delegate's error", async () => {
         await expect(
-          retryIfAppleEventTimeout(delegate, { retries })
+          retryIfAppleEventTimeout(delegate, { retries }),
         ).rejects.toBe(expectedError);
       });
     });
@@ -67,11 +67,13 @@ describe("retryIfAppleEventTimeout", () => {
       const delegate = () =>
         count++ === 1
           ? Promise.resolve(expected)
-          : Promise.reject(new Error(ERR_APPLE_SCRIPT_TIMED_OUT));
+          : Promise.reject(
+              new Error(`test-prefix ${ERR_APPLE_SCRIPT_TIMED_OUT}`),
+            );
 
       it("should return the return value of the delegate", async () => {
         await expect(
-          retryIfAppleEventTimeout(delegate, { retries })
+          retryIfAppleEventTimeout(delegate, { retries }),
         ).resolves.toBe(expected);
       });
     });
@@ -85,7 +87,7 @@ describe("retryIfAppleEventTimeout", () => {
 
       it("should throw the delegate's error", async () => {
         await expect(
-          retryIfAppleEventTimeout(delegate, { retries })
+          retryIfAppleEventTimeout(delegate, { retries }),
         ).rejects.toBe(expectedError);
       });
     });
