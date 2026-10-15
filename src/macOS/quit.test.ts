@@ -22,6 +22,7 @@ describe("quit", () => {
     jest.clearAllMocks();
 
     jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
+    jest.mocked(runAppleScript).mockResolvedValue("true");
   });
 
   describe.each`
@@ -31,6 +32,13 @@ describe("quit", () => {
   `("when called $description", ({ options }) => {
     beforeEach(async () => {
       await quit(applicationName, options);
+    });
+
+    it("should check whether the application is running", () => {
+      expect(runAppleScript).toHaveBeenCalledWith(
+        `return application "${applicationName}" is running`,
+        options,
+      );
     });
 
     it("should wrap the quit command with a transaction block", () => {
@@ -57,6 +65,34 @@ describe("quit", () => {
           options,
         );
       });
+    });
+  });
+
+  describe("when the application is not running", () => {
+    beforeEach(async () => {
+      jest.mocked(runAppleScript).mockResolvedValue("false");
+
+      await quit(applicationName);
+    });
+
+    it("should not run the quit script", () => {
+      expect(retryIfAppleEventTimeout).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("when checking whether the application is running throws", () => {
+    const stubError = new Error("test-error-message");
+
+    beforeEach(() => {
+      jest.mocked(runAppleScript).mockRejectedValue(stubError);
+    });
+
+    it("should throw an error with the quit prefix, application name, and underlying error", async () => {
+      await expect(() => quit(applicationName)).rejects.toEqual(
+        new Error(`Unable to quit application: ${applicationName}`, {
+          cause: stubError,
+        }),
+      );
     });
   });
 

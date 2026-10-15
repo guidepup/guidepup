@@ -44,6 +44,20 @@ export async function quit(
   )}\nend tell`;
 
   try {
+    // Checked in its own script because the quit script can launch a closed
+    // application, either when its `tell` block is compiled or when the
+    // transaction starts.
+    const running = await runAppleScript<string>(
+      `return application "${applicationName}" is running`,
+      options,
+    );
+
+    if (running === "false") {
+      debug("not running");
+
+      return;
+    }
+
     return await retryIfAppleEventTimeout(
       () => runAppleScript(script, options),
       options,
