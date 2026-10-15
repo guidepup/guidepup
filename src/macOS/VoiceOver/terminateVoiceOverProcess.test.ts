@@ -2,7 +2,7 @@ import { Applications } from "../Applications";
 import { execFileSync } from "child_process";
 import { isRunning } from "./isRunning";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { runAppleScript } from "../runAppleScript";
+import { quit } from "../quit";
 import { sendKeys } from "../sendKeys";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { waitForCondition } from "../../waitForCondition";
@@ -15,8 +15,8 @@ jest.mock("./isRunning", () => ({
   isRunning: jest.fn(),
 }));
 
-jest.mock("../runAppleScript", () => ({
-  runAppleScript: jest.fn(),
+jest.mock("../quit", () => ({
+  quit: jest.fn(),
 }));
 
 jest.mock("../sendKeys", () => ({
@@ -53,7 +53,7 @@ describe("terminateVoiceOverProcess", () => {
     });
 
     it("should not attempt any termination which could launch or toggle VoiceOver", () => {
-      expect(runAppleScript).not.toHaveBeenCalled();
+      expect(quit).not.toHaveBeenCalled();
       expect(execFileSync).not.toHaveBeenCalled();
       expect(sendKeys).not.toHaveBeenCalled();
     });
@@ -74,11 +74,8 @@ describe("terminateVoiceOverProcess", () => {
         await terminateVoiceOverProcess(optionsDummy);
       });
 
-      it("should attempt an AppleScript based quit of the VoiceOver application without a transaction", () => {
-        expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${Applications.VoiceOver}"\nquit\nend tell`,
-          optionsDummy,
-        );
+      it("should attempt an AppleScript based quit of the VoiceOver application", () => {
+        expect(quit).toHaveBeenCalledWith(Applications.VoiceOver, optionsDummy);
       });
 
       it("should not attempt any further termination", () => {
@@ -132,7 +129,7 @@ describe("terminateVoiceOverProcess", () => {
 
     describe("when every termination attempt rejects", () => {
       beforeEach(() => {
-        jest.mocked(runAppleScript).mockRejectedValue(new Error("test-error"));
+        jest.mocked(quit).mockRejectedValue(new Error("test-error"));
         jest.mocked(execFileSync).mockImplementation(() => {
           throw new Error("test-error");
         });
@@ -144,7 +141,7 @@ describe("terminateVoiceOverProcess", () => {
           terminateVoiceOverProcess(optionsDummy),
         ).resolves.toBeUndefined();
 
-        expect(runAppleScript).toHaveBeenCalled();
+        expect(quit).toHaveBeenCalled();
         expect(execFileSync).toHaveBeenCalled();
         expect(sendKeys).toHaveBeenCalled();
       });
