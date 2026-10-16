@@ -5,7 +5,7 @@ import { DEFAULT_TIMEOUT } from "../../constants";
 import { execFileSync } from "child_process";
 import { isRunning } from "./isRunning";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { runAppleScript } from "../runAppleScript";
+import { quit } from "../quit";
 import { sendKeys } from "../sendKeys";
 import { waitForCondition } from "../../waitForCondition";
 
@@ -34,16 +34,11 @@ export async function terminateVoiceOverProcess(
     return;
   }
 
-  // Prefer VoiceOver's AppleScript API. This deliberately avoids `quit()` as
-  // wrapping `quit` in a transaction can launch VoiceOver when it has already
-  // exited.
+  // Prefer VoiceOver's AppleScript API.
   try {
     debug("Attempting AppleScript termination");
 
-    await runAppleScript(
-      `tell application "${Applications.VoiceOver}"\nquit\nend tell`,
-      options,
-    );
+    await quit(Applications.VoiceOver, options);
 
     debug("AppleScript termination succeeded");
   } catch {
