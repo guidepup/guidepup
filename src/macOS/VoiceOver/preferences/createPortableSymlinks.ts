@@ -5,9 +5,9 @@ import {
 import {
   lstatSync,
   readlinkSync,
-  rmSync,
   type Stats,
   symlinkSync,
+  unlinkSync,
 } from "node:fs";
 import { join } from "node:path";
 import { PREFERENCES_PATH } from "./constants";
@@ -49,7 +49,12 @@ export function createPortableSymlinks(preferencesDirectory: string): void {
     }
 
     try {
-      rmSync(linkPath, { force: true });
+      // Unlink rather than `rmSync`, which on some Node versions skips a
+      // symlink whose target no longer exists.
+      if (existing) {
+        unlinkSync(linkPath);
+      }
+
       symlinkSync(PREFERENCES_PATH, linkPath);
     } catch (cause) {
       throw new Error(ERR_VOICE_OVER_FAILED_TO_MOUNT_GUIDEPUP_PREFERENCES, {
