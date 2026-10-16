@@ -1,3 +1,4 @@
+import { DEFAULT_RETRY_COUNT } from "../constants";
 import { quit } from "./quit";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
@@ -17,12 +18,22 @@ const applicationName = "test-application-name";
 
 const stubTransactionBlock = "test-transaction-block";
 
+const runningScript = `return application "${applicationName}" is running`;
+const quitScript = `tell application "${applicationName}"\n${stubTransactionBlock}\nend tell`;
+
 describe("quit", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     jest.mocked(withTransaction).mockReturnValue(stubTransactionBlock);
-    jest.mocked(runAppleScript).mockResolvedValue("true");
+    jest
+      .mocked(retryIfAppleEventTimeout)
+      .mockImplementation(async (delegate) => await delegate());
+    jest
+      .mocked(runAppleScript)
+      .mockImplementation(async (script) =>
+        script === runningScript ? "true" : undefined,
+      );
   });
 
   describe.each`
@@ -35,9 +46,13 @@ describe("quit", () => {
     });
 
     it("should check whether the application is running", () => {
-      expect(runAppleScript).toHaveBeenCalledWith(
-        `return application "${applicationName}" is running`,
-        options,
+      expect(runAppleScript).toHaveBeenCalledWith(runningScript, options);
+    });
+
+    it("should retry the running check on AppleEvent timeout, as it only reads state", () => {
+      expect(retryIfAppleEventTimeout).toHaveBeenCalledWith(
+        expect.any(Function),
+        { retries: DEFAULT_RETRY_COUNT, ...options },
       );
     });
 
@@ -52,19 +67,8 @@ describe("quit", () => {
       );
     });
 
-    describe("when the retry runner invokes the delegate", () => {
-      beforeEach(() => {
-        const delegate = jest.mocked(retryIfAppleEventTimeout).mock.calls[0][0];
-
-        delegate();
-      });
-
-      it("should construct a quit script executor", () => {
-        expect(runAppleScript).toHaveBeenCalledWith(
-          `tell application "${applicationName}"\n${stubTransactionBlock}\nend tell`,
-          options,
-        );
-      });
+    it("should run the quit script", () => {
+      expect(runAppleScript).toHaveBeenCalledWith(quitScript, options);
     });
   });
 
@@ -76,7 +80,7 @@ describe("quit", () => {
     });
 
     it("should not run the quit script", () => {
-      expect(retryIfAppleEventTimeout).not.toHaveBeenCalled();
+      expect(runAppleScript).not.toHaveBeenCalledWith(quitScript, undefined);
     });
   });
 
@@ -100,7 +104,11 @@ describe("quit", () => {
     const stubError = new Error("test-error-message");
 
     beforeEach(() => {
-      jest.mocked(retryIfAppleEventTimeout).mockRejectedValue(stubError);
+      jest
+        .mocked(runAppleScript)
+        .mockImplementation(async (script) =>
+          script === runningScript ? "true" : Promise.reject(stubError),
+        );
     });
 
     it("should throw an error with the quit prefix, application name, and underlying error message", async () => {

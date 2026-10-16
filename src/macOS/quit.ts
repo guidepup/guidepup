@@ -1,5 +1,6 @@
 import { base } from "../debug";
 import type { CommandOptions } from "../CommandOptions";
+import { DEFAULT_RETRY_COUNT } from "../constants";
 import { ERR_PREFIX_QUIT } from "./errors";
 import { retryIfAppleEventTimeout } from "./retryIfAppleEventTimeout";
 import { runAppleScript } from "./runAppleScript";
@@ -46,10 +47,15 @@ export async function quit(
   try {
     // Checked in its own script because the quit script can launch a closed
     // application, either when its `tell` block is compiled or when the
-    // transaction starts.
-    const running = await runAppleScript<string>(
-      `return application "${applicationName}" is running`,
-      options,
+    // transaction starts. Only reads state, so like `activate()` it is safe
+    // to retry on AppleEvent timeout by default.
+    const running = await retryIfAppleEventTimeout(
+      () =>
+        runAppleScript<string>(
+          `return application "${applicationName}" is running`,
+          options,
+        ),
+      { retries: DEFAULT_RETRY_COUNT, ...options },
     );
 
     if (running === "false") {
