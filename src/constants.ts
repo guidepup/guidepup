@@ -9,4 +9,4 @@ export const DEFAULT_CLICK_COUNT = 1;
 export const DEFAULT_CAPTURE = "initial";
 
 export const ERR_WAITING_TIMEOUT = "Timed out waiting.";
-export const ERR_APPLE_SCRIPT_TIMED_OUT = "AppleEvent timed out";
+export const ERR_APPLE_SCRIPT_TIMED_OUT = "(-1712)";
