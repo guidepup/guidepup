@@ -1,5 +1,9 @@
 import { ChildProcess, ExecException, execFile } from "child_process";
-import { DEFAULT_MAX_BUFFER, DEFAULT_TIMEOUT } from "../constants";
+import {
+  DEFAULT_MAX_BUFFER,
+  DEFAULT_TIMEOUT,
+  ERR_APPLE_SCRIPT_TIMED_OUT,
+} from "../constants";
 import { runAppleScript } from "./runAppleScript";
 
 jest.mock("child_process", () => ({
@@ -101,6 +105,33 @@ describe("runAppleScript", () => {
 
         it("should reject with the error", async () => {
           await expect(resultPromise).rejects.toEqual(error);
+        });
+      });
+
+      describe("and osascript was killed at the process timeout", () => {
+        const error: ExecException = Object.assign(
+          new Error("Command failed"),
+          { killed: true, signal: "SIGTERM" as const },
+        );
+
+        beforeEach(() => {
+          (
+            mockExecFile.mock.calls[0][3] as (
+              error: ExecException | null,
+              stdout: string,
+              stderr: string
+            ) => void
+          )(error, "", "");
+        });
+
+        it("should reject with an AppleEvent timeout error, so it is retried", async () => {
+          await expect(resultPromise).rejects.toThrow(
+            ERR_APPLE_SCRIPT_TIMED_OUT
+          );
+        });
+
+        it("should keep the original error as the cause", async () => {
+          await expect(resultPromise).rejects.toHaveProperty("cause", error);
         });
       });
     });

@@ -30,6 +30,18 @@ export async function runAppleScript<T = string | void>(
         if (error) {
           debug("failed", { error });
 
+          // osascript sometimes misses the grace and is killed before it
+          // reports its own AppleEvent timeout. Report it the same way, so
+          // callers can recognise and retry the timeout.
+          if (error.killed) {
+            return reject(
+              new Error(
+                `osascript did not exit within its timeout: AppleEvent timed out. (-1712)`,
+                { cause: error },
+              ),
+            );
+          }
+
           return reject(error);
         }
 
