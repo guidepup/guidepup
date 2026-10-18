@@ -7,6 +7,7 @@ import { DEFAULT_TIMEOUT } from "../../constants";
 import { delay } from "../../delay";
 import { ERR_VOICE_OVER_CANNOT_BE_STARTED } from "../errors";
 import { release } from "node:os";
+import { waitForReady } from "./waitForReady";
 
 const debug = base.extend("start");
 
@@ -54,6 +55,11 @@ export async function start(options?: CommandOptions): Promise<void> {
       });
     });
   }
+
+  // VoiceOver can take 10s or more before it answers AppleEvents. Wait for
+  // that here, within the running timeout, rather than in `activate()`'s
+  // retries.
+  await waitForReady(options);
 
   await delay(500);
 

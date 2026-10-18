@@ -6,6 +6,7 @@ import { delay } from "../../delay";
 import { ERR_VOICE_OVER_CANNOT_BE_STARTED } from "../errors";
 import { release } from "node:os";
 import { start } from "./start";
+import { waitForReady } from "./waitForReady";
 
 jest.mock("child_process", () => ({
   exec: jest.fn(),
@@ -19,6 +20,9 @@ jest.mock("../activate", () => ({
 }));
 jest.mock("../../delay", () => ({
   delay: jest.fn(),
+}));
+jest.mock("./waitForReady", () => ({
+  waitForReady: jest.fn(),
 }));
 
 const options = { timeout: 1234 };
@@ -72,6 +76,30 @@ describe("when starting VoiceOver", () => {
       { stdio: "ignore", timeout: DEFAULT_TIMEOUT },
     );
     expect(exec).not.toHaveBeenCalled();
+  });
+
+  test("should wait for VoiceOver to be ready before activating it on macOS 27 and later", async () => {
+    completeStarter();
+    await resultPromise;
+    jest.clearAllMocks();
+    jest.mocked(release).mockReturnValue("27.0.0");
+
+    await start(options);
+
+    expect(waitForReady).toHaveBeenCalledWith(options);
+    expect(jest.mocked(waitForReady).mock.invocationCallOrder[0]).toBeLessThan(
+      jest.mocked(activate).mock.invocationCallOrder[0],
+    );
+  });
+
+  test("should wait for VoiceOver to be ready before activating it before macOS 27", async () => {
+    completeStarter();
+    await resultPromise;
+
+    expect(waitForReady).toHaveBeenCalledWith(options);
+    expect(jest.mocked(waitForReady).mock.invocationCallOrder[0]).toBeLessThan(
+      jest.mocked(activate).mock.invocationCallOrder[0],
+    );
   });
 
   test("should reject when opening VoiceOver fails on macOS 27 and later", async () => {
