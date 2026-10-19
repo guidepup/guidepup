@@ -12,19 +12,17 @@ describe("isUnixSocket", () => {
     jest.clearAllMocks();
   });
 
-  describe.each`
-    isSocket | expected
-    ${true}  | ${true}
-    ${false} | ${false}
-  `("when the path isSocket() is $isSocket", ({ isSocket, expected }) => {
+  describe("when the path exists", () => {
+    const stubIsSocket = Symbol("test-is-socket");
+
     beforeEach(() => {
       jest.mocked(statSync).mockReturnValue({
-        isSocket: () => isSocket,
-      } as ReturnType<typeof statSync>);
+        isSocket: () => stubIsSocket,
+      } as unknown as ReturnType<typeof statSync>);
     });
 
-    it(`should return ${expected}`, () => {
-      expect(isUnixSocket(mockPath)).toBe(expected);
+    it("should return whether the path is a socket", () => {
+      expect(isUnixSocket(mockPath)).toBe(stubIsSocket);
     });
 
     it("should stat the path", () => {

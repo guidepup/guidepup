@@ -8,23 +8,23 @@ jest.mock("node:child_process", () => ({
 }));
 
 const mockDump = `
-# a comment
-orphan=true
+# test-comment
+test-orphan-key=true
 
-[speech]
-enable=true
-verbalize-punctuation=false
-voice-family='Default Voice'
+[test-section-1]
+test-true=true
+test-false=false
+test-string='test value'
 
-[voice]
-rate=100
-pitch=-5
-volume=1.5
-negative-volume=-0.5
-no-separator
-languages=['en', 'fr']
-empty=[]
-typed-empty=@as []
+[test-section-2]
+test-integer=100
+test-negative-integer=-5
+test-float=1.5
+test-negative-float=-0.5
+test-no-separator
+test-array=['test-item-1', 'test-item-2']
+test-empty-array=[]
+test-unparsed=@as []
 `;
 
 describe("getSettings", () => {
@@ -51,16 +51,16 @@ describe("getSettings", () => {
 
     it("should key each setting by its section and name, parsing the values", () => {
       expect(result).toEqual({
-        "speech/enable": true,
-        "speech/verbalize-punctuation": false,
-        "speech/voice-family": "Default Voice",
-        "voice/rate": 100,
-        "voice/pitch": -5,
-        "voice/volume": 1.5,
-        "voice/negative-volume": -0.5,
-        "voice/languages": ["en", "fr"],
-        "voice/empty": [],
-        "voice/typed-empty": "@as []",
+        "test-section-1/test-true": true,
+        "test-section-1/test-false": false,
+        "test-section-1/test-string": "test value",
+        "test-section-2/test-integer": 100,
+        "test-section-2/test-negative-integer": -5,
+        "test-section-2/test-float": 1.5,
+        "test-section-2/test-negative-float": -0.5,
+        "test-section-2/test-array": ["test-item-1", "test-item-2"],
+        "test-section-2/test-empty-array": [],
+        "test-section-2/test-unparsed": "@as []",
       });
     });
   });

@@ -207,7 +207,7 @@ describe("Orca", () => {
     });
 
     describe("when settings are provided", () => {
-      const settings = { "voice/rate": 50 };
+      const settings = { "test-key": Symbol("test-value") };
 
       beforeEach(async () => {
         await orca.start({ settings });
@@ -254,9 +254,9 @@ describe("Orca", () => {
     describe.each`
       step                     | fail
       ${"loading the settings"} | ${(e: Error) =>
-  jest.mocked(loadGuidepupSettings).mockImplementation(() => {
-    throw e;
-  })}
+        jest.mocked(loadGuidepupSettings).mockImplementation(() => {
+          throw e;
+        })}
       ${"starting the client"} | ${(e: Error) => jest.mocked(OrcaClientStub.start).mockRejectedValue(e)}
     `("when $step fails", ({ fail }) => {
       const stubError = new Error("test-error");
@@ -636,11 +636,13 @@ describe("Orca", () => {
       });
 
       it("should return the last phrase in the spoken phrase log", async () => {
+        const lastSpokenPhrase = Symbol("test-last-spoken-phrase");
+
         jest
           .mocked(OrcaClientStub.spokenPhraseLog)
-          .mockResolvedValue(["first", "last"]);
+          .mockResolvedValue([Symbol("test-spoken-phrase"), lastSpokenPhrase]);
 
-        expect(await orca[method]()).toBe("last");
+        expect(await orca[method]()).toBe(lastSpokenPhrase);
       });
 
       it("should return an empty string when nothing has been spoken", async () => {
@@ -659,7 +661,7 @@ describe("Orca", () => {
     });
 
     describe("when Orca is running", () => {
-      const log = ["first", "last"];
+      const log = Symbol("test-spoken-phrase-log");
 
       beforeEach(async () => {
         await orca.start();
@@ -698,7 +700,7 @@ describe("Orca", () => {
 
   describe("getSettings", () => {
     it("should return the settings", () => {
-      const settings = { "voice/rate": 100 };
+      const settings = { "test-key": Symbol("test-value") };
 
       jest.mocked(getSettings).mockReturnValue(settings);
 
@@ -708,10 +710,12 @@ describe("Orca", () => {
 
   describe("getSetting", () => {
     it("should return the setting", () => {
-      jest.mocked(getSetting).mockReturnValue(100);
+      const value = Symbol("test-value");
 
-      expect(orca.getSetting("voice/rate")).toBe(100);
-      expect(getSetting).toHaveBeenCalledWith("voice/rate");
+      jest.mocked(getSetting).mockReturnValue(value);
+
+      expect(orca.getSetting("test-key")).toBe(value);
+      expect(getSetting).toHaveBeenCalledWith("test-key");
     });
   });
 

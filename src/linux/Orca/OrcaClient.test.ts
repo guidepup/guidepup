@@ -100,10 +100,10 @@ const debug = base.extend("test") as unknown as jest.Mock & {
   enabled: boolean;
 };
 
-const mockDisplay = ":99";
-const mockDBusAddress = "unix:path=/tmp/test-dbus";
-const mockInstallationPath = "/test-installation-path";
-const mockRuntimeDirectory = "/tmp/guidepup-orca-test";
+const mockDisplay = "test-display";
+const mockDBusAddress = "test-dbus-address";
+const mockInstallationPath = "test-installation-path";
+const mockRuntimeDirectory = "test-runtime-directory";
 const mockSpeechdSocketPath = join(mockRuntimeDirectory, "speechd.sock");
 const mockGuidepupSocketPath = join(mockRuntimeDirectory, "guidepup.sock");
 const mockOrcaExecutable = join(mockInstallationPath, "bin", "orca");
@@ -148,12 +148,17 @@ class FakeSocket extends EventEmitter {
 
 type SocketBehaviour = "ready" | "error";
 
+const stubParameterizedCommandResult = Symbol(
+  "test-parameterized-command-result",
+);
+const stubRuntimeGetterResult = Symbol("test-runtime-getter-result");
+
 const interfaceStub = () => ({
   MoveToNextSibling: jest.fn().mockResolvedValue(undefined),
-  SetRate: jest.fn().mockResolvedValue("test-set-rate-result"),
+  SetRate: jest.fn().mockResolvedValue(stubParameterizedCommandResult),
   ToggleMonitor: jest.fn().mockResolvedValue(undefined),
   ToggleMouseReview: jest.fn().mockResolvedValue(undefined),
-  $readProp: jest.fn().mockResolvedValue("test-rate"),
+  $readProp: jest.fn().mockResolvedValue(stubRuntimeGetterResult),
   $writeProp: jest.fn().mockResolvedValue(undefined),
 });
 
@@ -532,7 +537,7 @@ describe("OrcaClient", () => {
     describe("X server", () => {
       describe("when DISPLAY is set", () => {
         beforeEach(async () => {
-          process.env.DISPLAY = ":42";
+          process.env.DISPLAY = "test-existing-display";
 
           await start();
         });
@@ -542,7 +547,7 @@ describe("OrcaClient", () => {
           expect(spawn).not.toHaveBeenCalledWith("Xvfb", expect.anything());
           expect(execFileSync).toHaveBeenCalledWith("xdpyinfo", [
             "-display",
-            ":42",
+            "test-existing-display",
           ]);
         });
       });
@@ -580,7 +585,7 @@ describe("OrcaClient", () => {
     describe("session D-Bus", () => {
       describe("when DBUS_SESSION_BUS_ADDRESS is set", () => {
         beforeEach(async () => {
-          process.env.DBUS_SESSION_BUS_ADDRESS = "unix:path=/tmp/existing";
+          process.env.DBUS_SESSION_BUS_ADDRESS = "test-existing-dbus-address";
 
           await start();
         });
@@ -592,7 +597,7 @@ describe("OrcaClient", () => {
             expect.anything(),
           );
           expect(sessionBus).toHaveBeenCalledWith({
-            busAddress: "unix:path=/tmp/existing",
+            busAddress: "test-existing-dbus-address",
           });
         });
       });
@@ -605,7 +610,10 @@ describe("OrcaClient", () => {
               const child = new FakeProcess(1);
 
               process.nextTick(() =>
-                child.emit(event, event === "error" ? new Error("x") : 1),
+                child.emit(
+                  event,
+                  event === "error" ? new Error("test-error") : 1,
+                ),
               );
 
               return child;
@@ -614,7 +622,10 @@ describe("OrcaClient", () => {
               const child = new FakeProcess(2);
 
               process.nextTick(() =>
-                child.emit(event, event === "error" ? new Error("x") : 1),
+                child.emit(
+                  event,
+                  event === "error" ? new Error("test-error") : 1,
+                ),
               );
 
               return child;
@@ -997,6 +1008,7 @@ describe("OrcaClient", () => {
       });
 
       it("should execute parameterized commands", async () => {
+        const stubParameter = Symbol("test-parameter");
         const service = client.service as unknown as {
           SpeechPresenter: {
             parameterizedCommands: {
@@ -1006,9 +1018,13 @@ describe("OrcaClient", () => {
         };
 
         await expect(
-          service.SpeechPresenter.parameterizedCommands.SetRate.execute(50),
-        ).resolves.toBe("test-set-rate-result");
-        expect(interfaces.SpeechPresenter.SetRate).toHaveBeenCalledWith(50);
+          service.SpeechPresenter.parameterizedCommands.SetRate.execute(
+            stubParameter,
+          ),
+        ).resolves.toBe(stubParameterizedCommandResult);
+        expect(interfaces.SpeechPresenter.SetRate).toHaveBeenCalledWith(
+          stubParameter,
+        );
       });
 
       it("should read runtime properties", async () => {
@@ -1020,7 +1036,7 @@ describe("OrcaClient", () => {
 
         await expect(
           service.SpeechPresenter.runtimeGetters.Rate.get(),
-        ).resolves.toBe("test-rate");
+        ).resolves.toBe(stubRuntimeGetterResult);
         expect(interfaces.SpeechPresenter.$readProp).toHaveBeenCalledWith(
           "Rate",
         );
@@ -1035,11 +1051,13 @@ describe("OrcaClient", () => {
           };
         };
 
-        await service.SpeechPresenter.runtimeSetters.Rate.set(50);
+        const stubValue = Symbol("test-value");
+
+        await service.SpeechPresenter.runtimeSetters.Rate.set(stubValue);
 
         expect(interfaces.SpeechPresenter.$writeProp).toHaveBeenCalledWith(
           "Rate",
-          50,
+          stubValue,
         );
       });
 
@@ -1151,7 +1169,7 @@ describe("OrcaClient", () => {
       describe("when the AT-SPI process group is already gone", () => {
         it("should still stop", async () => {
           processKillSpy.mockImplementation(() => {
-            throw new Error("ESRCH");
+            throw new Error("test-error");
           });
 
           await expect(client.stop()).resolves.toBeUndefined();
@@ -1341,15 +1359,16 @@ describe("OrcaClient", () => {
       });
 
       it("should run the action without capturing speech", async () => {
+        const stubResult = Symbol("test-result");
         const action = jest.fn(async () => {
           speak("ignored");
 
-          return "test-result";
+          return stubResult;
         });
 
         await expect(client.enqueueAndTap(action)).resolves.toEqual({
           itemText: "",
-          result: "test-result",
+          result: stubResult,
           spokenPhrase: "",
         });
       });

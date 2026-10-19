@@ -5,22 +5,24 @@ jest.mock("./getSettings", () => ({
   getSettings: jest.fn(),
 }));
 
+const stubValue = Symbol("test-value");
+
 describe("getSetting", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     jest.mocked(getSettings).mockReturnValue({
-      "speech/enable": true,
-      "voice/rate": 100,
+      "test-key": stubValue,
+      "test-other-key": Symbol("test-other-value"),
     });
   });
 
   it("should return the value of the requested setting", () => {
-    expect(getSetting("voice/rate")).toBe(100);
+    expect(getSetting("test-key")).toBe(stubValue);
   });
 
   it("should return undefined for a setting that is not set", () => {
-    expect(getSetting("voice/pitch")).toBeUndefined();
+    expect(getSetting("test-unset-key")).toBeUndefined();
   });
 
   describe("when the settings cannot be read", () => {
@@ -33,7 +35,7 @@ describe("getSetting", () => {
     });
 
     it("should throw", () => {
-      expect(() => getSetting("voice/rate")).toThrow(stubError);
+      expect(() => getSetting("test-key")).toThrow(stubError);
     });
   });
 });

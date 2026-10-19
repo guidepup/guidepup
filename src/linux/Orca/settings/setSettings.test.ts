@@ -13,36 +13,36 @@ describe("setSettings", () => {
   });
 
   it.each`
-    description                       | value                         | expected
-    ${"a boolean"}                    | ${false}                      | ${"false"}
-    ${"a number"}                     | ${1.5}                        | ${"1.5"}
-    ${"a string"}                     | ${"Default Voice"}            | ${"'Default Voice'"}
-    ${"a string needing escapes"}     | ${"it's a \\ path"}           | ${"'it\\'s a \\\\ path'"}
-    ${"an array"}                     | ${["en", "fr"]}               | ${"['en', 'fr']"}
-    ${"an empty array"}               | ${[]}                         | ${"[]"}
-    ${"a dictionary of mixed values"} | ${{ family: "x", rate: 100 }} | ${"{'family': 'x', 'rate': 100}"}
+    description                       | value                                                | expected
+    ${"a boolean"}                    | ${false}                                             | ${"false"}
+    ${"a number"}                     | ${1.5}                                               | ${"1.5"}
+    ${"a string"}                     | ${"test value"}                                      | ${"'test value'"}
+    ${"a string needing escapes"}     | ${"it's a \\ path"}                                  | ${"'it\\'s a \\\\ path'"}
+    ${"an array"}                     | ${["test-item-1", "test-item-2"]}                    | ${"['test-item-1', 'test-item-2']"}
+    ${"an empty array"}               | ${[]}                                                | ${"[]"}
+    ${"a dictionary of mixed values"} | ${{ "test-key-1": "test-value", "test-key-2": 100 }} | ${"{'test-key-1': 'test-value', 'test-key-2': 100}"}
   `("should write $description as GVariant", ({ value, expected }) => {
-    setSettings({ "voice/test": value });
+    setSettings({ "test-key": value });
 
     expect(execFileSync).toHaveBeenCalledWith("dconf", [
       "write",
-      `${ORCA_GUIDEPUP_DCONF_PATH_PREFIX}voice/test`,
+      `${ORCA_GUIDEPUP_DCONF_PATH_PREFIX}test-key`,
       expected,
     ]);
   });
 
   it("should write every setting", () => {
-    setSettings({ "speech/enable": true, "voice/rate": 100 });
+    setSettings({ "test-key-1": true, "test-key-2": 100 });
 
     expect(execFileSync).toHaveBeenCalledTimes(2);
     expect(execFileSync).toHaveBeenNthCalledWith(1, "dconf", [
       "write",
-      `${ORCA_GUIDEPUP_DCONF_PATH_PREFIX}speech/enable`,
+      `${ORCA_GUIDEPUP_DCONF_PATH_PREFIX}test-key-1`,
       "true",
     ]);
     expect(execFileSync).toHaveBeenNthCalledWith(2, "dconf", [
       "write",
-      `${ORCA_GUIDEPUP_DCONF_PATH_PREFIX}voice/rate`,
+      `${ORCA_GUIDEPUP_DCONF_PATH_PREFIX}test-key-2`,
       "100",
     ]);
   });
@@ -53,7 +53,7 @@ describe("setSettings", () => {
     ${"undefined"} | ${undefined}
   `("when a value is $description", ({ value }) => {
     it("should throw with an unsupported value cause", () => {
-      expect(() => setSettings({ "voice/test": value })).toThrow(
+      expect(() => setSettings({ "test-key": value })).toThrow(
         expect.objectContaining({
           message: ERR_ORCA_FAILED_TO_SET_SETTING,
           cause: expect.any(TypeError),
@@ -63,7 +63,7 @@ describe("setSettings", () => {
 
     it("should not write it", () => {
       try {
-        setSettings({ "voice/test": value });
+        setSettings({ "test-key": value });
       } catch {
         // swallow
       }
@@ -82,7 +82,7 @@ describe("setSettings", () => {
     });
 
     it("should throw with the cause", () => {
-      expect(() => setSettings({ "voice/rate": 100 })).toThrow(
+      expect(() => setSettings({ "test-key": 100 })).toThrow(
         expect.objectContaining({
           message: ERR_ORCA_FAILED_TO_SET_SETTING,
           cause: stubError,

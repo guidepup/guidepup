@@ -3,24 +3,24 @@ import { keyCodeCommands } from "./keyCodeCommands";
 jest.mock("./serviceDefinition", () => ({
   serviceDefinition: {
     modules: {
-      ObjectNavigator: {
-        objectPath: "/org/gnome/Orca1/Service/ObjectNavigator",
+      "test-service-1": {
+        objectPath: "test-object-path-1",
         commands: {
-          MoveToNextSibling: {
-            description: "Moves to the next sibling.",
-            representation: "ORCA-Ctrl-Right",
+          "test-command-1": {
+            description: "test-description-1",
+            representation: "test-representation-1",
           },
-          PerformAction: {
-            description: "Performs the default action.",
+          "test-command-without-representation": {
+            description: "test-description",
           },
         },
       },
-      StructuralNavigator: {
-        objectPath: "/org/gnome/Orca1/Service/StructuralNavigator",
+      "test-service-2": {
+        objectPath: "test-object-path-2",
         commands: {
-          NextHeading: {
-            description: "Goes to next heading.",
-            representation: "H",
+          "test-command-2": {
+            description: "test-description-2",
+            representation: "test-representation-2",
           },
         },
       },
@@ -31,17 +31,17 @@ jest.mock("./serviceDefinition", () => ({
 describe("keyCodeCommands", () => {
   it("should include every command that has a keyboard representation, with its service", () => {
     expect(keyCodeCommands).toEqual({
-      MoveToNextSibling: {
-        command: "MoveToNextSibling",
-        description: "Moves to the next sibling.",
-        representation: "ORCA-Ctrl-Right",
-        service: "ObjectNavigator",
+      "test-command-1": {
+        command: "test-command-1",
+        description: "test-description-1",
+        representation: "test-representation-1",
+        service: "test-service-1",
       },
-      NextHeading: {
-        command: "NextHeading",
-        description: "Goes to next heading.",
-        representation: "H",
-        service: "StructuralNavigator",
+      "test-command-2": {
+        command: "test-command-2",
+        description: "test-description-2",
+        representation: "test-representation-2",
+        service: "test-service-2",
       },
     });
   });
