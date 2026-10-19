@@ -73,12 +73,6 @@ async function terminate(
     child.once("exit", onExit);
   });
 
-  if (child.exitCode !== null || child.signalCode !== null) {
-    child.removeListener("exit", onExit);
-
-    return;
-  }
-
   let timer: NodeJS.Timeout | undefined;
 
   try {
@@ -88,7 +82,7 @@ async function terminate(
 
     await Promise.race([
       exited,
-      new Promise<void>((resolve) => {
+      new Promise<void>((resolve, reject) => {
         timer = setTimeout(() => {
           debug(`${name} did not exit after SIGTERM, sending SIGKILL`);
 
@@ -103,8 +97,10 @@ async function terminate(
               return;
             }
 
-            throw new Error(
-              `Failed to terminate ${name} process within ${PROCESS_EXIT_TIMEOUT * 2}ms`,
+            reject(
+              new Error(
+                `Failed to terminate ${name} process within ${PROCESS_EXIT_TIMEOUT * 2}ms`,
+              ),
             );
           }, PROCESS_EXIT_TIMEOUT);
         }, PROCESS_EXIT_TIMEOUT);

@@ -54,6 +54,13 @@ type UnionToIntersection<T> = (
   ? I
   : never;
 
+// TODO: namespace the keys by service. Keyed by command name alone, commands
+// that share a name across services collide and only one is reachable, e.g.
+// `ToggleEnabled` (CaretNavigator, TableNavigator) and `SayAll`
+// (FlatReviewPresenter, SayAllPresenter).
+// TODO: generate this shape from the Orca D-Bus service at build time, or
+// hardcode the structure needed, rather than reshaping the
+// `serviceDefinition` fixture at load.
 function createKeyCodeCommands<
   Modules extends Record<
     string,

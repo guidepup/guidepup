@@ -34,6 +34,5 @@ export const ERR_ORCA_SPEECHD_CANNOT_CONNECT =
   "Cannot connect to Guidepup Speech Dispatcher socket";
 
 export const ERR_ORCA_FAILED_TO_GET_SETTINGS = "Failed to get Orca settings";
-export const ERR_ORCA_FAILED_TO_GET_SETTING = "Failed to get Orca setting";
 export const ERR_ORCA_FAILED_TO_SET_SETTING = "Failed to set Orca setting";
 export const ERR_ORCA_UNSUPPORTED_SETTING = "Unsupported Orca setting: ";
