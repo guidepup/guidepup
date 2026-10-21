@@ -92,12 +92,21 @@ const OrcaClientStub = {
   start: jest.fn(),
   stop: jest.fn(),
   enqueueAndTap: jest.fn(),
+  generateKeyboardEvent: jest.fn(),
   spokenPhraseLog: jest.fn(),
   clearSpokenPhraseLog: jest.fn(),
   service: serviceStub,
 };
 
 const captureOptions = { capture: true } as const;
+
+/**
+ * AT-SPI `KeySynthType` values.
+ */
+const SYM = 3;
+const STRING = 4;
+const LOCKMODIFIERS = 5;
+const UNLOCKMODIFIERS = 6;
 
 /**
  * Runs the action passed to the most recent `enqueueAndTap` call.
@@ -254,9 +263,9 @@ describe("Orca", () => {
     describe.each`
       step                     | fail
       ${"loading the settings"} | ${(e: Error) =>
-        jest.mocked(loadGuidepupSettings).mockImplementation(() => {
-          throw e;
-        })}
+  jest.mocked(loadGuidepupSettings).mockImplementation(() => {
+    throw e;
+  })}
       ${"starting the client"} | ${(e: Error) => jest.mocked(OrcaClientStub.start).mockRejectedValue(e)}
     `("when $step fails", ({ fail }) => {
       const stubError = new Error("test-error");
@@ -493,20 +502,113 @@ describe("Orca", () => {
     });
   });
 
-  describe.each(["press", "type"] as const)("%s", (method) => {
+  describe("press", () => {
     describe("when Orca is not running", () => {
       it("should throw an error", async () => {
-        await expect(orca[method]()).rejects.toThrow(ERR_ORCA_NOT_RUNNING);
+        await expect(orca.press("Tab")).rejects.toThrow(ERR_ORCA_NOT_RUNNING);
       });
     });
 
     describe("when Orca is running", () => {
       beforeEach(async () => {
         await orca.start();
+
+        jest.clearAllMocks();
       });
 
-      it("should throw a not implemented error", async () => {
-        await expect(orca[method]()).rejects.toThrow("not implemented");
+      it("should enqueue an action with the options", async () => {
+        await orca.press("Tab", captureOptions);
+
+        expect(OrcaClientStub.enqueueAndTap).toHaveBeenCalledWith(
+          expect.any(Function),
+          captureOptions,
+        );
+      });
+
+      it("should generate the key in the action", async () => {
+        await orca.press("Tab");
+
+        expect(OrcaClientStub.generateKeyboardEvent).not.toHaveBeenCalled();
+
+        await runEnqueuedAction();
+
+        expect(OrcaClientStub.generateKeyboardEvent.mock.calls).toEqual([
+          [0xff09, "", SYM],
+        ]);
+      });
+
+      describe.each`
+        key                  | mask
+        ${"Control+f"}       | ${4}
+        ${"Control+Shift+f"} | ${5}
+        ${"F"}               | ${1}
+      `("when the key is $key", ({ key, mask }) => {
+        it("should hold the modifiers around the key in the action", async () => {
+          await orca.press(key);
+          await runEnqueuedAction();
+
+          expect(OrcaClientStub.generateKeyboardEvent.mock.calls).toEqual([
+            [mask, "", LOCKMODIFIERS],
+            [0x66, "", SYM],
+            [mask, "", UNLOCKMODIFIERS],
+          ]);
+        });
+      });
+
+      describe("when generating the key fails", () => {
+        it("should release the modifiers and throw from the action", async () => {
+          const stubError = new Error("test-error");
+
+          OrcaClientStub.generateKeyboardEvent
+            .mockResolvedValueOnce(undefined)
+            .mockRejectedValueOnce(stubError);
+
+          await orca.press("Control+f");
+
+          await expect(runEnqueuedAction()).rejects.toBe(stubError);
+          expect(OrcaClientStub.generateKeyboardEvent).toHaveBeenLastCalledWith(
+            4,
+            "",
+            UNLOCKMODIFIERS,
+          );
+        });
+      });
+    });
+  });
+
+  describe("type", () => {
+    describe("when Orca is not running", () => {
+      it("should throw an error", async () => {
+        await expect(orca.type("test-text")).rejects.toThrow(
+          ERR_ORCA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when Orca is running", () => {
+      beforeEach(async () => {
+        await orca.start();
+
+        jest.clearAllMocks();
+
+        await orca.type("test-text", captureOptions);
+      });
+
+      it("should enqueue an action with the options", () => {
+        expect(OrcaClientStub.enqueueAndTap).toHaveBeenCalledWith(
+          expect.any(Function),
+          captureOptions,
+        );
+      });
+
+      it("should generate the text in the action", async () => {
+        expect(OrcaClientStub.generateKeyboardEvent).not.toHaveBeenCalled();
+
+        await runEnqueuedAction();
+
+        expect(OrcaClientStub.generateKeyboardEvent.mock.calls).toEqual([
+          [0, "test-text", STRING],
+        ]);
       });
     });
   });
@@ -803,8 +905,6 @@ describe("Orca", () => {
       "act",
       "interact",
       "stopInteracting",
-      "press",
-      "type",
       "click",
       "lastSpokenPhrase",
       "itemText",
@@ -814,6 +914,16 @@ describe("Orca", () => {
       "clearItemTextLog",
     ] as const)("should throw when calling %s", async (method) => {
       await expect(orca[method]()).rejects.toThrow(ERR_ORCA_NOT_RUNNING);
+    });
+
+    it("should throw when calling press", async () => {
+      await expect(orca.press("Tab")).rejects.toThrow(ERR_ORCA_NOT_RUNNING);
+    });
+
+    it("should throw when calling type", async () => {
+      await expect(orca.type("test-text")).rejects.toThrow(
+        ERR_ORCA_NOT_RUNNING,
+      );
     });
 
     it("should throw when calling perform", async () => {

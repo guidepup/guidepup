@@ -111,6 +111,7 @@ const AT_SPI_LAUNCHER = "/usr/libexec/at-spi-bus-launcher";
 const AT_SPI_LAUNCHER_FALLBACK = "/usr/lib/at-spi2-core/at-spi-bus-launcher";
 const ORCA_SERVICE = "org.gnome.Orca1.Service";
 const AT_SPI_SERVICE = "org.a11y.Bus";
+const mockAtSpiBusAddress = "test-at-spi-bus-address";
 
 class FakeProcess extends EventEmitter {
   stdout = new EventEmitter();
@@ -177,6 +178,11 @@ describe("OrcaClient", () => {
     nameHasOwner: jest.Mock;
   };
   let orcaServiceStub: { getInterface: jest.Mock };
+  let a11yBusInterfaceStub: { GetAddress: jest.Mock };
+  let a11yServiceStub: { getInterface: jest.Mock };
+  let deviceEventControllerStub: { GenerateKeyboardEvent: jest.Mock };
+  let atSpiRegistryStub: { getInterface: jest.Mock };
+  let atSpiBusStub: { close: jest.Mock; getService: jest.Mock };
   let processKillSpy: jest.SpyInstance;
 
   const lastProcess = (command: string) => processes[command]?.at(-1);
@@ -272,22 +278,50 @@ describe("OrcaClient", () => {
       return socket;
     }) as unknown as typeof connect);
 
+    a11yBusInterfaceStub = {
+      GetAddress: jest.fn().mockResolvedValue(mockAtSpiBusAddress),
+    };
+
+    a11yServiceStub = {
+      getInterface: jest.fn().mockResolvedValue(a11yBusInterfaceStub),
+    };
+
     orcaServiceStub = {
       getInterface: jest.fn(async (_objectPath: string, name: string) => {
         return interfaces[name.replace("org.gnome.Orca1.", "")];
       }),
     };
 
+    deviceEventControllerStub = {
+      GenerateKeyboardEvent: jest.fn().mockResolvedValue(undefined),
+    };
+
+    atSpiRegistryStub = {
+      getInterface: jest.fn().mockResolvedValue(deviceEventControllerStub),
+    };
+
+    atSpiBusStub = {
+      close: jest.fn().mockResolvedValue(undefined),
+      getService: jest.fn().mockReturnValue(atSpiRegistryStub),
+    };
+
     busStub = {
       close: jest.fn().mockResolvedValue(undefined),
-      getService: jest.fn().mockReturnValue(orcaServiceStub),
+      getService: jest.fn((name: string) =>
+        name === AT_SPI_SERVICE ? a11yServiceStub : orcaServiceStub,
+      ),
       listNames: jest.fn().mockResolvedValue([]),
       nameHasOwner: jest.fn().mockResolvedValue(true),
     };
 
     jest
       .mocked(sessionBus)
-      .mockReturnValue(busStub as unknown as ReturnType<typeof sessionBus>);
+      .mockImplementation(
+        ({ busAddress }) =>
+          (busAddress === mockAtSpiBusAddress
+            ? atSpiBusStub
+            : busStub) as unknown as ReturnType<typeof sessionBus>,
+      );
     jest.mocked(execFileSync).mockReturnValue(Buffer.from(""));
     jest.mocked(existsSync).mockReturnValue(true);
     jest.mocked(mkdtempSync).mockReturnValue(mockRuntimeDirectory);
@@ -357,6 +391,24 @@ describe("OrcaClient", () => {
           },
         );
         expect(busStub.nameHasOwner).toHaveBeenCalledWith(AT_SPI_SERVICE);
+      });
+
+      it("should connect to the AT-SPI device event controller on the accessibility bus", () => {
+        expect(busStub.getService).toHaveBeenCalledWith(AT_SPI_SERVICE);
+        expect(a11yServiceStub.getInterface).toHaveBeenCalledWith(
+          "/org/a11y/bus",
+          AT_SPI_SERVICE,
+        );
+        expect(sessionBus).toHaveBeenCalledWith({
+          busAddress: mockAtSpiBusAddress,
+        });
+        expect(atSpiBusStub.getService).toHaveBeenCalledWith(
+          "org.a11y.atspi.Registry",
+        );
+        expect(atSpiRegistryStub.getInterface).toHaveBeenCalledWith(
+          "/org/a11y/atspi/registry/deviceeventcontroller",
+          "org.a11y.atspi.DeviceEventController",
+        );
       });
 
       it("should start Speech Dispatcher with the session sockets", () => {
@@ -1137,6 +1189,10 @@ describe("OrcaClient", () => {
           expect(busStub.close).toHaveBeenCalled();
         });
 
+        it("should close the AT-SPI bus connection", () => {
+          expect(atSpiBusStub.close).toHaveBeenCalled();
+        });
+
         it("should leave the client not running", () => {
           expect(() => client.service).toThrow(ERR_ORCA_NOT_RUNNING);
         });
@@ -1552,6 +1608,44 @@ describe("OrcaClient", () => {
         const stopPromise = client.stop();
 
         expect(() => client.enqueueAndTap(jest.fn())).toThrow(
+          ERR_ORCA_NOT_RUNNING,
+        );
+
+        await stopPromise;
+      });
+    });
+  });
+
+  describe("generateKeyboardEvent", () => {
+    describe("when not started", () => {
+      it("should throw", async () => {
+        await expect(client.generateKeyboardEvent(1, "", 3)).rejects.toThrow(
+          ERR_ORCA_NOT_RUNNING,
+        );
+      });
+    });
+
+    describe("when started", () => {
+      beforeEach(async () => {
+        await start();
+      });
+
+      it("should generate the keyboard event with the device event controller", async () => {
+        await client.generateKeyboardEvent(0, "test-text", 4);
+
+        expect(
+          deviceEventControllerStub.GenerateKeyboardEvent,
+        ).toHaveBeenCalledWith(0, "test-text", 4);
+      });
+    });
+
+    describe("when stopping", () => {
+      it("should throw", async () => {
+        await start();
+
+        const stopPromise = client.stop();
+
+        await expect(client.generateKeyboardEvent(1, "", 3)).rejects.toThrow(
           ERR_ORCA_NOT_RUNNING,
         );
 

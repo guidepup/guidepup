@@ -20,8 +20,10 @@ import type { CommandOptions } from "../../CommandOptions";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
 import { isOrcaInstalled } from "./isOrcaInstalled";
-import { notImplemented } from "../../notImplemented";
+import { KeyCodes } from "../KeyCodes";
+import { Modifiers } from "../Modifiers";
 import { OrcaClient } from "./OrcaClient";
+import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
 import type { StartOptions } from "../../StartOptions";
 
@@ -33,6 +35,16 @@ type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const manifest = require("../../../manifest.json");
+
+/**
+ * AT-SPI `KeySynthType` values used to generate real keyboard input.
+ */
+const KeySynthType = {
+  SYM: 3,
+  STRING: 4,
+  LOCKMODIFIERS: 5,
+  UNLOCKMODIFIERS: 6,
+} as const;
 
 /**
  * Class for controlling the Orca screen reader on Linux.
@@ -715,28 +727,126 @@ export class Orca implements IScreenReader {
     }, options);
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented.
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-press)
+   *
+   * Press a key on the focused item, as real keyboard input that Orca hears
+   * like a person's keyboard.
+   *
+   * `key` can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
+   * value or a single character to generate the text for. A superset of the `key` values can be found
+   * [on the MDN key values page](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   *
+   * `F1` - `F12`, `Digit0` - `Digit9`, `KeyA` - `KeyZ`, `Backquote`, `Minus`, `Equal`, `Backslash`, `Backspace`, `Tab`,
+   * `Delete`, `Escape`, `ArrowDown`, `End`, `Enter`, `Home`, `Insert`, `PageDown`, `PageUp`, `ArrowRight`, `ArrowUp`, etc.
+   *
+   * Following modification shortcuts are also supported: `Shift`, `Control`, `Alt`, `Meta`.
+   *
+   * Holding down `Shift` will type the text that corresponds to the `key` in the upper case.
+   *
+   * If `key` is a single character, it is case-sensitive, so the values `a` and `A` will generate different respective
+   * texts.
+   *
+   * Shortcuts such as `key: "Control+f"` or `key: "Control+Shift+f"` are supported as well. When specified with the
+   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Move to the next focusable item.
+   *   await unstable_orca.press("Tab");
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
+   * @param {object} [options] Additional options.
    */
-  async press(): Promise<void> {
+  async press(key: string, options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    const { keyCode, modifiers } = parseKey<{
+      keyCode: number[];
+      modifiers: number[];
+    }>(key, Modifiers, KeyCodes);
+
+    const modifierMask = modifiers.reduce(
+      (mask, modifier) => mask | modifier,
+      0,
+    );
+
+    await this.#client.enqueueAndTap(async () => {
+      if (modifierMask) {
+        await this.#client.generateKeyboardEvent(
+          modifierMask,
+          "",
+          KeySynthType.LOCKMODIFIERS,
+        );
+      }
+
+      try {
+        for (const keysym of keyCode) {
+          await this.#client.generateKeyboardEvent(
+            keysym,
+            "",
+            KeySynthType.SYM,
+          );
+        }
+      } finally {
+        if (modifierMask) {
+          await this.#client.generateKeyboardEvent(
+            modifierMask,
+            "",
+            KeySynthType.UNLOCKMODIFIERS,
+          );
+        }
+      }
+    }, options);
   }
 
-  // TODO: implementation.
   /**
-   * Not implemented.
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-type)
+   *
+   * Type text into the focused item, as real keyboard input that Orca hears
+   * like a person's keyboard.
+   *
+   * To press a special key, like `Control` or `ArrowDown`, use `press(key[, options])`.
+   *
+   * ```ts
+   * import { unstable_orca } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start Orca.
+   *   await unstable_orca.start();
+   *
+   *   // Type a username and key Enter.
+   *   await unstable_orca.type("my-username");
+   *   await unstable_orca.press("Enter");
+   *
+   *   // Stop Orca.
+   *   await unstable_orca.stop();
+   * })();
+   * ```
+   *
+   * @param {string} text Text to type into the focused item.
+   * @param {object} [options] Additional options.
    */
-  async type(): Promise<void> {
+  async type(text: string, options?: CaptureCommandOptions): Promise<void> {
     if (!this.#started || this.#stopping) {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    notImplemented();
+    await this.#client.enqueueAndTap(async () => {
+      await this.#client.generateKeyboardEvent(0, text, KeySynthType.STRING);
+    }, options);
   }
 
   /**
