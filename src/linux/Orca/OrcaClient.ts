@@ -47,6 +47,18 @@ import { waitForCondition } from "../../waitForCondition";
 
 const debug = base.extend("OrcaClient");
 
+interface AtSpiAccessibilityBus {
+  GetAddress(): PromiseLike<string>;
+}
+
+interface AtSpiDeviceEventController {
+  GenerateKeyboardEvent(
+    keycode: number,
+    keystring: string,
+    synthType: number,
+  ): PromiseLike<void>;
+}
+
 const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
@@ -135,6 +147,8 @@ export class OrcaClient extends EventEmitter {
   #sessionDBus: MessageBus = null;
 
   #atSpiProcess: ChildProcess = null;
+  #atSpiBus: MessageBus = null;
+  #atSpiDeviceEventController: AtSpiDeviceEventController = null;
 
   #runtimeDirectory: string = null;
 
@@ -733,6 +747,56 @@ export class OrcaClient extends EventEmitter {
     );
   }
 
+  /**
+   * Connect to the AT-SPI device event controller, which generates real
+   * keyboard input (XTest under X11) that Orca hears like a person's keyboard.
+   */
+  async #connectAtSpiDeviceEventController(): Promise<void> {
+    debug("Connecting to AT-SPI device event controller...");
+
+    const a11yBus = await this.#sessionDBus
+      .getService(AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME)
+      .getInterface<AtSpiAccessibilityBus>(
+        "/org/a11y/bus",
+        AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
+      );
+
+    const address: string = await a11yBus.GetAddress();
+
+    debug(`AT_SPI_BUS_ADDRESS=${address}`);
+
+    this.#atSpiBus = sessionBus({ busAddress: address });
+    this.#atSpiDeviceEventController = await this.#atSpiBus
+      .getService("org.a11y.atspi.Registry")
+      .getInterface<AtSpiDeviceEventController>(
+        "/org/a11y/atspi/registry/deviceeventcontroller",
+        "org.a11y.atspi.DeviceEventController",
+      );
+  }
+
+  /**
+   * Generate a real keyboard event.
+   *
+   * @param {number} keycode Keycode, keysym or modifier mask, depending on the synth type.
+   * @param {string} keystring Text to type for the string synth type, otherwise empty.
+   * @param {number} synthType An AT-SPI `KeySynthType`.
+   */
+  async generateKeyboardEvent(
+    keycode: number,
+    keystring: string,
+    synthType: number,
+  ): Promise<void> {
+    if (!this.#started || this.#stopping) {
+      throw new Error(ERR_ORCA_NOT_RUNNING);
+    }
+
+    await this.#atSpiDeviceEventController.GenerateKeyboardEvent(
+      keycode,
+      keystring,
+      synthType,
+    );
+  }
+
   async start(options?: Pick<CommandOptions, "capture">) {
     if (this.#started || this.#starting) {
       return;
@@ -747,6 +811,7 @@ export class OrcaClient extends EventEmitter {
       await this.#ensureXServer();
       await this.#ensureDBus();
       await this.#ensureAtSpi();
+      await this.#connectAtSpiDeviceEventController();
       await this.#startSpeechd();
       await this.#connectSpeechdSocket();
       await this.#startOrca();
@@ -800,7 +865,11 @@ export class OrcaClient extends EventEmitter {
     this.#xvfbDisplay = null;
     this.#xvfbProcess = null;
 
+    await this.#atSpiBus?.close();
     await this.#sessionDBus?.close();
+
+    this.#atSpiBus = null;
+    this.#atSpiDeviceEventController = null;
 
     this.#sessionDBusAddress = null;
     this.#sessionDBusProcess = null;
