@@ -43,6 +43,7 @@ import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
 import { serviceDefinition } from "./serviceDefinition";
 import { tmpdir } from "node:os";
+import { waitForCondition } from "../../waitForCondition";
 
 const debug = base.extend("OrcaClient");
 
@@ -212,32 +213,20 @@ export class OrcaClient extends EventEmitter {
 
     debug(`DISPLAY=${this.#xvfbDisplay}`);
 
-    const startTime = Date.now();
-
-    return new Promise((resolve, reject) => {
-      const poll = async () => {
-        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
-          reject(new Error(ERR_ORCA_X_SERVER_TIMEOUT));
-
-          return;
-        }
-
+    await waitForCondition(
+      () => {
         debug("Polling for X Server running");
 
-        try {
-          execFileSync("xdpyinfo", ["-display", this.#xvfbDisplay]);
-          resolve();
+        execFileSync("xdpyinfo", ["-display", this.#xvfbDisplay]);
 
-          return;
-        } catch {
-          // Swallow
-        }
-
-        setTimeout(poll, POLL_INTERVAL);
-      };
-
-      poll();
-    });
+        return true;
+      },
+      {
+        pollInterval: POLL_INTERVAL,
+        pollTimeout: MAX_POLL_TIMEOUT,
+        timeoutErrorMessage: ERR_ORCA_X_SERVER_TIMEOUT,
+      },
+    );
   }
 
   async #ensureDBus(): Promise<void> {
@@ -293,36 +282,23 @@ export class OrcaClient extends EventEmitter {
       busAddress: this.#sessionDBusAddress,
     });
 
-    const startTime = Date.now();
-
-    return new Promise((resolve, reject) => {
-      const poll = async () => {
-        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
-          reject(new Error(ERR_ORCA_DBUS_CONNECTION_TIMEOUT));
-
-          return;
-        }
-
+    await waitForCondition(
+      async () => {
         debug("Polling for D-Bus connectivity");
 
-        try {
-          await this.#sessionDBus.listNames();
+        await this.#sessionDBus.listNames();
 
-          resolve();
-
-          return;
-        } catch {
-          // Swallow
-        }
-
-        setTimeout(poll, POLL_INTERVAL);
-      };
-
-      poll();
-    });
+        return true;
+      },
+      {
+        pollInterval: POLL_INTERVAL,
+        pollTimeout: MAX_POLL_TIMEOUT,
+        timeoutErrorMessage: ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
+      },
+    );
   }
 
-  #ensureAtSpi() {
+  async #ensureAtSpi(): Promise<void> {
     debug("Ensuring AT-SPI D-Bus running...");
 
     if (!isAtSpiRunning()) {
@@ -365,42 +341,25 @@ export class OrcaClient extends EventEmitter {
       });
     }
 
-    const startTime = Date.now();
+    await waitForCondition(
+      async () => {
+        debug(
+          `Polling for '${AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME}' name ownership`,
+        );
 
-    return new Promise<void>((resolve, reject) => {
-      const poll = async () => {
-        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
-          reject(new Error(ERR_ORCA_AT_SPI_SERVICE_TIMEOUT));
-
-          return;
-        }
-
-        try {
-          debug(
-            `Polling for '${AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME}' name ownership`,
-          );
-
-          const hasOwner = await this.#sessionDBus.nameHasOwner(
-            AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
-          );
-
-          if (hasOwner) {
-            resolve();
-
-            return;
-          }
-        } catch {
-          // Swallow
-        }
-
-        setTimeout(poll, POLL_INTERVAL);
-      };
-
-      poll();
-    });
+        return await this.#sessionDBus.nameHasOwner(
+          AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
+        );
+      },
+      {
+        pollInterval: POLL_INTERVAL,
+        pollTimeout: MAX_POLL_TIMEOUT,
+        timeoutErrorMessage: ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
+      },
+    );
   }
 
-  #startSpeechd() {
+  async #startSpeechd(): Promise<void> {
     debug("Starting Speech Dispatcher");
 
     const installationPath = getOrcaInstallationPath();
@@ -466,33 +425,18 @@ export class OrcaClient extends EventEmitter {
 
     debug(`SPEECHD_ADDRESS=${this.#speechdAddress}`);
 
-    const startTime = Date.now();
+    await waitForCondition(
+      () => {
+        debug(`Polling for '${speechdSocketPath}' unix socket existence`);
 
-    return new Promise<void>((resolve, reject) => {
-      const poll = () => {
-        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
-          reject(new Error(ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT));
-
-          return;
-        }
-
-        try {
-          debug(`Polling for '${speechdSocketPath}' unix socket existence`);
-
-          if (isUnixSocket(speechdSocketPath)) {
-            resolve();
-
-            return;
-          }
-        } catch {
-          // Swallow
-        }
-
-        setTimeout(poll, POLL_INTERVAL);
-      };
-
-      poll();
-    });
+        return isUnixSocket(speechdSocketPath);
+      },
+      {
+        pollInterval: POLL_INTERVAL,
+        pollTimeout: MAX_POLL_TIMEOUT,
+        timeoutErrorMessage: ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
+      },
+    );
   }
 
   #speechdDisconnect() {
@@ -611,7 +555,7 @@ export class OrcaClient extends EventEmitter {
     });
   }
 
-  #startOrca() {
+  async #startOrca(): Promise<void> {
     debug("Starting Orca");
 
     const installationPath = getOrcaInstallationPath();
@@ -666,39 +610,22 @@ export class OrcaClient extends EventEmitter {
       debug(`[orca] exited with code=${code}, signal=${signal}`);
     });
 
-    const startTime = Date.now();
+    await waitForCondition(
+      async () => {
+        debug(
+          `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
+        );
 
-    return new Promise<void>((resolve, reject) => {
-      const poll = async () => {
-        if (Date.now() - startTime >= MAX_POLL_TIMEOUT) {
-          reject(new Error(ERR_ORCA_SERVICE_TIMEOUT));
-
-          return;
-        }
-
-        try {
-          debug(
-            `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
-          );
-
-          const hasOwner = await this.#sessionDBus.nameHasOwner(
-            SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
-          );
-
-          if (hasOwner) {
-            resolve();
-
-            return;
-          }
-        } catch {
-          // Swallow
-        }
-
-        setTimeout(poll, POLL_INTERVAL);
-      };
-
-      poll();
-    });
+        return await this.#sessionDBus.nameHasOwner(
+          SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
+        );
+      },
+      {
+        pollInterval: POLL_INTERVAL,
+        pollTimeout: MAX_POLL_TIMEOUT,
+        timeoutErrorMessage: ERR_ORCA_SERVICE_TIMEOUT,
+      },
+    );
   }
 
   async #mapOrcaDBusService(): Promise<void> {
