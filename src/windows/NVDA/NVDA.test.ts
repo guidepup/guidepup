@@ -1,15 +1,20 @@
 import {
   ERR_NVDA_ALREADY_RUNNING,
+  ERR_NVDA_CANNOT_BE_STARTED,
   ERR_NVDA_NOT_INSTALLED,
   ERR_NVDA_NOT_RUNNING,
 } from "../errors";
 import { delay } from "../../delay";
+import { getInstalledNVDAPath } from "./getInstalledNVDAPath";
+import { isAnyNVDARunning } from "./isAnyNVDARunning";
 import { isNVDAInstalled } from "./isNVDAInstalled";
+import { isRunning } from "./isRunning";
 import { isWindows } from "../isWindows";
 import { NVDA } from "./NVDA";
 import { NVDAClient } from "./NVDAClient";
 import { quit } from "./quit";
 import { start } from "./start";
+import { startUserNVDA } from "./startUserNVDA";
 
 jest.mock("../../../manifest.json", () => {
   return {
@@ -48,6 +53,20 @@ jest.mock("./quit", () => ({
 jest.mock("./start", () => ({
   start: jest.fn(),
 }));
+jest.mock("./isRunning", () => ({
+  isRunning: jest.fn(),
+}));
+jest.mock("./isAnyNVDARunning", () => ({
+  isAnyNVDARunning: jest.fn(),
+}));
+jest.mock("./getInstalledNVDAPath", () => ({
+  getInstalledNVDAPath: jest.fn(),
+}));
+jest.mock("./startUserNVDA", () => ({
+  startUserNVDA: jest.fn(),
+}));
+
+const mockInstalledPath = "C:\\Program Files\\NVDA\\nvda.exe";
 
 const NVDAClientStub = {
   connect: jest.fn(),
@@ -68,6 +87,11 @@ describe("NVDA", () => {
     jest.mocked(isNVDAInstalled).mockReturnValue(true);
     jest.mocked(NVDAClientStub.connect).mockResolvedValue(undefined);
     jest.mocked(NVDAClient).mockImplementation(() => NVDAClientStub);
+    jest.mocked(isRunning).mockResolvedValue(false);
+    jest.mocked(isAnyNVDARunning).mockResolvedValue(false);
+    jest.mocked(getInstalledNVDAPath).mockReturnValue(mockInstalledPath);
+    jest.mocked(startUserNVDA).mockResolvedValue(undefined);
+    jest.mocked(start).mockResolvedValue(undefined);
   });
 
   describe("name", () => {
@@ -216,6 +240,189 @@ describe("NVDA", () => {
         await expect(nvda.stop()).resolves.toBeUndefined();
 
         expect(quit).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
+
+  describe("when another NVDA may be running on start", () => {
+    beforeEach(() => {
+      nvda = new NVDA();
+    });
+
+    describe("when no NVDA is running", () => {
+      beforeEach(async () => {
+        await nvda.start();
+      });
+
+      it("should check if any NVDA is running", () => {
+        expect(isAnyNVDARunning).toHaveBeenCalled();
+      });
+
+      it("should not quit NVDA", () => {
+        expect(quit).not.toHaveBeenCalled();
+      });
+
+      it("should not start the user's NVDA on stop", async () => {
+        await nvda.stop();
+
+        expect(startUserNVDA).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when a Guidepup NVDA from an earlier run is running", () => {
+      beforeEach(async () => {
+        jest.mocked(isRunning).mockResolvedValue(true);
+
+        await nvda.start();
+      });
+
+      it("should quit NVDA", () => {
+        expect(quit).toHaveBeenCalledTimes(1);
+      });
+
+      it("should not look for the installed NVDA", () => {
+        expect(getInstalledNVDAPath).not.toHaveBeenCalled();
+      });
+
+      it("should not start an NVDA again on stop", async () => {
+        await nvda.stop();
+
+        expect(startUserNVDA).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when it cannot tell if an NVDA is running", () => {
+      beforeEach(async () => {
+        jest
+          .mocked(isAnyNVDARunning)
+          .mockRejectedValue(new Error("test-error"));
+
+        await nvda.start();
+      });
+
+      it("should quit NVDA", () => {
+        expect(quit).toHaveBeenCalledTimes(1);
+      });
+
+      it("should not look for the installed NVDA", () => {
+        expect(getInstalledNVDAPath).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when the user's NVDA is running", () => {
+      beforeEach(() => {
+        jest.mocked(isAnyNVDARunning).mockResolvedValue(true);
+      });
+
+      describe("when started with the default options", () => {
+        beforeEach(async () => {
+          await nvda.start();
+        });
+
+        it("should look for the installed NVDA", () => {
+          expect(getInstalledNVDAPath).toHaveBeenCalled();
+        });
+
+        it("should quit NVDA", () => {
+          expect(quit).toHaveBeenCalledTimes(1);
+        });
+
+        it("should not start the user's NVDA before stop", () => {
+          expect(startUserNVDA).not.toHaveBeenCalled();
+        });
+
+        it("should start the user's NVDA again on stop, after quitting NVDA", async () => {
+          await nvda.stop();
+
+          expect(startUserNVDA).toHaveBeenCalledWith(mockInstalledPath);
+          expect(jest.mocked(quit).mock.invocationCallOrder[1]).toBeLessThan(
+            jest.mocked(startUserNVDA).mock.invocationCallOrder[0],
+          );
+        });
+
+        it("should start the user's NVDA again only once", async () => {
+          await nvda.stop();
+
+          jest.mocked(isAnyNVDARunning).mockResolvedValue(false);
+
+          await nvda.start();
+          await nvda.stop();
+
+          expect(startUserNVDA).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      describe("when started with restoreUserNVDA set to false", () => {
+        beforeEach(async () => {
+          await nvda.start({ restoreUserNVDA: false });
+        });
+
+        it("should quit NVDA", () => {
+          expect(quit).toHaveBeenCalledTimes(1);
+        });
+
+        it("should not look for the installed NVDA", () => {
+          expect(getInstalledNVDAPath).not.toHaveBeenCalled();
+        });
+
+        it("should not start the user's NVDA again on stop", async () => {
+          await nvda.stop();
+
+          expect(startUserNVDA).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when the installed NVDA cannot be found", () => {
+        beforeEach(async () => {
+          jest.mocked(getInstalledNVDAPath).mockReturnValue(null);
+
+          await nvda.start();
+        });
+
+        it("should quit NVDA", () => {
+          expect(quit).toHaveBeenCalledTimes(1);
+        });
+
+        it("should not start an NVDA again on stop", async () => {
+          await nvda.stop();
+
+          expect(startUserNVDA).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when the user's NVDA cannot be started again", () => {
+        it("should still stop", async () => {
+          jest
+            .mocked(startUserNVDA)
+            .mockRejectedValue(new Error("test-error"));
+
+          await nvda.start();
+
+          await expect(nvda.stop()).resolves.toBeUndefined();
+          expect(startUserNVDA).toHaveBeenCalled();
+        });
+      });
+
+      describe("when Guidepup's NVDA fails to start", () => {
+        let error: unknown;
+
+        beforeEach(async () => {
+          jest.mocked(start).mockRejectedValue(new Error("test-error"));
+
+          try {
+            await nvda.start();
+          } catch (e) {
+            error = e;
+          }
+        });
+
+        it("should throw a cannot be started error", () => {
+          expect(error).toEqual(new Error(ERR_NVDA_CANNOT_BE_STARTED));
+        });
+
+        it("should start the user's NVDA again", () => {
+          expect(startUserNVDA).toHaveBeenCalledWith(mockInstalledPath);
+        });
       });
     });
   });
