@@ -71,7 +71,7 @@ describe("activate", () => {
     });
 
     it("should throw an error with the activate prefix, application name, and underlying error message", async () => {
-      await expect(() => activate(applicationName)).rejects.toEqual(
+      await expect(() => activate(applicationName)).rejects.toThrow(
         new Error(`Unable to activate application: ${applicationName}`, {
           cause: stubError,
         }),

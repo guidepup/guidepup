@@ -67,7 +67,7 @@ describe("itemText", () => {
     });
 
     it("should throw an error with the itemText prefix, application name, and underlying error message", async () => {
-      await expect(() => itemText()).rejects.toEqual(
+      await expect(() => itemText()).rejects.toThrow(
         new Error(ERR_VOICE_OVER_GET_ITEM_TEXT, { cause: stubError }),
       );
     });

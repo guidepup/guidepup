@@ -85,7 +85,7 @@ describe("when starting VoiceOver", () => {
       throw error;
     });
 
-    await expect(start(options)).rejects.toEqual(
+    await expect(start(options)).rejects.toThrow(
       new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, { cause: error }),
     );
     expect(delay).not.toHaveBeenCalled();
@@ -113,7 +113,7 @@ describe("when starting VoiceOver", () => {
     });
 
     test("should reject with a startup error", async () => {
-      await expect(resultPromise).rejects.toEqual(
+      await expect(resultPromise).rejects.toThrow(
         new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, { cause: error }),
       );
       expect(delay).not.toHaveBeenCalled();

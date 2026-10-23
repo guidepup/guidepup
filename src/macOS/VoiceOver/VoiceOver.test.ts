@@ -437,11 +437,10 @@ describe("VoiceOver", () => {
         });
 
         it("should return a stable startup error with the readiness failure as its cause", () => {
-          expect(thrownError).toEqual(
-            new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
-              cause: startupError,
-            }),
-          );
+          expect(thrownError).toMatchObject({
+            message: ERR_VOICE_OVER_CANNOT_BE_STARTED,
+            cause: startupError,
+          });
         });
 
         it("should remove the teardown handler", () => {
@@ -470,11 +469,10 @@ describe("VoiceOver", () => {
         });
 
         it("should throw an error", () => {
-          expect(thrownError).toEqual(
-            new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
-              cause: terminationErrorStub,
-            }),
-          );
+          expect(thrownError).toMatchObject({
+            message: ERR_VOICE_OVER_CANNOT_BE_STARTED,
+            cause: terminationErrorStub,
+          });
         });
 
         it("should remove the teardown handler", () => {
