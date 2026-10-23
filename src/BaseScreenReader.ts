@@ -9,8 +9,8 @@ import type { SpokenPhraseMatcher } from "./SpokenPhraseMatcher";
 import type { StartOptions } from "./StartOptions";
 
 export abstract class BaseScreenReader implements IScreenReader {
-  abstract name: string;
-  abstract version: string;
+  abstract get name(): string;
+  abstract get version(): string;
   abstract detect(): boolean;
   abstract default(): boolean;
   abstract start(options?: StartOptions): Promise<void>;
