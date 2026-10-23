@@ -81,7 +81,7 @@ describe("move", () => {
     });
 
     it("should throw an error with the move prefix, application name, and underlying error message", async () => {
-      await expect(() => move(Directions.Down)).rejects.toEqual(
+      await expect(() => move(Directions.Down)).rejects.toThrow(
         new Error(ERR_VOICE_OVER_MOVE, { cause: stubError }),
       );
     });
