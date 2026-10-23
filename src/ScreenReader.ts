@@ -1,3 +1,4 @@
+import { BaseScreenReader } from "./BaseScreenReader";
 import type { Capture } from "./Capture";
 import type { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
@@ -9,10 +10,12 @@ import type { StartOptions } from "./StartOptions";
 import { unstable_orca } from "./linux";
 import { voiceOver } from "./macOS";
 
-export class ScreenReader implements IScreenReader {
+export class ScreenReader extends BaseScreenReader implements IScreenReader {
   private implementation: IScreenReader;
 
   constructor() {
+    super();
+
     this.implementation = this.resolveImplementation();
   }
 
