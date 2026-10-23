@@ -12,6 +12,7 @@ import {
   setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
+import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommanderCommands } from "./CommanderCommands";
@@ -41,7 +42,7 @@ type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
 /**
  * Class for controlling the VoiceOver screen reader on macOS.
  */
-export class VoiceOver implements IScreenReader {
+export class VoiceOver extends BaseScreenReader implements IScreenReader {
   /**
    * Number of clean-start attempts before reporting a startup failure.
    */

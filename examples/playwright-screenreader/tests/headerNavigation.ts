@@ -3,8 +3,6 @@ import { log } from "../../log";
 import type { Page } from "@playwright/test";
 import type { ScreenReaderPlaywright } from "../screenreader-test";
 
-const MAX_NAVIGATION_LOOP = 10;
-
 export async function headerNavigation({
   page,
   screenReader,
@@ -27,21 +25,12 @@ export async function headerNavigation({
   await screenReader.navigateToWebContent();
   await delay(500);
 
-  let navigationCount = 0;
-
   // Move across the content
-  while (
-    !(await screenReader.itemText()).replaceAll(/\s/g, "").includes("GitHub") &&
-    navigationCount <= MAX_NAVIGATION_LOOP
-  ) {
-    navigationCount++;
-
-    log(`Performing command: next`);
-    await screenReader.next();
-    log(`Screen reader output: "${await screenReader.lastSpokenPhrase()}".`);
-  }
+  log(`Performing multiple commands: "next"`);
+  await screenReader.navigateNextUntil(/Git\s*Hub/);
+  log(`Last screen reader output: "${await screenReader.lastSpokenPhrase()}".`);
 
   log(`Performing command: act`);
   await screenReader.act();
-  log(`Screen reader output: "${await screenReader.lastSpokenPhrase()}".`);
+  log(`Last screen reader output: "${await screenReader.lastSpokenPhrase()}".`);
 }

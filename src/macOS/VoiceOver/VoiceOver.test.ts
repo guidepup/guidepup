@@ -18,6 +18,7 @@ import { getManifestAsset } from "./getManifestAsset";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { keyCodeCommands } from "./keyCodeCommands";
+import { navigateUntil } from "../../navigateUntil";
 import { release } from "node:os";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
@@ -86,6 +87,9 @@ jest.mock("./waitForNotRunning", () => ({
 }));
 jest.mock("./waitForRunning", () => ({
   waitForRunning: jest.fn(),
+}));
+jest.mock("../../navigateUntil", () => ({
+  navigateUntil: jest.fn(),
 }));
 
 const VoiceOverClientStub = {
@@ -857,6 +861,150 @@ describe("VoiceOver", () => {
           options,
         );
       });
+    });
+  });
+
+  describe("navigatePreviousUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigatePreviousUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate previous until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "previous",
+        spokenPhraseMatcher,
+        options,
+      );
+    });
+  });
+
+  describe("navigateNextUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigateNextUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate next until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "next",
+        spokenPhraseMatcher,
+        options,
+      );
+    });
+  });
+
+  describe("navigatePreviousHeadingUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigatePreviousHeadingUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate to the previous heading until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "previousHeading",
+        spokenPhraseMatcher,
+        options,
+      );
+    });
+  });
+
+  describe("navigateNextHeadingUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigateNextHeadingUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate to the next heading until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "nextHeading",
+        spokenPhraseMatcher,
+        options,
+      );
+    });
+  });
+
+  describe("navigatePreviousLinkUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigatePreviousLinkUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate to the previous link until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "previousLink",
+        spokenPhraseMatcher,
+        options,
+      );
+    });
+  });
+
+  describe("navigateNextLinkUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigateNextLinkUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate to the next link until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "nextLink",
+        spokenPhraseMatcher,
+        options,
+      );
+    });
+  });
+
+  describe("navigatePreviousLandmarkUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigatePreviousLandmarkUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate to the previous landmark until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "previousLandmark",
+        spokenPhraseMatcher,
+        options,
+      );
+    });
+  });
+
+  describe("navigateNextLandmarkUntil", () => {
+    const spokenPhraseMatcher = "test-spoken-phrase";
+    const options = { maxNavigationAttempts: 3 };
+
+    beforeEach(async () => {
+      await vo.navigateNextLandmarkUntil(spokenPhraseMatcher, options);
+    });
+
+    it("should navigate to the next landmark until the spoken phrase matches", () => {
+      expect(navigateUntil).toHaveBeenCalledWith(
+        vo,
+        "nextLandmark",
+        spokenPhraseMatcher,
+        options,
+      );
     });
   });
 
