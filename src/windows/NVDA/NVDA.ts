@@ -13,6 +13,7 @@ import {
   ERR_NVDA_NOT_RUNNING,
   ERR_NVDA_NOT_SUPPORTED,
 } from "../errors";
+import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommandOptions } from "../../CommandOptions";
@@ -23,14 +24,11 @@ import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { KeyCodes } from "../KeyCodes";
 import { Modifiers } from "../Modifiers";
-import { NavigateOptions } from "../../NavigateOptions";
-import { navigateUntil } from "../../navigateUntil";
 import { NVDAClient } from "./NVDAClient";
 import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
 import { quit } from "./quit";
 import { sendKeys } from "../sendKeys";
-import type { SpokenPhraseMatcher } from "../../SpokenPhraseMatcher";
 import { start } from "./start";
 import type { StartOptions } from "../../StartOptions";
 
@@ -43,7 +41,7 @@ type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 /**
  * Class for controlling the NVDA screen reader on Windows.
  */
-export class NVDA implements IScreenReader {
+export class NVDA extends BaseScreenReader implements IScreenReader {
   /**
    * NVDA client.
    */
@@ -611,299 +609,6 @@ export class NVDA implements IScreenReader {
     }
 
     return this.perform(this.keyboardCommands.moveToNextLandmark, options);
-  }
-
-  /**
-   * Move the NVDA cursor to the previous location until its spoken phrase
-   * matches the provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the previous item containing the exact spoken phrase.
-   *   await nvda.navigatePreviousUntil("Submit", {
-   *     maxNavigationAttempts: 10,
-   *   });
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
-   * @param options Additional navigation and command options.
-   */
-  async navigatePreviousUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(this, "previous", spokenPhraseMatcher, options);
-  }
-
-  /**
-   * Move the NVDA cursor to the next location until its spoken phrase matches
-   * the provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the next item containing the exact spoken phrase.
-   *   await nvda.navigateNextUntil("Submit", {
-   *     maxNavigationAttempts: 10,
-   *   });
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
-   * @param options Additional navigation and command options.
-   */
-  async navigateNextUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(this, "next", spokenPhraseMatcher, options);
-  }
-
-  /**
-   * Move the NVDA cursor to the previous heading until its spoken phrase
-   * matches the provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the previous heading with a matching spoken phrase.
-   *   await nvda.navigatePreviousHeadingUntil(/^Account/);
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
-   * @param options Additional navigation and command options.
-   */
-  async navigatePreviousHeadingUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(
-      this,
-      "previousHeading",
-      spokenPhraseMatcher,
-      options,
-    );
-  }
-
-  /**
-   * Move the NVDA cursor to the next heading until its spoken phrase matches
-   * the provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the next heading with a matching spoken phrase.
-   *   await nvda.navigateNextHeadingUntil(/^Account/);
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
-   * @param options Additional navigation and command options.
-   */
-  async navigateNextHeadingUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(
-      this,
-      "nextHeading",
-      spokenPhraseMatcher,
-      options,
-    );
-  }
-
-  /**
-   * Move the NVDA cursor to the previous link until its spoken phrase matches
-   * the provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the previous link with a matching spoken phrase.
-   *   await nvda.navigatePreviousLinkUntil(/^Home/);
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
-   * @param options Additional navigation and command options.
-   */
-  async navigatePreviousLinkUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(
-      this,
-      "previousLink",
-      spokenPhraseMatcher,
-      options,
-    );
-  }
-
-  /**
-   * Move the NVDA cursor to the next link until its spoken phrase matches the
-   * provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the next link with a matching spoken phrase.
-   *   await nvda.navigateNextLinkUntil(/^Home/);
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
-   * @param options Additional navigation and command options.
-   */
-  async navigateNextLinkUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(this, "nextLink", spokenPhraseMatcher, options);
-  }
-
-  /**
-   * Move the NVDA cursor to the previous landmark until its spoken phrase
-   * matches the provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the previous landmark with a matching spoken phrase.
-   *   await nvda.navigatePreviousLandmarkUntil(/^Main/);
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
-   * @param options Additional navigation and command options.
-   */
-  async navigatePreviousLandmarkUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(
-      this,
-      "previousLandmark",
-      spokenPhraseMatcher,
-      options,
-    );
-  }
-
-  /**
-   * Move the NVDA cursor to the next landmark until its spoken phrase matches
-   * the provided matcher.
-   *
-   * ```ts
-   * import { nvda } from "@guidepup/guidepup";
-   *
-   * (async () => {
-   *   // Start NVDA.
-   *   await nvda.start();
-   *
-   *   // Move to the next landmark with a matching spoken phrase.
-   *   await nvda.navigateNextLandmarkUntil(/^Main/);
-   *
-   *   // Stop NVDA.
-   *   await nvda.stop();
-   * })();
-   * ```
-   *
-   * The matcher can be an exact string, a regular expression, or a function
-   * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
-   *
-   * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
-   * @param options Additional navigation and command options.
-   */
-  async navigateNextLandmarkUntil(
-    spokenPhraseMatcher: SpokenPhraseMatcher,
-    options?: NavigateOptions,
-  ) {
-    return await navigateUntil(
-      this,
-      "nextLandmark",
-      spokenPhraseMatcher,
-      options,
-    );
   }
 
   /**
