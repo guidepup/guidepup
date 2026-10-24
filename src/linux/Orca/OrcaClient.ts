@@ -42,6 +42,7 @@ import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
 import { serviceDefinition } from "./serviceDefinition";
+import { terminateProcess } from "./terminateProcess";
 import { tmpdir } from "node:os";
 import { waitForCondition } from "../../waitForCondition";
 
@@ -63,70 +64,6 @@ const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const SPEECH_DEBOUNCE_TIMEOUT = 1_000;
-const PROCESS_EXIT_TIMEOUT = 5_000;
-
-/**
- * Send SIGTERM and wait for the process to exit, falling back to SIGKILL.
- */
-async function terminate(
-  child: ChildProcess | null,
-  name: string,
-): Promise<void> {
-  if (!child || child.exitCode !== null || child.signalCode !== null) {
-    return;
-  }
-
-  debug(`Terminating ${name} process...`);
-
-  let onExit: (() => void) | undefined;
-
-  const exited = new Promise<void>((resolve) => {
-    onExit = resolve;
-
-    child.once("exit", onExit);
-  });
-
-  let timer: NodeJS.Timeout | undefined;
-
-  try {
-    if (!child.kill("SIGTERM")) {
-      debug(`Could not send SIGTERM to ${name} process`);
-    }
-
-    await Promise.race([
-      exited,
-      new Promise<void>((resolve, reject) => {
-        timer = setTimeout(() => {
-          debug(`${name} did not exit after SIGTERM, sending SIGKILL`);
-
-          if (!child.kill("SIGKILL")) {
-            debug(`Could not send SIGKILL to ${name} process`);
-          }
-
-          timer = setTimeout(() => {
-            if (child.exitCode !== null || child.signalCode !== null) {
-              resolve();
-
-              return;
-            }
-
-            reject(
-              new Error(
-                `Failed to terminate ${name} process within ${PROCESS_EXIT_TIMEOUT * 2}ms`,
-              ),
-            );
-          }, PROCESS_EXIT_TIMEOUT);
-        }, PROCESS_EXIT_TIMEOUT);
-      }),
-    ]);
-  } finally {
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    child.removeListener("exit", onExit);
-  }
-}
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
@@ -844,9 +781,9 @@ export class OrcaClient extends EventEmitter {
 
     // One at a time, waiting for each to exit, so that Orca can shut down
     // cleanly while the services it depends on are still running.
-    await terminate(this.#orcaProcess, "Orca");
-    await terminate(this.#orcaDebugLogProcess, "Orca debug log");
-    await terminate(this.#speechdProcess, "Speech Dispatcher");
+    await terminateProcess(this.#orcaProcess, "Orca");
+    await terminateProcess(this.#orcaDebugLogProcess, "Orca debug log");
+    await terminateProcess(this.#speechdProcess, "Speech Dispatcher");
     if (this.#atSpiProcess?.pid) {
       try {
         process.kill(-this.#atSpiProcess.pid, "SIGTERM");
@@ -854,9 +791,9 @@ export class OrcaClient extends EventEmitter {
         // Already gone.
       }
     }
-    await terminate(this.#atSpiProcess, "AT-SPI");
-    await terminate(this.#sessionDBusProcess, "session D-Bus");
-    await terminate(this.#xvfbProcess, "X Server");
+    await terminateProcess(this.#atSpiProcess, "AT-SPI");
+    await terminateProcess(this.#sessionDBusProcess, "session D-Bus");
+    await terminateProcess(this.#xvfbProcess, "X Server");
 
     if (this.#runtimeDirectory) {
       rmSync(this.#runtimeDirectory, { force: true, recursive: true });
