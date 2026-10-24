@@ -41,6 +41,7 @@ import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
+import { logProcessOutput } from "./logProcessOutput";
 import { serviceDefinition } from "./serviceDefinition";
 import { terminateProcess } from "./terminateProcess";
 import { tmpdir } from "node:os";
@@ -145,21 +146,7 @@ export class OrcaClient extends EventEmitter {
         "1280x720x24",
       ]);
 
-      this.#xvfbProcess.stdout.on("data", (data: Buffer) => {
-        debug(`[xvfb] ${data.toString().trimEnd()}`);
-      });
-
-      this.#xvfbProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[xvfb] ${data.toString().trimEnd()}`);
-      });
-
-      this.#xvfbProcess.on("error", (error) => {
-        debug(`[xvfb] process error: ${error.message}`);
-      });
-
-      this.#xvfbProcess.on("exit", (code, signal) => {
-        debug(`[xvfb] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#xvfbProcess, "xvfb");
     }
 
     debug(`DISPLAY=${this.#xvfbDisplay}`);
@@ -197,21 +184,7 @@ export class OrcaClient extends EventEmitter {
         },
       );
 
-      this.#sessionDBusProcess.stdout.on("data", (data: Buffer) => {
-        debug(`[dbus] ${data.toString().trimEnd()}`);
-      });
-
-      this.#sessionDBusProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[dbus] ${data.toString().trimEnd()}`);
-      });
-
-      this.#sessionDBusProcess.on("error", (error) => {
-        debug(`[dbus] process error: ${error.message}`);
-      });
-
-      this.#sessionDBusProcess.on("exit", (code, signal) => {
-        debug(`[dbus] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#sessionDBusProcess, "dbus");
 
       this.#sessionDBusAddress = await new Promise<string>((resolve) => {
         this.#sessionDBusProcess.stdout.once("data", (data: Buffer) => {
@@ -275,21 +248,7 @@ export class OrcaClient extends EventEmitter {
         },
       });
 
-      this.#atSpiProcess.stdout.on("data", (data: Buffer) => {
-        debug(`[at-spi] ${data.toString().trimEnd()}`);
-      });
-
-      this.#atSpiProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[at-spi] ${data.toString().trimEnd()}`);
-      });
-
-      this.#atSpiProcess.on("error", (error) => {
-        debug(`[at-spi] process error: ${error.message}`);
-      });
-
-      this.#atSpiProcess.on("exit", (code, signal) => {
-        debug(`[at-spi] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#atSpiProcess, "at-spi");
     }
 
     await waitForCondition(
@@ -356,21 +315,7 @@ export class OrcaClient extends EventEmitter {
       stdio: ["ignore", "pipe", "pipe"],
     });
 
-    this.#speechdProcess.stdout.on("data", (data: Buffer) => {
-      debug(`[speechd] ${data.toString().trimEnd()}`);
-    });
-
-    this.#speechdProcess.stderr.on("data", (data: Buffer) => {
-      debug(`[speechd] ${data.toString().trimEnd()}`);
-    });
-
-    this.#speechdProcess.on("error", (error) => {
-      debug(`[speechd] process error: ${error.message}`);
-    });
-
-    this.#speechdProcess.on("exit", (code, signal) => {
-      debug(`[speechd] exited with code=${code}, signal=${signal}`);
-    });
+    logProcessOutput(this.#speechdProcess, "speechd");
 
     this.#speechdAddress = `unix_socket:${speechdSocketPath}`;
 
@@ -523,17 +468,7 @@ export class OrcaClient extends EventEmitter {
         stdio: ["ignore", "inherit", "pipe"],
       });
 
-      this.#orcaDebugLogProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[orca-debug-log] ${data.toString().trimEnd()}`);
-      });
-
-      this.#orcaDebugLogProcess.on("error", (error) => {
-        debug(`[orca-debug-log] process error: ${error.message}`);
-      });
-
-      this.#orcaDebugLogProcess.on("exit", (code, signal) => {
-        debug(`[orca-debug-log] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#orcaDebugLogProcess, "orca-debug-log");
     }
 
     this.#orcaProcess = spawn(orcaExecutable, args, {
@@ -545,21 +480,7 @@ export class OrcaClient extends EventEmitter {
       },
     });
 
-    this.#orcaProcess.stdout.on("data", (data: Buffer) => {
-      debug(`[orca] ${data.toString().trimEnd()}`);
-    });
-
-    this.#orcaProcess.stderr.on("data", (data: Buffer) => {
-      debug(`[orca] ${data.toString().trimEnd()}`);
-    });
-
-    this.#orcaProcess.on("error", (error) => {
-      debug(`[orca] process error: ${error.message}`);
-    });
-
-    this.#orcaProcess.on("exit", (code, signal) => {
-      debug(`[orca] exited with code=${code}, signal=${signal}`);
-    });
+    logProcessOutput(this.#orcaProcess, "orca");
 
     await waitForCondition(
       async () => {

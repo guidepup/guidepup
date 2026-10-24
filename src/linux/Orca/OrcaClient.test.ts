@@ -21,6 +21,7 @@ import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
+import { logProcessOutput } from "./logProcessOutput";
 import { OrcaClient } from "./OrcaClient";
 import { terminateProcess } from "./terminateProcess";
 
@@ -59,6 +60,9 @@ jest.mock("./isAtSpiRunning", () => ({
 }));
 jest.mock("./isUnixSocket", () => ({
   isUnixSocket: jest.fn(),
+}));
+jest.mock("./logProcessOutput", () => ({
+  logProcessOutput: jest.fn(),
 }));
 jest.mock("./terminateProcess", () => ({
   terminateProcess: jest.fn(),
@@ -119,7 +123,6 @@ const mockAtSpiBusAddress = "test-at-spi-bus-address";
 
 class FakeProcess extends EventEmitter {
   stdout = new EventEmitter();
-  stderr = new EventEmitter();
   pid: number | undefined;
 
   constructor(pid: number) {
@@ -477,24 +480,13 @@ describe("OrcaClient", () => {
       });
 
       it("should log the output of each process", () => {
-        Object.values(processes)
-          .flat()
-          .forEach((child) => {
-            child.stdout.emit("data", Buffer.from("test-stdout\n"));
-            child.stderr.emit("data", Buffer.from("test-stderr\n"));
-            child.emit("error", new Error("test-error"));
-            child.emit("exit", 0, null);
-          });
-
-        expect(debug).toHaveBeenCalledWith("[xvfb] test-stdout");
-        expect(debug).toHaveBeenCalledWith("[dbus] test-stderr");
-        expect(debug).toHaveBeenCalledWith(
-          "[at-spi] process error: test-error",
-        );
-        expect(debug).toHaveBeenCalledWith(
-          "[speechd] exited with code=0, signal=null",
-        );
-        expect(debug).toHaveBeenCalledWith("[orca] test-stdout");
+        expect(jest.mocked(logProcessOutput).mock.calls).toEqual([
+          [lastProcess("Xvfb"), "xvfb"],
+          [lastProcess("dbus-daemon"), "dbus"],
+          [lastProcess(AT_SPI_LAUNCHER), "at-spi"],
+          [lastProcess("speech-dispatcher"), "speechd"],
+          [lastProcess(mockOrcaExecutable), "orca"],
+        ]);
       });
 
       describe("when started again", () => {
@@ -561,18 +553,9 @@ describe("OrcaClient", () => {
       });
 
       it("should log the output of the debug log process", () => {
-        const tail = lastProcess("tail");
-
-        tail.stderr.emit("data", Buffer.from("test-stderr\n"));
-        tail.emit("error", new Error("test-error"));
-        tail.emit("exit", 0, null);
-
-        expect(debug).toHaveBeenCalledWith("[orca-debug-log] test-stderr");
-        expect(debug).toHaveBeenCalledWith(
-          "[orca-debug-log] process error: test-error",
-        );
-        expect(debug).toHaveBeenCalledWith(
-          "[orca-debug-log] exited with code=0, signal=null",
+        expect(logProcessOutput).toHaveBeenCalledWith(
+          lastProcess("tail"),
+          "orca-debug-log",
         );
       });
     });
@@ -649,18 +632,11 @@ describe("OrcaClient", () => {
         "when the D-Bus daemon emits %s before printing its address",
         (event) => {
           it("should fail to start", async () => {
-            jest.mocked(spawn).mockImplementationOnce((() => {
-              const child = new FakeProcess(1);
-
-              process.nextTick(() =>
-                child.emit(
-                  event,
-                  event === "error" ? new Error("test-error") : 1,
-                ),
+            jest
+              .mocked(spawn)
+              .mockImplementationOnce(
+                (() => new FakeProcess(1)) as unknown as typeof spawn,
               );
-
-              return child;
-            }) as unknown as typeof spawn);
             jest.mocked(spawn).mockImplementationOnce((() => {
               const child = new FakeProcess(2);
 
