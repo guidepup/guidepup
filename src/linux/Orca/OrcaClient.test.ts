@@ -21,7 +21,9 @@ import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
+import { logProcessOutput } from "./logProcessOutput";
 import { OrcaClient } from "./OrcaClient";
+import { terminateProcess } from "./terminateProcess";
 
 jest.mock("node:child_process", () => ({
   execFileSync: jest.fn(),
@@ -58,6 +60,12 @@ jest.mock("./isAtSpiRunning", () => ({
 }));
 jest.mock("./isUnixSocket", () => ({
   isUnixSocket: jest.fn(),
+}));
+jest.mock("./logProcessOutput", () => ({
+  logProcessOutput: jest.fn(),
+}));
+jest.mock("./terminateProcess", () => ({
+  terminateProcess: jest.fn(),
 }));
 jest.mock("./serviceDefinition", () => ({
   serviceDefinition: {
@@ -115,9 +123,6 @@ const mockAtSpiBusAddress = "test-at-spi-bus-address";
 
 class FakeProcess extends EventEmitter {
   stdout = new EventEmitter();
-  stderr = new EventEmitter();
-  exitCode: number | null = null;
-  signalCode: NodeJS.Signals | null = null;
   pid: number | undefined;
 
   constructor(pid: number) {
@@ -125,17 +130,6 @@ class FakeProcess extends EventEmitter {
 
     this.pid = pid;
   }
-
-  exit(signal: NodeJS.Signals) {
-    this.signalCode = signal;
-    this.emit("exit", null, signal);
-  }
-
-  kill = jest.fn((signal: NodeJS.Signals) => {
-    process.nextTick(() => this.exit(signal));
-
-    return true;
-  });
 }
 
 class FakeSocket extends EventEmitter {
@@ -486,24 +480,13 @@ describe("OrcaClient", () => {
       });
 
       it("should log the output of each process", () => {
-        Object.values(processes)
-          .flat()
-          .forEach((child) => {
-            child.stdout.emit("data", Buffer.from("test-stdout\n"));
-            child.stderr.emit("data", Buffer.from("test-stderr\n"));
-            child.emit("error", new Error("test-error"));
-            child.emit("exit", 0, null);
-          });
-
-        expect(debug).toHaveBeenCalledWith("[xvfb] test-stdout");
-        expect(debug).toHaveBeenCalledWith("[dbus] test-stderr");
-        expect(debug).toHaveBeenCalledWith(
-          "[at-spi] process error: test-error",
-        );
-        expect(debug).toHaveBeenCalledWith(
-          "[speechd] exited with code=0, signal=null",
-        );
-        expect(debug).toHaveBeenCalledWith("[orca] test-stdout");
+        expect(jest.mocked(logProcessOutput).mock.calls).toEqual([
+          [lastProcess("Xvfb"), "xvfb"],
+          [lastProcess("dbus-daemon"), "dbus"],
+          [lastProcess(AT_SPI_LAUNCHER), "at-spi"],
+          [lastProcess("speech-dispatcher"), "speechd"],
+          [lastProcess(mockOrcaExecutable), "orca"],
+        ]);
       });
 
       describe("when started again", () => {
@@ -570,18 +553,9 @@ describe("OrcaClient", () => {
       });
 
       it("should log the output of the debug log process", () => {
-        const tail = lastProcess("tail");
-
-        tail.stderr.emit("data", Buffer.from("test-stderr\n"));
-        tail.emit("error", new Error("test-error"));
-        tail.emit("exit", 0, null);
-
-        expect(debug).toHaveBeenCalledWith("[orca-debug-log] test-stderr");
-        expect(debug).toHaveBeenCalledWith(
-          "[orca-debug-log] process error: test-error",
-        );
-        expect(debug).toHaveBeenCalledWith(
-          "[orca-debug-log] exited with code=0, signal=null",
+        expect(logProcessOutput).toHaveBeenCalledWith(
+          lastProcess("tail"),
+          "orca-debug-log",
         );
       });
     });
@@ -658,18 +632,11 @@ describe("OrcaClient", () => {
         "when the D-Bus daemon emits %s before printing its address",
         (event) => {
           it("should fail to start", async () => {
-            jest.mocked(spawn).mockImplementationOnce((() => {
-              const child = new FakeProcess(1);
-
-              process.nextTick(() =>
-                child.emit(
-                  event,
-                  event === "error" ? new Error("test-error") : 1,
-                ),
+            jest
+              .mocked(spawn)
+              .mockImplementationOnce(
+                (() => new FakeProcess(1)) as unknown as typeof spawn,
               );
-
-              return child;
-            }) as unknown as typeof spawn);
             jest.mocked(spawn).mockImplementationOnce((() => {
               const child = new FakeProcess(2);
 
@@ -1004,7 +971,10 @@ describe("OrcaClient", () => {
         Object.values(processes)
           .flat()
           .forEach((child) => {
-            expect(child.kill).toHaveBeenCalledWith("SIGTERM");
+            expect(terminateProcess).toHaveBeenCalledWith(
+              child,
+              expect.any(String),
+            );
           });
       });
 
@@ -1140,19 +1110,11 @@ describe("OrcaClient", () => {
         await start();
       });
 
-      describe("when every process exits on SIGTERM", () => {
+      describe("when every process stops", () => {
         let socket: FakeSocket;
-        let order: string[];
 
         beforeEach(async () => {
           socket = lastSocket();
-          order = [];
-
-          Object.entries(processes).forEach(([command, children]) =>
-            children.forEach((child) =>
-              child.on("exit", () => order.push(command)),
-            ),
-          );
 
           await client.stop();
         });
@@ -1162,12 +1124,13 @@ describe("OrcaClient", () => {
         });
 
         it("should stop each process in turn, Orca first and the X server last", () => {
-          expect(order).toEqual([
-            mockOrcaExecutable,
-            "speech-dispatcher",
-            AT_SPI_LAUNCHER,
-            "dbus-daemon",
-            "Xvfb",
+          expect(jest.mocked(terminateProcess).mock.calls).toEqual([
+            [lastProcess(mockOrcaExecutable), "Orca"],
+            [null, "Orca debug log"],
+            [lastProcess("speech-dispatcher"), "Speech Dispatcher"],
+            [lastProcess(AT_SPI_LAUNCHER), "AT-SPI"],
+            [lastProcess("dbus-daemon"), "session D-Bus"],
+            [lastProcess("Xvfb"), "X Server"],
           ]);
         });
 
@@ -1202,26 +1165,6 @@ describe("OrcaClient", () => {
         });
       });
 
-      describe("when a process has already exited", () => {
-        it.each`
-          exitCode | signalCode
-          ${0}     | ${null}
-          ${null}  | ${"SIGSEGV"}
-        `(
-          "should not signal it (exitCode=$exitCode, signalCode=$signalCode)",
-          async ({ exitCode, signalCode }) => {
-            const orca = lastProcess(mockOrcaExecutable);
-
-            orca.exitCode = exitCode;
-            orca.signalCode = signalCode;
-
-            await client.stop();
-
-            expect(orca.kill).not.toHaveBeenCalled();
-          },
-        );
-      });
-
       describe("when the AT-SPI process group is already gone", () => {
         it("should still stop", async () => {
           processKillSpy.mockImplementation(() => {
@@ -1252,91 +1195,11 @@ describe("OrcaClient", () => {
         });
       });
 
-      describe("when a process ignores SIGTERM", () => {
-        let orca: FakeProcess;
-        let stopPromise: Promise<void>;
-
-        beforeEach(() => {
-          orca = lastProcess(mockOrcaExecutable);
-          orca.kill.mockImplementation((signal: NodeJS.Signals) => {
-            if (signal === "SIGKILL") {
-              process.nextTick(() => orca.exit(signal));
-            }
-
-            return true;
-          });
-
-          stopPromise = client.stop();
-        });
-
-        it("should SIGKILL it after 5 seconds", async () => {
-          await jest.advanceTimersByTimeAsync(4_999);
-
-          expect(orca.kill).not.toHaveBeenCalledWith("SIGKILL");
-
-          await jest.advanceTimersByTimeAsync(1);
-
-          expect(orca.kill).toHaveBeenCalledWith("SIGKILL");
-
-          await expect(stopPromise).resolves.toBeUndefined();
-        });
-      });
-
-      describe("when a process exits on SIGKILL without an exit event", () => {
-        it("should stop", async () => {
-          const orca = lastProcess(mockOrcaExecutable);
-
-          orca.kill.mockImplementation((signal: NodeJS.Signals) => {
-            if (signal === "SIGKILL") {
-              orca.signalCode = signal;
-            }
-
-            return true;
-          });
-
-          const stopPromise = client.stop();
-
-          await jest.advanceTimersByTimeAsync(10_000);
-
-          await expect(stopPromise).resolves.toBeUndefined();
-        });
-      });
-
-      describe("when a process survives SIGKILL", () => {
-        let orca: FakeProcess;
-        let stopPromise: Promise<void>;
-
-        beforeEach(() => {
-          orca = lastProcess(mockOrcaExecutable);
-          orca.kill.mockReturnValue(false);
-
-          stopPromise = client.stop();
-          stopPromise.catch(() => {});
-        });
-
-        it("should reject after 10 seconds", async () => {
-          await jest.advanceTimersByTimeAsync(10_000);
-
-          await expect(stopPromise).rejects.toThrow(
-            "Failed to terminate Orca process within 10000ms",
-          );
-        });
-
-        it("should stop listening for its exit", async () => {
-          await jest.advanceTimersByTimeAsync(10_000);
-          await stopPromise.catch(() => {});
-
-          expect(orca.listenerCount("exit")).toBe(1);
-        });
-      });
-
-      describe("when signalling a process throws", () => {
+      describe("when stopping a process fails", () => {
         it("should reject with the error", async () => {
           const stubError = new Error("test-error");
 
-          lastProcess(mockOrcaExecutable).kill.mockImplementation(() => {
-            throw stubError;
-          });
+          jest.mocked(terminateProcess).mockRejectedValueOnce(stubError);
 
           await expect(client.stop()).rejects.toBe(stubError);
         });

@@ -41,7 +41,9 @@ import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
+import { logProcessOutput } from "./logProcessOutput";
 import { serviceDefinition } from "./serviceDefinition";
+import { terminateProcess } from "./terminateProcess";
 import { tmpdir } from "node:os";
 import { waitForCondition } from "../../waitForCondition";
 
@@ -63,70 +65,6 @@ const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const SPEECH_DEBOUNCE_TIMEOUT = 1_000;
-const PROCESS_EXIT_TIMEOUT = 5_000;
-
-/**
- * Send SIGTERM and wait for the process to exit, falling back to SIGKILL.
- */
-async function terminate(
-  child: ChildProcess | null,
-  name: string,
-): Promise<void> {
-  if (!child || child.exitCode !== null || child.signalCode !== null) {
-    return;
-  }
-
-  debug(`Terminating ${name} process...`);
-
-  let onExit: (() => void) | undefined;
-
-  const exited = new Promise<void>((resolve) => {
-    onExit = resolve;
-
-    child.once("exit", onExit);
-  });
-
-  let timer: NodeJS.Timeout | undefined;
-
-  try {
-    if (!child.kill("SIGTERM")) {
-      debug(`Could not send SIGTERM to ${name} process`);
-    }
-
-    await Promise.race([
-      exited,
-      new Promise<void>((resolve, reject) => {
-        timer = setTimeout(() => {
-          debug(`${name} did not exit after SIGTERM, sending SIGKILL`);
-
-          if (!child.kill("SIGKILL")) {
-            debug(`Could not send SIGKILL to ${name} process`);
-          }
-
-          timer = setTimeout(() => {
-            if (child.exitCode !== null || child.signalCode !== null) {
-              resolve();
-
-              return;
-            }
-
-            reject(
-              new Error(
-                `Failed to terminate ${name} process within ${PROCESS_EXIT_TIMEOUT * 2}ms`,
-              ),
-            );
-          }, PROCESS_EXIT_TIMEOUT);
-        }, PROCESS_EXIT_TIMEOUT);
-      }),
-    ]);
-  } finally {
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    child.removeListener("exit", onExit);
-  }
-}
 
 const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
@@ -208,21 +146,7 @@ export class OrcaClient extends EventEmitter {
         "1280x720x24",
       ]);
 
-      this.#xvfbProcess.stdout.on("data", (data: Buffer) => {
-        debug(`[xvfb] ${data.toString().trimEnd()}`);
-      });
-
-      this.#xvfbProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[xvfb] ${data.toString().trimEnd()}`);
-      });
-
-      this.#xvfbProcess.on("error", (error) => {
-        debug(`[xvfb] process error: ${error.message}`);
-      });
-
-      this.#xvfbProcess.on("exit", (code, signal) => {
-        debug(`[xvfb] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#xvfbProcess, "xvfb");
     }
 
     debug(`DISPLAY=${this.#xvfbDisplay}`);
@@ -260,21 +184,7 @@ export class OrcaClient extends EventEmitter {
         },
       );
 
-      this.#sessionDBusProcess.stdout.on("data", (data: Buffer) => {
-        debug(`[dbus] ${data.toString().trimEnd()}`);
-      });
-
-      this.#sessionDBusProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[dbus] ${data.toString().trimEnd()}`);
-      });
-
-      this.#sessionDBusProcess.on("error", (error) => {
-        debug(`[dbus] process error: ${error.message}`);
-      });
-
-      this.#sessionDBusProcess.on("exit", (code, signal) => {
-        debug(`[dbus] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#sessionDBusProcess, "dbus");
 
       this.#sessionDBusAddress = await new Promise<string>((resolve) => {
         this.#sessionDBusProcess.stdout.once("data", (data: Buffer) => {
@@ -338,21 +248,7 @@ export class OrcaClient extends EventEmitter {
         },
       });
 
-      this.#atSpiProcess.stdout.on("data", (data: Buffer) => {
-        debug(`[at-spi] ${data.toString().trimEnd()}`);
-      });
-
-      this.#atSpiProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[at-spi] ${data.toString().trimEnd()}`);
-      });
-
-      this.#atSpiProcess.on("error", (error) => {
-        debug(`[at-spi] process error: ${error.message}`);
-      });
-
-      this.#atSpiProcess.on("exit", (code, signal) => {
-        debug(`[at-spi] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#atSpiProcess, "at-spi");
     }
 
     await waitForCondition(
@@ -419,21 +315,7 @@ export class OrcaClient extends EventEmitter {
       stdio: ["ignore", "pipe", "pipe"],
     });
 
-    this.#speechdProcess.stdout.on("data", (data: Buffer) => {
-      debug(`[speechd] ${data.toString().trimEnd()}`);
-    });
-
-    this.#speechdProcess.stderr.on("data", (data: Buffer) => {
-      debug(`[speechd] ${data.toString().trimEnd()}`);
-    });
-
-    this.#speechdProcess.on("error", (error) => {
-      debug(`[speechd] process error: ${error.message}`);
-    });
-
-    this.#speechdProcess.on("exit", (code, signal) => {
-      debug(`[speechd] exited with code=${code}, signal=${signal}`);
-    });
+    logProcessOutput(this.#speechdProcess, "speechd");
 
     this.#speechdAddress = `unix_socket:${speechdSocketPath}`;
 
@@ -586,17 +468,7 @@ export class OrcaClient extends EventEmitter {
         stdio: ["ignore", "inherit", "pipe"],
       });
 
-      this.#orcaDebugLogProcess.stderr.on("data", (data: Buffer) => {
-        debug(`[orca-debug-log] ${data.toString().trimEnd()}`);
-      });
-
-      this.#orcaDebugLogProcess.on("error", (error) => {
-        debug(`[orca-debug-log] process error: ${error.message}`);
-      });
-
-      this.#orcaDebugLogProcess.on("exit", (code, signal) => {
-        debug(`[orca-debug-log] exited with code=${code}, signal=${signal}`);
-      });
+      logProcessOutput(this.#orcaDebugLogProcess, "orca-debug-log");
     }
 
     this.#orcaProcess = spawn(orcaExecutable, args, {
@@ -608,21 +480,7 @@ export class OrcaClient extends EventEmitter {
       },
     });
 
-    this.#orcaProcess.stdout.on("data", (data: Buffer) => {
-      debug(`[orca] ${data.toString().trimEnd()}`);
-    });
-
-    this.#orcaProcess.stderr.on("data", (data: Buffer) => {
-      debug(`[orca] ${data.toString().trimEnd()}`);
-    });
-
-    this.#orcaProcess.on("error", (error) => {
-      debug(`[orca] process error: ${error.message}`);
-    });
-
-    this.#orcaProcess.on("exit", (code, signal) => {
-      debug(`[orca] exited with code=${code}, signal=${signal}`);
-    });
+    logProcessOutput(this.#orcaProcess, "orca");
 
     await waitForCondition(
       async () => {
@@ -844,9 +702,9 @@ export class OrcaClient extends EventEmitter {
 
     // One at a time, waiting for each to exit, so that Orca can shut down
     // cleanly while the services it depends on are still running.
-    await terminate(this.#orcaProcess, "Orca");
-    await terminate(this.#orcaDebugLogProcess, "Orca debug log");
-    await terminate(this.#speechdProcess, "Speech Dispatcher");
+    await terminateProcess(this.#orcaProcess, "Orca");
+    await terminateProcess(this.#orcaDebugLogProcess, "Orca debug log");
+    await terminateProcess(this.#speechdProcess, "Speech Dispatcher");
     if (this.#atSpiProcess?.pid) {
       try {
         process.kill(-this.#atSpiProcess.pid, "SIGTERM");
@@ -854,9 +712,9 @@ export class OrcaClient extends EventEmitter {
         // Already gone.
       }
     }
-    await terminate(this.#atSpiProcess, "AT-SPI");
-    await terminate(this.#sessionDBusProcess, "session D-Bus");
-    await terminate(this.#xvfbProcess, "X Server");
+    await terminateProcess(this.#atSpiProcess, "AT-SPI");
+    await terminateProcess(this.#sessionDBusProcess, "session D-Bus");
+    await terminateProcess(this.#xvfbProcess, "X Server");
 
     if (this.#runtimeDirectory) {
       rmSync(this.#runtimeDirectory, { force: true, recursive: true });
