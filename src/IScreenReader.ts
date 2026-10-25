@@ -2,6 +2,8 @@ import type { Capture } from "./Capture";
 import type { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
 import type { KeyboardOptions } from "./KeyboardOptions";
+import type { NavigateOptions } from "./NavigateOptions";
+import type { SpokenPhraseMatcher } from "./SpokenPhraseMatcher";
 import type { StartOptions } from "./StartOptions";
 
 export interface IScreenReader {
@@ -176,10 +178,6 @@ export interface IScreenReader {
    * Shortcuts such as `key: "Control+f"` or `key: "Control+Shift+f"` are supported as well. When specified with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
-   * ```ts
-   * await keyboard.press("Control+f");
-   * ```
-   *
    * @param {string} key Name of the key to press or a character to generate, such as `ArrowLeft` or `a`.
    * @param {object} [options] Additional options.
    */
@@ -190,12 +188,7 @@ export interface IScreenReader {
    *
    * Type text into the focused item.
    *
-   * To press a special key, like `Control` or `ArrowDown`, use `keyboard.press(key[, options])`.
-   *
-   * ```ts
-   * await keyboard.type("my-username");
-   * await keyboard.press("Enter");
-   * ```
+   * To press a special key, like `Control` or `ArrowDown`, use `press(key[, options])`.
    *
    * @param {string} text Text to type into the focused item.
    * @param {object} [options] Additional options.
@@ -307,4 +300,140 @@ export interface IScreenReader {
     action: () => Promise<T>,
     options?: CommandOptions,
   ): Promise<Capture<T>>;
+
+  /**
+   * Move the virtual cursor to the previous location until its spoken phrase
+   * matches the provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
+   * @param options Additional navigation and command options.
+   */
+  navigatePreviousUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
+
+  /**
+   * Move the virtual cursor to the next location until its spoken phrase matches
+   * the provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
+   * @param options Additional navigation and command options.
+   */
+  navigateNextUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
+
+  /**
+   * Move the virtual cursor to the previous heading until its spoken phrase
+   * matches the provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
+   * @param options Additional navigation and command options.
+   */
+  navigatePreviousHeadingUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
+
+  /**
+   * Move the virtual cursor to the next heading until its spoken phrase matches
+   * the provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
+   * @param options Additional navigation and command options.
+   */
+  navigateNextHeadingUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
+
+  /**
+   * Move the virtual cursor to the previous link until its spoken phrase matches
+   * the provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
+   * @param options Additional navigation and command options.
+   */
+  navigatePreviousLinkUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
+
+  /**
+   * Move the virtual cursor to the next link until its spoken phrase matches the
+   * provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
+   * @param options Additional navigation and command options.
+   */
+  navigateNextLinkUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
+
+  /**
+   * Move the virtual cursor to the previous landmark until its spoken phrase
+   * matches the provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
+   * @param options Additional navigation and command options.
+   */
+  navigatePreviousLandmarkUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
+
+  /**
+   * Move the virtual cursor to the next landmark until its spoken phrase matches
+   * the provided matcher.
+   *
+   * The matcher can be an exact matching string, a regular expression, or a function
+   * that returns whether the spoken phrase matches. The command throws if no
+   * match is found within `maxNavigationAttempts`. If the last spoken phrase is
+   * already a match then navigation occurs.
+   *
+   * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
+   * @param options Additional navigation and command options.
+   */
+  navigateNextLandmarkUntil(
+    spokenPhraseMatcher: SpokenPhraseMatcher,
+    options?: NavigateOptions,
+  ): Promise<void>;
 }

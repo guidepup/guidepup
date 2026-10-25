@@ -14,6 +14,7 @@ import {
   setSettings,
 } from "./settings";
 import { type KeyCodeCommand, keyCodeCommands } from "./keyCodeCommands";
+import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommandOptions } from "../../CommandOptions";
@@ -49,7 +50,7 @@ const KeySynthType = {
 /**
  * Class for controlling the Orca screen reader on Linux.
  */
-export class Orca implements IScreenReader {
+export class Orca extends BaseScreenReader implements IScreenReader {
   /**
    * Orca client.
    */
