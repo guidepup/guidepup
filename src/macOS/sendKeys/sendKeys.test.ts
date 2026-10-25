@@ -113,9 +113,10 @@ describe("sendKeys", () => {
         commonKeyCodeCommandAssertions(keyCommand, options);
 
         it("should throw a wrapped error", () => {
-          expect(error).toEqual(
-            new Error(expectedErrorPrefix, { cause: errorStub }),
-          );
+          expect(error).toMatchObject({
+            message: expectedErrorPrefix,
+            cause: errorStub,
+          });
         });
       });
 
@@ -158,9 +159,10 @@ describe("sendKeys", () => {
         commonKeystrokeCommandAssertions(keyCommand, options);
 
         it("should throw a wrapped error", () => {
-          expect(error).toEqual(
-            new Error(expectedErrorPrefix, { cause: errorStub }),
-          );
+          expect(error).toMatchObject({
+            message: expectedErrorPrefix,
+            cause: errorStub,
+          });
         });
       });
     },

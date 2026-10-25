@@ -36,7 +36,7 @@ describe("quit", () => {
       } catch (e) {
         error = e;
       }
-      expect(error).toEqual(new Error(ERR_QUIT, { cause: mockError }));
+      expect(error).toMatchObject({ message: ERR_QUIT, cause: mockError });
     });
   });
 });

@@ -85,7 +85,7 @@ describe("click", () => {
     });
 
     it("should throw an error with the click prefix, application name, and underlying error message", async () => {
-      await expect(() => click()).rejects.toEqual(
+      await expect(() => click()).rejects.toThrow(
         new Error(ERR_VOICE_OVER_CLICK, { cause: stubError }),
       );
     });

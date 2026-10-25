@@ -123,9 +123,10 @@ describe("quit", () => {
       });
 
       it("should throw a timeout error", () => {
-        expect(error).toEqual(
-          new Error(ERR_NVDA_QUIT_TIMEOUT, { cause: mockTimeoutError }),
-        );
+        expect(error).toMatchObject({
+          message: ERR_NVDA_QUIT_TIMEOUT,
+          cause: mockTimeoutError,
+        });
       });
 
       it("should keep the timeout error as the cause", () => {
@@ -154,9 +155,10 @@ describe("quit", () => {
       });
 
       it("should throw a wrapped error", () => {
-        expect(error).toEqual(
-          new Error(ERR_NVDA_QUIT, { cause: mockSpawnError }),
-        );
+        expect(error).toMatchObject({
+          message: ERR_NVDA_QUIT,
+          cause: mockSpawnError,
+        });
       });
 
       it("should keep the spawn error as the cause", () => {
@@ -194,7 +196,10 @@ describe("quit", () => {
       });
 
       it("should throw a wrapped error", () => {
-        expect(error).toEqual(new Error(ERR_NVDA_QUIT, { cause: mockError }));
+        expect(error).toMatchObject({
+          message: ERR_NVDA_QUIT,
+          cause: mockError,
+        });
       });
     });
   });

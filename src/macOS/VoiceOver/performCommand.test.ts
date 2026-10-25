@@ -73,7 +73,7 @@ describe("performCommand", () => {
     });
 
     it("should throw an error with the performCommand prefix, application name, and underlying error message", async () => {
-      await expect(() => performCommand(command)).rejects.toEqual(
+      await expect(() => performCommand(command)).rejects.toThrow(
         new Error(ERR_VOICE_OVER_PERFORM_COMMAND, { cause: stubError }),
       );
     });

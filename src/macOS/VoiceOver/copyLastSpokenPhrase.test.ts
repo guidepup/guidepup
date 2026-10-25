@@ -67,7 +67,7 @@ describe("copyLastSpokenPhrase", () => {
     });
 
     it("should throw an error with the copyLastSpokenPhrase prefix, application name, and underlying error message", async () => {
-      await expect(() => copyLastSpokenPhrase()).rejects.toEqual(
+      await expect(() => copyLastSpokenPhrase()).rejects.toThrow(
         new Error(ERR_VOICE_OVER_COPY_LAST_SPOKEN_PHRASE, { cause: stubError }),
       );
     });

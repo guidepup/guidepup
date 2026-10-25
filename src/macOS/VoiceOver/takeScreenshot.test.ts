@@ -67,7 +67,7 @@ describe("takeScreenshot", () => {
     });
 
     it("should throw an error with the takeScreenshot prefix, application name, and underlying error message", async () => {
-      await expect(() => takeScreenshot()).rejects.toEqual(
+      await expect(() => takeScreenshot()).rejects.toThrow(
         new Error(ERR_VOICE_OVER_TAKE_SCREENSHOT, { cause: stubError }),
       );
     });

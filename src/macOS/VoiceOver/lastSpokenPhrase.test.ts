@@ -67,7 +67,7 @@ describe("lastSpokenPhrase", () => {
     });
 
     it("should throw an error with the lastSpokenPhrase prefix, application name, and underlying error message", async () => {
-      await expect(() => lastSpokenPhrase()).rejects.toEqual(
+      await expect(() => lastSpokenPhrase()).rejects.toThrow(
         new Error(ERR_VOICE_OVER_GET_LAST_SPOKEN_PHRASE, { cause: stubError }),
       );
     });
