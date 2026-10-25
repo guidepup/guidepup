@@ -10,3 +10,4 @@ export const DEFAULT_CAPTURE = "initial";
 
 export const ERR_WAITING_TIMEOUT = "Timed out waiting.";
 export const ERR_APPLE_SCRIPT_TIMED_OUT = "(-1712)";
+export const ERR_APPLE_SCRIPT_APPLICATION_NOT_RUNNING = "(-600)";
