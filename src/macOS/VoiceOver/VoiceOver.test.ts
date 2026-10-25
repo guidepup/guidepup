@@ -12,13 +12,17 @@ import {
   setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
+import {
+  navigateUntil,
+  type NavigateUntilMethod,
+  type NavigationMethod,
+} from "../../navigateUntil";
 import { CommanderCommands } from "./CommanderCommands";
 import { delay } from "../../delay";
 import { getManifestAsset } from "./getManifestAsset";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { navigateUntil } from "../../navigateUntil";
 import { release } from "node:os";
 import { start } from "./start";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
@@ -864,149 +868,42 @@ describe("VoiceOver", () => {
     });
   });
 
-  describe("navigatePreviousUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
+  describe.each`
+    method                             | navigationMethod
+    ${"navigatePreviousUntil"}         | ${"previous"}
+    ${"navigateNextUntil"}             | ${"next"}
+    ${"navigatePreviousHeadingUntil"}  | ${"previousHeading"}
+    ${"navigateNextHeadingUntil"}      | ${"nextHeading"}
+    ${"navigatePreviousLinkUntil"}     | ${"previousLink"}
+    ${"navigateNextLinkUntil"}         | ${"nextLink"}
+    ${"navigatePreviousLandmarkUntil"} | ${"previousLandmark"}
+    ${"navigateNextLandmarkUntil"}     | ${"nextLandmark"}
+  `(
+    "$method",
+    ({
+      method,
+      navigationMethod,
+    }: {
+      method: NavigateUntilMethod;
+      navigationMethod: NavigationMethod;
+    }) => {
+      const spokenPhraseMatcher = "test-spoken-phrase";
+      const options = { maxNavigationAttempts: 3 };
 
-    beforeEach(async () => {
-      await vo.navigatePreviousUntil(spokenPhraseMatcher, options);
-    });
+      beforeEach(async () => {
+        await vo[method](spokenPhraseMatcher, options);
+      });
 
-    it("should navigate previous until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "previous",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await vo.navigateNextUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate next until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "next",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigatePreviousHeadingUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await vo.navigatePreviousHeadingUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the previous heading until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "previousHeading",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextHeadingUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await vo.navigateNextHeadingUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the next heading until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "nextHeading",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigatePreviousLinkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await vo.navigatePreviousLinkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the previous link until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "previousLink",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextLinkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await vo.navigateNextLinkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the next link until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "nextLink",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigatePreviousLandmarkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await vo.navigatePreviousLandmarkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the previous landmark until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "previousLandmark",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextLandmarkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await vo.navigateNextLandmarkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the next landmark until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        vo,
-        "nextLandmark",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
+      it(`should navigate using ${navigationMethod} until the spoken phrase matches`, () => {
+        expect(navigateUntil).toHaveBeenCalledWith(
+          vo,
+          navigationMethod,
+          spokenPhraseMatcher,
+          options,
+        );
+      });
+    },
+  );
 
   describe("act", () => {
     describe("when VoiceOver is not running", () => {

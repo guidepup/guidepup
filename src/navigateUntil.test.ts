@@ -12,6 +12,18 @@ describe("navigateUntil", () => {
     jest.clearAllMocks();
   });
 
+  it("should not navigate if the current last spoken phrase is a match", async () => {
+    jest
+      .mocked(screenReader.lastSpokenPhrase)
+      .mockResolvedValueOnce("test-spoken-phrase-target");
+
+    await navigateUntil(screenReader, "next", "test-spoken-phrase-target", {
+      maxNavigationAttempts: 0,
+    });
+
+    expect(screenReader.next).not.toHaveBeenCalled();
+  });
+
   it("should navigate until the spoken phrase is a complete string match", async () => {
     jest
       .mocked(screenReader.lastSpokenPhrase)
@@ -19,10 +31,10 @@ describe("navigateUntil", () => {
       .mockResolvedValueOnce("test-spoken-phrase-target");
 
     await navigateUntil(screenReader, "next", "test-spoken-phrase-target", {
-      maxNavigationAttempts: 3,
+      maxNavigationAttempts: 2,
     });
 
-    expect(screenReader.next).toHaveBeenCalledTimes(2);
+    expect(screenReader.next).toHaveBeenCalledTimes(1);
   });
 
   it("should support regular expression matchers", async () => {
@@ -33,10 +45,26 @@ describe("navigateUntil", () => {
       .mockResolvedValue("test-spoken-phrase-target");
 
     await navigateUntil(screenReader, "next", /test-spoken-phrase-target/, {
-      maxNavigationAttempts: 4,
+      maxNavigationAttempts: 3,
     });
 
-    expect(screenReader["next"]).toHaveBeenCalledTimes(3);
+    expect(screenReader["next"]).toHaveBeenCalledTimes(2);
+  });
+
+  it("should reset the regular expression matcher lastIndex before each match to support global `/g` and sticky `/y` matchers", async () => {
+    const matcher = /test-spoken-phrase-target/g;
+    matcher.lastIndex = 25;
+
+    jest
+      .mocked(screenReader.lastSpokenPhrase)
+      .mockResolvedValueOnce("test-spoken-phrase-1")
+      .mockResolvedValueOnce("test-spoken-phrase-target");
+
+    await navigateUntil(screenReader, "next", matcher, {
+      maxNavigationAttempts: 1,
+    });
+
+    expect(screenReader.next).toHaveBeenCalledTimes(1);
   });
 
   it("should support function matchers", async () => {
@@ -51,11 +79,11 @@ describe("navigateUntil", () => {
       "next",
       (spokenPhrase) => spokenPhrase === "test-spoken-phrase-target",
       {
-        maxNavigationAttempts: 4,
+        maxNavigationAttempts: 3,
       },
     );
 
-    expect(screenReader["next"]).toHaveBeenCalledTimes(3);
+    expect(screenReader["next"]).toHaveBeenCalledTimes(2);
   });
 
   it("should not match on a partial string", async () => {
@@ -80,6 +108,7 @@ describe("navigateUntil", () => {
   it("should pass command options to each navigation method invocation", async () => {
     jest
       .mocked(screenReader.lastSpokenPhrase)
+      .mockResolvedValueOnce("test-spoken-phrase-1")
       .mockResolvedValue("test-spoken-phrase-target");
 
     await navigateUntil(screenReader, "next", "test-spoken-phrase-target", {

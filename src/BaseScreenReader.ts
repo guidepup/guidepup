@@ -55,18 +55,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the previous item containing the exact spoken phrase.
-   *   await screenReader.navigatePreviousUntil("Submit", {
-   *     maxNavigationAttempts: 10,
-   *   });
+   *   await screenReader.navigatePreviousUntil(/Submit/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
    * @param options Additional navigation and command options.
@@ -90,18 +89,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the next item containing the exact spoken phrase.
-   *   await screenReader.navigateNextUntil("Submit", {
-   *     maxNavigationAttempts: 10,
-   *   });
+   *   await screenReader.navigateNextUntil(/Submit/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
    * @param options Additional navigation and command options.
@@ -125,16 +123,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the previous heading with a matching spoken phrase.
-   *   await screenReader.navigatePreviousHeadingUntil(/^Account/);
+   *   await screenReader.navigatePreviousHeadingUntil(/Account/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
    * @param options Additional navigation and command options.
@@ -163,16 +162,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the next heading with a matching spoken phrase.
-   *   await screenReader.navigateNextHeadingUntil(/^Account/);
+   *   await screenReader.navigateNextHeadingUntil(/Account/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
    * @param options Additional navigation and command options.
@@ -201,16 +201,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the previous link with a matching spoken phrase.
-   *   await screenReader.navigatePreviousLinkUntil(/^Home/);
+   *   await screenReader.navigatePreviousLinkUntil(/Home/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
    * @param options Additional navigation and command options.
@@ -239,16 +240,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the next link with a matching spoken phrase.
-   *   await screenReader.navigateNextLinkUntil(/^Home/);
+   *   await screenReader.navigateNextLinkUntil(/Home/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
    * @param options Additional navigation and command options.
@@ -272,16 +274,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the previous landmark with a matching spoken phrase.
-   *   await screenReader.navigatePreviousLandmarkUntil(/^Main/);
+   *   await screenReader.navigatePreviousLandmarkUntil(/Main/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
    * @param options Additional navigation and command options.
@@ -310,16 +313,17 @@ export abstract class BaseScreenReader implements IScreenReader {
    *   await screenReader.start();
    *
    *   // Move to the next landmark with a matching spoken phrase.
-   *   await screenReader.navigateNextLandmarkUntil(/^Main/);
+   *   await screenReader.navigateNextLandmarkUntil(/Main/);
    *
    *   // Stop the screen reader.
    *   await screenReader.stop();
    * })();
    * ```
    *
-   * The matcher can be an exact string, a regular expression, or a function
+   * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
-   * match is found within `maxNavigationAttempts`.
+   * match is found within `maxNavigationAttempts` (default is `10`). If the last spoken phrase is
+   * already a match then navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
    * @param options Additional navigation and command options.

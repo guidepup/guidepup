@@ -3,10 +3,14 @@ import {
   ERR_NVDA_NOT_INSTALLED,
   ERR_NVDA_NOT_RUNNING,
 } from "../errors";
+import {
+  navigateUntil,
+  type NavigateUntilMethod,
+  type NavigationMethod,
+} from "../../navigateUntil";
 import { delay } from "../../delay";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isWindows } from "../isWindows";
-import { navigateUntil } from "../../navigateUntil";
 import { NVDA } from "./NVDA";
 import { NVDAClient } from "./NVDAClient";
 import { quit } from "./quit";
@@ -464,149 +468,42 @@ describe("NVDA", () => {
     });
   });
 
-  describe("navigatePreviousUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
+  describe.each`
+    method                             | navigationMethod
+    ${"navigatePreviousUntil"}         | ${"previous"}
+    ${"navigateNextUntil"}             | ${"next"}
+    ${"navigatePreviousHeadingUntil"}  | ${"previousHeading"}
+    ${"navigateNextHeadingUntil"}      | ${"nextHeading"}
+    ${"navigatePreviousLinkUntil"}     | ${"previousLink"}
+    ${"navigateNextLinkUntil"}         | ${"nextLink"}
+    ${"navigatePreviousLandmarkUntil"} | ${"previousLandmark"}
+    ${"navigateNextLandmarkUntil"}     | ${"nextLandmark"}
+  `(
+    "$method",
+    ({
+      method,
+      navigationMethod,
+    }: {
+      method: NavigateUntilMethod;
+      navigationMethod: NavigationMethod;
+    }) => {
+      const spokenPhraseMatcher = "test-spoken-phrase";
+      const options = { maxNavigationAttempts: 3 };
 
-    beforeEach(async () => {
-      await nvda.navigatePreviousUntil(spokenPhraseMatcher, options);
-    });
+      beforeEach(async () => {
+        await nvda[method](spokenPhraseMatcher, options);
+      });
 
-    it("should navigate previous until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "previous",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await nvda.navigateNextUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate next until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "next",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigatePreviousHeadingUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await nvda.navigatePreviousHeadingUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the previous heading until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "previousHeading",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextHeadingUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await nvda.navigateNextHeadingUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the next heading until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "nextHeading",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigatePreviousLinkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await nvda.navigatePreviousLinkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the previous link until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "previousLink",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextLinkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await nvda.navigateNextLinkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the next link until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "nextLink",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigatePreviousLandmarkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await nvda.navigatePreviousLandmarkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the previous landmark until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "previousLandmark",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
-
-  describe("navigateNextLandmarkUntil", () => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
-
-    beforeEach(async () => {
-      await nvda.navigateNextLandmarkUntil(spokenPhraseMatcher, options);
-    });
-
-    it("should navigate to the next landmark until the spoken phrase matches", () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        nvda,
-        "nextLandmark",
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
+      it(`should navigate using ${navigationMethod} until the spoken phrase matches`, () => {
+        expect(navigateUntil).toHaveBeenCalledWith(
+          nvda,
+          navigationMethod,
+          spokenPhraseMatcher,
+          options,
+        );
+      });
+    },
+  );
 
   describe("spokenPhraseLog", () => {
     beforeEach(() => {

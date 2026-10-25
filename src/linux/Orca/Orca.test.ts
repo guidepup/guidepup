@@ -13,11 +13,15 @@ import {
   resetGuidepupSettings,
   setSettings,
 } from "./settings";
+import {
+  navigateUntil,
+  NavigateUntilMethod,
+  NavigationMethod,
+} from "../../navigateUntil";
 import { delay } from "../../delay";
 import { isLinux } from "../isLinux";
 import { isOrcaInstalled } from "./isOrcaInstalled";
 import { keyCodeCommands } from "./keyCodeCommands";
-import { navigateUntil } from "../../navigateUntil";
 import { Orca } from "./Orca";
 import { OrcaClient } from "./OrcaClient";
 
@@ -516,23 +520,32 @@ describe("Orca", () => {
     ${"navigateNextLinkUntil"}         | ${"nextLink"}
     ${"navigatePreviousLandmarkUntil"} | ${"previousLandmark"}
     ${"navigateNextLandmarkUntil"}     | ${"nextLandmark"}
-  `("$method", ({ method, navigationMethod }) => {
-    const spokenPhraseMatcher = "test-spoken-phrase";
-    const options = { maxNavigationAttempts: 3 };
+  `(
+    "$method",
+    ({
+      method,
+      navigationMethod,
+    }: {
+      method: NavigateUntilMethod;
+      navigationMethod: NavigationMethod;
+    }) => {
+      const spokenPhraseMatcher = "test-spoken-phrase";
+      const options = { maxNavigationAttempts: 3 };
 
-    beforeEach(async () => {
-      await orca[method](spokenPhraseMatcher, options);
-    });
+      beforeEach(async () => {
+        await orca[method](spokenPhraseMatcher, options);
+      });
 
-    it(`should navigate using ${navigationMethod} until the spoken phrase matches`, () => {
-      expect(navigateUntil).toHaveBeenCalledWith(
-        orca,
-        navigationMethod,
-        spokenPhraseMatcher,
-        options,
-      );
-    });
-  });
+      it(`should navigate using ${navigationMethod} until the spoken phrase matches`, () => {
+        expect(navigateUntil).toHaveBeenCalledWith(
+          orca,
+          navigationMethod,
+          spokenPhraseMatcher,
+          options,
+        );
+      });
+    },
+  );
 
   describe("press", () => {
     describe("when Orca is not running", () => {

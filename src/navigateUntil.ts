@@ -6,6 +6,26 @@ import type { IScreenReader } from "./IScreenReader";
 import type { NavigateOptions } from "./NavigateOptions";
 import type { SpokenPhraseMatcher } from "./SpokenPhraseMatcher";
 
+export type NavigateUntilMethod =
+  | "navigatePreviousUntil"
+  | "navigateNextUntil"
+  | "navigatePreviousHeadingUntil"
+  | "navigateNextHeadingUntil"
+  | "navigatePreviousLinkUntil"
+  | "navigateNextLinkUntil"
+  | "navigatePreviousLandmarkUntil"
+  | "navigateNextLandmarkUntil";
+
+export type NavigationMethod =
+  | "previous"
+  | "next"
+  | "previousHeading"
+  | "nextHeading"
+  | "previousLink"
+  | "nextLink"
+  | "previousLandmark"
+  | "nextLandmark";
+
 const DEFAULT_MAX_NAVIGATION_ATTEMPTS = 10;
 
 function matchesSpokenPhrase(
@@ -27,7 +47,7 @@ function matchesSpokenPhrase(
 
 export async function navigateUntil(
   screenReader: IScreenReader,
-  method: string,
+  method: NavigationMethod,
   spokenPhraseMatcher: SpokenPhraseMatcher,
   options?: NavigateOptions,
 ): Promise<void> {
@@ -38,6 +58,12 @@ export async function navigateUntil(
 
   if (!Number.isInteger(maxNavigationAttempts) || maxNavigationAttempts < 0) {
     throw new RangeError(ERR_NAVIGATE_UNTIL_INVALID_MAX_NAVIGATION_ATTEMPTS);
+  }
+
+  const spokenPhrase = await screenReader.lastSpokenPhrase();
+
+  if (matchesSpokenPhrase(spokenPhrase, spokenPhraseMatcher)) {
+    return;
   }
 
   for (let i = 0; i < maxNavigationAttempts; i++) {
