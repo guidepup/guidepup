@@ -405,10 +405,12 @@ describe("OrcaClient", () => {
         );
       });
 
-      it("should start Speech Dispatcher with the session sockets", () => {
+      it("should start Speech Dispatcher with SIGPIPE ignored and the session sockets", () => {
         expect(spawn).toHaveBeenCalledWith(
-          "speech-dispatcher",
+          "env",
           [
+            "--ignore-signal=PIPE",
+            "speech-dispatcher",
             "--run-single",
             "--config-dir",
             join(mockInstallationPath, "speechd"),
@@ -484,7 +486,7 @@ describe("OrcaClient", () => {
           [lastProcess("Xvfb"), "xvfb"],
           [lastProcess("dbus-daemon"), "dbus"],
           [lastProcess(AT_SPI_LAUNCHER), "at-spi"],
-          [lastProcess("speech-dispatcher"), "speechd"],
+          [lastProcess("env"), "speechd"],
           [lastProcess(mockOrcaExecutable), "orca"],
         ]);
       });
@@ -525,7 +527,7 @@ describe("OrcaClient", () => {
 
       it("should start Speech Dispatcher with verbose logging", () => {
         expect(spawn).toHaveBeenCalledWith(
-          "speech-dispatcher",
+          "env",
           expect.arrayContaining(["--log-level", "5"]),
           expect.anything(),
         );
@@ -1127,7 +1129,7 @@ describe("OrcaClient", () => {
           expect(jest.mocked(terminateProcess).mock.calls).toEqual([
             [lastProcess(mockOrcaExecutable), "Orca"],
             [null, "Orca debug log"],
-            [lastProcess("speech-dispatcher"), "Speech Dispatcher"],
+            [lastProcess("env"), "Speech Dispatcher"],
             [lastProcess(AT_SPI_LAUNCHER), "AT-SPI"],
             [lastProcess("dbus-daemon"), "session D-Bus"],
             [lastProcess("Xvfb"), "X Server"],
