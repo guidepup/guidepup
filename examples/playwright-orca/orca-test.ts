@@ -1,8 +1,8 @@
 import type { CommandOptions, Orca } from "../../src";
 import { navigateOrcaToWebContent } from "./navigateToWebContent";
+import { orca } from "../../src";
 import type { StartOptions } from "../../src/StartOptions";
 import { test } from "@playwright/test";
-import { unstable_orca } from "../../src";
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-orca)
@@ -12,19 +12,19 @@ import { unstable_orca } from "../../src";
  * Here's a typical example:
  *
  * ```ts
- * import { unstable_orca } from "@guidepup/guidepup";
+ * import { orca } from "@guidepup/guidepup";
  *
  * (async () => {
  *   // Start Orca.
- *   await unstable_orca.start();
+ *   await orca.start();
  *
  *   // Move to the next item.
- *   await unstable_orca.next();
+ *   await orca.next();
  *
  *   // ... perform some commands.
  *
  *   // Stop Orca.
- *   await unstable_orca.stop();
+ *   await orca.stop();
  * })();
  * ```
  */
@@ -40,7 +40,7 @@ export interface OrcaPlaywright extends Orca {
   ): Promise<void>;
 }
 
-const orcaPlaywright: OrcaPlaywright = unstable_orca as OrcaPlaywright;
+const orcaPlaywright: OrcaPlaywright = orca as OrcaPlaywright;
 
 /**
  * These tests extend the default Playwright environment that launches the
@@ -57,19 +57,19 @@ export const orcaTest = test.extend<{
    * Here's a typical example:
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next item.
-   *   await unstable_orca.next();
+   *   await orca.next();
    *
    *   // ... perform some commands.
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    */
@@ -77,7 +77,7 @@ export const orcaTest = test.extend<{
   /**
    * [API Reference](https://www.guidepup.dev/docs/api/class-start-options)
    *
-   * Options to start Orca with, see also [unstable_orca.start([options])](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-start).
+   * Options to start Orca with, see also [orca.start([options])](https://www.guidepup.dev/docs/api/class-orca#orca-start).
    */
   orcaStartOptions: StartOptions;
 }>({

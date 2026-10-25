@@ -6,21 +6,21 @@ import { Orca } from "./Orca";
  * Here's a typical example:
  *
  * ```ts
- * import { unstable_orca } from "@guidepup/guidepup";
+ * import { orca } from "@guidepup/guidepup";
  *
  * (async () => {
  *   // Start Orca.
- *   await unstable_orca.start();
+ *   await orca.start();
  *
  *   // Move to the next item.
- *   await unstable_orca.next();
+ *   await orca.next();
  *
  *   // Stop Orca.
- *   await unstable_orca.stop();
+ *   await orca.stop();
  * })();
  * ```
  */
-export const unstable_orca = new Orca();
+export const orca = new Orca();
 
 /**
  * This object can be used to launch and control Orca.
@@ -28,21 +28,21 @@ export const unstable_orca = new Orca();
  * Here's a typical example:
  *
  * ```ts
- * import { unstable_orca } from "@guidepup/guidepup";
+ * import { orca } from "@guidepup/guidepup";
  *
  * (async () => {
  *   // Start Orca.
- *   await unstable_orca.start();
+ *   await orca.start();
  *
  *   // Move to the next item.
- *   await unstable_orca.next();
+ *   await orca.next();
  *
  *   // Stop Orca.
- *   await unstable_orca.stop();
+ *   await orca.stop();
  * })();
  * ```
  */
-type _Orca = typeof unstable_orca;
+type _Orca = typeof orca;
 
 export { _Orca as Orca };
 export { keyCodeCommands as orcaKeyCodeCommands } from "./keyCodeCommands";

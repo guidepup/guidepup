@@ -1,5 +1,5 @@
 import type { CommandOptions, ScreenReader } from "../../src";
-import { nvda, screenReader, unstable_orca, voiceOver } from "../../src";
+import { nvda, orca, screenReader, voiceOver } from "../../src";
 import { applicationIdMap } from "../applicationIdMap";
 import { applicationNameMap } from "../applicationNameMap";
 import { navigateNVDAtoWebContent } from "../playwright-nvda/navigateToWebContent";
@@ -124,10 +124,10 @@ export const screenReaderTest = test.extend<{
             applicationId,
             capture,
           });
-      } else if (unstable_orca.default()) {
+      } else if (orca.default()) {
         screenReaderPlaywright.navigateToWebContent = ({ capture } = {}) =>
           navigateOrcaToWebContent({
-            orca: unstable_orca,
+            orca: orca,
             page,
             capture,
           });

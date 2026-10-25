@@ -1,7 +1,7 @@
 import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import { nvda } from "./windows";
+import { orca } from "./linux";
 import { ScreenReader } from "./ScreenReader";
-import { unstable_orca } from "./linux";
 import { voiceOver } from "./macOS";
 
 jest.mock("./windows", () => ({
@@ -13,7 +13,7 @@ jest.mock("./windows", () => ({
 }));
 
 jest.mock("./linux", () => ({
-  unstable_orca: {
+  orca: {
     default: jest.fn(),
     name: "Orca",
     version: "test-orca-version",
@@ -37,7 +37,7 @@ describe("ScreenReader", () => {
   describe("when VoiceOver is the default screen reader for the environment", () => {
     beforeEach(() => {
       jest.mocked(nvda.default).mockReturnValue(false);
-      jest.mocked(unstable_orca.default).mockReturnValue(false);
+      jest.mocked(orca.default).mockReturnValue(false);
       jest.mocked(voiceOver.default).mockReturnValue(true);
     });
 
@@ -61,7 +61,7 @@ describe("ScreenReader", () => {
   describe("when NVDA is the default screen reader for the environment", () => {
     beforeEach(() => {
       jest.mocked(nvda.default).mockReturnValue(true);
-      jest.mocked(unstable_orca.default).mockReturnValue(false);
+      jest.mocked(orca.default).mockReturnValue(false);
       jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 
@@ -85,7 +85,7 @@ describe("ScreenReader", () => {
   describe("when Orca is the default screen reader for the environment", () => {
     beforeEach(() => {
       jest.mocked(nvda.default).mockReturnValue(false);
-      jest.mocked(unstable_orca.default).mockReturnValue(true);
+      jest.mocked(orca.default).mockReturnValue(true);
       jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 
@@ -109,7 +109,7 @@ describe("ScreenReader", () => {
   describe("when neither VoiceOver, Orca, nor NVDA is the default screen reader for the environment", () => {
     beforeEach(() => {
       jest.mocked(nvda.default).mockReturnValue(false);
-      jest.mocked(unstable_orca.default).mockReturnValue(false);
+      jest.mocked(orca.default).mockReturnValue(false);
       jest.mocked(voiceOver.default).mockReturnValue(false);
     });
 
