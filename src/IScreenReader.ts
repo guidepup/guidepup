@@ -308,7 +308,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
    * @param options Additional navigation and command options.
@@ -325,7 +325,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each location.
    * @param options Additional navigation and command options.
@@ -342,7 +342,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
    * @param options Additional navigation and command options.
@@ -359,7 +359,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each heading.
    * @param options Additional navigation and command options.
@@ -376,7 +376,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
    * @param options Additional navigation and command options.
@@ -393,7 +393,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each link.
    * @param options Additional navigation and command options.
@@ -410,7 +410,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
    * @param options Additional navigation and command options.
@@ -427,7 +427,7 @@ export interface IScreenReader {
    * The matcher can be an exact matching string, a regular expression, or a function
    * that returns whether the spoken phrase matches. The command throws if no
    * match is found within `maxNavigationAttempts`. If the last spoken phrase is
-   * already a match then navigation occurs.
+   * already a match then no navigation occurs.
    *
    * @param spokenPhraseMatcher Matcher for the phrase spoken at each landmark.
    * @param options Additional navigation and command options.
