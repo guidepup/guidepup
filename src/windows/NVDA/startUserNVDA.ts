@@ -8,9 +8,11 @@ import { waitForCondition } from "../../waitForCondition";
  * Start the user's own NVDA again, for example after Guidepup quit it to run
  * its portable NVDA.
  *
- * NVDA is started through the Windows shell, as a shortcut does. A process
- * that Node spawns directly does not get UIAccess, so NVDA could not read or
- * control elevated applications.
+ * NVDA is started through the Windows shell, as a shortcut does. The installed
+ * NVDA asks for UIAccess in its manifest, which lets it read and control
+ * applications that run as administrator. A process that Node spawns directly
+ * does not get UIAccess. The portable NVDA that Guidepup runs does not ask for
+ * UIAccess, so this does not apply to `start()`.
  *
  * Resolves once NVDA is running, so a following `nvda.start()` sees it and
  * does not race its start up.

@@ -1,6 +1,6 @@
 import { DEFAULT_TIMEOUT } from "../../constants";
 import { existsSync } from "node:fs";
-import { getInstalledNVDAPath } from "./getInstalledNVDAPath";
+import { getUserNVDAInstallationPath } from "./getUserNVDAInstallationPath";
 import { spawnSync } from "child_process";
 import { SUB_KEY_NVDA_APP_PATH } from "./constants";
 
@@ -18,7 +18,7 @@ const mockRegOutput = `\r\nHKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\Cur
 const mockRegNotFound = { stdout: "", status: 1 } as SpawnSyncResult;
 const mockRegFound = { stdout: mockRegOutput, status: 0 } as SpawnSyncResult;
 
-describe("getInstalledNVDAPath", () => {
+describe("getUserNVDAInstallationPath", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -31,7 +31,7 @@ describe("getInstalledNVDAPath", () => {
     beforeEach(() => {
       jest.mocked(spawnSync).mockReturnValue(mockRegFound);
 
-      result = getInstalledNVDAPath();
+      result = getUserNVDAInstallationPath();
     });
 
     it("should query the default value of the App Paths key without a shell", () => {
@@ -64,7 +64,7 @@ describe("getInstalledNVDAPath", () => {
         .mockReturnValueOnce(mockRegNotFound)
         .mockReturnValueOnce(mockRegFound);
 
-      result = getInstalledNVDAPath();
+      result = getUserNVDAInstallationPath();
     });
 
     it("should query the 32-bit registry view", () => {
@@ -84,7 +84,7 @@ describe("getInstalledNVDAPath", () => {
     it("should return null", () => {
       jest.mocked(spawnSync).mockReturnValue(mockRegNotFound);
 
-      expect(getInstalledNVDAPath()).toBeNull();
+      expect(getUserNVDAInstallationPath()).toBeNull();
     });
   });
 
@@ -95,7 +95,55 @@ describe("getInstalledNVDAPath", () => {
         error: new Error("test-error"),
       } as unknown as SpawnSyncResult);
 
-      expect(getInstalledNVDAPath()).toBeNull();
+      expect(getUserNVDAInstallationPath()).toBeNull();
+    });
+
+    it("should query both registry views", () => {
+      jest.mocked(spawnSync).mockReturnValue({
+        stdout: null,
+        error: new Error("test-error"),
+      } as unknown as SpawnSyncResult);
+
+      getUserNVDAInstallationPath();
+
+      expect(spawnSync).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("when reg reports an error with output", () => {
+    it("should ignore the output", () => {
+      jest.mocked(spawnSync).mockReturnValue({
+        ...mockRegFound,
+        error: new Error("test-timeout"),
+      } as SpawnSyncResult);
+
+      expect(getUserNVDAInstallationPath()).toBeNull();
+      expect(existsSync).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("when reg exits with a non-zero status with output", () => {
+    it("should ignore the output", () => {
+      jest
+        .mocked(spawnSync)
+        .mockReturnValue({ ...mockRegFound, status: 1 } as SpawnSyncResult);
+
+      expect(getUserNVDAInstallationPath()).toBeNull();
+      expect(existsSync).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("when the 64-bit query fails and the 32-bit view has the path", () => {
+    it("should return the path", () => {
+      jest
+        .mocked(spawnSync)
+        .mockReturnValueOnce({
+          stdout: null,
+          error: new Error("test-error"),
+        } as unknown as SpawnSyncResult)
+        .mockReturnValueOnce(mockRegFound);
+
+      expect(getUserNVDAInstallationPath()).toBe(mockInstalledPath);
     });
   });
 
@@ -104,7 +152,7 @@ describe("getInstalledNVDAPath", () => {
       jest.mocked(spawnSync).mockReturnValue(mockRegFound);
       jest.mocked(existsSync).mockReturnValue(false);
 
-      expect(getInstalledNVDAPath()).toBeNull();
+      expect(getUserNVDAInstallationPath()).toBeNull();
     });
   });
 });

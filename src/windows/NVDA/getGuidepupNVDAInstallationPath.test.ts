@@ -1,5 +1,5 @@
 import type { existsSync as _existsSync } from "node:fs";
-import type { getNVDAInstallationPath as _getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import type { getGuidepupNVDAInstallationPath as _getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import type { resolveCachePath as _resolveCachePath } from "../../resolveCachePath";
 import { join } from "node:path";
 
@@ -26,8 +26,8 @@ const mockManifest = {
   ],
 };
 
-describe("getNVDAInstallationPath", () => {
-  let getNVDAInstallationPath: typeof _getNVDAInstallationPath;
+describe("getGuidepupNVDAInstallationPath", () => {
+  let getGuidepupNVDAInstallationPath: typeof _getGuidepupNVDAInstallationPath;
   let existsSync: typeof _existsSync;
   let resolveCachePath: typeof _resolveCachePath;
 
@@ -45,7 +45,7 @@ describe("getNVDAInstallationPath", () => {
 
     ({ existsSync } = await import("fs"));
     ({ resolveCachePath } = await import("../../resolveCachePath"));
-    ({ getNVDAInstallationPath } = await import("./getNVDAInstallationPath"));
+    ({ getGuidepupNVDAInstallationPath } = await import("./getGuidepupNVDAInstallationPath"));
 
     jest.mocked(resolveCachePath).mockReturnValue(mockResolvedCachePath);
   });
@@ -57,7 +57,7 @@ describe("getNVDAInstallationPath", () => {
       beforeEach(() => {
         jest.mocked(existsSync).mockReturnValue(false);
 
-        result = getNVDAInstallationPath();
+        result = getGuidepupNVDAInstallationPath();
       });
 
       it("should resolve the cache path", () => {
@@ -77,7 +77,7 @@ describe("getNVDAInstallationPath", () => {
       beforeEach(() => {
         jest.mocked(existsSync).mockReturnValue(true);
 
-        result = getNVDAInstallationPath();
+        result = getGuidepupNVDAInstallationPath();
       });
 
       it("should resolve the cache path", () => {
@@ -96,7 +96,7 @@ describe("getNVDAInstallationPath", () => {
         beforeEach(() => {
           jest.clearAllMocks();
 
-          result = getNVDAInstallationPath();
+          result = getGuidepupNVDAInstallationPath();
         });
 
         it("should not resolve the cache path again", () => {

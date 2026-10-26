@@ -1,11 +1,11 @@
 import { execFile, type ExecFileException } from "child_process";
 import { DEFAULT_RUNNING_TIMEOUT } from "../../constants";
 import { ERR_NVDA_NOT_INSTALLED } from "../errors";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import { isAnyNVDARunning } from "./isAnyNVDARunning";
 
-jest.mock("./getNVDAInstallationPath", () => ({
-  getNVDAInstallationPath: jest.fn(),
+jest.mock("./getGuidepupNVDAInstallationPath", () => ({
+  getGuidepupNVDAInstallationPath: jest.fn(),
 }));
 jest.mock("child_process", () => ({
   execFile: jest.fn(),
@@ -26,7 +26,7 @@ describe("isAnyNVDARunning", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
+      jest.mocked(getGuidepupNVDAInstallationPath).mockReturnValue(null);
     });
 
     it("should throw an error", async () => {
@@ -45,7 +45,7 @@ describe("isAnyNVDARunning", () => {
   describe("when NVDA is installed", () => {
     beforeEach(() => {
       jest
-        .mocked(getNVDAInstallationPath)
+        .mocked(getGuidepupNVDAInstallationPath)
         .mockReturnValue(mockInstallationPath);
     });
 

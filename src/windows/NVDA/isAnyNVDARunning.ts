@@ -1,7 +1,7 @@
 import { DEFAULT_RUNNING_TIMEOUT } from "../../constants";
 import { ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { execFile } from "child_process";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 
 /**
  * Whether any copy of NVDA is running, including one that Guidepup did not
@@ -12,7 +12,7 @@ import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
  * copy.
  */
 export async function isAnyNVDARunning(): Promise<boolean> {
-  const executablePath = getNVDAInstallationPath();
+  const executablePath = getGuidepupNVDAInstallationPath();
 
   if (!executablePath) {
     throw new Error(ERR_NVDA_NOT_INSTALLED);

@@ -3,7 +3,7 @@ import { dirname, join } from "path";
 import { ERR_NVDA_CANNOT_CONNECT, ERR_NVDA_NOT_INSTALLED } from "../errors";
 import { existsSync, readFileSync } from "fs";
 import { NVDA_HOST, NVDA_PORT } from "./constants";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import { Key } from "../Key";
 import { Modifiers } from "../Modifiers";
 import { NVDAClient } from "./NVDAClient";
@@ -12,8 +12,8 @@ import { readKey } from "../../../test/fixtures";
 const nvdaDataHandlerStub = jest.fn();
 const installationPathDummy = "test-installation-path";
 
-jest.mock("./getNVDAInstallationPath", () => ({
-  getNVDAInstallationPath: jest.fn(),
+jest.mock("./getGuidepupNVDAInstallationPath", () => ({
+  getGuidepupNVDAInstallationPath: jest.fn(),
 }));
 jest.mock("fs", () => ({
   existsSync: jest.fn(),
@@ -26,7 +26,7 @@ describe("NVDAClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.mocked(getNVDAInstallationPath).mockReturnValue(installationPathDummy);
+    jest.mocked(getGuidepupNVDAInstallationPath).mockReturnValue(installationPathDummy);
 
     jest.mocked(existsSync).mockReturnValue(true);
 
@@ -70,12 +70,12 @@ describe("NVDAClient", () => {
       // swallow;
     }
 
-    expect(getNVDAInstallationPath).toHaveBeenCalled();
+    expect(getGuidepupNVDAInstallationPath).toHaveBeenCalled();
   }, 15_000);
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
+      jest.mocked(getGuidepupNVDAInstallationPath).mockReturnValue(null);
     });
 
     it("should reject with a 'not installed' error", async () => {

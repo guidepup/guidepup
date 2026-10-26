@@ -5,7 +5,7 @@ import {
   ERR_NVDA_NOT_RUNNING,
 } from "../errors";
 import { delay } from "../../delay";
-import { getInstalledNVDAPath } from "./getInstalledNVDAPath";
+import { getUserNVDAInstallationPath } from "./getUserNVDAInstallationPath";
 import { isAnyNVDARunning } from "./isAnyNVDARunning";
 import { isNVDAInstalled } from "./isNVDAInstalled";
 import { isRunning } from "./isRunning";
@@ -59,8 +59,8 @@ jest.mock("./isRunning", () => ({
 jest.mock("./isAnyNVDARunning", () => ({
   isAnyNVDARunning: jest.fn(),
 }));
-jest.mock("./getInstalledNVDAPath", () => ({
-  getInstalledNVDAPath: jest.fn(),
+jest.mock("./getUserNVDAInstallationPath", () => ({
+  getUserNVDAInstallationPath: jest.fn(),
 }));
 jest.mock("./startUserNVDA", () => ({
   startUserNVDA: jest.fn(),
@@ -89,7 +89,7 @@ describe("NVDA", () => {
     jest.mocked(NVDAClient).mockImplementation(() => NVDAClientStub);
     jest.mocked(isRunning).mockResolvedValue(false);
     jest.mocked(isAnyNVDARunning).mockResolvedValue(false);
-    jest.mocked(getInstalledNVDAPath).mockReturnValue(mockInstalledPath);
+    jest.mocked(getUserNVDAInstallationPath).mockReturnValue(mockInstalledPath);
     jest.mocked(startUserNVDA).mockResolvedValue(undefined);
     jest.mocked(start).mockResolvedValue(undefined);
   });
@@ -281,7 +281,7 @@ describe("NVDA", () => {
       });
 
       it("should not look for the installed NVDA", () => {
-        expect(getInstalledNVDAPath).not.toHaveBeenCalled();
+        expect(getUserNVDAInstallationPath).not.toHaveBeenCalled();
       });
 
       it("should not start an NVDA again on stop", async () => {
@@ -305,7 +305,7 @@ describe("NVDA", () => {
       });
 
       it("should not look for the installed NVDA", () => {
-        expect(getInstalledNVDAPath).not.toHaveBeenCalled();
+        expect(getUserNVDAInstallationPath).not.toHaveBeenCalled();
       });
     });
 
@@ -320,7 +320,7 @@ describe("NVDA", () => {
         });
 
         it("should look for the installed NVDA", () => {
-          expect(getInstalledNVDAPath).toHaveBeenCalled();
+          expect(getUserNVDAInstallationPath).toHaveBeenCalled();
         });
 
         it("should quit NVDA", () => {
@@ -352,9 +352,9 @@ describe("NVDA", () => {
         });
       });
 
-      describe("when started with restoreUserNVDA set to false", () => {
+      describe("when started with restoreUserScreenReader set to false", () => {
         beforeEach(async () => {
-          await nvda.start({ restoreUserNVDA: false });
+          await nvda.start({ restoreUserScreenReader: false });
         });
 
         it("should quit NVDA", () => {
@@ -362,7 +362,7 @@ describe("NVDA", () => {
         });
 
         it("should not look for the installed NVDA", () => {
-          expect(getInstalledNVDAPath).not.toHaveBeenCalled();
+          expect(getUserNVDAInstallationPath).not.toHaveBeenCalled();
         });
 
         it("should not start the user's NVDA again on stop", async () => {
@@ -374,7 +374,7 @@ describe("NVDA", () => {
 
       describe("when the installed NVDA cannot be found", () => {
         beforeEach(async () => {
-          jest.mocked(getInstalledNVDAPath).mockReturnValue(null);
+          jest.mocked(getUserNVDAInstallationPath).mockReturnValue(null);
 
           await nvda.start();
         });

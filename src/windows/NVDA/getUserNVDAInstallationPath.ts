@@ -13,15 +13,20 @@ const REG_SZ_VALUE = /REG_SZ\s+(.+?)\s*$/m;
  *
  * Returns `null` when NVDA is not installed or the path cannot be read.
  */
-export function getInstalledNVDAPath(): string | null {
+export function getUserNVDAInstallationPath(): string | null {
   for (const view of REGISTRY_VIEWS) {
-    const { stdout } = spawnSync(
+    const { error, status, stdout } = spawnSync(
       "reg",
       ["query", SUB_KEY_NVDA_APP_PATH, "/ve", view],
       { encoding: "utf8", timeout: DEFAULT_TIMEOUT },
     );
 
-    const executablePath = stdout?.match(REG_SZ_VALUE)?.[1];
+    // reg exits with 1 when the key is not in this view.
+    if (error || status !== 0) {
+      continue;
+    }
+
+    const executablePath = stdout.match(REG_SZ_VALUE)?.[1];
 
     if (executablePath && existsSync(executablePath)) {
       return executablePath;
