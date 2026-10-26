@@ -70,7 +70,7 @@ describe("performAction", () => {
     });
 
     it("should throw an error with the performAction prefix, application name, and underlying error message", async () => {
-      await expect(() => performAction()).rejects.toEqual(
+      await expect(() => performAction()).rejects.toThrow(
         new Error(ERR_VOICE_OVER_PERFORM_ACTION, { cause: stubError }),
       );
     });

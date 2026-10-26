@@ -12,6 +12,11 @@ import {
   setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
+import {
+  navigateUntil,
+  type NavigateUntilMethod,
+  type NavigationMethod,
+} from "../../navigateUntil";
 import { CommanderCommands } from "./CommanderCommands";
 import { delay } from "../../delay";
 import { getManifestAsset } from "./getManifestAsset";
@@ -86,6 +91,9 @@ jest.mock("./waitForNotRunning", () => ({
 }));
 jest.mock("./waitForRunning", () => ({
   waitForRunning: jest.fn(),
+}));
+jest.mock("../../navigateUntil", () => ({
+  navigateUntil: jest.fn(),
 }));
 
 const VoiceOverClientStub = {
@@ -437,11 +445,10 @@ describe("VoiceOver", () => {
         });
 
         it("should return a stable startup error with the readiness failure as its cause", () => {
-          expect(thrownError).toEqual(
-            new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
-              cause: startupError,
-            }),
-          );
+          expect(thrownError).toMatchObject({
+            message: ERR_VOICE_OVER_CANNOT_BE_STARTED,
+            cause: startupError,
+          });
         });
 
         it("should remove the teardown handler", () => {
@@ -470,11 +477,10 @@ describe("VoiceOver", () => {
         });
 
         it("should throw an error", () => {
-          expect(thrownError).toEqual(
-            new Error(ERR_VOICE_OVER_CANNOT_BE_STARTED, {
-              cause: terminationErrorStub,
-            }),
-          );
+          expect(thrownError).toMatchObject({
+            message: ERR_VOICE_OVER_CANNOT_BE_STARTED,
+            cause: terminationErrorStub,
+          });
         });
 
         it("should remove the teardown handler", () => {
@@ -861,6 +867,43 @@ describe("VoiceOver", () => {
       });
     });
   });
+
+  describe.each`
+    method                             | navigationMethod
+    ${"navigatePreviousUntil"}         | ${"previous"}
+    ${"navigateNextUntil"}             | ${"next"}
+    ${"navigatePreviousHeadingUntil"}  | ${"previousHeading"}
+    ${"navigateNextHeadingUntil"}      | ${"nextHeading"}
+    ${"navigatePreviousLinkUntil"}     | ${"previousLink"}
+    ${"navigateNextLinkUntil"}         | ${"nextLink"}
+    ${"navigatePreviousLandmarkUntil"} | ${"previousLandmark"}
+    ${"navigateNextLandmarkUntil"}     | ${"nextLandmark"}
+  `(
+    "$method",
+    ({
+      method,
+      navigationMethod,
+    }: {
+      method: NavigateUntilMethod;
+      navigationMethod: NavigationMethod;
+    }) => {
+      const spokenPhraseMatcher = "test-spoken-phrase";
+      const options = { maxNavigationAttempts: 3 };
+
+      beforeEach(async () => {
+        await vo[method](spokenPhraseMatcher, options);
+      });
+
+      it(`should navigate using ${navigationMethod} until the spoken phrase matches`, () => {
+        expect(navigateUntil).toHaveBeenCalledWith(
+          vo,
+          navigationMethod,
+          spokenPhraseMatcher,
+          options,
+        );
+      });
+    },
+  );
 
   describe("act", () => {
     describe("when VoiceOver is not running", () => {

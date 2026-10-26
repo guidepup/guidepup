@@ -14,6 +14,7 @@ import {
   ERR_NVDA_NOT_SUPPORTED,
 } from "../errors";
 import { base } from "../../debug";
+import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommandOptions } from "../../CommandOptions";
@@ -55,7 +56,7 @@ type CaptureStartOptions = Prettify<
 /**
  * Class for controlling the NVDA screen reader on Windows.
  */
-export class NVDA implements IScreenReader {
+export class NVDA extends BaseScreenReader implements IScreenReader {
   /**
    * NVDA client.
    */

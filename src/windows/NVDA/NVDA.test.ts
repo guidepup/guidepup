@@ -4,6 +4,11 @@ import {
   ERR_NVDA_NOT_INSTALLED,
   ERR_NVDA_NOT_RUNNING,
 } from "../errors";
+import {
+  navigateUntil,
+  type NavigateUntilMethod,
+  type NavigationMethod,
+} from "../../navigateUntil";
 import { delay } from "../../delay";
 import { getUserNVDAInstallationPath } from "./getUserNVDAInstallationPath";
 import { isAnyNVDARunning } from "./isAnyNVDARunning";
@@ -52,6 +57,9 @@ jest.mock("./quit", () => ({
 }));
 jest.mock("./start", () => ({
   start: jest.fn(),
+}));
+jest.mock("../../navigateUntil", () => ({
+  navigateUntil: jest.fn(),
 }));
 jest.mock("./isRunning", () => ({
   isRunning: jest.fn(),
@@ -666,6 +674,43 @@ describe("NVDA", () => {
       });
     });
   });
+
+  describe.each`
+    method                             | navigationMethod
+    ${"navigatePreviousUntil"}         | ${"previous"}
+    ${"navigateNextUntil"}             | ${"next"}
+    ${"navigatePreviousHeadingUntil"}  | ${"previousHeading"}
+    ${"navigateNextHeadingUntil"}      | ${"nextHeading"}
+    ${"navigatePreviousLinkUntil"}     | ${"previousLink"}
+    ${"navigateNextLinkUntil"}         | ${"nextLink"}
+    ${"navigatePreviousLandmarkUntil"} | ${"previousLandmark"}
+    ${"navigateNextLandmarkUntil"}     | ${"nextLandmark"}
+  `(
+    "$method",
+    ({
+      method,
+      navigationMethod,
+    }: {
+      method: NavigateUntilMethod;
+      navigationMethod: NavigationMethod;
+    }) => {
+      const spokenPhraseMatcher = "test-spoken-phrase";
+      const options = { maxNavigationAttempts: 3 };
+
+      beforeEach(async () => {
+        await nvda[method](spokenPhraseMatcher, options);
+      });
+
+      it(`should navigate using ${navigationMethod} until the spoken phrase matches`, () => {
+        expect(navigateUntil).toHaveBeenCalledWith(
+          nvda,
+          navigationMethod,
+          spokenPhraseMatcher,
+          options,
+        );
+      });
+    },
+  );
 
   describe("spokenPhraseLog", () => {
     beforeEach(() => {

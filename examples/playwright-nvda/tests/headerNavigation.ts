@@ -3,8 +3,6 @@ import { delay } from "../../../src/delay";
 import { log } from "../../log";
 import type { NVDAPlaywright } from "../nvda-test";
 
-const MAX_NAVIGATION_LOOP = 10;
-
 export async function headerNavigation({
   page,
   nvda,
@@ -27,41 +25,23 @@ export async function headerNavigation({
   await nvda.navigateToWebContent();
   await delay(500);
 
-  let headingCount = 0;
-
-  // Move across the headings using VoiceOver 🔎
-  while (
-    !(await nvda.lastSpokenPhrase()).includes("Framework Agnostic") &&
-    headingCount <= MAX_NAVIGATION_LOOP
-  ) {
-    headingCount++;
-
-    log(`Performing command: "H" - "Find the next heading"`);
-    await nvda.nextHeading();
-    log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
-  }
-
-  let tabCount = 0;
+  // Move across the headings using NVDA 🔎
+  log(`Performing multiple commands: "H"`);
+  await nvda.navigateNextHeadingUntil(/Framework Agnostic/);
+  log(`Last screen reader output: "${await nvda.lastSpokenPhrase()}".`);
 
   // Move across text and buttons using NVDA
-  while (
-    !(await nvda.lastSpokenPhrase()).replaceAll(/\s/g, "").includes("GitHub") &&
-    tabCount <= MAX_NAVIGATION_LOOP
-  ) {
-    tabCount++;
-
-    log(`Performing command: "Right"`);
-    await nvda.next();
-    log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
-  }
+  log(`Performing multiple commands: "Right"`);
+  await nvda.navigateNextUntil(/Git\s*Hub/);
+  log(`Last screen reader output: "${await nvda.lastSpokenPhrase()}".`);
 
   log(`Performing command: "Left"`);
   await nvda.previous();
-  log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+  log(`Last screen reader output: "${await nvda.lastSpokenPhrase()}".`);
 
   log(`Performing command: "Enter"`);
   await nvda.act();
-  log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+  log(`Last screen reader output: "${await nvda.lastSpokenPhrase()}".`);
 
   await expect(page).toHaveURL("https://www.guidepup.dev/docs/getting-started");
 }

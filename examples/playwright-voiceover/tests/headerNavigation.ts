@@ -3,8 +3,6 @@ import { delay } from "../../../src/delay";
 import { log } from "../../log";
 import type { VoiceOverPlaywright } from "../voiceover-test";
 
-const MAX_NAVIGATION_LOOP = 10;
-
 export async function headerNavigation({
   page,
   voiceOver,
@@ -27,60 +25,30 @@ export async function headerNavigation({
   await voiceOver.navigateToWebContent();
   await delay(500);
 
-  let headingCount = 0;
-
   // Move across the headings using VoiceOver 🔎
-  while (
-    !(await voiceOver.itemText()).includes("Framework Agnostic") &&
-    headingCount <= MAX_NAVIGATION_LOOP
-  ) {
-    headingCount++;
-
-    log(`Performing command: "VO+Command+H" - "Find the next heading"`);
-    await voiceOver.nextHeading();
-    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
-
-    log(
-      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
-    );
-    await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
-    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
-  }
-
-  let tabCount = 0;
+  log(`Performing multiple commands: "VO+Command+H"`);
+  await voiceOver.navigateNextHeadingUntil(/Framework Agnostic/);
+  log(`Last screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   // Move across text and buttons using VoiceOver
-  while (
-    !(await voiceOver.itemText()).includes("GitHub") &&
-    tabCount <= MAX_NAVIGATION_LOOP
-  ) {
-    tabCount++;
-
-    log(`Performing command: "VO+Right Arrow"`);
-    await voiceOver.next();
-    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
-
-    log(
-      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
-    );
-    await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
-    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
-  }
+  log(`Performing multiple commands: "VO+Right Arrow"`);
+  await voiceOver.navigateNextUntil(/GitHub/);
+  log(`Last screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   log(`Performing command: "VO+Left Arrow"`);
   await voiceOver.previous();
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+  log(`Last screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   log(
     `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
   );
   await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+  log(`Last screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   // Navigate to the Guidepup Getting Started docs
   log(`Performing command: "VO+Space bar"`);
   await voiceOver.act();
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+  log(`Last screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
 
   await expect(page).toHaveURL("https://www.guidepup.dev/docs/getting-started");
 }

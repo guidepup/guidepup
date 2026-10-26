@@ -14,6 +14,7 @@ import {
   setSettings,
 } from "./settings";
 import { type KeyCodeCommand, keyCodeCommands } from "./keyCodeCommands";
+import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommandOptions } from "../../CommandOptions";
@@ -49,7 +50,7 @@ const KeySynthType = {
 /**
  * Class for controlling the Orca screen reader on Linux.
  */
-export class Orca implements IScreenReader {
+export class Orca extends BaseScreenReader implements IScreenReader {
   /**
    * Orca client.
    */
@@ -103,7 +104,7 @@ export class Orca implements IScreenReader {
   };
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-name)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-name)
    *
    * The screen reader name.
    */
@@ -112,7 +113,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-version)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-version)
    *
    * The screen reader version.
    */
@@ -122,24 +123,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-keyboard-commands)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-keyboard-commands)
    *
    * Getter for all Orca keyboard commands.
    *
    * Use with the Orca `perform` command to invoke a keyboard action:
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next item.
-   *   await unstable_orca.perform(unstable_orca.keyboardCommands.MoveToNextSibling);
+   *   await orca.perform(orca.keyboardCommands.MoveToNextSibling);
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    */
@@ -148,7 +149,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-detect)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-detect)
    *
    * Detect whether Orca is supported for the current OS:
    *
@@ -173,7 +174,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-detect)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-detect)
    *
    * Detect whether Orca is supported for the current OS:
    *
@@ -182,10 +183,10 @@ export class Orca implements IScreenReader {
    * - `true` for Linux
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isOrcaDefaultScreenReader = unstable_orca.detect();
+   *   const isOrcaDefaultScreenReader = orca.detect();
    *
    *   console.log(isOrcaDefaultScreenReader);
    * })();
@@ -198,7 +199,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-default)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-default)
    *
    * Detect whether Orca is the default screen reader for the current OS:
    *
@@ -223,7 +224,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-default)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-default)
    *
    * Detect whether Orca is the default screen reader for the current OS:
    *
@@ -232,10 +233,10 @@ export class Orca implements IScreenReader {
    * - `true` for Linux
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
-   *   const isOrcaDefaultScreenReader = unstable_orca.default();
+   *   const isOrcaDefaultScreenReader = orca.default();
    *
    *   console.log(isOrcaDefaultScreenReader);
    * })();
@@ -248,21 +249,21 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-start)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-start)
    *
    * Turn Orca on.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // ... perform some commands.
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -311,21 +312,21 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-stop)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-stop)
    *
    * Turn Orca off.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // ... perform some commands.
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    */
@@ -351,24 +352,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-previous)
    *
    * Move the Orca cursor to the previous location.
    *
    * Equivalent of executing `Orca-Ctrl-Left Arrow`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the previous location.
-   *   await unstable_orca.previous();
+   *   await orca.previous();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    */
@@ -383,24 +384,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-next)
    *
    * Move the Orca cursor to the next location.
    *
    * Equivalent of executing `Orca-Ctrl-Right Arrow`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next location.
-   *   await unstable_orca.next();
+   *   await orca.next();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    */
@@ -415,24 +416,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous-heading)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-previous-heading)
    *
    * Move the Orca cursor to the previous heading.
    *
    * Equivalent of executing `Shift-H`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the previous heading.
-   *   await unstable_orca.previousHeading();
+   *   await orca.previousHeading();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -449,24 +450,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next-heading)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-next-heading)
    *
    * Move the Orca cursor to the next heading.
    *
    * Equivalent of executing `H`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next heading.
-   *   await unstable_orca.nextHeading();
+   *   await orca.nextHeading();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -483,24 +484,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous-link)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-previous-link)
    *
    * Move the Orca cursor to the previous link.
    *
    * Equivalent of executing `Shift-K`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the previous link.
-   *   await unstable_orca.previousLink();
+   *   await orca.previousLink();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -517,24 +518,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next-link)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-next-link)
    *
    * Move the Orca cursor to the next link.
    *
    * Equivalent of executing `K`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next link.
-   *   await unstable_orca.nextLink();
+   *   await orca.nextLink();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -551,24 +552,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-previous-landmark)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-previous-landmark)
    *
    * Move the Orca cursor to the previous landmark.
    *
    * Equivalent of executing `Shift-D`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the previous landmark.
-   *   await unstable_orca.previousLandmark();
+   *   await orca.previousLandmark();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -585,24 +586,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-next-landmark)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-next-landmark)
    *
    * Move the Orca cursor to the next landmark.
    *
    * Equivalent of executing `D`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next landmark.
-   *   await unstable_orca.nextLandmark();
+   *   await orca.nextLandmark();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -619,27 +620,27 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-act)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-act)
    *
    * Perform the default action for the item in the Orca cursor.
    *
    * Equivalent of executing `Orca-Ctrl-Return`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next location.
-   *   await unstable_orca.next();
+   *   await orca.next();
    *
    *   // Perform the default action for the item in the Orca cursor.
-   *   await unstable_orca.act();
+   *   await orca.act();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    */
@@ -654,27 +655,27 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-interact)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-interact)
    *
    * Interact with the item under the Orca cursor.
    *
    * Equivalent of executing `Orca-Ctrl-Down Arrow`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next item.
-   *   await unstable_orca.next();
+   *   await orca.next();
    *
    *   // Interact with the item.
-   *   await unstable_orca.interact();
+   *   await orca.interact();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -691,27 +692,27 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-stop-interacting)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-stop-interacting)
    *
    * Stop interacting with the current item under the Orca cursor.
    *
    * Equivalent of executing `Orca-Ctrl-Up Arrow`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next item.
-   *   await unstable_orca.next();
+   *   await orca.next();
    *
    *   // Stop interacting with the item.
-   *   await unstable_orca.stopInteracting();
+   *   await orca.stopInteracting();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -728,7 +729,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-press)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-press)
    *
    * Press a key on the focused item, as real keyboard input that Orca hears
    * like a person's keyboard.
@@ -751,17 +752,17 @@ export class Orca implements IScreenReader {
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next focusable item.
-   *   await unstable_orca.press("Tab");
+   *   await orca.press("Tab");
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -813,7 +814,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-type)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-type)
    *
    * Type text into the focused item, as real keyboard input that Orca hears
    * like a person's keyboard.
@@ -821,18 +822,18 @@ export class Orca implements IScreenReader {
    * To press a special key, like `Control` or `ArrowDown`, use `press(key[, options])`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Type a username and key Enter.
-   *   await unstable_orca.type("my-username");
-   *   await unstable_orca.press("Enter");
+   *   await orca.type("my-username");
+   *   await orca.press("Enter");
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -850,24 +851,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-perform)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-perform)
    *
    * Perform an Orca command.
    *
    * The command can be any `OrcaKeyCodeCommand`.
    *
    * ```ts
-   * import { unstable_orca, orcaKeyCodeCommands } from "@guidepup/guidepup";
+   * import { orca, orcaKeyCodeCommands } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Keyboard commands available on the Orca instance.
-   *   await unstable_orca.perform(unstable_orca.keyboardCommands.MoveToNextSibling);
+   *   await orca.perform(orca.keyboardCommands.MoveToNextSibling);
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -903,28 +904,28 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-click)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-click)
    *
    * Click the mouse.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Left-click the mouse.
-   *   await unstable_orca.click();
+   *   await orca.click();
    *
    *   // Left-click the mouse using specific options.
-   *   await unstable_orca.click({ button: "left", clickCount: 1 });
+   *   await orca.click({ button: "left", clickCount: 1 });
    *
    *   // Double-right-click the mouse.
-   *   await unstable_orca.click({ button: "right", clickCount: 2 });
+   *   await orca.click({ button: "right", clickCount: 2 });
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -950,26 +951,26 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-last-spoken-phrase)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-last-spoken-phrase)
    *
    * Get the last spoken phrase.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next item.
-   *   await unstable_orca.next();
+   *   await orca.next();
    *
    *   // Get the phrase spoken by Orca from moving to the next item above.
-   *   const lastSpokenPhrase = await unstable_orca.lastSpokenPhrase();
+   *   const lastSpokenPhrase = await orca.lastSpokenPhrase();
    *   console.log(lastSpokenPhrase);
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -984,29 +985,29 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-item-text)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-item-text)
    *
    * Get the last spoken phrase.
    *
    * For Orca this is the same as `lastSpokenPhrase`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move to the next item.
-   *   await unstable_orca.next();
+   *   await orca.next();
    *
    *   // Get the text (if any) for the item currently in focus by the Orca
    *   // cursor.
-   *   const itemText = await unstable_orca.itemText();
+   *   const itemText = await orca.itemText();
    *   console.log(itemText);
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -1023,28 +1024,28 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-spoken-phrase-log)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-spoken-phrase-log)
    *
    * Get the log of all spoken phrases for this Orca instance.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move through several items.
    *   for (let i = 0; i < 10; i++) {
-   *     await unstable_orca.next();
+   *     await orca.next();
    *   }
    *
    *   // Get the phrase spoken by Orca from moving through the items above.
-   *   const spokenPhraseLog = await unstable_orca.spokenPhraseLog();
+   *   const spokenPhraseLog = await orca.spokenPhraseLog();
    *   console.log(spokenPhraseLog);
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -1059,24 +1060,24 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-clear-spoken-phrase-log)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-clear-spoken-phrase-log)
    *
    * Clear the log of all spoken phrases for this Orca instance.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // ... perform some commands.
    *
    *   // Clear the spoken phrase log.
-   *   await unstable_orca.clearSpokenPhraseLog();
+   *   await orca.clearSpokenPhraseLog();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    */
@@ -1089,30 +1090,30 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-item-text-log)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-item-text-log)
    *
    * Get the log of all spoken phrases for this Orca instance.
    *
    * For Orca this is the same as `spokenPhraseLog`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Move through several items.
    *   for (let i = 0; i < 10; i++) {
-   *     await unstable_orca.next();
+   *     await orca.next();
    *   }
    *
    *   // Get the text (if any) for all the items visited by the Orca cursor.
-   *   const itemTextLog = await unstable_orca.itemTextLog();
+   *   const itemTextLog = await orca.itemTextLog();
    *   console.log(itemTextLog);
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -1129,26 +1130,26 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-clear-item-text-log)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-clear-item-text-log)
    *
    * Clear the log of all spoken phrases for this Orca instance.
    *
    * For Orca this is the same as `clearSpokenPhraseLog`.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // ... perform some commands.
    *
    *   // Clear the spoken phrase log.
-   *   await unstable_orca.clearItemTextLog();
+   *   await orca.clearItemTextLog();
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -1163,22 +1164,22 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-get-settings)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-get-settings)
    *
    * Returns all the current settings for this Orca instance.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Log current settings.
-   *   console.log(unstable_orca.getSettings());
+   *   console.log(orca.getSettings());
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -1189,22 +1190,22 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-get-setting)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-get-setting)
    *
    * Returns the value of a setting for this Orca instance.
    *
    * ```ts
-   * import { unstable_orca } from "@guidepup/guidepup";
+   * import { orca } from "@guidepup/guidepup";
    *
    * (async () => {
    *   // Start Orca.
-   *   await unstable_orca.start();
+   *   await orca.start();
    *
    *   // Log the value for the '/org/gnome/orca/default/speech/enable' setting.
-   *   console.log(unstable_orca.getSetting('/org/gnome/orca/default/speech/enable'));
+   *   console.log(orca.getSetting('/org/gnome/orca/default/speech/enable'));
    *
    *   // Stop Orca.
-   *   await unstable_orca.stop();
+   *   await orca.stop();
    * })();
    * ```
    *
@@ -1216,7 +1217,7 @@ export class Orca implements IScreenReader {
   }
 
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#unstable-orca-capture)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-capture)
    *
    * Capture Orca output produced by an action.
    *

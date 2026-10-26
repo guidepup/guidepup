@@ -82,26 +82,43 @@ import { screenReader } from "@guidepup/guidepup";
 })();
 ```
 
-#### Orca
-
-> [!NOTE]
-> Orca support is currently in preview, not all features may be implemented.
+#### NVDA
 
 ```ts
-import { unstable_orca } from "@guidepup/guidepup";
+import { nvda } from "@guidepup/guidepup";
 
 (async () => {
-  await unstable_orca.start();
-  await unstable_orca.next();
-  await unstable_orca.nextHeading();
+  await nvda.start();
+  await nvda.next();
+  await nvda.nextHeading();
 
-  console.log(await unstable_orca.spokenPhraseLog());
+  console.log(await nvda.spokenPhraseLog());
 
-  await unstable_orca.perform(unstable_orca.keyboardCommands.NextFormField);
+  await nvda.perform(nvda.keyboardCommands.moveToNextFormField);
 
-  console.log(await unstable_orca.lastSpokenPhrase());
+  console.log(await nvda.lastSpokenPhrase());
 
-  await unstable_orca.stop();
+  await nvda.stop();
+})();
+```
+
+#### Orca
+
+```ts
+import { orca } from "@guidepup/guidepup";
+
+(async () => {
+  await orca.start();
+  await orca.next();
+  await orca.nextHeading();
+
+  console.log(await orca.spokenPhraseLog());
+
+  await orca.perform(orca.keyboardCommands.NextFormField);
+
+  console.log(await orca.lastSpokenPhrase());
+
+  await orca.stop();
 })();
 ```
 
@@ -122,26 +139,6 @@ import { voiceOver } from "@guidepup/guidepup";
   console.log(await voiceOver.lastSpokenPhrase());
 
   await voiceOver.stop();
-})();
-```
-
-#### NVDA
-
-```ts
-import { nvda } from "@guidepup/guidepup";
-
-(async () => {
-  await nvda.start();
-  await nvda.next();
-  await nvda.nextHeading();
-
-  console.log(await nvda.spokenPhraseLog());
-
-  await nvda.perform(nvda.keyboardCommands.moveToNextFormField);
-
-  console.log(await nvda.lastSpokenPhrase());
-
-  await nvda.stop();
 })();
 ```
 

@@ -1,3 +1,4 @@
+import { BaseScreenReader } from "./BaseScreenReader";
 import type { Capture } from "./Capture";
 import type { ClickOptions } from "./ClickOptions";
 import type { CommandOptions } from "./CommandOptions";
@@ -5,14 +6,16 @@ import { ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS } from "./errors";
 import type { IScreenReader } from "./IScreenReader";
 import type { KeyboardOptions } from "./KeyboardOptions";
 import { nvda } from "./windows";
+import { orca } from "./linux";
 import type { StartOptions } from "./StartOptions";
-import { unstable_orca } from "./linux";
 import { voiceOver } from "./macOS";
 
-export class ScreenReader implements IScreenReader {
+export class ScreenReader extends BaseScreenReader implements IScreenReader {
   private implementation: IScreenReader;
 
   constructor() {
+    super();
+
     this.implementation = this.resolveImplementation();
   }
 
@@ -25,8 +28,8 @@ export class ScreenReader implements IScreenReader {
       return nvda;
     }
 
-    if (unstable_orca.default()) {
-      return unstable_orca;
+    if (orca.default()) {
+      return orca;
     }
 
     throw new Error(ERR_NO_AVAILABLE_SUPPORTED_SCREEN_READERS);

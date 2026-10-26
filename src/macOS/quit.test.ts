@@ -92,7 +92,7 @@ describe("quit", () => {
     });
 
     it("should throw an error with the quit prefix, application name, and underlying error", async () => {
-      await expect(() => quit(applicationName)).rejects.toEqual(
+      await expect(() => quit(applicationName)).rejects.toThrow(
         new Error(`Unable to quit application: ${applicationName}`, {
           cause: stubError,
         }),
@@ -112,7 +112,7 @@ describe("quit", () => {
     });
 
     it("should throw an error with the quit prefix, application name, and underlying error message", async () => {
-      await expect(() => quit(applicationName)).rejects.toEqual(
+      await expect(() => quit(applicationName)).rejects.toThrow(
         new Error(`Unable to quit application: ${applicationName}`, {
           cause: stubError,
         }),

@@ -9,6 +9,8 @@ export type { KeyboardOptions } from "./KeyboardOptions";
 export type { KeyCodeCommand } from "./KeyCodeCommand";
 export type { KeystrokeCommand } from "./KeystrokeCommand";
 export type { IScreenReader } from "./IScreenReader";
+export type { NavigateOptions } from "./NavigateOptions";
+export type { SpokenPhraseMatcher } from "./SpokenPhraseMatcher";
 export type { StartOptions } from "./StartOptions";
 
 import { ScreenReader } from "./ScreenReader";
