@@ -307,13 +307,24 @@ export class OrcaClient extends EventEmitter {
       args.push("--log-level", "5");
     }
 
-    this.#speechdProcess = spawn("speech-dispatcher", args, {
-      env: {
-        ...process.env,
-        GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
+    // Start Speech Dispatcher with SIGPIPE ignored, which exec keeps. While it
+    // loads modules, before it ignores SIGPIPE itself, it gives each one 100µs
+    // to fail before writing INIT to it. Its fallback modules (sd_espeak-ng and
+    // sd_dummy) aren't in guidepup's module directory, so when one fails slower
+    // than that, the write killed it with SIGPIPE. Ignored, the write fails and
+    // the module is skipped. Node's children always start with default signal
+    // handling, so env ignores it before running Speech Dispatcher.
+    this.#speechdProcess = spawn(
+      "env",
+      ["--ignore-signal=PIPE", "speech-dispatcher", ...args],
+      {
+        env: {
+          ...process.env,
+          GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
+        },
+        stdio: ["ignore", "pipe", "pipe"],
       },
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+    );
 
     logProcessOutput(this.#speechdProcess, "speechd");
 
