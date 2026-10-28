@@ -6,10 +6,11 @@ import {
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
 } from "../errors";
+import { type MessageBus, UnknownInterfaceError } from "dbus-native";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { sessionBus, UnknownInterfaceError } from "dbus-native";
 import { base } from "../../debug";
 import { connect } from "node:net";
+import { connectAtSpiDeviceEventController } from "./connectAtSpiDeviceEventController";
 import EventEmitter from "node:events";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isUnixSocket } from "./isUnixSocket";
@@ -37,7 +38,7 @@ jest.mock("node:net", () => ({
 jest.mock("dbus-native", () => {
   class UnknownInterfaceError extends Error {}
 
-  return { sessionBus: jest.fn(), UnknownInterfaceError };
+  return { UnknownInterfaceError };
 });
 jest.mock("../../debug", () => {
   const debug = Object.assign(jest.fn(), { enabled: false });
@@ -52,6 +53,9 @@ jest.mock("./isUnixSocket", () => ({
 }));
 jest.mock("./logProcessOutput", () => ({
   logProcessOutput: jest.fn(),
+}));
+jest.mock("./connectAtSpiDeviceEventController", () => ({
+  connectAtSpiDeviceEventController: jest.fn(),
 }));
 jest.mock("./startAtSpi", () => ({
   startAtSpi: jest.fn(),
@@ -117,8 +121,6 @@ const mockSpeechdSocketPath = join(mockRuntimeDirectory, "speechd.sock");
 const mockGuidepupSocketPath = join(mockRuntimeDirectory, "guidepup.sock");
 const mockOrcaExecutable = join(mockInstallationPath, "bin", "orca");
 const ORCA_SERVICE = "org.gnome.Orca1.Service";
-const AT_SPI_SERVICE = "org.a11y.Bus";
-const mockAtSpiBusAddress = "test-at-spi-bus-address";
 
 class FakeProcess extends EventEmitter {
   stdout = new EventEmitter();
@@ -170,11 +172,8 @@ describe("OrcaClient", () => {
     nameHasOwner: jest.Mock;
   };
   let orcaServiceStub: { getInterface: jest.Mock };
-  let a11yBusInterfaceStub: { GetAddress: jest.Mock };
-  let a11yServiceStub: { getInterface: jest.Mock };
   let deviceEventControllerStub: { GenerateKeyboardEvent: jest.Mock };
-  let atSpiRegistryStub: { getInterface: jest.Mock };
-  let atSpiBusStub: { close: jest.Mock; getService: jest.Mock };
+  let atSpiBusStub: { close: jest.Mock };
   let atSpiProcess: FakeProcess;
   let stopped: [unknown, string][];
   let xvfbProcess: FakeProcess;
@@ -267,14 +266,6 @@ describe("OrcaClient", () => {
       return socket;
     }) as unknown as typeof connect);
 
-    a11yBusInterfaceStub = {
-      GetAddress: jest.fn().mockResolvedValue(mockAtSpiBusAddress),
-    };
-
-    a11yServiceStub = {
-      getInterface: jest.fn().mockResolvedValue(a11yBusInterfaceStub),
-    };
-
     orcaServiceStub = {
       getInterface: jest.fn(async (_objectPath: string, name: string) => {
         return interfaces[name.replace("org.gnome.Orca1.", "")];
@@ -285,31 +276,16 @@ describe("OrcaClient", () => {
       GenerateKeyboardEvent: jest.fn().mockResolvedValue(undefined),
     };
 
-    atSpiRegistryStub = {
-      getInterface: jest.fn().mockResolvedValue(deviceEventControllerStub),
-    };
-
     atSpiBusStub = {
       close: jest.fn().mockResolvedValue(undefined),
-      getService: jest.fn().mockReturnValue(atSpiRegistryStub),
     };
 
     busStub = {
       close: jest.fn().mockResolvedValue(undefined),
-      getService: jest.fn((name: string) =>
-        name === AT_SPI_SERVICE ? a11yServiceStub : orcaServiceStub,
-      ),
+      getService: jest.fn().mockReturnValue(orcaServiceStub),
       nameHasOwner: jest.fn().mockResolvedValue(true),
     };
 
-    jest
-      .mocked(sessionBus)
-      .mockImplementation(
-        ({ busAddress }) =>
-          (busAddress === mockAtSpiBusAddress
-            ? atSpiBusStub
-            : busStub) as unknown as ReturnType<typeof sessionBus>,
-      );
     jest.mocked(mkdtempSync).mockReturnValue(mockRuntimeDirectory);
     xvfbProcess = new FakeProcess(999);
     dbusProcess = new FakeProcess(998);
@@ -320,13 +296,18 @@ describe("OrcaClient", () => {
     });
     jest.mocked(startSessionDBus).mockResolvedValue({
       address: mockDBusAddress,
-      bus: busStub as unknown as ReturnType<typeof sessionBus>,
+      bus: busStub as unknown as MessageBus,
       process: dbusProcess as unknown as ChildProcess,
     });
     jest.mocked(getOrcaInstallationPath).mockReturnValue(mockInstallationPath);
     jest.mocked(isUnixSocket).mockReturnValue(true);
 
     atSpiProcess = new FakeProcess(997);
+
+    jest.mocked(connectAtSpiDeviceEventController).mockResolvedValue({
+      bus: atSpiBusStub as unknown as MessageBus,
+      controller: deviceEventControllerStub,
+    });
 
     jest
       .mocked(startAtSpi)
@@ -377,22 +358,8 @@ describe("OrcaClient", () => {
         );
       });
 
-      it("should connect to the AT-SPI device event controller on the accessibility bus", () => {
-        expect(busStub.getService).toHaveBeenCalledWith(AT_SPI_SERVICE);
-        expect(a11yServiceStub.getInterface).toHaveBeenCalledWith(
-          "/org/a11y/bus",
-          AT_SPI_SERVICE,
-        );
-        expect(sessionBus).toHaveBeenCalledWith({
-          busAddress: mockAtSpiBusAddress,
-        });
-        expect(atSpiBusStub.getService).toHaveBeenCalledWith(
-          "org.a11y.atspi.Registry",
-        );
-        expect(atSpiRegistryStub.getInterface).toHaveBeenCalledWith(
-          "/org/a11y/atspi/registry/deviceeventcontroller",
-          "org.a11y.atspi.DeviceEventController",
-        );
+      it("should connect to the AT-SPI device event controller through the session D-Bus", () => {
+        expect(connectAtSpiDeviceEventController).toHaveBeenCalledWith(busStub);
       });
 
       it("should start Speech Dispatcher with SIGPIPE ignored and the session sockets", () => {
