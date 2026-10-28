@@ -15,11 +15,14 @@ import {
   ERR_ORCA_CANNOT_BE_STARTED,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
-  ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
 } from "../errors";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { type SessionDBus, startSessionDBus } from "./startSessionDBus";
+import {
+  type SpeechDispatcher,
+  startSpeechDispatcher,
+} from "./startSpeechDispatcher";
 import { startXServer, type XServer } from "./startXServer";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
@@ -27,7 +30,6 @@ import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import EventEmitter from "node:events";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
-import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
 import { logProcessOutput } from "./logProcessOutput";
 import { serviceDefinition } from "./serviceDefinition";
@@ -63,9 +65,7 @@ export class OrcaClient extends EventEmitter {
 
   #runtimeDirectory: string = null;
 
-  #speechdProcess: ChildProcess = null;
-  #speechdAddress: string = null;
-  #speechdSocketPath: string = null;
+  #speechDispatcher: SpeechDispatcher = null;
   #speechdSocket: Socket = null;
   #speechdConsecutiveConnectionFailures = 0;
 
@@ -102,83 +102,6 @@ export class OrcaClient extends EventEmitter {
     this.#spokenPhrases = [];
   }
 
-  async #startSpeechd(): Promise<void> {
-    debug("Starting Speech Dispatcher");
-
-    const installationPath = getOrcaInstallationPath();
-    const speechdDirectory = join(installationPath, "speechd");
-    const speechdModulesDirectory = join(speechdDirectory, "modules");
-    const speechdLogsDirectory = join(speechdDirectory, "logs");
-
-    // Each session gets its own directory for its sockets. With shared paths,
-    // a previous session's speech-dispatcher module could still be exiting
-    // and remove the new session's socket. Keep it short: Unix socket paths
-    // are limited to 108 bytes.
-    const speechdSocketPath = join(this.#runtimeDirectory, "speechd.sock");
-
-    mkdirSync(speechdLogsDirectory, { recursive: true });
-
-    this.#speechdSocketPath = join(this.#runtimeDirectory, "guidepup.sock");
-
-    const args = [
-      "--run-single",
-      "--config-dir",
-      speechdDirectory,
-      "--module-dir",
-      speechdModulesDirectory,
-      "--log-dir",
-      speechdLogsDirectory,
-      "--communication-method",
-      "unix_socket",
-      "--socket-path",
-      speechdSocketPath,
-      "--timeout",
-      "0",
-    ];
-
-    if (debug.enabled) {
-      args.push("--log-level", "5");
-    }
-
-    // Start Speech Dispatcher with SIGPIPE ignored, which exec keeps. While it
-    // loads modules, before it ignores SIGPIPE itself, it gives each one 100µs
-    // to fail before writing INIT to it. Its fallback modules (sd_espeak-ng and
-    // sd_dummy) aren't in guidepup's module directory, so when one fails slower
-    // than that, the write killed it with SIGPIPE. Ignored, the write fails and
-    // the module is skipped. Node's children always start with default signal
-    // handling, so env ignores it before running Speech Dispatcher.
-    this.#speechdProcess = spawn(
-      "env",
-      ["--ignore-signal=PIPE", "speech-dispatcher", ...args],
-      {
-        env: {
-          ...process.env,
-          GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
-        },
-        stdio: ["ignore", "pipe", "pipe"],
-      },
-    );
-
-    logProcessOutput(this.#speechdProcess, "speechd");
-
-    this.#speechdAddress = `unix_socket:${speechdSocketPath}`;
-
-    debug(`SPEECHD_ADDRESS=${this.#speechdAddress}`);
-
-    await waitForCondition(
-      () => {
-        debug(`Polling for '${speechdSocketPath}' unix socket existence`);
-
-        return isUnixSocket(speechdSocketPath);
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
-      },
-    );
-  }
-
   #speechdDisconnect() {
     try {
       this.#speechdSocket?.destroy();
@@ -199,7 +122,9 @@ export class OrcaClient extends EventEmitter {
     onSuccess: () => void,
     onError: (error: Error) => void,
   ): void {
-    debug(`Connecting to Speech Dispatcher socket: ${this.#speechdSocketPath}`);
+    debug(
+      `Connecting to Speech Dispatcher socket: ${this.#speechDispatcher.guidepupSocketPath}`,
+    );
 
     let speechdSocketBuffer = "";
     let onSuccessCalled = false;
@@ -211,9 +136,12 @@ export class OrcaClient extends EventEmitter {
       onSuccess();
     };
 
-    this.#speechdSocket = connect(this.#speechdSocketPath, () => {
-      this.once(READY, onReady);
-    });
+    this.#speechdSocket = connect(
+      this.#speechDispatcher.guidepupSocketPath,
+      () => {
+        this.once(READY, onReady);
+      },
+    );
 
     this.#speechdSocket.setEncoding("utf8");
 
@@ -320,7 +248,7 @@ export class OrcaClient extends EventEmitter {
         ...process.env,
         DBUS_SESSION_BUS_ADDRESS: this.#sessionDBus.address,
         DISPLAY: this.#xServer.display,
-        SPEECHD_ADDRESS: this.#speechdAddress,
+        SPEECHD_ADDRESS: this.#speechDispatcher.address,
       },
     });
 
@@ -491,7 +419,9 @@ export class OrcaClient extends EventEmitter {
       );
       this.#atSpiDeviceEventController =
         await connectAtSpiDeviceEventController(this.#sessionDBus.bus);
-      await this.#startSpeechd();
+      this.#speechDispatcher = await startSpeechDispatcher(
+        this.#runtimeDirectory,
+      );
       await this.#connectSpeechdSocket();
       await this.#startOrca();
       await this.#mapOrcaDBusService();
@@ -525,7 +455,10 @@ export class OrcaClient extends EventEmitter {
     // cleanly while the services it depends on are still running.
     await terminateProcess(this.#orcaProcess, "Orca");
     await terminateProcess(this.#orcaDebugLogProcess, "Orca debug log");
-    await terminateProcess(this.#speechdProcess, "Speech Dispatcher");
+    await terminateProcess(
+      this.#speechDispatcher?.process,
+      "Speech Dispatcher",
+    );
     await terminateAtSpi(this.#atSpiProcess);
     await terminateProcess(this.#sessionDBus?.process, "session D-Bus");
     await terminateProcess(this.#xServer?.process, "X Server");
@@ -545,9 +478,7 @@ export class OrcaClient extends EventEmitter {
 
     this.#atSpiProcess = null;
 
-    this.#speechdProcess = null;
-    this.#speechdAddress = null;
-    this.#speechdSocketPath = null;
+    this.#speechDispatcher = null;
     this.#runtimeDirectory = null;
     this.#speechdSocket = null;
     this.#speechdConsecutiveConnectionFailures = 0;

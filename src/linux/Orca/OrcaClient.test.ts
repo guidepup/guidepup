@@ -3,7 +3,6 @@ import {
   ERR_ORCA_CANNOT_BE_STARTED,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
-  ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
 } from "../errors";
 import { type MessageBus, UnknownInterfaceError } from "dbus-native";
@@ -13,12 +12,12 @@ import { connect } from "node:net";
 import { connectAtSpiDeviceEventController } from "./connectAtSpiDeviceEventController";
 import EventEmitter from "node:events";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
-import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
 import { logProcessOutput } from "./logProcessOutput";
 import { OrcaClient } from "./OrcaClient";
 import { startAtSpi } from "./startAtSpi";
 import { startSessionDBus } from "./startSessionDBus";
+import { startSpeechDispatcher } from "./startSpeechDispatcher";
 import { startXServer } from "./startXServer";
 import { terminateAtSpi } from "./terminateAtSpi";
 import { terminateProcess } from "./terminateProcess";
@@ -48,9 +47,6 @@ jest.mock("../../debug", () => {
 jest.mock("./getOrcaInstallationPath", () => ({
   getOrcaInstallationPath: jest.fn(),
 }));
-jest.mock("./isUnixSocket", () => ({
-  isUnixSocket: jest.fn(),
-}));
 jest.mock("./logProcessOutput", () => ({
   logProcessOutput: jest.fn(),
 }));
@@ -68,6 +64,9 @@ jest.mock("./terminateProcess", () => ({
 }));
 jest.mock("./startSessionDBus", () => ({
   startSessionDBus: jest.fn(),
+}));
+jest.mock("./startSpeechDispatcher", () => ({
+  startSpeechDispatcher: jest.fn(),
 }));
 jest.mock("./startXServer", () => ({
   startXServer: jest.fn(),
@@ -117,8 +116,8 @@ const mockDisplay = "test-display";
 const mockDBusAddress = "test-dbus-address";
 const mockInstallationPath = "test-installation-path";
 const mockRuntimeDirectory = "test-runtime-directory";
-const mockSpeechdSocketPath = join(mockRuntimeDirectory, "speechd.sock");
-const mockGuidepupSocketPath = join(mockRuntimeDirectory, "guidepup.sock");
+const mockSpeechdAddress = "test-speechd-address";
+const mockGuidepupSocketPath = "test-guidepup-socket-path";
 const mockOrcaExecutable = join(mockInstallationPath, "bin", "orca");
 const ORCA_SERVICE = "org.gnome.Orca1.Service";
 
@@ -175,6 +174,7 @@ describe("OrcaClient", () => {
   let deviceEventControllerStub: { GenerateKeyboardEvent: jest.Mock };
   let atSpiBusStub: { close: jest.Mock };
   let atSpiProcess: FakeProcess;
+  let speechdProcess: FakeProcess;
   let stopped: [unknown, string][];
   let xvfbProcess: FakeProcess;
   let dbusProcess: FakeProcess;
@@ -300,7 +300,13 @@ describe("OrcaClient", () => {
       process: dbusProcess as unknown as ChildProcess,
     });
     jest.mocked(getOrcaInstallationPath).mockReturnValue(mockInstallationPath);
-    jest.mocked(isUnixSocket).mockReturnValue(true);
+    speechdProcess = new FakeProcess(996);
+
+    jest.mocked(startSpeechDispatcher).mockResolvedValue({
+      address: mockSpeechdAddress,
+      guidepupSocketPath: mockGuidepupSocketPath,
+      process: speechdProcess as unknown as ChildProcess,
+    });
 
     atSpiProcess = new FakeProcess(997);
 
@@ -362,34 +368,10 @@ describe("OrcaClient", () => {
         expect(connectAtSpiDeviceEventController).toHaveBeenCalledWith(busStub);
       });
 
-      it("should start Speech Dispatcher with SIGPIPE ignored and the session sockets", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          "env",
-          [
-            "--ignore-signal=PIPE",
-            "speech-dispatcher",
-            "--run-single",
-            "--config-dir",
-            join(mockInstallationPath, "speechd"),
-            "--module-dir",
-            join(mockInstallationPath, "speechd", "modules"),
-            "--log-dir",
-            join(mockInstallationPath, "speechd", "logs"),
-            "--communication-method",
-            "unix_socket",
-            "--socket-path",
-            mockSpeechdSocketPath,
-            "--timeout",
-            "0",
-          ],
-          {
-            env: expect.objectContaining({
-              GUIDEPUP_ORCA_SPEECH_SOCKET: mockGuidepupSocketPath,
-            }),
-            stdio: ["ignore", "pipe", "pipe"],
-          },
+      it("should start Speech Dispatcher in the runtime directory", () => {
+        expect(startSpeechDispatcher).toHaveBeenCalledWith(
+          mockRuntimeDirectory,
         );
-        expect(isUnixSocket).toHaveBeenCalledWith(mockSpeechdSocketPath);
       });
 
       it("should connect to the guidepup speech socket", () => {
@@ -408,7 +390,7 @@ describe("OrcaClient", () => {
             env: expect.objectContaining({
               DBUS_SESSION_BUS_ADDRESS: mockDBusAddress,
               DISPLAY: mockDisplay,
-              SPEECHD_ADDRESS: `unix_socket:${mockSpeechdSocketPath}`,
+              SPEECHD_ADDRESS: mockSpeechdAddress,
             }),
           },
         );
@@ -440,7 +422,6 @@ describe("OrcaClient", () => {
 
       it("should log the output of each process", () => {
         expect(jest.mocked(logProcessOutput).mock.calls).toEqual([
-          [lastProcess("env"), "speechd"],
           [lastProcess(mockOrcaExecutable), "orca"],
         ]);
       });
@@ -479,14 +460,6 @@ describe("OrcaClient", () => {
         await start();
       });
 
-      it("should start Speech Dispatcher with verbose logging", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          "env",
-          expect.arrayContaining(["--log-level", "5"]),
-          expect.anything(),
-        );
-      });
-
       it("should start Orca with a debug log in the runtime directory", () => {
         expect(writeFileSync).toHaveBeenCalledWith(mockDebugLogPath, "");
         expect(spawn).toHaveBeenCalledWith(
@@ -517,35 +490,6 @@ describe("OrcaClient", () => {
     });
 
     describe("Speech Dispatcher", () => {
-      describe("when its socket takes a while to appear", () => {
-        beforeEach(async () => {
-          jest
-            .mocked(isUnixSocket)
-            .mockImplementationOnce(() => {
-              throw new Error("test-error");
-            })
-            .mockReturnValueOnce(false);
-
-          await start();
-        });
-
-        it("should poll until it appears", () => {
-          expect(isUnixSocket).toHaveBeenCalledTimes(3);
-        });
-      });
-
-      describe("when its socket never appears", () => {
-        it("should fail to start", async () => {
-          jest.mocked(isUnixSocket).mockReturnValue(false);
-
-          const error = await startError();
-
-          expect((error.cause as Error).message).toBe(
-            ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
-          );
-        });
-      });
-
       describe("when the guidepup speech socket refuses a few connections", () => {
         beforeEach(async () => {
           socketBehaviours = ["error", "error"];
@@ -711,6 +655,7 @@ describe("OrcaClient", () => {
         expect(stopped.map(([child]) => child)).toEqual(
           expect.arrayContaining([
             ...Object.values(processes).flat(),
+            speechdProcess,
             atSpiProcess,
             dbusProcess,
             xvfbProcess,
@@ -867,7 +812,7 @@ describe("OrcaClient", () => {
           expect(stopped).toEqual([
             [lastProcess(mockOrcaExecutable), "Orca"],
             [null, "Orca debug log"],
-            [lastProcess("env"), "Speech Dispatcher"],
+            [speechdProcess, "Speech Dispatcher"],
             [atSpiProcess, "AT-SPI"],
             [dbusProcess, "session D-Bus"],
             [xvfbProcess, "X Server"],
