@@ -3,8 +3,6 @@ import {
   ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
   ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
   ERR_ORCA_CANNOT_BE_STARTED,
-  ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
-  ERR_ORCA_DBUS_START_FAILURE,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
@@ -21,6 +19,7 @@ import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
 import { logProcessOutput } from "./logProcessOutput";
 import { OrcaClient } from "./OrcaClient";
+import { startSessionDBus } from "./startSessionDBus";
 import { startXServer } from "./startXServer";
 import { terminateProcess } from "./terminateProcess";
 
@@ -61,6 +60,9 @@ jest.mock("./logProcessOutput", () => ({
 }));
 jest.mock("./terminateProcess", () => ({
   terminateProcess: jest.fn(),
+}));
+jest.mock("./startSessionDBus", () => ({
+  startSessionDBus: jest.fn(),
 }));
 jest.mock("./startXServer", () => ({
   startXServer: jest.fn(),
@@ -166,7 +168,6 @@ describe("OrcaClient", () => {
   let busStub: {
     close: jest.Mock;
     getService: jest.Mock;
-    listNames: jest.Mock;
     nameHasOwner: jest.Mock;
   };
   let orcaServiceStub: { getInterface: jest.Mock };
@@ -177,6 +178,7 @@ describe("OrcaClient", () => {
   let atSpiBusStub: { close: jest.Mock; getService: jest.Mock };
   let processKillSpy: jest.SpyInstance;
   let xvfbProcess: FakeProcess;
+  let dbusProcess: FakeProcess;
 
   const lastProcess = (command: string) => processes[command]?.at(-1);
   const lastSocket = () => sockets.at(-1);
@@ -239,12 +241,6 @@ describe("OrcaClient", () => {
 
       (processes[command] ??= []).push(child);
 
-      if (command === "dbus-daemon") {
-        process.nextTick(() =>
-          child.stdout.emit("data", Buffer.from(`${mockDBusAddress}\n`)),
-        );
-      }
-
       return child;
     }) as unknown as typeof spawn);
 
@@ -303,7 +299,6 @@ describe("OrcaClient", () => {
       getService: jest.fn((name: string) =>
         name === AT_SPI_SERVICE ? a11yServiceStub : orcaServiceStub,
       ),
-      listNames: jest.fn().mockResolvedValue([]),
       nameHasOwner: jest.fn().mockResolvedValue(true),
     };
 
@@ -318,10 +313,16 @@ describe("OrcaClient", () => {
     jest.mocked(existsSync).mockReturnValue(true);
     jest.mocked(mkdtempSync).mockReturnValue(mockRuntimeDirectory);
     xvfbProcess = new FakeProcess(999);
+    dbusProcess = new FakeProcess(998);
 
     jest.mocked(startXServer).mockResolvedValue({
       display: mockDisplay,
       process: xvfbProcess as unknown as ChildProcess,
+    });
+    jest.mocked(startSessionDBus).mockResolvedValue({
+      address: mockDBusAddress,
+      bus: busStub as unknown as ReturnType<typeof sessionBus>,
+      process: dbusProcess as unknown as ChildProcess,
     });
     jest.mocked(getOrcaInstallationPath).mockReturnValue(mockInstallationPath);
     jest.mocked(isAtSpiRunning).mockReturnValue(false);
@@ -355,15 +356,8 @@ describe("OrcaClient", () => {
         expect(startXServer).toHaveBeenCalled();
       });
 
-      it("should start a session D-Bus and connect to it", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          "dbus-daemon",
-          ["--session", "--nofork", "--print-address"],
-          { env: expect.objectContaining({ DISPLAY: mockDisplay }) },
-        );
-        expect(sessionBus).toHaveBeenCalledWith({
-          busAddress: mockDBusAddress,
-        });
+      it("should start a session D-Bus on the X server's display", () => {
+        expect(startSessionDBus).toHaveBeenCalledWith(mockDisplay);
       });
 
       it("should start the AT-SPI bus launcher in its own process group", () => {
@@ -477,7 +471,6 @@ describe("OrcaClient", () => {
 
       it("should log the output of each process", () => {
         expect(jest.mocked(logProcessOutput).mock.calls).toEqual([
-          [lastProcess("dbus-daemon"), "dbus"],
           [lastProcess(AT_SPI_LAUNCHER), "at-spi"],
           [lastProcess("env"), "speechd"],
           [lastProcess(mockOrcaExecutable), "orca"],
@@ -552,77 +545,6 @@ describe("OrcaClient", () => {
           lastProcess("tail"),
           "orca-debug-log",
         );
-      });
-    });
-
-    describe("session D-Bus", () => {
-      describe("when DBUS_SESSION_BUS_ADDRESS is set", () => {
-        beforeEach(async () => {
-          process.env.DBUS_SESSION_BUS_ADDRESS = "test-existing-dbus-address";
-
-          await start();
-        });
-
-        it("should connect to the existing session D-Bus", () => {
-          expect(spawn).not.toHaveBeenCalledWith(
-            "dbus-daemon",
-            expect.anything(),
-            expect.anything(),
-          );
-          expect(sessionBus).toHaveBeenCalledWith({
-            busAddress: "test-existing-dbus-address",
-          });
-        });
-      });
-
-      describe.each(["exit", "error"])(
-        "when the D-Bus daemon emits %s before printing its address",
-        (event) => {
-          it("should fail to start", async () => {
-            jest.mocked(spawn).mockImplementationOnce((() => {
-              const child = new FakeProcess(1);
-
-              process.nextTick(() =>
-                child.emit(
-                  event,
-                  event === "error" ? new Error("test-error") : 1,
-                ),
-              );
-
-              return child;
-            }) as unknown as typeof spawn);
-
-            const error = await startError();
-
-            expect((error.cause as Error).message).toBe(
-              ERR_ORCA_DBUS_START_FAILURE,
-            );
-          });
-        },
-      );
-
-      describe("when the session D-Bus takes a while to respond", () => {
-        beforeEach(async () => {
-          busStub.listNames.mockRejectedValueOnce(new Error("test-error"));
-
-          await start();
-        });
-
-        it("should poll until it responds", () => {
-          expect(busStub.listNames).toHaveBeenCalledTimes(2);
-        });
-      });
-
-      describe("when the session D-Bus never responds", () => {
-        it("should fail to start", async () => {
-          busStub.listNames.mockRejectedValue(new Error("test-error"));
-
-          const error = await startError();
-
-          expect((error.cause as Error).message).toBe(
-            ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
-          );
-        });
       });
     });
 
@@ -910,12 +832,14 @@ describe("OrcaClient", () => {
       });
 
       it("should stop every process it started", () => {
-        [...Object.values(processes).flat(), xvfbProcess].forEach((child) => {
-          expect(terminateProcess).toHaveBeenCalledWith(
-            child,
-            expect.any(String),
-          );
-        });
+        [...Object.values(processes).flat(), dbusProcess, xvfbProcess].forEach(
+          (child) => {
+            expect(terminateProcess).toHaveBeenCalledWith(
+              child,
+              expect.any(String),
+            );
+          },
+        );
       });
 
       it("should remove the runtime directory", () => {
@@ -1069,7 +993,7 @@ describe("OrcaClient", () => {
             [null, "Orca debug log"],
             [lastProcess("env"), "Speech Dispatcher"],
             [lastProcess(AT_SPI_LAUNCHER), "AT-SPI"],
-            [lastProcess("dbus-daemon"), "session D-Bus"],
+            [dbusProcess, "session D-Bus"],
             [xvfbProcess, "X Server"],
           ]);
         });
