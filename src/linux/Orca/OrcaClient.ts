@@ -16,8 +16,6 @@ import {
   ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
   ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
   ERR_ORCA_CANNOT_BE_STARTED,
-  ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
-  ERR_ORCA_DBUS_START_FAILURE,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
@@ -30,6 +28,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
+import { type SessionDBus, startSessionDBus } from "./startSessionDBus";
 import { startXServer, type XServer } from "./startXServer";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
@@ -78,9 +77,7 @@ const isUnknownOrcaInterfaceError = (cause: unknown): cause is Error =>
 export class OrcaClient extends EventEmitter {
   #xServer: XServer = null;
 
-  #sessionDBusAddress: string = null;
-  #sessionDBusProcess: ChildProcess = null;
-  #sessionDBus: MessageBus = null;
+  #sessionDBus: SessionDBus = null;
 
   #atSpiProcess: ChildProcess = null;
   #atSpiBus: MessageBus = null;
@@ -127,61 +124,6 @@ export class OrcaClient extends EventEmitter {
     this.#spokenPhrases = [];
   }
 
-  async #ensureDBus(): Promise<void> {
-    debug("Ensuring session D-Bus running...");
-
-    this.#sessionDBusAddress = process.env.DBUS_SESSION_BUS_ADDRESS;
-
-    if (!this.#sessionDBusAddress) {
-      this.#sessionDBusProcess = spawn(
-        "dbus-daemon",
-        ["--session", "--nofork", "--print-address"],
-        {
-          env: {
-            ...process.env,
-            DISPLAY: this.#xServer.display,
-          },
-        },
-      );
-
-      logProcessOutput(this.#sessionDBusProcess, "dbus");
-
-      this.#sessionDBusAddress = await new Promise<string>((resolve) => {
-        this.#sessionDBusProcess.stdout.once("data", (data: Buffer) => {
-          resolve(data.toString().trim());
-        });
-
-        this.#sessionDBusProcess.once("error", () => resolve(""));
-        this.#sessionDBusProcess.once("exit", () => resolve(""));
-      });
-
-      if (!this.#sessionDBusAddress) {
-        throw new Error(ERR_ORCA_DBUS_START_FAILURE);
-      }
-    }
-
-    debug(`DBUS_SESSION_BUS_ADDRESS=${this.#sessionDBusAddress}`);
-
-    this.#sessionDBus = sessionBus({
-      busAddress: this.#sessionDBusAddress,
-    });
-
-    await waitForCondition(
-      async () => {
-        debug("Polling for D-Bus connectivity");
-
-        await this.#sessionDBus.listNames();
-
-        return true;
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
-      },
-    );
-  }
-
   async #ensureAtSpi(): Promise<void> {
     debug("Ensuring AT-SPI D-Bus running...");
 
@@ -203,7 +145,7 @@ export class OrcaClient extends EventEmitter {
         detached: true,
         env: {
           ...process.env,
-          DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
+          DBUS_SESSION_BUS_ADDRESS: this.#sessionDBus.address,
           DISPLAY: this.#xServer.display,
         },
       });
@@ -217,7 +159,7 @@ export class OrcaClient extends EventEmitter {
           `Polling for '${AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME}' name ownership`,
         );
 
-        return await this.#sessionDBus.nameHasOwner(
+        return await this.#sessionDBus.bus.nameHasOwner(
           AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
         );
       },
@@ -445,7 +387,7 @@ export class OrcaClient extends EventEmitter {
     this.#orcaProcess = spawn(orcaExecutable, args, {
       env: {
         ...process.env,
-        DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
+        DBUS_SESSION_BUS_ADDRESS: this.#sessionDBus.address,
         DISPLAY: this.#xServer.display,
         SPEECHD_ADDRESS: this.#speechdAddress,
       },
@@ -459,7 +401,7 @@ export class OrcaClient extends EventEmitter {
           `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
         );
 
-        return await this.#sessionDBus.nameHasOwner(
+        return await this.#sessionDBus.bus.nameHasOwner(
           SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
         );
       },
@@ -474,7 +416,7 @@ export class OrcaClient extends EventEmitter {
   async #mapOrcaDBusService(): Promise<void> {
     debug("Connecting to Orca D-Bus service...");
 
-    const sessionDBusOrcaService = this.#sessionDBus.getService(
+    const sessionDBusOrcaService = this.#sessionDBus.bus.getService(
       SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
     );
 
@@ -583,7 +525,7 @@ export class OrcaClient extends EventEmitter {
   async #connectAtSpiDeviceEventController(): Promise<void> {
     debug("Connecting to AT-SPI device event controller...");
 
-    const a11yBus = await this.#sessionDBus
+    const a11yBus = await this.#sessionDBus.bus
       .getService(AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME)
       .getInterface<AtSpiAccessibilityBus>(
         "/org/a11y/bus",
@@ -638,7 +580,7 @@ export class OrcaClient extends EventEmitter {
       this.#runtimeDirectory = mkdtempSync(join(tmpdir(), "guidepup-orca-"));
 
       this.#xServer = await startXServer();
-      await this.#ensureDBus();
+      this.#sessionDBus = await startSessionDBus(this.#xServer.display);
       await this.#ensureAtSpi();
       await this.#connectAtSpiDeviceEventController();
       await this.#startSpeechd();
@@ -684,7 +626,7 @@ export class OrcaClient extends EventEmitter {
       }
     }
     await terminateProcess(this.#atSpiProcess, "AT-SPI");
-    await terminateProcess(this.#sessionDBusProcess, "session D-Bus");
+    await terminateProcess(this.#sessionDBus?.process, "session D-Bus");
     await terminateProcess(this.#xServer?.process, "X Server");
 
     if (this.#runtimeDirectory) {
@@ -694,13 +636,11 @@ export class OrcaClient extends EventEmitter {
     this.#xServer = null;
 
     await this.#atSpiBus?.close();
-    await this.#sessionDBus?.close();
+    await this.#sessionDBus?.bus.close();
 
     this.#atSpiBus = null;
     this.#atSpiDeviceEventController = null;
 
-    this.#sessionDBusAddress = null;
-    this.#sessionDBusProcess = null;
     this.#sessionDBus = null;
 
     this.#atSpiProcess = null;

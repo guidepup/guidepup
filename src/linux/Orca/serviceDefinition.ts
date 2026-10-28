@@ -545,7 +545,8 @@ export const serviceDefinition = {
             "Attempts to move focus to the object at the flat review location.",
         },
         MoveReviewToFocus: {
-          description: "Moves the flat review location to the object with focus.",
+          description:
+            "Moves the flat review location to the object with focus.",
         },
         PhoneticItem: {
           description:
@@ -630,8 +631,7 @@ export const serviceDefinition = {
       },
       runtimeSetters: {
         DisplaysUpdates: {
-          description:
-            "Sets whether review location changes update braille.",
+          description: "Sets whether review location changes update braille.",
         },
         FocusTracking: {
           description: "Sets the flat review focus-tracking mode.",
@@ -649,10 +649,12 @@ export const serviceDefinition = {
     MathNavigator: {
       commands: {
         CopyToClipboard: {
-          description: "Copies the current math navigation node to the clipboard.",
+          description:
+            "Copies the current math navigation node to the clipboard.",
         },
         EnterMathModeCommand: {
-          description: "Enters math navigation mode if the current focus is on math.",
+          description:
+            "Enters math navigation mode if the current focus is on math.",
         },
         ExitMathMode: {
           description: "Exits math navigation mode.",
@@ -740,10 +742,12 @@ export const serviceDefinition = {
     MousePresenter: {
       commands: {
         LeftClickItem: {
-          description: "Performs a left mouse button click on the current item.",
+          description:
+            "Performs a left mouse button click on the current item.",
         },
         RightClickItem: {
-          description: "Performs a right mouse button click on the current item.",
+          description:
+            "Performs a right mouse button click on the current item.",
         },
         RoutePointerToItem: {
           description: "Moves the mouse pointer to the current item.",
@@ -897,7 +901,8 @@ export const serviceDefinition = {
             "Returns whether blockquotes are announced when entered.",
         },
         AnnounceCodeBlock: {
-          description: "Returns whether code blocks are announced when entered.",
+          description:
+            "Returns whether code blocks are announced when entered.",
         },
         AnnounceDocument: {
           description:
@@ -1351,7 +1356,8 @@ export const serviceDefinition = {
             "Returns whether cell spans are announced when greater than 1.",
         },
         AnnounceCodeBlock: {
-          description: "Returns whether code blocks are announced when entered.",
+          description:
+            "Returns whether code blocks are announced when entered.",
         },
         AnnounceDocument: {
           description:
@@ -1418,8 +1424,7 @@ export const serviceDefinition = {
           description: "Returns whether object descriptions are spoken.",
         },
         SpeakIndentation: {
-          description:
-            "Returns whether spoken indentation is enabled.",
+          description: "Returns whether spoken indentation is enabled.",
         },
         SpeakIndentationOnlyIfChanged: {
           description:
@@ -1553,8 +1558,7 @@ export const serviceDefinition = {
           description: "Sets whether object descriptions are spoken.",
         },
         SpeakIndentation: {
-          description:
-            "Sets whether spoken indentation is enabled.",
+          description: "Sets whether spoken indentation is enabled.",
         },
         SpeakIndentationOnlyIfChanged: {
           description:
