@@ -1,35 +1,27 @@
-import { type ChildProcess, spawn } from "node:child_process";
 import {
   ERR_ORCA_CANNOT_BE_STARTED,
   ERR_ORCA_NOT_RUNNING,
-  ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
 } from "../errors";
 import { type MessageBus, UnknownInterfaceError } from "dbus-native";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { base } from "../../debug";
+import { mkdtempSync, rmSync } from "node:fs";
+import type { ChildProcess } from "node:child_process";
 import { connect } from "node:net";
 import { connectAtSpiDeviceEventController } from "./connectAtSpiDeviceEventController";
 import EventEmitter from "node:events";
-import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
-import { join } from "node:path";
-import { logProcessOutput } from "./logProcessOutput";
 import { OrcaClient } from "./OrcaClient";
 import { startAtSpi } from "./startAtSpi";
+import { startOrca } from "./startOrca";
 import { startSessionDBus } from "./startSessionDBus";
 import { startSpeechDispatcher } from "./startSpeechDispatcher";
 import { startXServer } from "./startXServer";
 import { terminateAtSpi } from "./terminateAtSpi";
 import { terminateProcess } from "./terminateProcess";
 
-jest.mock("node:child_process", () => ({
-  spawn: jest.fn(),
-}));
 jest.mock("node:fs", () => ({
   mkdirSync: jest.fn(),
   mkdtempSync: jest.fn(),
   rmSync: jest.fn(),
-  writeFileSync: jest.fn(),
 }));
 jest.mock("node:net", () => ({
   connect: jest.fn(),
@@ -40,16 +32,10 @@ jest.mock("dbus-native", () => {
   return { UnknownInterfaceError };
 });
 jest.mock("../../debug", () => {
-  const debug = Object.assign(jest.fn(), { enabled: false });
+  const debug = jest.fn();
 
   return { base: { extend: () => debug } };
 });
-jest.mock("./getOrcaInstallationPath", () => ({
-  getOrcaInstallationPath: jest.fn(),
-}));
-jest.mock("./logProcessOutput", () => ({
-  logProcessOutput: jest.fn(),
-}));
 jest.mock("./connectAtSpiDeviceEventController", () => ({
   connectAtSpiDeviceEventController: jest.fn(),
 }));
@@ -61,6 +47,9 @@ jest.mock("./terminateAtSpi", () => ({
 }));
 jest.mock("./terminateProcess", () => ({
   terminateProcess: jest.fn(),
+}));
+jest.mock("./startOrca", () => ({
+  startOrca: jest.fn(),
 }));
 jest.mock("./startSessionDBus", () => ({
   startSessionDBus: jest.fn(),
@@ -108,29 +97,14 @@ jest.mock("./serviceDefinition", () => ({
   },
 }));
 
-const debug = base.extend("test") as unknown as jest.Mock & {
-  enabled: boolean;
-};
-
 const mockDisplay = "test-display";
 const mockDBusAddress = "test-dbus-address";
-const mockInstallationPath = "test-installation-path";
 const mockRuntimeDirectory = "test-runtime-directory";
 const mockSpeechdAddress = "test-speechd-address";
 const mockGuidepupSocketPath = "test-guidepup-socket-path";
-const mockOrcaExecutable = join(mockInstallationPath, "bin", "orca");
 const ORCA_SERVICE = "org.gnome.Orca1.Service";
 
-class FakeProcess extends EventEmitter {
-  stdout = new EventEmitter();
-  pid: number | undefined;
-
-  constructor(pid: number) {
-    super();
-
-    this.pid = pid;
-  }
-}
+const fakeProcess = (name: string) => ({ name }) as unknown as ChildProcess;
 
 class FakeSocket extends EventEmitter {
   setEncoding = jest.fn();
@@ -161,25 +135,23 @@ describe("OrcaClient", () => {
   const originalEnv = process.env;
 
   let client: OrcaClient;
-  let processes: Record<string, FakeProcess[]>;
   let sockets: FakeSocket[];
   let socketBehaviours: SocketBehaviour[];
   let interfaces: Record<string, ReturnType<typeof interfaceStub>>;
   let busStub: {
     close: jest.Mock;
     getService: jest.Mock;
-    nameHasOwner: jest.Mock;
   };
   let orcaServiceStub: { getInterface: jest.Mock };
   let deviceEventControllerStub: { GenerateKeyboardEvent: jest.Mock };
   let atSpiBusStub: { close: jest.Mock };
-  let atSpiProcess: FakeProcess;
-  let speechdProcess: FakeProcess;
+  let atSpiProcess: ChildProcess;
+  let orcaProcess: ChildProcess;
+  let speechdProcess: ChildProcess;
   let stopped: [unknown, string][];
-  let xvfbProcess: FakeProcess;
-  let dbusProcess: FakeProcess;
+  let xvfbProcess: ChildProcess;
+  let dbusProcess: ChildProcess;
 
-  const lastProcess = (command: string) => processes[command]?.at(-1);
   const lastSocket = () => sockets.at(-1);
   const speak = (data: string) =>
     lastSocket().send(JSON.stringify({ type: "speech", data }));
@@ -222,9 +194,6 @@ describe("OrcaClient", () => {
     delete process.env.DISPLAY;
     delete process.env.DBUS_SESSION_BUS_ADDRESS;
 
-    debug.enabled = false;
-
-    processes = {};
     sockets = [];
     socketBehaviours = [];
     interfaces = {
@@ -232,16 +201,6 @@ describe("OrcaClient", () => {
       ObjectNavigator: interfaceStub(),
       SpeechPresenter: interfaceStub(),
     };
-
-    let pid = 1000;
-
-    jest.mocked(spawn).mockImplementation(((command: string) => {
-      const child = new FakeProcess(pid++);
-
-      (processes[command] ??= []).push(child);
-
-      return child;
-    }) as unknown as typeof spawn);
 
     jest.mocked(connect).mockImplementation(((
       _path: string,
@@ -283,41 +242,44 @@ describe("OrcaClient", () => {
     busStub = {
       close: jest.fn().mockResolvedValue(undefined),
       getService: jest.fn().mockReturnValue(orcaServiceStub),
-      nameHasOwner: jest.fn().mockResolvedValue(true),
     };
 
     jest.mocked(mkdtempSync).mockReturnValue(mockRuntimeDirectory);
-    xvfbProcess = new FakeProcess(999);
-    dbusProcess = new FakeProcess(998);
+    xvfbProcess = fakeProcess("xvfb");
+    dbusProcess = fakeProcess("dbus");
 
     jest.mocked(startXServer).mockResolvedValue({
       display: mockDisplay,
-      process: xvfbProcess as unknown as ChildProcess,
+      process: xvfbProcess,
     });
     jest.mocked(startSessionDBus).mockResolvedValue({
       address: mockDBusAddress,
       bus: busStub as unknown as MessageBus,
-      process: dbusProcess as unknown as ChildProcess,
+      process: dbusProcess,
     });
-    jest.mocked(getOrcaInstallationPath).mockReturnValue(mockInstallationPath);
-    speechdProcess = new FakeProcess(996);
+    speechdProcess = fakeProcess("speechd");
 
     jest.mocked(startSpeechDispatcher).mockResolvedValue({
       address: mockSpeechdAddress,
       guidepupSocketPath: mockGuidepupSocketPath,
-      process: speechdProcess as unknown as ChildProcess,
+      process: speechdProcess,
     });
 
-    atSpiProcess = new FakeProcess(997);
+    atSpiProcess = fakeProcess("at-spi");
 
     jest.mocked(connectAtSpiDeviceEventController).mockResolvedValue({
       bus: atSpiBusStub as unknown as MessageBus,
       controller: deviceEventControllerStub,
     });
 
-    jest
-      .mocked(startAtSpi)
-      .mockResolvedValue(atSpiProcess as unknown as ChildProcess);
+    jest.mocked(startAtSpi).mockResolvedValue(atSpiProcess);
+
+    orcaProcess = fakeProcess("orca");
+
+    jest.mocked(startOrca).mockResolvedValue({
+      process: orcaProcess,
+      debugLogProcess: null,
+    });
 
     stopped = [];
 
@@ -382,28 +344,13 @@ describe("OrcaClient", () => {
         expect(lastSocket().setEncoding).toHaveBeenCalledWith("utf8");
       });
 
-      it("should start Orca with the guidepup profile", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          mockOrcaExecutable,
-          ["--profile", "guidepup", "--replace"],
-          {
-            env: expect.objectContaining({
-              DBUS_SESSION_BUS_ADDRESS: mockDBusAddress,
-              DISPLAY: mockDisplay,
-              SPEECHD_ADDRESS: mockSpeechdAddress,
-            }),
-          },
-        );
-        expect(busStub.nameHasOwner).toHaveBeenCalledWith(ORCA_SERVICE);
-      });
-
-      it("should not start an Orca debug log", () => {
-        expect(spawn).not.toHaveBeenCalledWith(
-          "tail",
-          expect.anything(),
-          expect.anything(),
-        );
-        expect(writeFileSync).not.toHaveBeenCalled();
+      it("should start Orca with the session's display, D-Bus and Speech Dispatcher", () => {
+        expect(startOrca).toHaveBeenCalledWith({
+          display: mockDisplay,
+          runtimeDirectory: mockRuntimeDirectory,
+          sessionDBus: expect.objectContaining({ address: mockDBusAddress }),
+          speechdAddress: mockSpeechdAddress,
+        });
       });
 
       it("should map each Orca D-Bus module", () => {
@@ -420,12 +367,6 @@ describe("OrcaClient", () => {
         );
       });
 
-      it("should log the output of each process", () => {
-        expect(jest.mocked(logProcessOutput).mock.calls).toEqual([
-          [lastProcess(mockOrcaExecutable), "orca"],
-        ]);
-      });
-
       describe("when started again", () => {
         beforeEach(async () => {
           jest.clearAllMocks();
@@ -434,7 +375,7 @@ describe("OrcaClient", () => {
         });
 
         it("should do nothing", () => {
-          expect(spawn).not.toHaveBeenCalled();
+          expect(startXServer).not.toHaveBeenCalled();
         });
       });
     });
@@ -448,44 +389,6 @@ describe("OrcaClient", () => {
         await Promise.all([first, second]);
 
         expect(startXServer).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe("when debug logging is enabled", () => {
-      const mockDebugLogPath = join(mockRuntimeDirectory, "orca-debug.log");
-
-      beforeEach(async () => {
-        debug.enabled = true;
-
-        await start();
-      });
-
-      it("should start Orca with a debug log in the runtime directory", () => {
-        expect(writeFileSync).toHaveBeenCalledWith(mockDebugLogPath, "");
-        expect(spawn).toHaveBeenCalledWith(
-          mockOrcaExecutable,
-          [
-            "--profile",
-            "guidepup",
-            "--replace",
-            "--debug",
-            `--debug-file=${mockDebugLogPath}`,
-          ],
-          expect.anything(),
-        );
-      });
-
-      it("should follow the debug log", () => {
-        expect(spawn).toHaveBeenCalledWith("tail", ["-f", mockDebugLogPath], {
-          stdio: ["ignore", "inherit", "pipe"],
-        });
-      });
-
-      it("should log the output of the debug log process", () => {
-        expect(logProcessOutput).toHaveBeenCalledWith(
-          lastProcess("tail"),
-          "orca-debug-log",
-        );
       });
     });
 
@@ -517,50 +420,6 @@ describe("OrcaClient", () => {
             ERR_ORCA_SPEECHD_CANNOT_CONNECT,
           );
           expect(connect).toHaveBeenCalledTimes(20);
-        });
-      });
-    });
-
-    describe("Orca", () => {
-      describe("when the Orca service takes a while to appear", () => {
-        beforeEach(async () => {
-          busStub.nameHasOwner.mockImplementation(async (name: string) => {
-            if (name !== ORCA_SERVICE) {
-              return true;
-            }
-
-            const calls = busStub.nameHasOwner.mock.calls.filter(
-              ([name]) => name === ORCA_SERVICE,
-            ).length;
-
-            if (calls === 1) {
-              throw new Error("test-error");
-            }
-
-            return calls > 2;
-          });
-
-          await start();
-        });
-
-        it("should poll until it appears", () => {
-          expect(
-            busStub.nameHasOwner.mock.calls.filter(
-              ([name]) => name === ORCA_SERVICE,
-            ),
-          ).toHaveLength(3);
-        });
-      });
-
-      describe("when the Orca service never appears", () => {
-        it("should fail to start", async () => {
-          busStub.nameHasOwner.mockImplementation(
-            async (name: string) => name !== ORCA_SERVICE,
-          );
-
-          const error = await startError();
-
-          expect((error.cause as Error).message).toBe(ERR_ORCA_SERVICE_TIMEOUT);
         });
       });
     });
@@ -640,9 +499,7 @@ describe("OrcaClient", () => {
       let error: Error;
 
       beforeEach(async () => {
-        busStub.nameHasOwner.mockImplementation(
-          async (name: string) => name !== ORCA_SERVICE,
-        );
+        jest.mocked(startOrca).mockRejectedValueOnce(new Error("test-error"));
 
         error = await startError();
       });
@@ -654,7 +511,6 @@ describe("OrcaClient", () => {
       it("should stop every process it started", () => {
         expect(stopped.map(([child]) => child)).toEqual(
           expect.arrayContaining([
-            ...Object.values(processes).flat(),
             speechdProcess,
             atSpiProcess,
             dbusProcess,
@@ -671,8 +527,6 @@ describe("OrcaClient", () => {
       });
 
       it("should allow a later start", async () => {
-        busStub.nameHasOwner.mockResolvedValue(true);
-
         await expect(start()).resolves.toBeUndefined();
       });
     });
@@ -810,7 +664,7 @@ describe("OrcaClient", () => {
 
         it("should stop each process in turn, Orca first and the X server last", () => {
           expect(stopped).toEqual([
-            [lastProcess(mockOrcaExecutable), "Orca"],
+            [orcaProcess, "Orca"],
             [null, "Orca debug log"],
             [speechdProcess, "Speech Dispatcher"],
             [atSpiProcess, "AT-SPI"],

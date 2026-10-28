@@ -8,16 +8,15 @@ import {
   type AtSpiDeviceEventControllerConnection,
   connectAtSpiDeviceEventController,
 } from "./connectAtSpiDeviceEventController";
-import { type ChildProcess, spawn } from "node:child_process";
 import { connect, type Socket } from "node:net";
 import { DBusInterface, UnknownInterfaceError } from "dbus-native";
 import {
   ERR_ORCA_CANNOT_BE_STARTED,
   ERR_ORCA_NOT_RUNNING,
-  ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
 } from "../errors";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
+import { type OrcaProcesses, startOrca } from "./startOrca";
 import { type SessionDBus, startSessionDBus } from "./startSessionDBus";
 import {
   type SpeechDispatcher,
@@ -26,18 +25,17 @@ import {
 import { startXServer, type XServer } from "./startXServer";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
+import type { ChildProcess } from "node:child_process";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import EventEmitter from "node:events";
-import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { join } from "node:path";
-import { logProcessOutput } from "./logProcessOutput";
 import { serviceDefinition } from "./serviceDefinition";
+import { SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME } from "./constants";
 import { startAtSpi } from "./startAtSpi";
 import { terminateAtSpi } from "./terminateAtSpi";
 import { terminateProcess } from "./terminateProcess";
 import { tmpdir } from "node:os";
-import { waitForCondition } from "../../waitForCondition";
 
 const debug = base.extend("OrcaClient");
 
@@ -45,8 +43,6 @@ const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const SPEECH_DEBOUNCE_TIMEOUT = 1_000;
-
-const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
 
 const READY = "ready";
 const CANCEL = "cancel";
@@ -69,8 +65,7 @@ export class OrcaClient extends EventEmitter {
   #speechdSocket: Socket = null;
   #speechdConsecutiveConnectionFailures = 0;
 
-  #orcaProcess: ChildProcess = null;
-  #orcaDebugLogProcess: ChildProcess = null;
+  #orca: OrcaProcesses = null;
   #orcaService: OrcaService = null;
 
   #capture: CommandOptions["capture"] = null;
@@ -221,55 +216,6 @@ export class OrcaClient extends EventEmitter {
         }
       }
     });
-  }
-
-  async #startOrca(): Promise<void> {
-    debug("Starting Orca");
-
-    const installationPath = getOrcaInstallationPath();
-    const orcaExecutable = join(installationPath, "bin", "orca");
-    const args = ["--profile", "guidepup", "--replace"];
-
-    if (debug.enabled) {
-      const orcaDebugLogPath = join(this.#runtimeDirectory, "orca-debug.log");
-
-      writeFileSync(orcaDebugLogPath, "");
-      args.push("--debug", `--debug-file=${orcaDebugLogPath}`);
-
-      this.#orcaDebugLogProcess = spawn("tail", ["-f", orcaDebugLogPath], {
-        stdio: ["ignore", "inherit", "pipe"],
-      });
-
-      logProcessOutput(this.#orcaDebugLogProcess, "orca-debug-log");
-    }
-
-    this.#orcaProcess = spawn(orcaExecutable, args, {
-      env: {
-        ...process.env,
-        DBUS_SESSION_BUS_ADDRESS: this.#sessionDBus.address,
-        DISPLAY: this.#xServer.display,
-        SPEECHD_ADDRESS: this.#speechDispatcher.address,
-      },
-    });
-
-    logProcessOutput(this.#orcaProcess, "orca");
-
-    await waitForCondition(
-      async () => {
-        debug(
-          `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
-        );
-
-        return await this.#sessionDBus.bus.nameHasOwner(
-          SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
-        );
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_SERVICE_TIMEOUT,
-      },
-    );
   }
 
   async #mapOrcaDBusService(): Promise<void> {
@@ -423,7 +369,12 @@ export class OrcaClient extends EventEmitter {
         this.#runtimeDirectory,
       );
       await this.#connectSpeechdSocket();
-      await this.#startOrca();
+      this.#orca = await startOrca({
+        display: this.#xServer.display,
+        runtimeDirectory: this.#runtimeDirectory,
+        sessionDBus: this.#sessionDBus,
+        speechdAddress: this.#speechDispatcher.address,
+      });
       await this.#mapOrcaDBusService();
 
       await this.#orcaService.SpeechPresenter.commands.ToggleMonitor.execute(
@@ -453,8 +404,8 @@ export class OrcaClient extends EventEmitter {
 
     // One at a time, waiting for each to exit, so that Orca can shut down
     // cleanly while the services it depends on are still running.
-    await terminateProcess(this.#orcaProcess, "Orca");
-    await terminateProcess(this.#orcaDebugLogProcess, "Orca debug log");
+    await terminateProcess(this.#orca?.process, "Orca");
+    await terminateProcess(this.#orca?.debugLogProcess, "Orca debug log");
     await terminateProcess(
       this.#speechDispatcher?.process,
       "Speech Dispatcher",
@@ -483,8 +434,7 @@ export class OrcaClient extends EventEmitter {
     this.#speechdSocket = null;
     this.#speechdConsecutiveConnectionFailures = 0;
 
-    this.#orcaProcess = null;
-    this.#orcaDebugLogProcess = null;
+    this.#orca = null;
     this.#orcaService = null;
 
     this.#capture = null;
