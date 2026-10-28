@@ -1,33 +1,31 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import {
-  ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
-  ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
   ERR_ORCA_CANNOT_BE_STARTED,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
 } from "../errors";
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { sessionBus, UnknownInterfaceError } from "dbus-native";
 import { base } from "../../debug";
 import { connect } from "node:net";
 import EventEmitter from "node:events";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
-import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
 import { logProcessOutput } from "./logProcessOutput";
 import { OrcaClient } from "./OrcaClient";
+import { startAtSpi } from "./startAtSpi";
 import { startSessionDBus } from "./startSessionDBus";
 import { startXServer } from "./startXServer";
+import { terminateAtSpi } from "./terminateAtSpi";
 import { terminateProcess } from "./terminateProcess";
 
 jest.mock("node:child_process", () => ({
   spawn: jest.fn(),
 }));
 jest.mock("node:fs", () => ({
-  existsSync: jest.fn(),
   mkdirSync: jest.fn(),
   mkdtempSync: jest.fn(),
   rmSync: jest.fn(),
@@ -49,14 +47,17 @@ jest.mock("../../debug", () => {
 jest.mock("./getOrcaInstallationPath", () => ({
   getOrcaInstallationPath: jest.fn(),
 }));
-jest.mock("./isAtSpiRunning", () => ({
-  isAtSpiRunning: jest.fn(),
-}));
 jest.mock("./isUnixSocket", () => ({
   isUnixSocket: jest.fn(),
 }));
 jest.mock("./logProcessOutput", () => ({
   logProcessOutput: jest.fn(),
+}));
+jest.mock("./startAtSpi", () => ({
+  startAtSpi: jest.fn(),
+}));
+jest.mock("./terminateAtSpi", () => ({
+  terminateAtSpi: jest.fn(),
 }));
 jest.mock("./terminateProcess", () => ({
   terminateProcess: jest.fn(),
@@ -115,8 +116,6 @@ const mockRuntimeDirectory = "test-runtime-directory";
 const mockSpeechdSocketPath = join(mockRuntimeDirectory, "speechd.sock");
 const mockGuidepupSocketPath = join(mockRuntimeDirectory, "guidepup.sock");
 const mockOrcaExecutable = join(mockInstallationPath, "bin", "orca");
-const AT_SPI_LAUNCHER = "/usr/libexec/at-spi-bus-launcher";
-const AT_SPI_LAUNCHER_FALLBACK = "/usr/lib/at-spi2-core/at-spi-bus-launcher";
 const ORCA_SERVICE = "org.gnome.Orca1.Service";
 const AT_SPI_SERVICE = "org.a11y.Bus";
 const mockAtSpiBusAddress = "test-at-spi-bus-address";
@@ -176,7 +175,8 @@ describe("OrcaClient", () => {
   let deviceEventControllerStub: { GenerateKeyboardEvent: jest.Mock };
   let atSpiRegistryStub: { getInterface: jest.Mock };
   let atSpiBusStub: { close: jest.Mock; getService: jest.Mock };
-  let processKillSpy: jest.SpyInstance;
+  let atSpiProcess: FakeProcess;
+  let stopped: [unknown, string][];
   let xvfbProcess: FakeProcess;
   let dbusProcess: FakeProcess;
 
@@ -310,7 +310,6 @@ describe("OrcaClient", () => {
             ? atSpiBusStub
             : busStub) as unknown as ReturnType<typeof sessionBus>,
       );
-    jest.mocked(existsSync).mockReturnValue(true);
     jest.mocked(mkdtempSync).mockReturnValue(mockRuntimeDirectory);
     xvfbProcess = new FakeProcess(999);
     dbusProcess = new FakeProcess(998);
@@ -325,10 +324,22 @@ describe("OrcaClient", () => {
       process: dbusProcess as unknown as ChildProcess,
     });
     jest.mocked(getOrcaInstallationPath).mockReturnValue(mockInstallationPath);
-    jest.mocked(isAtSpiRunning).mockReturnValue(false);
     jest.mocked(isUnixSocket).mockReturnValue(true);
 
-    processKillSpy = jest.spyOn(process, "kill").mockReturnValue(true);
+    atSpiProcess = new FakeProcess(997);
+
+    jest
+      .mocked(startAtSpi)
+      .mockResolvedValue(atSpiProcess as unknown as ChildProcess);
+
+    stopped = [];
+
+    jest.mocked(terminateProcess).mockImplementation(async (child, name) => {
+      stopped.push([child, name]);
+    });
+    jest.mocked(terminateAtSpi).mockImplementation(async (launcher) => {
+      stopped.push([launcher, "AT-SPI"]);
+    });
 
     client = new OrcaClient();
   });
@@ -336,7 +347,6 @@ describe("OrcaClient", () => {
   afterEach(() => {
     process.env = originalEnv;
 
-    processKillSpy.mockRestore();
     jest.useRealTimers();
   });
 
@@ -360,19 +370,11 @@ describe("OrcaClient", () => {
         expect(startSessionDBus).toHaveBeenCalledWith(mockDisplay);
       });
 
-      it("should start the AT-SPI bus launcher in its own process group", () => {
-        expect(spawn).toHaveBeenCalledWith(
-          AT_SPI_LAUNCHER,
-          ["--launch-immediately"],
-          {
-            detached: true,
-            env: expect.objectContaining({
-              DBUS_SESSION_BUS_ADDRESS: mockDBusAddress,
-              DISPLAY: mockDisplay,
-            }),
-          },
+      it("should start AT-SPI on the X server's display and the session D-Bus", () => {
+        expect(startAtSpi).toHaveBeenCalledWith(
+          mockDisplay,
+          expect.objectContaining({ address: mockDBusAddress, bus: busStub }),
         );
-        expect(busStub.nameHasOwner).toHaveBeenCalledWith(AT_SPI_SERVICE);
       });
 
       it("should connect to the AT-SPI device event controller on the accessibility bus", () => {
@@ -471,7 +473,6 @@ describe("OrcaClient", () => {
 
       it("should log the output of each process", () => {
         expect(jest.mocked(logProcessOutput).mock.calls).toEqual([
-          [lastProcess(AT_SPI_LAUNCHER), "at-spi"],
           [lastProcess("env"), "speechd"],
           [lastProcess(mockOrcaExecutable), "orca"],
         ]);
@@ -545,98 +546,6 @@ describe("OrcaClient", () => {
           lastProcess("tail"),
           "orca-debug-log",
         );
-      });
-    });
-
-    describe("AT-SPI", () => {
-      describe("when AT-SPI is already running", () => {
-        beforeEach(async () => {
-          jest.mocked(isAtSpiRunning).mockReturnValue(true);
-
-          await start();
-        });
-
-        it("should not start the AT-SPI bus launcher", () => {
-          expect(spawn).not.toHaveBeenCalledWith(
-            AT_SPI_LAUNCHER,
-            expect.anything(),
-            expect.anything(),
-          );
-        });
-
-        it("should still wait for the AT-SPI service", () => {
-          expect(busStub.nameHasOwner).toHaveBeenCalledWith(AT_SPI_SERVICE);
-        });
-
-        describe("when stopped", () => {
-          beforeEach(async () => {
-            await client.stop();
-          });
-
-          it("should not signal an AT-SPI process group", () => {
-            expect(processKillSpy).not.toHaveBeenCalled();
-          });
-        });
-      });
-
-      describe("when only the fallback launcher exists", () => {
-        beforeEach(async () => {
-          jest
-            .mocked(existsSync)
-            .mockImplementation((path) => path === AT_SPI_LAUNCHER_FALLBACK);
-
-          await start();
-        });
-
-        it("should start the fallback launcher", () => {
-          expect(spawn).toHaveBeenCalledWith(
-            AT_SPI_LAUNCHER_FALLBACK,
-            ["--launch-immediately"],
-            expect.anything(),
-          );
-        });
-      });
-
-      describe("when no launcher exists", () => {
-        it("should fail to start", async () => {
-          jest.mocked(existsSync).mockReturnValue(false);
-
-          const error = await startError();
-
-          expect((error.cause as Error).message).toBe(
-            ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
-          );
-        });
-      });
-
-      describe("when the AT-SPI service takes a while to appear", () => {
-        beforeEach(async () => {
-          busStub.nameHasOwner
-            .mockRejectedValueOnce(new Error("test-error"))
-            .mockResolvedValueOnce(false);
-
-          await start();
-        });
-
-        it("should poll until it appears", () => {
-          expect(
-            busStub.nameHasOwner.mock.calls.filter(
-              ([name]) => name === AT_SPI_SERVICE,
-            ),
-          ).toHaveLength(3);
-        });
-      });
-
-      describe("when the AT-SPI service never appears", () => {
-        it("should fail to start", async () => {
-          busStub.nameHasOwner.mockResolvedValue(false);
-
-          const error = await startError();
-
-          expect((error.cause as Error).message).toBe(
-            ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
-          );
-        });
       });
     });
 
@@ -832,13 +741,13 @@ describe("OrcaClient", () => {
       });
 
       it("should stop every process it started", () => {
-        [...Object.values(processes).flat(), dbusProcess, xvfbProcess].forEach(
-          (child) => {
-            expect(terminateProcess).toHaveBeenCalledWith(
-              child,
-              expect.any(String),
-            );
-          },
+        expect(stopped.map(([child]) => child)).toEqual(
+          expect.arrayContaining([
+            ...Object.values(processes).flat(),
+            atSpiProcess,
+            dbusProcess,
+            xvfbProcess,
+          ]),
         );
       });
 
@@ -965,7 +874,7 @@ describe("OrcaClient", () => {
         await expect(client.stop()).resolves.toBeUndefined();
 
         expect(rmSync).not.toHaveBeenCalled();
-        expect(processKillSpy).not.toHaveBeenCalled();
+        stopped.forEach(([child]) => expect(child).toBeFalsy());
       });
     });
 
@@ -988,21 +897,14 @@ describe("OrcaClient", () => {
         });
 
         it("should stop each process in turn, Orca first and the X server last", () => {
-          expect(jest.mocked(terminateProcess).mock.calls).toEqual([
+          expect(stopped).toEqual([
             [lastProcess(mockOrcaExecutable), "Orca"],
             [null, "Orca debug log"],
             [lastProcess("env"), "Speech Dispatcher"],
-            [lastProcess(AT_SPI_LAUNCHER), "AT-SPI"],
+            [atSpiProcess, "AT-SPI"],
             [dbusProcess, "session D-Bus"],
             [xvfbProcess, "X Server"],
           ]);
-        });
-
-        it("should signal the AT-SPI process group", () => {
-          expect(processKillSpy).toHaveBeenCalledWith(
-            -lastProcess(AT_SPI_LAUNCHER).pid,
-            "SIGTERM",
-          );
         });
 
         it("should remove the runtime directory", () => {
@@ -1026,26 +928,6 @@ describe("OrcaClient", () => {
 
         it("should allow the client to start again", async () => {
           await expect(start()).resolves.toBeUndefined();
-        });
-      });
-
-      describe("when the AT-SPI process group is already gone", () => {
-        it("should still stop", async () => {
-          processKillSpy.mockImplementation(() => {
-            throw new Error("test-error");
-          });
-
-          await expect(client.stop()).resolves.toBeUndefined();
-        });
-      });
-
-      describe("when the AT-SPI launcher has no pid", () => {
-        it("should not signal a process group", async () => {
-          lastProcess(AT_SPI_LAUNCHER).pid = undefined;
-
-          await client.stop();
-
-          expect(processKillSpy).not.toHaveBeenCalled();
         });
       });
 
