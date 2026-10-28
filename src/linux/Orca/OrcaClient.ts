@@ -4,14 +4,13 @@ import type {
   OrcaService,
   QueueAction,
 } from "./types";
+import {
+  type AtSpiDeviceEventControllerConnection,
+  connectAtSpiDeviceEventController,
+} from "./connectAtSpiDeviceEventController";
 import { type ChildProcess, spawn } from "node:child_process";
 import { connect, type Socket } from "node:net";
-import {
-  DBusInterface,
-  type MessageBus,
-  sessionBus,
-  UnknownInterfaceError,
-} from "dbus-native";
+import { DBusInterface, UnknownInterfaceError } from "dbus-native";
 import {
   ERR_ORCA_CANNOT_BE_STARTED,
   ERR_ORCA_NOT_RUNNING,
@@ -22,7 +21,6 @@ import {
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { type SessionDBus, startSessionDBus } from "./startSessionDBus";
 import { startXServer, type XServer } from "./startXServer";
-import { AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME } from "./constants";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
@@ -40,18 +38,6 @@ import { tmpdir } from "node:os";
 import { waitForCondition } from "../../waitForCondition";
 
 const debug = base.extend("OrcaClient");
-
-interface AtSpiAccessibilityBus {
-  GetAddress(): PromiseLike<string>;
-}
-
-interface AtSpiDeviceEventController {
-  GenerateKeyboardEvent(
-    keycode: number,
-    keystring: string,
-    synthType: number,
-  ): PromiseLike<void>;
-}
 
 const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
@@ -73,8 +59,7 @@ export class OrcaClient extends EventEmitter {
   #sessionDBus: SessionDBus = null;
 
   #atSpiProcess: ChildProcess = null;
-  #atSpiBus: MessageBus = null;
-  #atSpiDeviceEventController: AtSpiDeviceEventController = null;
+  #atSpiDeviceEventController: AtSpiDeviceEventControllerConnection = null;
 
   #runtimeDirectory: string = null;
 
@@ -465,33 +450,6 @@ export class OrcaClient extends EventEmitter {
   }
 
   /**
-   * Connect to the AT-SPI device event controller, which generates real
-   * keyboard input (XTest under X11) that Orca hears like a person's keyboard.
-   */
-  async #connectAtSpiDeviceEventController(): Promise<void> {
-    debug("Connecting to AT-SPI device event controller...");
-
-    const a11yBus = await this.#sessionDBus.bus
-      .getService(AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME)
-      .getInterface<AtSpiAccessibilityBus>(
-        "/org/a11y/bus",
-        AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
-      );
-
-    const address: string = await a11yBus.GetAddress();
-
-    debug(`AT_SPI_BUS_ADDRESS=${address}`);
-
-    this.#atSpiBus = sessionBus({ busAddress: address });
-    this.#atSpiDeviceEventController = await this.#atSpiBus
-      .getService("org.a11y.atspi.Registry")
-      .getInterface<AtSpiDeviceEventController>(
-        "/org/a11y/atspi/registry/deviceeventcontroller",
-        "org.a11y.atspi.DeviceEventController",
-      );
-  }
-
-  /**
    * Generate a real keyboard event.
    *
    * @param {number} keycode Keycode, keysym or modifier mask, depending on the synth type.
@@ -507,7 +465,7 @@ export class OrcaClient extends EventEmitter {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    await this.#atSpiDeviceEventController.GenerateKeyboardEvent(
+    await this.#atSpiDeviceEventController.controller.GenerateKeyboardEvent(
       keycode,
       keystring,
       synthType,
@@ -531,7 +489,8 @@ export class OrcaClient extends EventEmitter {
         this.#xServer.display,
         this.#sessionDBus,
       );
-      await this.#connectAtSpiDeviceEventController();
+      this.#atSpiDeviceEventController =
+        await connectAtSpiDeviceEventController(this.#sessionDBus.bus);
       await this.#startSpeechd();
       await this.#connectSpeechdSocket();
       await this.#startOrca();
@@ -577,10 +536,9 @@ export class OrcaClient extends EventEmitter {
 
     this.#xServer = null;
 
-    await this.#atSpiBus?.close();
+    await this.#atSpiDeviceEventController?.bus.close();
     await this.#sessionDBus?.bus.close();
 
-    this.#atSpiBus = null;
     this.#atSpiDeviceEventController = null;
 
     this.#sessionDBus = null;
