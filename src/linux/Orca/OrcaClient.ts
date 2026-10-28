@@ -13,34 +13,28 @@ import {
   UnknownInterfaceError,
 } from "dbus-native";
 import {
-  ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
-  ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
   ERR_ORCA_CANNOT_BE_STARTED,
   ERR_ORCA_NOT_RUNNING,
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
 } from "../errors";
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { type SessionDBus, startSessionDBus } from "./startSessionDBus";
 import { startXServer, type XServer } from "./startXServer";
+import { AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME } from "./constants";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import EventEmitter from "node:events";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
-import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
 import { logProcessOutput } from "./logProcessOutput";
 import { serviceDefinition } from "./serviceDefinition";
+import { startAtSpi } from "./startAtSpi";
+import { terminateAtSpi } from "./terminateAtSpi";
 import { terminateProcess } from "./terminateProcess";
 import { tmpdir } from "node:os";
 import { waitForCondition } from "../../waitForCondition";
@@ -64,7 +58,6 @@ const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const SPEECH_DEBOUNCE_TIMEOUT = 1_000;
 
-const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
 const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
 
 const READY = "ready";
@@ -122,53 +115,6 @@ export class OrcaClient extends EventEmitter {
     await this.#waitForAllActions();
 
     this.#spokenPhrases = [];
-  }
-
-  async #ensureAtSpi(): Promise<void> {
-    debug("Ensuring AT-SPI D-Bus running...");
-
-    if (!isAtSpiRunning()) {
-      debug("Starting AT-SPI D-Bus...");
-
-      const atSpiLauncher = [
-        "/usr/libexec/at-spi-bus-launcher",
-        "/usr/lib/at-spi2-core/at-spi-bus-launcher",
-      ].find((command) => existsSync(command));
-
-      if (!atSpiLauncher) {
-        throw new Error(ERR_ORCA_AT_SPI_LAUNCHER_MISSING);
-      }
-
-      // In its own process group, so that stop() also reaches the a11y bus
-      // and at-spi2-registryd that the launcher starts, which outlive it.
-      this.#atSpiProcess = spawn(atSpiLauncher, ["--launch-immediately"], {
-        detached: true,
-        env: {
-          ...process.env,
-          DBUS_SESSION_BUS_ADDRESS: this.#sessionDBus.address,
-          DISPLAY: this.#xServer.display,
-        },
-      });
-
-      logProcessOutput(this.#atSpiProcess, "at-spi");
-    }
-
-    await waitForCondition(
-      async () => {
-        debug(
-          `Polling for '${AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME}' name ownership`,
-        );
-
-        return await this.#sessionDBus.bus.nameHasOwner(
-          AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
-        );
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
-      },
-    );
   }
 
   async #startSpeechd(): Promise<void> {
@@ -581,7 +527,10 @@ export class OrcaClient extends EventEmitter {
 
       this.#xServer = await startXServer();
       this.#sessionDBus = await startSessionDBus(this.#xServer.display);
-      await this.#ensureAtSpi();
+      this.#atSpiProcess = await startAtSpi(
+        this.#xServer.display,
+        this.#sessionDBus,
+      );
       await this.#connectAtSpiDeviceEventController();
       await this.#startSpeechd();
       await this.#connectSpeechdSocket();
@@ -618,14 +567,7 @@ export class OrcaClient extends EventEmitter {
     await terminateProcess(this.#orcaProcess, "Orca");
     await terminateProcess(this.#orcaDebugLogProcess, "Orca debug log");
     await terminateProcess(this.#speechdProcess, "Speech Dispatcher");
-    if (this.#atSpiProcess?.pid) {
-      try {
-        process.kill(-this.#atSpiProcess.pid, "SIGTERM");
-      } catch {
-        // Already gone.
-      }
-    }
-    await terminateProcess(this.#atSpiProcess, "AT-SPI");
+    await terminateAtSpi(this.#atSpiProcess);
     await terminateProcess(this.#sessionDBus?.process, "session D-Bus");
     await terminateProcess(this.#xServer?.process, "X Server");
 
