@@ -4,7 +4,7 @@ import type {
   OrcaService,
   QueueAction,
 } from "./types";
-import { type ChildProcess, execFileSync, spawn } from "node:child_process";
+import { type ChildProcess, spawn } from "node:child_process";
 import { connect, type Socket } from "node:net";
 import {
   DBusInterface,
@@ -22,7 +22,6 @@ import {
   ERR_ORCA_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
-  ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
 import {
   existsSync,
@@ -31,12 +30,12 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
+import { startXServer, type XServer } from "./startXServer";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import EventEmitter from "node:events";
-import { findAvailableDisplay } from "./findAvailableDisplay";
 import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
 import { isAtSpiRunning } from "./isAtSpiRunning";
 import { isUnixSocket } from "./isUnixSocket";
@@ -77,8 +76,7 @@ const isUnknownOrcaInterfaceError = (cause: unknown): cause is Error =>
   cause instanceof UnknownInterfaceError;
 
 export class OrcaClient extends EventEmitter {
-  #xvfbDisplay = null;
-  #xvfbProcess = null;
+  #xServer: XServer = null;
 
   #sessionDBusAddress: string = null;
   #sessionDBusProcess: ChildProcess = null;
@@ -129,44 +127,6 @@ export class OrcaClient extends EventEmitter {
     this.#spokenPhrases = [];
   }
 
-  async #ensureXServer(): Promise<void> {
-    debug("Ensuring X Server is running...");
-
-    this.#xvfbDisplay = process.env.DISPLAY;
-
-    if (!this.#xvfbDisplay) {
-      this.#xvfbDisplay = findAvailableDisplay();
-
-      debug(`Starting Xvfb on DISPLAY=${this.#xvfbDisplay}`);
-
-      this.#xvfbProcess = spawn("Xvfb", [
-        this.#xvfbDisplay,
-        "-screen",
-        "0",
-        "1280x720x24",
-      ]);
-
-      logProcessOutput(this.#xvfbProcess, "xvfb");
-    }
-
-    debug(`DISPLAY=${this.#xvfbDisplay}`);
-
-    await waitForCondition(
-      () => {
-        debug("Polling for X Server running");
-
-        execFileSync("xdpyinfo", ["-display", this.#xvfbDisplay]);
-
-        return true;
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_X_SERVER_TIMEOUT,
-      },
-    );
-  }
-
   async #ensureDBus(): Promise<void> {
     debug("Ensuring session D-Bus running...");
 
@@ -179,7 +139,7 @@ export class OrcaClient extends EventEmitter {
         {
           env: {
             ...process.env,
-            DISPLAY: this.#xvfbDisplay,
+            DISPLAY: this.#xServer.display,
           },
         },
       );
@@ -244,7 +204,7 @@ export class OrcaClient extends EventEmitter {
         env: {
           ...process.env,
           DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
-          DISPLAY: this.#xvfbDisplay,
+          DISPLAY: this.#xServer.display,
         },
       });
 
@@ -486,7 +446,7 @@ export class OrcaClient extends EventEmitter {
       env: {
         ...process.env,
         DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
-        DISPLAY: this.#xvfbDisplay,
+        DISPLAY: this.#xServer.display,
         SPEECHD_ADDRESS: this.#speechdAddress,
       },
     });
@@ -677,7 +637,7 @@ export class OrcaClient extends EventEmitter {
     try {
       this.#runtimeDirectory = mkdtempSync(join(tmpdir(), "guidepup-orca-"));
 
-      await this.#ensureXServer();
+      this.#xServer = await startXServer();
       await this.#ensureDBus();
       await this.#ensureAtSpi();
       await this.#connectAtSpiDeviceEventController();
@@ -725,14 +685,13 @@ export class OrcaClient extends EventEmitter {
     }
     await terminateProcess(this.#atSpiProcess, "AT-SPI");
     await terminateProcess(this.#sessionDBusProcess, "session D-Bus");
-    await terminateProcess(this.#xvfbProcess, "X Server");
+    await terminateProcess(this.#xServer?.process, "X Server");
 
     if (this.#runtimeDirectory) {
       rmSync(this.#runtimeDirectory, { force: true, recursive: true });
     }
 
-    this.#xvfbDisplay = null;
-    this.#xvfbProcess = null;
+    this.#xServer = null;
 
     await this.#atSpiBus?.close();
     await this.#sessionDBus?.close();
