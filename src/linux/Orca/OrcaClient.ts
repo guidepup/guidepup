@@ -4,70 +4,45 @@ import type {
   OrcaService,
   QueueAction,
 } from "./types";
-import { type ChildProcess, execFileSync, spawn } from "node:child_process";
+import {
+  type AtSpiDeviceEventControllerConnection,
+  connectAtSpiDeviceEventController,
+} from "./connectAtSpiDeviceEventController";
 import { connect, type Socket } from "node:net";
+import { DBusInterface, UnknownInterfaceError } from "dbus-native";
 import {
-  DBusInterface,
-  type MessageBus,
-  sessionBus,
-  UnknownInterfaceError,
-} from "dbus-native";
-import {
-  ERR_ORCA_AT_SPI_LAUNCHER_MISSING,
-  ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
   ERR_ORCA_CANNOT_BE_STARTED,
-  ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
-  ERR_ORCA_DBUS_START_FAILURE,
   ERR_ORCA_NOT_RUNNING,
-  ERR_ORCA_SERVICE_TIMEOUT,
-  ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
   ERR_ORCA_SPEECHD_CANNOT_CONNECT,
-  ERR_ORCA_X_SERVER_TIMEOUT,
 } from "../errors";
+import { mkdtempSync, rmSync } from "node:fs";
+import { type OrcaProcesses, startOrca } from "./startOrca";
+import { type SessionDBus, startSessionDBus } from "./startSessionDBus";
 import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+  type SpeechDispatcher,
+  startSpeechDispatcher,
+} from "./startSpeechDispatcher";
+import { startXServer, type XServer } from "./startXServer";
 import { base } from "../../debug";
 import type { Capture } from "../../Capture";
+import type { ChildProcess } from "node:child_process";
 import { cleanSpokenPhrase } from "./cleanSpokenPhrase";
 import type { CommandOptions } from "../../CommandOptions";
 import EventEmitter from "node:events";
-import { findAvailableDisplay } from "./findAvailableDisplay";
-import { getOrcaInstallationPath } from "./getOrcaInstallationPath";
-import { isAtSpiRunning } from "./isAtSpiRunning";
-import { isUnixSocket } from "./isUnixSocket";
 import { join } from "node:path";
-import { logProcessOutput } from "./logProcessOutput";
 import { serviceDefinition } from "./serviceDefinition";
+import { SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME } from "./constants";
+import { startAtSpi } from "./startAtSpi";
+import { terminateAtSpi } from "./terminateAtSpi";
 import { terminateProcess } from "./terminateProcess";
 import { tmpdir } from "node:os";
-import { waitForCondition } from "../../waitForCondition";
 
 const debug = base.extend("OrcaClient");
-
-interface AtSpiAccessibilityBus {
-  GetAddress(): PromiseLike<string>;
-}
-
-interface AtSpiDeviceEventController {
-  GenerateKeyboardEvent(
-    keycode: number,
-    keystring: string,
-    synthType: number,
-  ): PromiseLike<void>;
-}
 
 const POLL_INTERVAL = 500;
 const MAX_POLL_TIMEOUT = 5_000;
 const MAX_CONSECUTIVE_CONNECTION_FAILURES = 20;
 const SPEECH_DEBOUNCE_TIMEOUT = 1_000;
-
-const AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME = "org.a11y.Bus";
-const SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME = "org.gnome.Orca1.Service";
 
 const READY = "ready";
 const CANCEL = "cancel";
@@ -77,27 +52,20 @@ const isUnknownOrcaInterfaceError = (cause: unknown): cause is Error =>
   cause instanceof UnknownInterfaceError;
 
 export class OrcaClient extends EventEmitter {
-  #xvfbDisplay = null;
-  #xvfbProcess = null;
+  #xServer: XServer = null;
 
-  #sessionDBusAddress: string = null;
-  #sessionDBusProcess: ChildProcess = null;
-  #sessionDBus: MessageBus = null;
+  #sessionDBus: SessionDBus = null;
 
   #atSpiProcess: ChildProcess = null;
-  #atSpiBus: MessageBus = null;
-  #atSpiDeviceEventController: AtSpiDeviceEventController = null;
+  #atSpiDeviceEventController: AtSpiDeviceEventControllerConnection = null;
 
   #runtimeDirectory: string = null;
 
-  #speechdProcess: ChildProcess = null;
-  #speechdAddress: string = null;
-  #speechdSocketPath: string = null;
+  #speechDispatcher: SpeechDispatcher = null;
   #speechdSocket: Socket = null;
   #speechdConsecutiveConnectionFailures = 0;
 
-  #orcaProcess: ChildProcess = null;
-  #orcaDebugLogProcess: ChildProcess = null;
+  #orca: OrcaProcesses = null;
   #orcaService: OrcaService = null;
 
   #capture: CommandOptions["capture"] = null;
@@ -129,212 +97,6 @@ export class OrcaClient extends EventEmitter {
     this.#spokenPhrases = [];
   }
 
-  async #ensureXServer(): Promise<void> {
-    debug("Ensuring X Server is running...");
-
-    this.#xvfbDisplay = process.env.DISPLAY;
-
-    if (!this.#xvfbDisplay) {
-      this.#xvfbDisplay = findAvailableDisplay();
-
-      debug(`Starting Xvfb on DISPLAY=${this.#xvfbDisplay}`);
-
-      this.#xvfbProcess = spawn("Xvfb", [
-        this.#xvfbDisplay,
-        "-screen",
-        "0",
-        "1280x720x24",
-      ]);
-
-      logProcessOutput(this.#xvfbProcess, "xvfb");
-    }
-
-    debug(`DISPLAY=${this.#xvfbDisplay}`);
-
-    await waitForCondition(
-      () => {
-        debug("Polling for X Server running");
-
-        execFileSync("xdpyinfo", ["-display", this.#xvfbDisplay]);
-
-        return true;
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_X_SERVER_TIMEOUT,
-      },
-    );
-  }
-
-  async #ensureDBus(): Promise<void> {
-    debug("Ensuring session D-Bus running...");
-
-    this.#sessionDBusAddress = process.env.DBUS_SESSION_BUS_ADDRESS;
-
-    if (!this.#sessionDBusAddress) {
-      this.#sessionDBusProcess = spawn(
-        "dbus-daemon",
-        ["--session", "--nofork", "--print-address"],
-        {
-          env: {
-            ...process.env,
-            DISPLAY: this.#xvfbDisplay,
-          },
-        },
-      );
-
-      logProcessOutput(this.#sessionDBusProcess, "dbus");
-
-      this.#sessionDBusAddress = await new Promise<string>((resolve) => {
-        this.#sessionDBusProcess.stdout.once("data", (data: Buffer) => {
-          resolve(data.toString().trim());
-        });
-
-        this.#sessionDBusProcess.once("error", () => resolve(""));
-        this.#sessionDBusProcess.once("exit", () => resolve(""));
-      });
-
-      if (!this.#sessionDBusAddress) {
-        throw new Error(ERR_ORCA_DBUS_START_FAILURE);
-      }
-    }
-
-    debug(`DBUS_SESSION_BUS_ADDRESS=${this.#sessionDBusAddress}`);
-
-    this.#sessionDBus = sessionBus({
-      busAddress: this.#sessionDBusAddress,
-    });
-
-    await waitForCondition(
-      async () => {
-        debug("Polling for D-Bus connectivity");
-
-        await this.#sessionDBus.listNames();
-
-        return true;
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_DBUS_CONNECTION_TIMEOUT,
-      },
-    );
-  }
-
-  async #ensureAtSpi(): Promise<void> {
-    debug("Ensuring AT-SPI D-Bus running...");
-
-    if (!isAtSpiRunning()) {
-      debug("Starting AT-SPI D-Bus...");
-
-      const atSpiLauncher = [
-        "/usr/libexec/at-spi-bus-launcher",
-        "/usr/lib/at-spi2-core/at-spi-bus-launcher",
-      ].find((command) => existsSync(command));
-
-      if (!atSpiLauncher) {
-        throw new Error(ERR_ORCA_AT_SPI_LAUNCHER_MISSING);
-      }
-
-      // In its own process group, so that stop() also reaches the a11y bus
-      // and at-spi2-registryd that the launcher starts, which outlive it.
-      this.#atSpiProcess = spawn(atSpiLauncher, ["--launch-immediately"], {
-        detached: true,
-        env: {
-          ...process.env,
-          DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
-          DISPLAY: this.#xvfbDisplay,
-        },
-      });
-
-      logProcessOutput(this.#atSpiProcess, "at-spi");
-    }
-
-    await waitForCondition(
-      async () => {
-        debug(
-          `Polling for '${AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME}' name ownership`,
-        );
-
-        return await this.#sessionDBus.nameHasOwner(
-          AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
-        );
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_AT_SPI_SERVICE_TIMEOUT,
-      },
-    );
-  }
-
-  async #startSpeechd(): Promise<void> {
-    debug("Starting Speech Dispatcher");
-
-    const installationPath = getOrcaInstallationPath();
-    const speechdDirectory = join(installationPath, "speechd");
-    const speechdModulesDirectory = join(speechdDirectory, "modules");
-    const speechdLogsDirectory = join(speechdDirectory, "logs");
-
-    // Each session gets its own directory for its sockets. With shared paths,
-    // a previous session's speech-dispatcher module could still be exiting
-    // and remove the new session's socket. Keep it short: Unix socket paths
-    // are limited to 108 bytes.
-    const speechdSocketPath = join(this.#runtimeDirectory, "speechd.sock");
-
-    mkdirSync(speechdLogsDirectory, { recursive: true });
-
-    this.#speechdSocketPath = join(this.#runtimeDirectory, "guidepup.sock");
-
-    const args = [
-      "--run-single",
-      "--config-dir",
-      speechdDirectory,
-      "--module-dir",
-      speechdModulesDirectory,
-      "--log-dir",
-      speechdLogsDirectory,
-      "--communication-method",
-      "unix_socket",
-      "--socket-path",
-      speechdSocketPath,
-      "--timeout",
-      "0",
-    ];
-
-    if (debug.enabled) {
-      args.push("--log-level", "5");
-    }
-
-    this.#speechdProcess = spawn("speech-dispatcher", args, {
-      env: {
-        ...process.env,
-        GUIDEPUP_ORCA_SPEECH_SOCKET: this.#speechdSocketPath,
-      },
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-
-    logProcessOutput(this.#speechdProcess, "speechd");
-
-    this.#speechdAddress = `unix_socket:${speechdSocketPath}`;
-
-    debug(`SPEECHD_ADDRESS=${this.#speechdAddress}`);
-
-    await waitForCondition(
-      () => {
-        debug(`Polling for '${speechdSocketPath}' unix socket existence`);
-
-        return isUnixSocket(speechdSocketPath);
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT,
-      },
-    );
-  }
-
   #speechdDisconnect() {
     try {
       this.#speechdSocket?.destroy();
@@ -355,7 +117,9 @@ export class OrcaClient extends EventEmitter {
     onSuccess: () => void,
     onError: (error: Error) => void,
   ): void {
-    debug(`Connecting to Speech Dispatcher socket: ${this.#speechdSocketPath}`);
+    debug(
+      `Connecting to Speech Dispatcher socket: ${this.#speechDispatcher.guidepupSocketPath}`,
+    );
 
     let speechdSocketBuffer = "";
     let onSuccessCalled = false;
@@ -367,9 +131,12 @@ export class OrcaClient extends EventEmitter {
       onSuccess();
     };
 
-    this.#speechdSocket = connect(this.#speechdSocketPath, () => {
-      this.once(READY, onReady);
-    });
+    this.#speechdSocket = connect(
+      this.#speechDispatcher.guidepupSocketPath,
+      () => {
+        this.once(READY, onReady);
+      },
+    );
 
     this.#speechdSocket.setEncoding("utf8");
 
@@ -451,59 +218,10 @@ export class OrcaClient extends EventEmitter {
     });
   }
 
-  async #startOrca(): Promise<void> {
-    debug("Starting Orca");
-
-    const installationPath = getOrcaInstallationPath();
-    const orcaExecutable = join(installationPath, "bin", "orca");
-    const args = ["--profile", "guidepup", "--replace"];
-
-    if (debug.enabled) {
-      const orcaDebugLogPath = join(this.#runtimeDirectory, "orca-debug.log");
-
-      writeFileSync(orcaDebugLogPath, "");
-      args.push("--debug", `--debug-file=${orcaDebugLogPath}`);
-
-      this.#orcaDebugLogProcess = spawn("tail", ["-f", orcaDebugLogPath], {
-        stdio: ["ignore", "inherit", "pipe"],
-      });
-
-      logProcessOutput(this.#orcaDebugLogProcess, "orca-debug-log");
-    }
-
-    this.#orcaProcess = spawn(orcaExecutable, args, {
-      env: {
-        ...process.env,
-        DBUS_SESSION_BUS_ADDRESS: this.#sessionDBusAddress,
-        DISPLAY: this.#xvfbDisplay,
-        SPEECHD_ADDRESS: this.#speechdAddress,
-      },
-    });
-
-    logProcessOutput(this.#orcaProcess, "orca");
-
-    await waitForCondition(
-      async () => {
-        debug(
-          `Polling for '${SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME}' name ownership`,
-        );
-
-        return await this.#sessionDBus.nameHasOwner(
-          SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
-        );
-      },
-      {
-        pollInterval: POLL_INTERVAL,
-        pollTimeout: MAX_POLL_TIMEOUT,
-        timeoutErrorMessage: ERR_ORCA_SERVICE_TIMEOUT,
-      },
-    );
-  }
-
   async #mapOrcaDBusService(): Promise<void> {
     debug("Connecting to Orca D-Bus service...");
 
-    const sessionDBusOrcaService = this.#sessionDBus.getService(
+    const sessionDBusOrcaService = this.#sessionDBus.bus.getService(
       SESSION_DBUS_ORCA_WELL_KNOWN_SERVICE_NAME,
     );
 
@@ -606,33 +324,6 @@ export class OrcaClient extends EventEmitter {
   }
 
   /**
-   * Connect to the AT-SPI device event controller, which generates real
-   * keyboard input (XTest under X11) that Orca hears like a person's keyboard.
-   */
-  async #connectAtSpiDeviceEventController(): Promise<void> {
-    debug("Connecting to AT-SPI device event controller...");
-
-    const a11yBus = await this.#sessionDBus
-      .getService(AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME)
-      .getInterface<AtSpiAccessibilityBus>(
-        "/org/a11y/bus",
-        AT_SPI_DBUS_A11Y_WELL_KNOWN_SERVICE_NAME,
-      );
-
-    const address: string = await a11yBus.GetAddress();
-
-    debug(`AT_SPI_BUS_ADDRESS=${address}`);
-
-    this.#atSpiBus = sessionBus({ busAddress: address });
-    this.#atSpiDeviceEventController = await this.#atSpiBus
-      .getService("org.a11y.atspi.Registry")
-      .getInterface<AtSpiDeviceEventController>(
-        "/org/a11y/atspi/registry/deviceeventcontroller",
-        "org.a11y.atspi.DeviceEventController",
-      );
-  }
-
-  /**
    * Generate a real keyboard event.
    *
    * @param {number} keycode Keycode, keysym or modifier mask, depending on the synth type.
@@ -648,7 +339,7 @@ export class OrcaClient extends EventEmitter {
       throw new Error(ERR_ORCA_NOT_RUNNING);
     }
 
-    await this.#atSpiDeviceEventController.GenerateKeyboardEvent(
+    await this.#atSpiDeviceEventController.controller.GenerateKeyboardEvent(
       keycode,
       keystring,
       synthType,
@@ -666,13 +357,24 @@ export class OrcaClient extends EventEmitter {
     try {
       this.#runtimeDirectory = mkdtempSync(join(tmpdir(), "guidepup-orca-"));
 
-      await this.#ensureXServer();
-      await this.#ensureDBus();
-      await this.#ensureAtSpi();
-      await this.#connectAtSpiDeviceEventController();
-      await this.#startSpeechd();
+      this.#xServer = await startXServer();
+      this.#sessionDBus = await startSessionDBus(this.#xServer.display);
+      this.#atSpiProcess = await startAtSpi(
+        this.#xServer.display,
+        this.#sessionDBus,
+      );
+      this.#atSpiDeviceEventController =
+        await connectAtSpiDeviceEventController(this.#sessionDBus.bus);
+      this.#speechDispatcher = await startSpeechDispatcher(
+        this.#runtimeDirectory,
+      );
       await this.#connectSpeechdSocket();
-      await this.#startOrca();
+      this.#orca = await startOrca({
+        display: this.#xServer.display,
+        runtimeDirectory: this.#runtimeDirectory,
+        sessionDBus: this.#sessionDBus,
+        speechdAddress: this.#speechDispatcher.address,
+      });
       await this.#mapOrcaDBusService();
 
       await this.#orcaService.SpeechPresenter.commands.ToggleMonitor.execute(
@@ -702,48 +404,37 @@ export class OrcaClient extends EventEmitter {
 
     // One at a time, waiting for each to exit, so that Orca can shut down
     // cleanly while the services it depends on are still running.
-    await terminateProcess(this.#orcaProcess, "Orca");
-    await terminateProcess(this.#orcaDebugLogProcess, "Orca debug log");
-    await terminateProcess(this.#speechdProcess, "Speech Dispatcher");
-    if (this.#atSpiProcess?.pid) {
-      try {
-        process.kill(-this.#atSpiProcess.pid, "SIGTERM");
-      } catch {
-        // Already gone.
-      }
-    }
-    await terminateProcess(this.#atSpiProcess, "AT-SPI");
-    await terminateProcess(this.#sessionDBusProcess, "session D-Bus");
-    await terminateProcess(this.#xvfbProcess, "X Server");
+    await terminateProcess(this.#orca?.process, "Orca");
+    await terminateProcess(this.#orca?.debugLogProcess, "Orca debug log");
+    await terminateProcess(
+      this.#speechDispatcher?.process,
+      "Speech Dispatcher",
+    );
+    await terminateAtSpi(this.#atSpiProcess);
+    await terminateProcess(this.#sessionDBus?.process, "session D-Bus");
+    await terminateProcess(this.#xServer?.process, "X Server");
 
     if (this.#runtimeDirectory) {
       rmSync(this.#runtimeDirectory, { force: true, recursive: true });
     }
 
-    this.#xvfbDisplay = null;
-    this.#xvfbProcess = null;
+    this.#xServer = null;
 
-    await this.#atSpiBus?.close();
-    await this.#sessionDBus?.close();
+    await this.#atSpiDeviceEventController?.bus.close();
+    await this.#sessionDBus?.bus.close();
 
-    this.#atSpiBus = null;
     this.#atSpiDeviceEventController = null;
 
-    this.#sessionDBusAddress = null;
-    this.#sessionDBusProcess = null;
     this.#sessionDBus = null;
 
     this.#atSpiProcess = null;
 
-    this.#speechdProcess = null;
-    this.#speechdAddress = null;
-    this.#speechdSocketPath = null;
+    this.#speechDispatcher = null;
     this.#runtimeDirectory = null;
     this.#speechdSocket = null;
     this.#speechdConsecutiveConnectionFailures = 0;
 
-    this.#orcaProcess = null;
-    this.#orcaDebugLogProcess = null;
+    this.#orca = null;
     this.#orcaService = null;
 
     this.#capture = null;
