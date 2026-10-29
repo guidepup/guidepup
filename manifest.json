@@ -23,10 +23,10 @@
       "defaultDownload": true,
       "assets": [
         {
-          "version": "0.2.1-2026.2",
+          "version": "0.2.1-2026.3",
           "repository": "guidepup/nvda",
-          "asset": "guidepup-nvda-0.2.1-2026.2.zip",
-          "sha256": "7df0ca3c1c9e8c6521bc7553486ca360ed6f0b4f9bdbd6603131e38b5c1497a1"
+          "asset": "guidepup-nvda-0.2.1-2026.3.zip",
+          "sha256": "508ba38e9a48f4534bfc7fb1fa2f08f2ae10550983a53f1272abbeb50b2d2e19"
         }
       ]
     },
