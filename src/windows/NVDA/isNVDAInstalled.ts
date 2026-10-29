@@ -1,8 +1,8 @@
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 
 export function isNVDAInstalled() {
   try {
-    const path = getNVDAInstallationPath();
+    const path = getGuidepupNVDAInstallationPath();
 
     return !!path;
   } catch {

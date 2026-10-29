@@ -7,7 +7,7 @@ const manifest = require("../../../manifest.json");
 
 let installationPath: string;
 
-export function getNVDAInstallationPath(): string | null {
+export function getGuidepupNVDAInstallationPath(): string | null {
   if (installationPath) {
     return installationPath;
   }

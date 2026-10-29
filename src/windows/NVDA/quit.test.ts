@@ -4,14 +4,14 @@ import {
   ERR_NVDA_QUIT_TIMEOUT,
 } from "../errors";
 import { DEFAULT_RUNNING_TIMEOUT } from "../../constants";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import { quit } from "./quit";
 import { spawnSync } from "child_process";
 
 type SpawnSyncResult = ReturnType<typeof spawnSync>;
 
-jest.mock("./getNVDAInstallationPath", () => ({
-  getNVDAInstallationPath: jest.fn(),
+jest.mock("./getGuidepupNVDAInstallationPath", () => ({
+  getGuidepupNVDAInstallationPath: jest.fn(),
 }));
 jest.mock("child_process", () => ({
   spawnSync: jest.fn(),
@@ -30,7 +30,7 @@ describe("quit", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
+      jest.mocked(getGuidepupNVDAInstallationPath).mockReturnValue(null);
     });
 
     it("should attempt to get the installation path", async () => {
@@ -40,7 +40,7 @@ describe("quit", () => {
         // swallow
       }
 
-      expect(getNVDAInstallationPath).toHaveBeenCalled();
+      expect(getGuidepupNVDAInstallationPath).toHaveBeenCalled();
     });
 
     it("should throw an error", async () => {
@@ -51,7 +51,7 @@ describe("quit", () => {
   describe("when NVDA is installed", () => {
     beforeEach(() => {
       jest
-        .mocked(getNVDAInstallationPath)
+        .mocked(getGuidepupNVDAInstallationPath)
         .mockReturnValue(mockInstallationPath);
 
       jest.mocked(spawnSync).mockReturnValue({ status: 0 } as SpawnSyncResult);
@@ -63,7 +63,7 @@ describe("quit", () => {
       });
 
       it("should attempt to get the installation path", () => {
-        expect(getNVDAInstallationPath).toHaveBeenCalled();
+        expect(getGuidepupNVDAInstallationPath).toHaveBeenCalled();
       });
 
       it("should run the nvda --quit command without a shell or stdio, with a timeout", () => {
@@ -81,7 +81,7 @@ describe("quit", () => {
 
       beforeEach(async () => {
         jest
-          .mocked(getNVDAInstallationPath)
+          .mocked(getGuidepupNVDAInstallationPath)
           .mockReturnValue(mockInstallationPathWithSpace);
 
         await quit();
@@ -184,7 +184,7 @@ describe("quit", () => {
       });
 
       it("should attempt to get the installation path", () => {
-        expect(getNVDAInstallationPath).toHaveBeenCalled();
+        expect(getGuidepupNVDAInstallationPath).toHaveBeenCalled();
       });
 
       it("should run the nvda --quit command without a shell or stdio, with a timeout", () => {

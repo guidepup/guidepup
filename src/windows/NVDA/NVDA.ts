@@ -13,12 +13,16 @@ import {
   ERR_NVDA_NOT_RUNNING,
   ERR_NVDA_NOT_SUPPORTED,
 } from "../errors";
+import { base } from "../../debug";
 import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
 import type { CommandOptions } from "../../CommandOptions";
+import { getUserNVDAInstallationPath } from "./getUserNVDAInstallationPath";
+import { isAnyNVDARunning } from "./isAnyNVDARunning";
 import type { IScreenReader } from "../../IScreenReader";
 import { isNVDAInstalled } from "./isNVDAInstalled";
+import { isRunning } from "./isRunning";
 import { isWindows } from "../isWindows";
 import type { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
@@ -31,12 +35,23 @@ import { quit } from "./quit";
 import { sendKeys } from "../sendKeys";
 import { start } from "./start";
 import type { StartOptions } from "../../StartOptions";
+import { startUserNVDA } from "./startUserNVDA";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const manifest = require("../../../manifest.json");
 
+const debug = base.extend("NVDA");
+
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
-type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
+type CaptureStartOptions = Prettify<
+  Pick<StartOptions, "capture" | "settings"> & {
+    /**
+     * Whether `stop()` starts the user's own NVDA again when `start()` had to
+     * quit it. Defaults to `true`.
+     */
+    restoreUserScreenReader?: boolean;
+  }
+>;
 
 /**
  * Class for controlling the NVDA screen reader on Windows.
@@ -63,6 +78,73 @@ export class NVDA extends BaseScreenReader implements IScreenReader {
   #stopping = false;
 
   /**
+   * Path of the user's own NVDA that `start()` quit, to start again on stop.
+   */
+  #userNVDAPath: string | null = null;
+
+  /**
+   * Quit any running NVDA before Guidepup starts its own. If that NVDA is not
+   * one Guidepup started, such as the user's installed NVDA, remember its path
+   * so it can be started again on stop.
+   */
+  #quitRunningNVDA = async (restoreUserScreenReader: boolean): Promise<void> => {
+    if (await isRunning()) {
+      // A Guidepup NVDA left over from an earlier run.
+      quit();
+
+      return;
+    }
+
+    let anyNVDARunning: boolean;
+
+    try {
+      anyNVDARunning = await isAnyNVDARunning();
+    } catch {
+      // Cannot tell, so quit regardless.
+      quit();
+
+      return;
+    }
+
+    if (!anyNVDARunning) {
+      return;
+    }
+
+    debug("Quitting an NVDA that Guidepup did not start");
+
+    if (restoreUserScreenReader) {
+      this.#userNVDAPath = getUserNVDAInstallationPath();
+
+      if (!this.#userNVDAPath) {
+        debug("Cannot find the installed NVDA, it will not be started again");
+      }
+    }
+
+    quit();
+  };
+
+  /**
+   * Start the user's own NVDA again if `start()` quit it. Best effort only.
+   */
+  #restoreUserNVDA = async (): Promise<void> => {
+    const executablePath = this.#userNVDAPath;
+
+    this.#userNVDAPath = null;
+
+    if (!executablePath) {
+      return;
+    }
+
+    debug(`Starting the user's NVDA again: ${executablePath}`);
+
+    try {
+      await startUserNVDA(executablePath);
+    } catch (error) {
+      debug(`Cannot start the user's NVDA again: ${error}`);
+    }
+  };
+
+  /**
    * Attempt to stop NVD and teardown config when the process is terminating.
    */
   #teardownAfterTermination = async (): Promise<void> => {
@@ -85,6 +167,8 @@ export class NVDA extends BaseScreenReader implements IScreenReader {
     } catch {
       // Best effort only.
     }
+
+    await this.#restoreUserNVDA();
 
     this.#started = false;
     this.#starting = false;
@@ -268,6 +352,11 @@ export class NVDA extends BaseScreenReader implements IScreenReader {
    * first "page" of output, but not any subsequent content. To enable full
    * capture set `{ capture: true }`, or to disable capture set
    * `{ capture: false }`.
+   *
+   * Note: Only one NVDA instance can run at a time. If an NVDA instance that
+   * Guidepup did not start is running, such as your installed NVDA, `start()`
+   * quits it and `stop()` starts it again. To leave it off after `stop()`, set
+   * `{ restoreUserScreenReader: false }`.
    */
   async start(options?: CaptureStartOptions): Promise<void> {
     if (!this.detect()) {
@@ -287,7 +376,7 @@ export class NVDA extends BaseScreenReader implements IScreenReader {
     addTeardownHandler(this.#teardownHandler);
 
     try {
-      quit();
+      await this.#quitRunningNVDA(options?.restoreUserScreenReader ?? true);
 
       createGuidepupConfig();
 
@@ -348,6 +437,8 @@ export class NVDA extends BaseScreenReader implements IScreenReader {
       removeTeardownHandler(this.#teardownHandler);
 
       this.#started = false;
+
+      await this.#restoreUserNVDA();
     } finally {
       this.#stopping = false;
     }

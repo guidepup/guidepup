@@ -1,13 +1,13 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { ERR_NVDA_CANNOT_BE_STARTED, ERR_NVDA_NOT_INSTALLED } from "../errors";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import { resolveSessionUserConfigPath } from "./config";
 import { waitForRunning } from "./waitForRunning";
 
 const MAX_START_ATTEMPTS = 2;
 
 export async function start(): Promise<void> {
-  const executablePath = getNVDAInstallationPath();
+  const executablePath = getGuidepupNVDAInstallationPath();
 
   if (!executablePath) {
     throw new Error(ERR_NVDA_NOT_INSTALLED);

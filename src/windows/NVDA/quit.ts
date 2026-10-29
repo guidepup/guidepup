@@ -4,11 +4,11 @@ import {
   ERR_NVDA_QUIT_TIMEOUT,
 } from "../errors";
 import { DEFAULT_RUNNING_TIMEOUT } from "../../constants";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import { spawnSync } from "child_process";
 
 export function quit(): void {
-  const executablePath = getNVDAInstallationPath();
+  const executablePath = getGuidepupNVDAInstallationPath();
 
   if (!executablePath) {
     throw new Error(ERR_NVDA_NOT_INSTALLED);

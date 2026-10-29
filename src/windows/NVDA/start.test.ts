@@ -1,12 +1,12 @@
 import { ChildProcess, spawn } from "child_process";
 import { ERR_NVDA_CANNOT_BE_STARTED, ERR_NVDA_NOT_INSTALLED } from "../errors";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import { resolveSessionUserConfigPath } from "./config";
 import { start } from "./start";
 import { waitForRunning } from "./waitForRunning";
 
-jest.mock("./getNVDAInstallationPath", () => ({
-  getNVDAInstallationPath: jest.fn(),
+jest.mock("./getGuidepupNVDAInstallationPath", () => ({
+  getGuidepupNVDAInstallationPath: jest.fn(),
 }));
 jest.mock("./config", () => ({
   resolveSessionUserConfigPath: jest.fn(),
@@ -35,7 +35,7 @@ describe("start", () => {
 
   describe("when NVDA is not installed", () => {
     beforeEach(() => {
-      jest.mocked(getNVDAInstallationPath).mockReturnValue(null);
+      jest.mocked(getGuidepupNVDAInstallationPath).mockReturnValue(null);
       jest.mocked(resolveSessionUserConfigPath).mockReturnValue("");
     });
 
@@ -46,7 +46,7 @@ describe("start", () => {
         // swallow
       }
 
-      expect(getNVDAInstallationPath).toHaveBeenCalled();
+      expect(getGuidepupNVDAInstallationPath).toHaveBeenCalled();
     });
 
     it("should throw an error", async () => {
@@ -57,7 +57,7 @@ describe("start", () => {
   describe("when NVDA is installed", () => {
     beforeEach(() => {
       jest
-        .mocked(getNVDAInstallationPath)
+        .mocked(getGuidepupNVDAInstallationPath)
         .mockReturnValue(mockInstallationPath);
 
       jest
@@ -128,7 +128,7 @@ describe("start", () => {
 
       beforeEach(async () => {
         jest
-          .mocked(getNVDAInstallationPath)
+          .mocked(getGuidepupNVDAInstallationPath)
           .mockReturnValue(mockInstallationPathWithSpace);
         jest
           .mocked(resolveSessionUserConfigPath)

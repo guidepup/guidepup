@@ -12,7 +12,7 @@ import { CommandOptions } from "../../CommandOptions";
 import { DEFAULT_CAPTURE } from "../../constants";
 import { delay } from "../../delay";
 import { EventEmitter } from "node:events";
-import { getNVDAInstallationPath } from "./getNVDAInstallationPath";
+import { getGuidepupNVDAInstallationPath } from "./getGuidepupNVDAInstallationPath";
 import { KeyCodeCommand } from "../KeyCodeCommand";
 import { keyCodeCommands } from "./keyCodeCommands";
 
@@ -117,7 +117,7 @@ export class NVDAClient extends EventEmitter {
    * Connect to a NVDA instance.
    */
   async connect(options?: Pick<CommandOptions, "capture">): Promise<void> {
-    const executablePath = getNVDAInstallationPath();
+    const executablePath = getGuidepupNVDAInstallationPath();
 
     if (!executablePath) {
       throw new Error(ERR_NVDA_NOT_INSTALLED);
