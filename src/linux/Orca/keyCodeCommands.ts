@@ -27,37 +27,25 @@ type KeyCodeCommands<
       >;
     }
   >,
-> = UnionToIntersection<
-  {
-    [Service in keyof Modules]: {
-      [Command in keyof Modules[Service]["commands"] as Modules[Service]["commands"][Command] extends {
-        readonly representation: string;
-      }
-        ? Command
-        : never]: Modules[Service]["commands"][Command] extends {
-        readonly description: string;
-        readonly representation: string;
-      }
-        ? KeyCodeCommandDefinition<
-            Command & string,
-            Service & string,
-            Modules[Service]["commands"][Command]
-          >
-        : never;
-    };
-  }[keyof Modules]
->;
+> = {
+  [Service in keyof Modules]: {
+    [Command in keyof Modules[Service]["commands"] as Modules[Service]["commands"][Command] extends {
+      readonly representation: string;
+    }
+      ? Command
+      : never]: Modules[Service]["commands"][Command] extends {
+      readonly description: string;
+      readonly representation: string;
+    }
+      ? KeyCodeCommandDefinition<
+          Command & string,
+          Service & string,
+          Modules[Service]["commands"][Command]
+        >
+      : never;
+  };
+};
 
-type UnionToIntersection<T> = (
-  T extends unknown ? (value: T) => void : never
-) extends (value: infer I) => void
-  ? I
-  : never;
-
-// TODO: namespace the keys by service. Keyed by command name alone, commands
-// that share a name across services collide and only one is reachable, e.g.
-// `ToggleEnabled` (CaretNavigator, TableNavigator) and `SayAll`
-// (FlatReviewPresenter, SayAllPresenter).
 // TODO: generate this shape from the Orca D-Bus service at build time, or
 // hardcode the structure needed, rather than reshaping the
 // `serviceDefinition` fixture at load.
@@ -76,24 +64,43 @@ function createKeyCodeCommands<
   >,
 >(modules: Modules): KeyCodeCommands<Modules> {
   return Object.fromEntries(
-    Object.entries(modules).flatMap(([service, module]) =>
-      Object.entries(module.commands)
-        .filter(([, definition]) => definition.representation !== undefined)
-        .map(([command, definition]) => [
-          command,
-          {
+    Object.entries(modules).map(([service, module]) => [
+      service,
+      Object.fromEntries(
+        Object.entries(module.commands)
+          .filter(([, definition]) => definition.representation !== undefined)
+          .map(([command, definition]) => [
             command,
-            description: definition.description,
-            representation: definition.representation,
-            service,
-          },
-        ]),
-    ),
+            {
+              command,
+              description: definition.description,
+              representation: definition.representation,
+              service,
+            },
+          ]),
+      ),
+    ]),
   ) as KeyCodeCommands<Modules>;
 }
 
-export type KeyCodeCommand = KeyCodeCommands<
-  typeof serviceDefinition.modules
->[keyof KeyCodeCommands<typeof serviceDefinition.modules>];
+type KeyCodeCommandUnion<
+  Modules extends Record<
+    string,
+    {
+      commands: Record<
+        string,
+        {
+          readonly description: string;
+          readonly representation?: string;
+        }
+      >;
+    }
+  >,
+> = {
+  [Service in keyof KeyCodeCommands<Modules>]:
+    KeyCodeCommands<Modules>[Service][keyof KeyCodeCommands<Modules>[Service]];
+}[keyof KeyCodeCommands<Modules>];
+
+export type KeyCodeCommand = KeyCodeCommandUnion<typeof serviceDefinition.modules>;
 
 export const keyCodeCommands = createKeyCodeCommands(serviceDefinition.modules);
