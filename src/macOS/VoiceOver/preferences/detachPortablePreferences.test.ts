@@ -12,11 +12,22 @@ jest.mock("node:fs", () => ({
 }));
 
 const dmgPathDummy = "test-dmg-path";
+const deviceDummy = "test-device";
 const errorDummy = new Error("test-error");
+
+const execFileSyncStub = (failingFile?: string) => (file: string) => {
+  if (file === failingFile) {
+    throw errorDummy;
+  }
+
+  return file === "/usr/bin/stat" ? `${deviceDummy}\n` : Buffer.from("");
+};
 
 describe("detachPortablePreferences", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    jest.mocked(execFileSync).mockImplementation(execFileSyncStub());
   });
 
   describe("when called with a dmg path", () => {
@@ -24,10 +35,16 @@ describe("detachPortablePreferences", () => {
       detachPortablePreferences(dmgPathDummy);
     });
 
-    it("should detach the mounted preferences image", () => {
+    it("should unmount the preferences volume", () => {
+      expect(execFileSync).toHaveBeenCalledWith("/sbin/umount", [MOUNT_POINT], {
+        stdio: "ignore",
+      });
+    });
+
+    it("should detach the preferences image by the volume's device", () => {
       expect(execFileSync).toHaveBeenCalledWith(
         "/usr/bin/hdiutil",
-        ["detach", MOUNT_POINT],
+        ["detach", deviceDummy],
         { stdio: "ignore" },
       );
     });
@@ -39,11 +56,35 @@ describe("detachPortablePreferences", () => {
     });
   });
 
+  describe("when unmounting the preferences volume fails", () => {
+    beforeEach(() => {
+      jest
+        .mocked(execFileSync)
+        .mockImplementation(execFileSyncStub("/sbin/umount"));
+
+      detachPortablePreferences(dmgPathDummy);
+    });
+
+    it("should not detach the device", () => {
+      expect(execFileSync).not.toHaveBeenCalledWith(
+        "/usr/bin/hdiutil",
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it("should still remove the dmg shadow file", () => {
+      expect(rmSync).toHaveBeenCalledWith(`${dmgPathDummy}.shadow`, {
+        force: true,
+      });
+    });
+  });
+
   describe("when detaching the preferences image fails", () => {
     beforeEach(() => {
-      jest.mocked(execFileSync).mockImplementation(() => {
-        throw errorDummy;
-      });
+      jest
+        .mocked(execFileSync)
+        .mockImplementation(execFileSyncStub("/usr/bin/hdiutil"));
 
       detachPortablePreferences(dmgPathDummy);
     });
@@ -69,9 +110,9 @@ describe("detachPortablePreferences", () => {
 
   describe("when detaching the preferences image and removing the dmg shadow file both fail", () => {
     beforeEach(() => {
-      jest.mocked(execFileSync).mockImplementation(() => {
-        throw errorDummy;
-      });
+      jest
+        .mocked(execFileSync)
+        .mockImplementation(execFileSyncStub("/usr/bin/hdiutil"));
 
       jest.mocked(rmSync).mockImplementation(() => {
         throw errorDummy;
@@ -81,11 +122,6 @@ describe("detachPortablePreferences", () => {
     });
 
     it("should swallow the errors", () => {
-      expect(execFileSync).toHaveBeenCalledWith(
-        "/usr/bin/hdiutil",
-        ["detach", MOUNT_POINT],
-        { stdio: "ignore" },
-      );
       expect(rmSync).toHaveBeenCalledWith(`${dmgPathDummy}.shadow`, {
         force: true,
       });
