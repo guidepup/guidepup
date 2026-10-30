@@ -126,9 +126,6 @@ export class Orca extends BaseScreenReader implements IScreenReader {
    * [API Reference](https://www.guidepup.dev/docs/api/class-orca#orca-keyboard-commands)
    *
    * Getter for all Orca keyboard commands.
-   * Commands are grouped by their Orca service to preserve commands that share
-   * a name across services, for example `ObjectNavigator.MoveToNextSibling`.
-   * This is a breaking change from the previous flat command map.
    *
    * Use with the Orca `perform` command to invoke a keyboard action:
    *

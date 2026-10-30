@@ -114,7 +114,6 @@ import { orca } from "@guidepup/guidepup";
 
   console.log(await orca.spokenPhraseLog());
 
-  // Orca commands are grouped by service to preserve same-name commands.
   await orca.perform(orca.keyboardCommands.StructuralNavigator.NextFormField);
 
   console.log(await orca.lastSpokenPhrase());
