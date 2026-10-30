@@ -25,5 +25,7 @@ export const navigateOrcaToWebContent = async ({
   await page.locator("body").blur();
 
   // Start at the top of the web content so the first item is announced.
-  await orca.perform(orca.keyboardCommands.StartOfFile, { capture });
+  await orca.perform(orca.keyboardCommands.CaretNavigator.StartOfFile, {
+    capture,
+  });
 };

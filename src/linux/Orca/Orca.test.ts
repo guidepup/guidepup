@@ -64,6 +64,11 @@ jest.mock("../../navigateUntil", () => ({
 const command = () => ({ execute: jest.fn() });
 
 const serviceStub = {
+  CaretNavigator: {
+    commands: {
+      ToggleEnabled: command(),
+    },
+  },
   FlatReviewPresenter: {
     commands: {
       LeftClickOnObject: command(),
@@ -92,6 +97,11 @@ const serviceStub = {
       PreviousHeading: command(),
       PreviousLandmark: command(),
       PreviousLink: command(),
+    },
+  },
+  TableNavigator: {
+    commands: {
+      ToggleEnabled: command(),
     },
   },
 };
@@ -661,9 +671,9 @@ describe("Orca", () => {
   describe("perform", () => {
     describe("when Orca is not running", () => {
       it("should throw an error", async () => {
-        await expect(orca.perform(keyCodeCommands.NextHeading)).rejects.toThrow(
-          ERR_ORCA_NOT_RUNNING,
-        );
+        await expect(
+          orca.perform(keyCodeCommands.StructuralNavigator.NextHeading),
+        ).rejects.toThrow(ERR_ORCA_NOT_RUNNING);
       });
     });
 
@@ -675,7 +685,10 @@ describe("Orca", () => {
       });
 
       it("should enqueue an action with the options", async () => {
-        await orca.perform(keyCodeCommands.NextHeading, captureOptions);
+        await orca.perform(
+          keyCodeCommands.StructuralNavigator.NextHeading,
+          captureOptions,
+        );
 
         expect(OrcaClientStub.enqueueAndTap).toHaveBeenCalledWith(
           expect.any(Function),
@@ -684,7 +697,7 @@ describe("Orca", () => {
       });
 
       it("should execute the command in the action", async () => {
-        await orca.perform(keyCodeCommands.NextHeading);
+        await orca.perform(keyCodeCommands.StructuralNavigator.NextHeading);
         await runEnqueuedAction();
 
         expect(
@@ -692,9 +705,26 @@ describe("Orca", () => {
         ).toHaveBeenCalled();
       });
 
+      it("should dispatch same-name commands to their respective services", async () => {
+        await orca.perform(keyCodeCommands.CaretNavigator.ToggleEnabled);
+        await runEnqueuedAction();
+
+        await orca.perform(keyCodeCommands.TableNavigator.ToggleEnabled);
+        await runEnqueuedAction();
+
+        expect(
+          serviceStub.CaretNavigator.commands.ToggleEnabled.execute,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          serviceStub.TableNavigator.commands.ToggleEnabled.execute,
+        ).toHaveBeenCalledTimes(1);
+      });
+
       describe("when the command is a MousePresenter command", () => {
         it("should execute the command in the action", async () => {
-          await orca.perform(keyCodeCommands.ToggleMouseReview);
+          await orca.perform(
+            keyCodeCommands.MousePresenter.ToggleMouseReview,
+          );
           await runEnqueuedAction();
 
           expect(
@@ -714,7 +744,9 @@ describe("Orca", () => {
           });
 
           it("should throw from the action", async () => {
-            await orca.perform(keyCodeCommands.ToggleMouseReview);
+            await orca.perform(
+              keyCodeCommands.MousePresenter.ToggleMouseReview,
+            );
 
             await expect(runEnqueuedAction()).rejects.toThrow(
               "Orca command module 'MousePresenter' is not available.",
@@ -972,9 +1004,9 @@ describe("Orca", () => {
     });
 
     it("should throw when calling perform", async () => {
-      await expect(orca.perform(keyCodeCommands.NextHeading)).rejects.toThrow(
-        ERR_ORCA_NOT_RUNNING,
-      );
+      await expect(
+        orca.perform(keyCodeCommands.StructuralNavigator.NextHeading),
+      ).rejects.toThrow(ERR_ORCA_NOT_RUNNING);
     });
 
     it("should throw when calling capture", async () => {

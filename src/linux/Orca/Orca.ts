@@ -137,7 +137,9 @@ export class Orca extends BaseScreenReader implements IScreenReader {
    *   await orca.start();
    *
    *   // Move to the next item.
-   *   await orca.perform(orca.keyboardCommands.MoveToNextSibling);
+   *   await orca.perform(
+   *     orca.keyboardCommands.ObjectNavigator.MoveToNextSibling,
+   *   );
    *
    *   // Stop Orca.
    *   await orca.stop();
@@ -865,7 +867,9 @@ export class Orca extends BaseScreenReader implements IScreenReader {
    *   await orca.start();
    *
    *   // Keyboard commands available on the Orca instance.
-   *   await orca.perform(orca.keyboardCommands.MoveToNextSibling);
+   *   await orca.perform(
+   *     orca.keyboardCommands.ObjectNavigator.MoveToNextSibling,
+   *   );
    *
    *   // Stop Orca.
    *   await orca.stop();

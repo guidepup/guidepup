@@ -27,9 +27,10 @@ export const focusOrcaBrowser = async ({
       retryCount++
     ) {
       await orca.clearSpokenPhraseLog();
-      await orca.perform(orca.keyboardCommands.PresentTitle, {
-        capture: "initial",
-      });
+      await orca.perform(
+        orca.keyboardCommands.WhereAmIPresenter.PresentTitle,
+        { capture: "initial" },
+      );
 
       const windowTitle = cleanString(await orca.lastSpokenPhrase());
 
