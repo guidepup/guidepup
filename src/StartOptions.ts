@@ -5,4 +5,12 @@ export interface StartOptions extends CommandOptions {
    * Screen reader settings to apply on startup.
    */
   settings?: Record<string, unknown>;
+
+  /**
+   * Whether `stop()` starts the user's own screen reader again when `start()`
+   * had to quit it. Supported by NVDA and VoiceOver.
+   *
+   * Default is `true`.
+   */
+  restoreUserScreenReader?: boolean;
 }

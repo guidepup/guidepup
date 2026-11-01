@@ -8,6 +8,7 @@ import {
 import {
   getPreference,
   getPreferences,
+  isGuidepupPreferencesMounted,
   mountGuidepupPreferences,
   setPreferences,
   unmountGuidepupPreferences,
@@ -22,9 +23,11 @@ import { delay } from "../../delay";
 import { getManifestAsset } from "./getManifestAsset";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
+import { isRunning } from "./isRunning";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { release } from "node:os";
 import { start } from "./start";
+import { startUserVoiceOver } from "./startUserVoiceOver";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOver } from "./VoiceOver";
 import { VoiceOverCaption } from "./VoiceOverCaption";
@@ -58,6 +61,7 @@ jest.mock("../isMacOS", () => ({
 jest.mock("./preferences", () => ({
   getPreference: jest.fn(),
   getPreferences: jest.fn(),
+  isGuidepupPreferencesMounted: jest.fn(),
   mountGuidepupPreferences: jest.fn(),
   setPreferences: jest.fn(),
   unmountGuidepupPreferences: jest.fn(),
@@ -68,8 +72,14 @@ jest.mock("./VoiceOverClient", () => ({
 jest.mock("./terminateVoiceOverProcess", () => ({
   terminateVoiceOverProcess: jest.fn(),
 }));
+jest.mock("./isRunning", () => ({
+  isRunning: jest.fn(),
+}));
 jest.mock("./start", () => ({
   start: jest.fn(),
+}));
+jest.mock("./startUserVoiceOver", () => ({
+  startUserVoiceOver: jest.fn(),
 }));
 jest.mock("./VoiceOverCaption", () => ({
   VoiceOverCaption: jest.fn(),
@@ -489,6 +499,147 @@ describe("VoiceOver", () => {
 
         it("should unmount Guidepup preferences after failing", () => {
           expect(unmountGuidepupPreferences).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+  });
+
+  describe("when another VoiceOver may be running on start", () => {
+    describe("when no VoiceOver is running", () => {
+      beforeEach(async () => {
+        await vo.start();
+      });
+
+      it("should check if the VoiceOver process is running, without AppleScript", () => {
+        expect(isRunning).toHaveBeenCalledWith(undefined, true);
+      });
+
+      it("should not start a VoiceOver again on stop", async () => {
+        await vo.stop();
+
+        expect(startUserVoiceOver).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when a Guidepup VoiceOver from an earlier run is running", () => {
+      beforeEach(async () => {
+        jest.mocked(isRunning).mockResolvedValue(true);
+        jest.mocked(isGuidepupPreferencesMounted).mockReturnValue(true);
+
+        await vo.start();
+      });
+
+      it("should not start a VoiceOver again on stop", async () => {
+        await vo.stop();
+
+        expect(startUserVoiceOver).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when the user's VoiceOver is running", () => {
+      beforeEach(() => {
+        jest.mocked(isRunning).mockResolvedValue(true);
+        jest.mocked(isGuidepupPreferencesMounted).mockReturnValue(false);
+      });
+
+      describe("when started with the default options", () => {
+        beforeEach(async () => {
+          await vo.start();
+        });
+
+        it("should check for the Guidepup preferences before mounting them", () => {
+          expect(
+            jest.mocked(isGuidepupPreferencesMounted).mock
+              .invocationCallOrder[0],
+          ).toBeLessThan(
+            jest.mocked(mountGuidepupPreferences).mock.invocationCallOrder[0],
+          );
+        });
+
+        it("should not start the user's VoiceOver before stop", () => {
+          expect(startUserVoiceOver).not.toHaveBeenCalled();
+        });
+
+        it("should start the user's VoiceOver again on stop, after unmounting the Guidepup preferences", async () => {
+          await vo.stop();
+
+          expect(startUserVoiceOver).toHaveBeenCalledTimes(1);
+          expect(
+            jest.mocked(unmountGuidepupPreferences).mock.invocationCallOrder[0],
+          ).toBeLessThan(
+            jest.mocked(startUserVoiceOver).mock.invocationCallOrder[0],
+          );
+        });
+
+        it("should start the user's VoiceOver again only once", async () => {
+          await vo.stop();
+
+          jest.mocked(isRunning).mockResolvedValue(false);
+
+          await vo.start();
+          await vo.stop();
+
+          expect(startUserVoiceOver).toHaveBeenCalledTimes(1);
+        });
+
+        describe("when the process is terminated and the teardown is triggered", () => {
+          it("should start the user's VoiceOver again, after unmounting the Guidepup preferences", async () => {
+            await jest.mocked(addTeardownHandler).mock.calls[0][0]();
+
+            expect(startUserVoiceOver).toHaveBeenCalledTimes(1);
+            expect(
+              jest.mocked(unmountGuidepupPreferences).mock
+                .invocationCallOrder[0],
+            ).toBeLessThan(
+              jest.mocked(startUserVoiceOver).mock.invocationCallOrder[0],
+            );
+          });
+        });
+      });
+
+      describe("when started with restoreUserScreenReader set to false", () => {
+        it("should not start the user's VoiceOver again on stop", async () => {
+          await vo.start({ restoreUserScreenReader: false });
+          await vo.stop();
+
+          expect(startUserVoiceOver).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when the user's VoiceOver cannot be started again", () => {
+        it("should still stop", async () => {
+          jest
+            .mocked(startUserVoiceOver)
+            .mockRejectedValue(new Error("test-error"));
+
+          await vo.start();
+
+          await expect(vo.stop()).resolves.toBeUndefined();
+          expect(startUserVoiceOver).toHaveBeenCalled();
+        });
+      });
+
+      describe("when Guidepup's VoiceOver fails to start", () => {
+        let error: unknown;
+
+        beforeEach(async () => {
+          jest.mocked(start).mockRejectedValue(new Error("test-error"));
+
+          try {
+            await vo.start();
+          } catch (e) {
+            error = e;
+          }
+        });
+
+        it("should throw a cannot be started error", () => {
+          expect(error).toMatchObject({
+            message: ERR_VOICE_OVER_CANNOT_BE_STARTED,
+          });
+        });
+
+        it("should start the user's VoiceOver again", () => {
+          expect(startUserVoiceOver).toHaveBeenCalledTimes(1);
         });
       });
     });

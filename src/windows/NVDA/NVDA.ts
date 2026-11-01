@@ -44,13 +44,7 @@ const debug = base.extend("NVDA");
 
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
 type CaptureStartOptions = Prettify<
-  Pick<StartOptions, "capture" | "settings"> & {
-    /**
-     * Whether `stop()` starts the user's own NVDA again when `start()` had to
-     * quit it. Defaults to `true`.
-     */
-    restoreUserScreenReader?: boolean;
-  }
+  Pick<StartOptions, "capture" | "settings" | "restoreUserScreenReader">
 >;
 
 /**
