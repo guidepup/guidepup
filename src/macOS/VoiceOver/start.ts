@@ -18,7 +18,7 @@ $.dlopen("/usr/lib/libScreenReader.dylib", 1);
 ObjC.bindFunction("_ScreenReaderStart", ["void", ["int"]]);
 $._ScreenReaderStart(0);`;
 
-function requestStart(): void {
+export function requestStart(): void {
   debug("requesting VoiceOver start");
 
   try {

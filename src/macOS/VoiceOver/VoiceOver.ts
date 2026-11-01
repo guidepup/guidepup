@@ -8,10 +8,12 @@ import {
 import {
   getPreference,
   getPreferences,
+  isGuidepupPreferencesMounted,
   mountGuidepupPreferences,
   setPreferences,
   unmountGuidepupPreferences,
 } from "./preferences";
+import { base } from "../../debug";
 import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
@@ -21,12 +23,14 @@ import { getManifestAsset } from "./getManifestAsset";
 import type { IScreenReader } from "../../IScreenReader";
 import { isKeyboard } from "../../isKeyboard";
 import { isMacOS } from "../isMacOS";
+import { isRunning } from "./isRunning";
 import type { KeyboardCommand } from "../KeyboardCommand";
 import type { KeyboardOptions } from "../../KeyboardOptions";
 import { keyCodeCommands } from "./keyCodeCommands";
 import type { Prettify } from "../../typeHelpers";
 import { start } from "./start";
 import type { StartOptions } from "../../StartOptions";
+import { startUserVoiceOver } from "./startUserVoiceOver";
 import { terminateVoiceOverProcess } from "./terminateVoiceOverProcess";
 import { VoiceOverCaption } from "./VoiceOverCaption";
 import { VoiceOverClient } from "./VoiceOverClient";
@@ -36,6 +40,8 @@ import { VoiceOverKeyboard } from "./VoiceOverKeyboard";
 import { VoiceOverMouse } from "./VoiceOverMouse";
 import { waitForNotRunning } from "./waitForNotRunning";
 import { waitForRunning } from "./waitForRunning";
+
+const debug = base.extend("VoiceOver");
 
 type CommandOptionsWithoutCapture = Prettify<Omit<CommandOptions, "capture">>;
 
@@ -68,6 +74,11 @@ export class VoiceOver extends BaseScreenReader implements IScreenReader {
   #stopping = false;
 
   /**
+   * Whether `start()` quit the user's own VoiceOver, to start again on stop.
+   */
+  #userVoiceOverQuit = false;
+
+  /**
    * VoiceOver client for queued execution and log tapping.
    */
   #client!: VoiceOverClient;
@@ -98,6 +109,46 @@ export class VoiceOver extends BaseScreenReader implements IScreenReader {
   #mouse!: VoiceOverMouse;
 
   /**
+   * Remember whether a VoiceOver that Guidepup did not start, such as the
+   * user's own, is running, so it can be started again on stop.
+   */
+  #detectUserVoiceOver = async (
+    restoreUserScreenReader: boolean,
+  ): Promise<void> => {
+    if (!restoreUserScreenReader || !(await isRunning(undefined, true))) {
+      return;
+    }
+
+    if (isGuidepupPreferencesMounted()) {
+      // A Guidepup VoiceOver left over from an earlier run.
+      return;
+    }
+
+    debug("Quitting a VoiceOver that Guidepup did not start");
+
+    this.#userVoiceOverQuit = true;
+  };
+
+  /**
+   * Start the user's own VoiceOver again if `start()` quit it. Best effort only.
+   */
+  #restoreUserVoiceOver = async (): Promise<void> => {
+    if (!this.#userVoiceOverQuit) {
+      return;
+    }
+
+    this.#userVoiceOverQuit = false;
+
+    debug("Starting the user's VoiceOver again");
+
+    try {
+      await startUserVoiceOver();
+    } catch (error) {
+      debug(`Cannot start the user's VoiceOver again: ${error}`);
+    }
+  };
+
+  /**
    * Attempt to stop VoiceOver and teardown preferences when the process is terminating.
    */
   #teardownAfterTermination = async (): Promise<void> => {
@@ -117,6 +168,8 @@ export class VoiceOver extends BaseScreenReader implements IScreenReader {
     } catch {
       // Best effort only.
     }
+
+    await this.#restoreUserVoiceOver();
 
     this.#client = null;
     this.#caption = null;
@@ -345,6 +398,11 @@ export class VoiceOver extends BaseScreenReader implements IScreenReader {
    * capture set `{ capture: true }`, or to disable capture set
    * `{ capture: false }`.
    *
+   * Note: Only one VoiceOver can run at a time. If a VoiceOver that Guidepup
+   * did not start is running, such as your own, `start()` quits it and
+   * `stop()` starts it again. To leave it off after `stop()`, set
+   * `{ restoreUserScreenReader: false }`.
+   *
    * @param {object} [options] Additional options.
    */
 
@@ -364,6 +422,8 @@ export class VoiceOver extends BaseScreenReader implements IScreenReader {
     addTeardownHandler(this.#teardownHandler);
 
     try {
+      await this.#detectUserVoiceOver(options?.restoreUserScreenReader ?? true);
+
       for (let attempt = 0; attempt < VoiceOver.#STOP_ATTEMPTS; attempt++) {
         try {
           await terminateVoiceOverProcess(options);
@@ -475,6 +535,8 @@ export class VoiceOver extends BaseScreenReader implements IScreenReader {
       removeTeardownHandler(this.#teardownHandler);
 
       this.#started = false;
+
+      await this.#restoreUserVoiceOver();
     } finally {
       this.#stopping = false;
     }
