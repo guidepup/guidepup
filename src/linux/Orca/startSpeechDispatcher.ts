@@ -46,6 +46,9 @@ export async function startSpeechDispatcher(
   // are limited to 108 bytes.
   const speechdSocketPath = join(runtimeDirectory, "speechd.sock");
   const guidepupSocketPath = join(runtimeDirectory, "guidepup.sock");
+  // Without its own pid file, it exits with "already running" whenever the
+  // user's Orca has its Speech Dispatcher running.
+  const speechdPidFilePath = join(runtimeDirectory, "speechd.pid");
 
   mkdirSync(speechdLogsDirectory, { recursive: true });
 
@@ -61,6 +64,8 @@ export async function startSpeechDispatcher(
     "unix_socket",
     "--socket-path",
     speechdSocketPath,
+    "--pid-file",
+    speechdPidFilePath,
     "--timeout",
     "0",
   ];
