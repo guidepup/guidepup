@@ -8,7 +8,7 @@ export interface StartOptions extends CommandOptions {
 
   /**
    * Whether `stop()` starts the user's own screen reader again when `start()`
-   * had to quit it. Supported by NVDA and VoiceOver.
+   * had to quit it. Supported by NVDA, Orca and VoiceOver.
    *
    * Default is `true`.
    */
