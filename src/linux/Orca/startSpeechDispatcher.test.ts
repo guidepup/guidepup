@@ -105,6 +105,8 @@ describe("startSpeechDispatcher", () => {
           "unix_socket",
           "--socket-path",
           mockSpeechdSocketPath,
+          "--pid-file",
+          join(mockRuntimeDirectory, "speechd.pid"),
           "--timeout",
           "0",
         ],
