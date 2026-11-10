@@ -14,6 +14,12 @@ import {
   setSettings,
 } from "./settings";
 import {
+  isOrcaServiceActive,
+  startOrcaService,
+  stopOrcaService,
+} from "./orcaService";
+import { killRunningOrca, quitRunningOrca } from "./quitRunningOrca";
+import {
   navigateUntil,
   NavigateUntilMethod,
   NavigationMethod,
@@ -21,9 +27,11 @@ import {
 import { delay } from "../../delay";
 import { isLinux } from "../isLinux";
 import { isOrcaInstalled } from "./isOrcaInstalled";
+import { isOrcaRunning } from "./isOrcaRunning";
 import { keyCodeCommands } from "./keyCodeCommands";
 import { Orca } from "./Orca";
 import { OrcaClient } from "./OrcaClient";
+import { startUserOrca } from "./startUserOrca";
 
 jest.mock("../../../manifest.json", () => ({
   screenReaders: [
@@ -54,8 +62,23 @@ jest.mock("../isLinux", () => ({
 jest.mock("./isOrcaInstalled", () => ({
   isOrcaInstalled: jest.fn(),
 }));
+jest.mock("./isOrcaRunning", () => ({
+  isOrcaRunning: jest.fn(),
+}));
+jest.mock("./orcaService", () => ({
+  isOrcaServiceActive: jest.fn(),
+  startOrcaService: jest.fn(),
+  stopOrcaService: jest.fn(),
+}));
 jest.mock("./OrcaClient", () => ({
   OrcaClient: jest.fn(),
+}));
+jest.mock("./quitRunningOrca", () => ({
+  killRunningOrca: jest.fn(),
+  quitRunningOrca: jest.fn(),
+}));
+jest.mock("./startUserOrca", () => ({
+  startUserOrca: jest.fn(),
 }));
 jest.mock("../../navigateUntil", () => ({
   navigateUntil: jest.fn(),
@@ -145,6 +168,14 @@ describe("Orca", () => {
     jest.mocked(isOrcaInstalled).mockReturnValue(true);
     jest.mocked(OrcaClientStub.start).mockResolvedValue(undefined);
     jest.mocked(OrcaClientStub.stop).mockResolvedValue(undefined);
+    jest.mocked(isOrcaRunning).mockReturnValue(false);
+    jest.mocked(isOrcaServiceActive).mockReturnValue(false);
+    jest.mocked(getSettings).mockReturnValue({});
+    jest.mocked(killRunningOrca).mockResolvedValue(undefined);
+    jest.mocked(quitRunningOrca).mockResolvedValue(undefined);
+    jest.mocked(stopOrcaService).mockReset();
+    jest.mocked(startOrcaService).mockReset();
+    jest.mocked(startUserOrca).mockReset();
     jest
       .mocked(OrcaClient)
       .mockImplementation(() => OrcaClientStub as unknown as OrcaClient);
@@ -216,6 +247,12 @@ describe("Orca", () => {
         await orca.start(captureOptions);
       });
 
+      it("should leave nothing to quit", () => {
+        expect(stopOrcaService).not.toHaveBeenCalled();
+        expect(quitRunningOrca).not.toHaveBeenCalled();
+        expect(killRunningOrca).not.toHaveBeenCalled();
+      });
+
       it("should register a teardown handler", () => {
         expect(addTeardownHandler).toHaveBeenCalledWith(expect.any(Function));
       });
@@ -280,6 +317,10 @@ describe("Orca", () => {
 
     describe.each`
       step                     | fail
+      ${"quitting the running Orca"} | ${(e: Error) => {
+  jest.mocked(isOrcaRunning).mockReturnValueOnce(true);
+  jest.mocked(quitRunningOrca).mockRejectedValue(e);
+}}
       ${"loading the settings"} | ${(e: Error) =>
   jest.mocked(loadGuidepupSettings).mockImplementation(() => {
     throw e;
@@ -313,6 +354,7 @@ describe("Orca", () => {
       });
 
       it("should allow Orca to be started again", async () => {
+        jest.mocked(quitRunningOrca).mockResolvedValue(undefined);
         jest.mocked(loadGuidepupSettings).mockReset();
         jest.mocked(OrcaClientStub.start).mockResolvedValue(undefined);
 
@@ -331,6 +373,177 @@ describe("Orca", () => {
 
       it("should stop the client", () => {
         expect(OrcaClientStub.stop).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("restoring the user's Orca", () => {
+    const leftoverSettings = { "test-key": "test-value" };
+
+    describe.each`
+      kind                         | arrange                                                         | expectedStart       | otherStart
+      ${"a plain process"}         | ${() => jest.mocked(isOrcaRunning).mockReturnValue(true)}       | ${startUserOrca}    | ${startOrcaService}
+      ${"run by the Orca service"} | ${() => jest.mocked(isOrcaServiceActive).mockReturnValue(true)} | ${startOrcaService} | ${startUserOrca}
+    `(
+      "when the user's Orca is $kind",
+      ({ arrange, expectedStart, otherStart }) => {
+        beforeEach(() => {
+          arrange();
+        });
+
+        it("should start it again after stop, once settings are reset", async () => {
+          await orca.start();
+
+          expect(expectedStart).not.toHaveBeenCalled();
+
+          await orca.stop();
+
+          expect(expectedStart).toHaveBeenCalledTimes(1);
+          expect(otherStart).not.toHaveBeenCalled();
+          expect(
+            jest.mocked(resetGuidepupSettings).mock.invocationCallOrder.at(-1),
+          ).toBeLessThan(
+            jest.mocked(expectedStart).mock.invocationCallOrder[0],
+          );
+        });
+
+        it("should start it again when start fails", async () => {
+          jest
+            .mocked(OrcaClientStub.start)
+            .mockRejectedValue(new Error("test-error"));
+
+          await orca.start().catch(() => {});
+
+          expect(expectedStart).toHaveBeenCalledTimes(1);
+        });
+
+        it("should start it again on process termination", async () => {
+          await orca.start();
+          await getTeardownHandler()();
+
+          expect(expectedStart).toHaveBeenCalledTimes(1);
+        });
+
+        it("should only start it again once", async () => {
+          await orca.start();
+          await orca.stop();
+
+          jest.mocked(isOrcaRunning).mockReturnValue(false);
+          jest.mocked(isOrcaServiceActive).mockReturnValue(false);
+
+          await orca.start();
+          await orca.stop();
+
+          expect(expectedStart).toHaveBeenCalledTimes(1);
+        });
+
+        it("should still stop if it cannot be started again", async () => {
+          jest.mocked(expectedStart).mockImplementation(() => {
+            throw new Error("test-error");
+          });
+
+          await orca.start();
+
+          await expect(orca.stop()).resolves.toBeUndefined();
+        });
+
+        it("should leave it off with restoreUserScreenReader set to false", async () => {
+          await orca.start({ restoreUserScreenReader: false });
+          await orca.stop();
+
+          expect(startUserOrca).not.toHaveBeenCalled();
+          expect(startOrcaService).not.toHaveBeenCalled();
+        });
+      },
+    );
+
+    describe.each`
+      restoreUserScreenReader
+      ${true}
+      ${false}
+    `(
+      "with restoreUserScreenReader set to $restoreUserScreenReader",
+      ({ restoreUserScreenReader }) => {
+        it("should quit a plain Orca before starting its own", async () => {
+          jest.mocked(isOrcaRunning).mockReturnValue(true);
+
+          await orca.start({ restoreUserScreenReader });
+
+          expect(killRunningOrca).not.toHaveBeenCalled();
+          expect(
+            jest.mocked(quitRunningOrca).mock.invocationCallOrder[0],
+          ).toBeLessThan(
+            jest.mocked(OrcaClientStub.start).mock.invocationCallOrder[0],
+          );
+        });
+
+        it("should stop the Orca service before starting its own", async () => {
+          jest.mocked(isOrcaServiceActive).mockReturnValue(true);
+
+          await orca.start({ restoreUserScreenReader });
+
+          expect(
+            jest.mocked(stopOrcaService).mock.invocationCallOrder[0],
+          ).toBeLessThan(
+            jest.mocked(OrcaClientStub.start).mock.invocationCallOrder[0],
+          );
+        });
+      },
+    );
+
+    describe("when another Orca is running beside the Orca service", () => {
+      it("should quit it too, and only start the service again", async () => {
+        jest.mocked(isOrcaServiceActive).mockReturnValue(true);
+        jest.mocked(isOrcaRunning).mockReturnValue(true);
+
+        await orca.start();
+        await orca.stop();
+
+        expect(quitRunningOrca).toHaveBeenCalled();
+        expect(startOrcaService).toHaveBeenCalledTimes(1);
+        expect(startUserOrca).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when Guidepup's settings are left over from an earlier run", () => {
+      beforeEach(async () => {
+        jest.mocked(isOrcaRunning).mockReturnValue(true);
+        jest.mocked(getSettings).mockReturnValue(leftoverSettings);
+
+        await orca.start();
+      });
+
+      it("should kill the running Orca before starting its own", () => {
+        expect(quitRunningOrca).not.toHaveBeenCalled();
+        expect(
+          jest.mocked(killRunningOrca).mock.invocationCallOrder[0],
+        ).toBeLessThan(
+          jest.mocked(OrcaClientStub.start).mock.invocationCallOrder[0],
+        );
+      });
+
+      it("should check for them before loading the settings again", () => {
+        expect(
+          jest.mocked(getSettings).mock.invocationCallOrder[0],
+        ).toBeLessThan(
+          jest.mocked(loadGuidepupSettings).mock.invocationCallOrder[0],
+        );
+      });
+
+      it("should not start it again on stop", async () => {
+        await orca.stop();
+
+        expect(startUserOrca).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when no Orca is running", () => {
+      it("should not start one on stop", async () => {
+        await orca.start();
+        await orca.stop();
+
+        expect(startUserOrca).not.toHaveBeenCalled();
+        expect(startOrcaService).not.toHaveBeenCalled();
       });
     });
   });
@@ -722,9 +935,7 @@ describe("Orca", () => {
 
       describe("when the command is a MousePresenter command", () => {
         it("should execute the command in the action", async () => {
-          await orca.perform(
-            keyCodeCommands.MousePresenter.ToggleMouseReview,
-          );
+          await orca.perform(keyCodeCommands.MousePresenter.ToggleMouseReview);
           await runEnqueuedAction();
 
           expect(

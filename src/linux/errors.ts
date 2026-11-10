@@ -27,6 +27,8 @@ export const ERR_ORCA_AT_SPI_SERVICE_TIMEOUT =
 export const ERR_ORCA_SPEECH_DISPATCHER_SERVICE_TIMEOUT =
   "Timed out waiting to discover the speech dispatcher unix socket";
 
+export const ERR_ORCA_FAILED_TO_QUIT_RUNNING_ORCA =
+  "Timed out waiting for the running Orca to exit";
 export const ERR_ORCA_SERVICE_TIMEOUT =
   "Timed out waiting to discover the 'org.gnome.Orca1.Service' service on the service D-Bus";
 

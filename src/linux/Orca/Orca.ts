@@ -13,7 +13,14 @@ import {
   resetGuidepupSettings,
   setSettings,
 } from "./settings";
+import {
+  isOrcaServiceActive,
+  startOrcaService,
+  stopOrcaService,
+} from "./orcaService";
 import { type KeyCodeCommand, keyCodeCommands } from "./keyCodeCommands";
+import { killRunningOrca, quitRunningOrca } from "./quitRunningOrca";
+import { base } from "../../debug";
 import { BaseScreenReader } from "../../BaseScreenReader";
 import type { Capture } from "../../Capture";
 import type { ClickOptions } from "../../ClickOptions";
@@ -21,15 +28,21 @@ import type { CommandOptions } from "../../CommandOptions";
 import type { IScreenReader } from "../../IScreenReader";
 import { isLinux } from "../isLinux";
 import { isOrcaInstalled } from "./isOrcaInstalled";
+import { isOrcaRunning } from "./isOrcaRunning";
 import { KeyCodes } from "../KeyCodes";
 import { Modifiers } from "../Modifiers";
 import { OrcaClient } from "./OrcaClient";
 import { parseKey } from "../../parseKey";
 import type { Prettify } from "../../typeHelpers";
 import type { StartOptions } from "../../StartOptions";
+import { startUserOrca } from "./startUserOrca";
+
+const debug = base.extend("Orca");
 
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
-type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
+type CaptureStartOptions = Prettify<
+  Pick<StartOptions, "capture" | "settings" | "restoreUserScreenReader">
+>;
 
 // REF: https://man.archlinux.org/man/orca.1.en
 // REF: https://gitlab.gnome.org/GNOME/orca
@@ -72,6 +85,74 @@ export class Orca extends BaseScreenReader implements IScreenReader {
   #stopping = false;
 
   /**
+   * Starts the user's own Orca again, if `start()` quit it.
+   */
+  #startUserOrca: (() => void) | null = null;
+
+  /**
+   * Quit any running Orca before Guidepup starts its own. If that Orca is not
+   * one Guidepup started, such as the user's own, remember how to start it again
+   * on stop.
+   */
+  #quitRunningOrca = async (
+    restoreUserScreenReader: boolean,
+  ): Promise<void> => {
+    if (isOrcaServiceActive()) {
+      debug("Stopping the Orca service");
+
+      if (restoreUserScreenReader) {
+        this.#startUserOrca = startOrcaService;
+      }
+
+      stopOrcaService();
+    }
+
+    if (!isOrcaRunning()) {
+      return;
+    }
+
+    // Guidepup's settings are only still there after a run that never stopped,
+    // so this Orca is left over from it. SIGTERM makes such an Orca abort and
+    // dump core, and there is nothing of the user's for it to clean up.
+    if (Object.keys(getSettings()).length) {
+      debug("Killing an Orca left over from an earlier run");
+
+      await killRunningOrca();
+
+      return;
+    }
+
+    debug("Quitting an Orca that Guidepup did not start");
+
+    if (restoreUserScreenReader) {
+      this.#startUserOrca ??= startUserOrca;
+    }
+
+    await quitRunningOrca();
+  };
+
+  /**
+   * Start the user's own Orca again if `start()` quit it. Best effort only.
+   */
+  #restoreUserOrca = (): void => {
+    const startOrca = this.#startUserOrca;
+
+    if (!startOrca) {
+      return;
+    }
+
+    this.#startUserOrca = null;
+
+    debug("Starting the user's Orca again");
+
+    try {
+      startOrca();
+    } catch (error) {
+      debug(`Cannot start the user's Orca again: ${error}`);
+    }
+  };
+
+  /**
    * Attempt to stop Orca and teardown config when the process is terminating.
    */
   #teardownAfterTermination = async (): Promise<void> => {
@@ -88,6 +169,8 @@ export class Orca extends BaseScreenReader implements IScreenReader {
     } catch {
       // Best effort only.
     }
+
+    this.#restoreUserOrca();
 
     this.#started = false;
     this.#starting = false;
@@ -273,6 +356,11 @@ export class Orca extends BaseScreenReader implements IScreenReader {
    * first "page" of output, but not any subsequent content. To enable full
    * capture set `{ capture: true }`, or to disable capture set
    * `{ capture: false }`.
+   *
+   * Note: Only one Orca can run at a time. If an Orca that Guidepup did not
+   * start is running, such as your own, `start()` quits it and `stop()` starts
+   * it again. To leave it off after `stop()`, set
+   * `{ restoreUserScreenReader: false }`.
    */
   async start(options?: CaptureStartOptions): Promise<void> {
     if (!this.detect()) {
@@ -292,6 +380,8 @@ export class Orca extends BaseScreenReader implements IScreenReader {
     addTeardownHandler(this.#teardownHandler);
 
     try {
+      await this.#quitRunningOrca(options?.restoreUserScreenReader ?? true);
+
       loadGuidepupSettings();
 
       if (options?.settings) {
@@ -348,6 +438,8 @@ export class Orca extends BaseScreenReader implements IScreenReader {
       removeTeardownHandler(this.#teardownHandler);
 
       this.#started = false;
+
+      this.#restoreUserOrca();
     } finally {
       this.#stopping = false;
     }
